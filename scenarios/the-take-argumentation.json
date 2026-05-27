@@ -1,0 +1,247 @@
+{
+  "construct_id": "argumentation",
+  "construct_name": "Argumentation & Evidence Evaluation",
+  "construct_description": "The ability to formulate clear claims, select and evaluate evidence from multiple sources, address counterarguments, and communicate a well-reasoned position in writing.",
+  "dimensions": [
+    {
+      "id": "claim_clarity",
+      "name": "Claim Clarity",
+      "icon": "🎯",
+      "description": "States a clear, specific position that directly addresses the prompt",
+      "max_score": 20
+    },
+    {
+      "id": "evidence_use",
+      "name": "Evidence Use",
+      "icon": "📊",
+      "description": "Selects relevant evidence from provided sources and integrates it effectively",
+      "max_score": 25
+    },
+    {
+      "id": "source_evaluation",
+      "name": "Source Evaluation",
+      "icon": "🔍",
+      "description": "Distinguishes stronger from weaker sources and addresses credibility",
+      "max_score": 20
+    },
+    {
+      "id": "counterargument",
+      "name": "Counterargument",
+      "icon": "⚖️",
+      "description": "Acknowledges opposing viewpoints and responds substantively",
+      "max_score": 20
+    },
+    {
+      "id": "writing_quality",
+      "name": "Writing Quality",
+      "icon": "✍️",
+      "description": "Organized, clear, professional tone appropriate for the audience",
+      "max_score": 15
+    }
+  ],
+  "scenario": {
+    "title": "The AI Tutoring Decision",
+    "audience": "Riverside Unified School Board",
+    "prompt": "The Riverside Unified School District is considering a $2.4M contract to adopt MathMentor AI, an AI-powered tutoring platform, across all middle schools. As a policy analyst, write a position memo to the school board recommending whether to adopt, modify, or reject the proposal. Support your position with evidence from the provided sources.",
+    "word_range": [
+      300,
+      500
+    ],
+    "sources": [
+      {
+        "id": "src_research",
+        "tab_label": "Research Summary",
+        "type": "Academic Research",
+        "reliability": "high",
+        "title": "AI Tutoring Systems in K-12 Mathematics: A Meta-Analysis",
+        "author": "Chen, Rodriguez & Park",
+        "publication": "Journal of Educational Technology, 2025",
+        "content_html": "<p>This meta-analysis examined 47 randomized controlled trials of AI tutoring systems in K-12 mathematics classrooms (N = 31,400 students) published between 2019 and 2024.</p>\n          <p><strong>Key findings:</strong></p>\n          <ul>\n            <li>Students using AI tutoring showed a mean effect size of <strong>d = 0.38</strong> on standardized math assessments compared to control groups — a moderate, statistically significant improvement.</li>\n            <li>Effects were strongest for students performing in the 25th–50th percentile at baseline (d = 0.52), suggesting AI tutoring may be most effective for struggling learners.</li>\n            <li>Effects diminished after 18 months of use (d = 0.18), raising questions about long-term sustainability.</li>\n            <li>Implementation quality was the strongest moderator: schools with dedicated training for teachers saw nearly double the effect size of those without.</li>\n            <li>No significant differences were found between specific AI platforms when controlling for implementation quality.</li>\n          </ul>\n          <p><strong>Limitations:</strong> Most studies were 6–12 months in duration. Only 8 of 47 studies examined effects beyond one academic year. Publication bias may inflate reported effect sizes.</p>"
+      },
+      {
+        "id": "src_news",
+        "tab_label": "News Article",
+        "type": "News Report",
+        "reliability": "mixed",
+        "title": "MathMentor AI: The App That's Dividing Educators",
+        "author": "Sarah Kowalski",
+        "publication": "EdTech Weekly, March 2026",
+        "content_html": "<p>MathMentor AI has been called \"revolutionary\" by its CEO, Dylan Voss, who claims the platform \"delivers the equivalent of a personal tutor for every student at a fraction of the cost.\"</p>\n          <p>The company points to its pilot program in the Austin Independent School District, where MathMentor schools saw a <strong>23% increase in state math proficiency rates</strong> over two years. \"The data speaks for itself,\" Voss said at the National EdTech Conference last month.</p>\n          <p>But critics note the Austin pilot was not a controlled experiment. Dr. Maria Santos, an education researcher at UT Austin, said: \"The MathMentor schools also received additional funding, new textbooks, and smaller class sizes as part of a broader initiative. Attributing the gains solely to the AI platform is misleading.\"</p>\n          <p>Teacher reactions are mixed. \"My students love it — engagement is through the roof,\" said 7th-grade teacher James Wu. But veteran math teacher Linda Okafor pushed back: \"They're clicking through gamified exercises, not developing mathematical thinking. When I give them a novel problem, they're just as lost as before.\"</p>\n          <p>MathMentor's $2.4M price tag for a mid-size district includes licensing, hardware upgrades, and first-year support — but not the ongoing annual renewal of $600K, a detail some board members have flagged.</p>"
+      },
+      {
+        "id": "src_parent",
+        "tab_label": "Parent Letter",
+        "type": "Stakeholder Correspondence",
+        "reliability": "low",
+        "title": "Open Letter from the Riverside Parent-Teacher Alliance",
+        "author": "Riverside PTA Board",
+        "publication": "Submitted to District Board, April 2026",
+        "content_html": "<p>Dear Members of the School Board,</p>\n          <p>As parents and caregivers of Riverside students, we write with serious concerns about the proposed MathMentor AI contract.</p>\n          <p><strong>Our concerns:</strong></p>\n          <ul>\n            <li><strong>Screen time:</strong> Our children already spend 4-6 hours daily on screens. Adding AI tutoring sessions means more time staring at devices instead of engaging with teachers and peers.</li>\n            <li><strong>Data privacy:</strong> MathMentor collects detailed behavioral data on every student interaction. Their privacy policy allows sharing aggregated data with \"research partners.\" We do not believe sufficient safeguards are in place.</li>\n            <li><strong>Teacher replacement:</strong> We've heard rumors that the district plans to increase class sizes once MathMentor is in place. Our children need human teachers, not algorithms.</li>\n            <li><strong>Cost:</strong> $2.4 million could fund 30 additional teaching positions. We believe investing in people, not software, is the better path.</li>\n          </ul>\n          <p>We urge the board to reject this proposal and instead invest in hiring and retaining qualified math teachers.</p>\n          <p>Respectfully,<br/>The Riverside Parent-Teacher Alliance<br/>(Representing 847 families)</p>"
+      },
+      {
+        "id": "src_budget",
+        "tab_label": "Budget Analysis",
+        "type": "Financial Projection",
+        "reliability": "high",
+        "title": "MathMentor AI: 5-Year Cost-Benefit Projection",
+        "author": "Riverside USD Office of Finance",
+        "publication": "Internal Document, April 2026",
+        "content_html": "<table>\n            <tr><th>Item</th><th>Year 1</th><th>Years 2-5 (annual)</th><th>5-Year Total</th></tr>\n            <tr><td>Platform licensing</td><td>$1,200,000</td><td>$600,000</td><td>$3,600,000</td></tr>\n            <tr><td>Hardware upgrades</td><td>$480,000</td><td>$0</td><td>$480,000</td></tr>\n            <tr><td>Teacher training</td><td>$320,000</td><td>$80,000</td><td>$640,000</td></tr>\n            <tr><td>IT support (0.5 FTE)</td><td>$45,000</td><td>$45,000</td><td>$225,000</td></tr>\n            <tr><td><strong>Total</strong></td><td><strong>$2,045,000</strong></td><td><strong>$725,000</strong></td><td><strong>$4,945,000</strong></td></tr>\n          </table>\n          <p style=\"margin-top:14px\"><strong>Comparison scenario — hiring 15 new math teachers:</strong></p>\n          <table>\n            <tr><th>Item</th><th>Year 1</th><th>Years 2-5 (annual)</th><th>5-Year Total</th></tr>\n            <tr><td>Salaries (avg $62K)</td><td>$930,000</td><td>$958,000*</td><td>$4,804,000</td></tr>\n            <tr><td>Benefits (32%)</td><td>$297,600</td><td>$306,500</td><td>$1,523,600</td></tr>\n            <tr><td>Onboarding & PD</td><td>$120,000</td><td>$30,000</td><td>$240,000</td></tr>\n            <tr><td><strong>Total</strong></td><td><strong>$1,347,600</strong></td><td><strong>$1,294,500</strong></td><td><strong>$6,567,600</strong></td></tr>\n          </table>\n          <p style=\"margin-top:8px;font-size:11px;color:var(--text-tertiary)\">* Assumes 3% annual salary increase</p>\n          <p style=\"margin-top:12px\"><strong>Notes:</strong> The MathMentor contract does not include a performance guarantee. The district may terminate after Year 1 with a $180,000 early termination fee. Teacher hiring projections assume current labor market conditions; recruitment in math is historically challenging (average time-to-fill: 4.2 months).</p>"
+      },
+      {
+        "id": "src_usage",
+        "tab_label": "Usage Data",
+        "type": "Platform Analytics",
+        "reliability": "mixed",
+        "title": "MathMentor AI: Riverside Pilot Usage Report (Q1 2026)",
+        "author": "MathMentor Analytics Team",
+        "publication": "Vendor Report, April 2026",
+        "content_html": "<p>Pilot deployment across 3 Riverside middle schools (1,240 students, 14 classrooms).</p>\n          <table>\n            <tr><th>Metric</th><th>Value</th></tr>\n            <tr><td>Average sessions per student per week</td><td>3.2</td></tr>\n            <tr><td>Average session duration</td><td>18 minutes</td></tr>\n            <tr><td>Concept mastery rate (platform-defined)</td><td>71%</td></tr>\n            <tr><td>Student satisfaction (survey, n=890)</td><td>4.1 / 5.0</td></tr>\n            <tr><td>Teacher satisfaction (survey, n=14)</td><td>3.4 / 5.0</td></tr>\n            <tr><td>Students completing all assigned modules</td><td>58%</td></tr>\n            <tr><td>Help-desk tickets submitted</td><td>127</td></tr>\n          </table>\n          <p style=\"margin-top:14px\"><strong>Student performance (pilot schools vs. district average):</strong></p>\n          <table>\n            <tr><th>Assessment</th><th>Pilot Schools</th><th>District Avg</th><th>Difference</th></tr>\n            <tr><td>Q1 Benchmark (% proficient)</td><td>64%</td><td>59%</td><td>+5 pts</td></tr>\n            <tr><td>Q1 Benchmark (avg score)</td><td>72.3</td><td>68.1</td><td>+4.2 pts</td></tr>\n          </table>\n          <p style=\"margin-top:12px\"><strong>Caveats:</strong> Pilot schools were selected by the vendor based on \"readiness criteria.\" Comparison is not randomized. Platform-defined \"concept mastery\" uses a proprietary algorithm and may not align with state standards. Only 58% of students completed all assigned modules, which may skew results toward more engaged students.</p>"
+      }
+    ]
+  },
+  "rubric": {
+    "claim_clarity": {
+      "keywords": [
+        "recommend",
+        "adopt",
+        "reject",
+        "modify",
+        "position",
+        "propose",
+        "conditional",
+        "phased"
+      ],
+      "strong_indicators": [
+        "conditional adoption",
+        "phased rollout",
+        "pilot expansion",
+        "reject the proposal",
+        "recommend adoption with modifications"
+      ],
+      "weak_indicators": [
+        "maybe",
+        "it depends",
+        "hard to say",
+        "both sides have merit"
+      ]
+    },
+    "evidence_use": {
+      "source_refs": [
+        "meta-analysis",
+        "effect size",
+        "0.38",
+        "chen",
+        "rodriguez",
+        "budget",
+        "cost",
+        "$2.4",
+        "pilot",
+        "benchmark",
+        "proficiency",
+        "satisfaction",
+        "usage"
+      ],
+      "min_sources_referenced": 3,
+      "integration_keywords": [
+        "according to",
+        "the research shows",
+        "data indicates",
+        "the budget analysis",
+        "usage report",
+        "the evidence suggests"
+      ]
+    },
+    "source_evaluation": {
+      "credibility_keywords": [
+        "peer-reviewed",
+        "controlled",
+        "randomized",
+        "bias",
+        "vendor-provided",
+        "not randomized",
+        "self-selected",
+        "proprietary",
+        "readiness criteria",
+        "confounding",
+        "stakeholder",
+        "anecdotal"
+      ],
+      "strongest_sources": [
+        "src_research",
+        "src_budget"
+      ],
+      "weakest_sources": [
+        "src_parent"
+      ]
+    },
+    "counterargument": {
+      "keywords": [
+        "however",
+        "on the other hand",
+        "critics",
+        "opponents",
+        "some argue",
+        "while",
+        "although",
+        "despite",
+        "concede",
+        "acknowledge"
+      ],
+      "counter_concepts": [
+        "screen time",
+        "privacy",
+        "teacher replacement",
+        "cost",
+        "long-term",
+        "sustainability",
+        "diminishing",
+        "implementation"
+      ]
+    },
+    "writing_quality": {
+      "min_words": 300,
+      "max_words": 500,
+      "section_completeness": [
+        "position",
+        "evidence",
+        "counterargument",
+        "recommendation"
+      ]
+    }
+  },
+  "overall_labels": [
+    {
+      "min": 90,
+      "max": 100,
+      "label": "Gold — Distinguished",
+      "tier": "gold"
+    },
+    {
+      "min": 75,
+      "max": 89,
+      "label": "Silver — Proficient",
+      "tier": "silver"
+    },
+    {
+      "min": 60,
+      "max": 74,
+      "label": "Bronze — Developing",
+      "tier": "bronze"
+    },
+    {
+      "min": 0,
+      "max": 59,
+      "label": "Emerging",
+      "tier": "developing"
+    }
+  ],
+  "coaching_tips": [
+    "Strong memos state a clear position in the opening sentence — don't leave the reader guessing.",
+    "Reference at least 3 sources and explain why you trust some more than others.",
+    "Identify which sources are vendor-provided vs. independent — this matters for credibility.",
+    "The best counterarguments don't just list objections — they respond to them with evidence.",
+    "Budget comparisons become more persuasive when you address the 5-year total, not just Year 1.",
+    "Note the caveats in the usage data: pilot schools were vendor-selected and completion was only 58%."
+  ]
+}

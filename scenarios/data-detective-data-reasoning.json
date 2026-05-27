@@ -1,0 +1,443 @@
+{
+  "construct_id": "data_reasoning",
+  "construct_name": "Data Reasoning",
+  "construct_description": "The ability to explore, interpret, and draw sound conclusions from data — including recognizing patterns, questioning anomalies, and translating analysis into actionable recommendations.",
+  "pba_category": {
+    "id": 3,
+    "name": "Process/Demonstration Assessment",
+    "description": "Tasks that assess the process of problem-solving, not just the final answer. The system observes and logs how you investigate."
+  },
+  "secondary_dimensions": {
+    "stakes": "Low (formative / demonstration)",
+    "temporal": "Single-session, 12-15 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated business data)",
+    "scoring": "Hybrid (rule-based + process quality)"
+  },
+  "dimensions": [
+    {
+      "id": "exploration",
+      "name": "Exploration",
+      "icon": "🔍",
+      "description": "Do you examine the data broadly before jumping to conclusions?",
+      "color": "#4dd3fe",
+      "weight": 0.2
+    },
+    {
+      "id": "pattern_recognition",
+      "name": "Pattern Recognition",
+      "icon": "📊",
+      "description": "Can you identify trends, outliers, and meaningful patterns?",
+      "color": "#f59e0b",
+      "weight": 0.25
+    },
+    {
+      "id": "hypothesis_testing",
+      "name": "Hypothesis Testing",
+      "icon": "🧪",
+      "description": "Do you test your ideas against the data rather than assuming?",
+      "color": "#9e9eff",
+      "weight": 0.25
+    },
+    {
+      "id": "interpretation",
+      "name": "Interpretation & Recommendation",
+      "icon": "💡",
+      "description": "Can you translate findings into clear, evidence-backed recommendations?",
+      "color": "#468254",
+      "weight": 0.3
+    }
+  ],
+  "dataset": {
+    "name": "TechStart Inc. — Quarterly Sales Performance",
+    "description": "Sales data for a mid-size B2B SaaS company across 4 regions and 4 quarters. Something happened in Q3 — your job is to figure out what and why.",
+    "columns": [
+      {
+        "id": "region",
+        "label": "Region",
+        "type": "text"
+      },
+      {
+        "id": "quarter",
+        "label": "Quarter",
+        "type": "text"
+      },
+      {
+        "id": "revenue",
+        "label": "Revenue ($K)",
+        "type": "number"
+      },
+      {
+        "id": "deals_closed",
+        "label": "Deals Closed",
+        "type": "number"
+      },
+      {
+        "id": "avg_deal_size",
+        "label": "Avg Deal ($K)",
+        "type": "number"
+      },
+      {
+        "id": "pipeline_value",
+        "label": "Pipeline ($K)",
+        "type": "number"
+      },
+      {
+        "id": "win_rate",
+        "label": "Win Rate (%)",
+        "type": "number"
+      },
+      {
+        "id": "sales_reps",
+        "label": "Sales Reps",
+        "type": "number"
+      },
+      {
+        "id": "marketing_spend",
+        "label": "Mktg Spend ($K)",
+        "type": "number"
+      },
+      {
+        "id": "churn_rate",
+        "label": "Churn (%)",
+        "type": "number"
+      }
+    ],
+    "rows": [
+      {
+        "region": "Northeast",
+        "quarter": "Q1",
+        "revenue": 820,
+        "deals_closed": 34,
+        "avg_deal_size": 24.1,
+        "pipeline_value": 1850,
+        "win_rate": 32,
+        "sales_reps": 8,
+        "marketing_spend": 120,
+        "churn_rate": 3.2
+      },
+      {
+        "region": "Northeast",
+        "quarter": "Q2",
+        "revenue": 910,
+        "deals_closed": 37,
+        "avg_deal_size": 24.6,
+        "pipeline_value": 2010,
+        "win_rate": 34,
+        "sales_reps": 8,
+        "marketing_spend": 135,
+        "churn_rate": 3
+      },
+      {
+        "region": "Northeast",
+        "quarter": "Q3",
+        "revenue": 670,
+        "deals_closed": 22,
+        "avg_deal_size": 30.5,
+        "pipeline_value": 1420,
+        "win_rate": 28,
+        "sales_reps": 6,
+        "marketing_spend": 90,
+        "churn_rate": 4.8
+      },
+      {
+        "region": "Northeast",
+        "quarter": "Q4",
+        "revenue": 880,
+        "deals_closed": 33,
+        "avg_deal_size": 26.7,
+        "pipeline_value": 1950,
+        "win_rate": 33,
+        "sales_reps": 8,
+        "marketing_spend": 140,
+        "churn_rate": 3.1
+      },
+      {
+        "region": "Southeast",
+        "quarter": "Q1",
+        "revenue": 540,
+        "deals_closed": 28,
+        "avg_deal_size": 19.3,
+        "pipeline_value": 1200,
+        "win_rate": 30,
+        "sales_reps": 6,
+        "marketing_spend": 85,
+        "churn_rate": 4.1
+      },
+      {
+        "region": "Southeast",
+        "quarter": "Q2",
+        "revenue": 580,
+        "deals_closed": 30,
+        "avg_deal_size": 19.3,
+        "pipeline_value": 1350,
+        "win_rate": 31,
+        "sales_reps": 6,
+        "marketing_spend": 90,
+        "churn_rate": 3.8
+      },
+      {
+        "region": "Southeast",
+        "quarter": "Q3",
+        "revenue": 490,
+        "deals_closed": 24,
+        "avg_deal_size": 20.4,
+        "pipeline_value": 1100,
+        "win_rate": 27,
+        "sales_reps": 5,
+        "marketing_spend": 60,
+        "churn_rate": 5.2
+      },
+      {
+        "region": "Southeast",
+        "quarter": "Q4",
+        "revenue": 610,
+        "deals_closed": 31,
+        "avg_deal_size": 19.7,
+        "pipeline_value": 1400,
+        "win_rate": 32,
+        "sales_reps": 6,
+        "marketing_spend": 95,
+        "churn_rate": 3.9
+      },
+      {
+        "region": "West",
+        "quarter": "Q1",
+        "revenue": 1100,
+        "deals_closed": 42,
+        "avg_deal_size": 26.2,
+        "pipeline_value": 2400,
+        "win_rate": 36,
+        "sales_reps": 10,
+        "marketing_spend": 160,
+        "churn_rate": 2.5
+      },
+      {
+        "region": "West",
+        "quarter": "Q2",
+        "revenue": 1250,
+        "deals_closed": 48,
+        "avg_deal_size": 26,
+        "pipeline_value": 2650,
+        "win_rate": 38,
+        "sales_reps": 10,
+        "marketing_spend": 175,
+        "churn_rate": 2.3
+      },
+      {
+        "region": "West",
+        "quarter": "Q3",
+        "revenue": 980,
+        "deals_closed": 35,
+        "avg_deal_size": 28,
+        "pipeline_value": 2100,
+        "win_rate": 30,
+        "sales_reps": 8,
+        "marketing_spend": 110,
+        "churn_rate": 4
+      },
+      {
+        "region": "West",
+        "quarter": "Q4",
+        "revenue": 1180,
+        "deals_closed": 45,
+        "avg_deal_size": 26.2,
+        "pipeline_value": 2500,
+        "win_rate": 37,
+        "sales_reps": 10,
+        "marketing_spend": 170,
+        "churn_rate": 2.4
+      },
+      {
+        "region": "Midwest",
+        "quarter": "Q1",
+        "revenue": 420,
+        "deals_closed": 22,
+        "avg_deal_size": 19.1,
+        "pipeline_value": 980,
+        "win_rate": 29,
+        "sales_reps": 5,
+        "marketing_spend": 70,
+        "churn_rate": 4.5
+      },
+      {
+        "region": "Midwest",
+        "quarter": "Q2",
+        "revenue": 460,
+        "deals_closed": 24,
+        "avg_deal_size": 19.2,
+        "pipeline_value": 1050,
+        "win_rate": 30,
+        "sales_reps": 5,
+        "marketing_spend": 75,
+        "churn_rate": 4.3
+      },
+      {
+        "region": "Midwest",
+        "quarter": "Q3",
+        "revenue": 450,
+        "deals_closed": 23,
+        "avg_deal_size": 19.6,
+        "pipeline_value": 1000,
+        "win_rate": 29,
+        "sales_reps": 5,
+        "marketing_spend": 65,
+        "churn_rate": 4.6
+      },
+      {
+        "region": "Midwest",
+        "quarter": "Q4",
+        "revenue": 480,
+        "deals_closed": 25,
+        "avg_deal_size": 19.2,
+        "pipeline_value": 1100,
+        "win_rate": 31,
+        "sales_reps": 5,
+        "marketing_spend": 80,
+        "churn_rate": 4.2
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "descriptive",
+      "label": "Question 1 — Descriptive",
+      "text": "Look at the overall revenue data. What's the general trend across quarters, and which region is performing best? Are there any quarters that stand out?",
+      "hint": "Try sorting by revenue or comparing quarters across regions.",
+      "scorer": {
+        "key_concepts": [
+          "q3 drop",
+          "q3 dip",
+          "q3 decline",
+          "q3 lower",
+          "west",
+          "west region",
+          "highest",
+          "best performing",
+          "strongest",
+          "trend"
+        ],
+        "length_threshold": 40,
+        "max_points": 30
+      }
+    },
+    {
+      "id": "q2",
+      "type": "diagnostic",
+      "label": "Question 2 — Diagnostic",
+      "text": "Revenue dropped across all regions in Q3. What do you think caused it? Look at the other columns for clues. Is there a single explanation, or multiple factors?",
+      "hint": "Compare Q3 to other quarters on dimensions beyond revenue. Look at sales reps, marketing spend, win rate, and churn.",
+      "scorer": {
+        "key_concepts": [
+          "sales reps",
+          "fewer reps",
+          "headcount",
+          "reps dropped",
+          "marketing spend",
+          "marketing cut",
+          "reduced marketing",
+          "budget cut",
+          "win rate",
+          "churn",
+          "churn increased",
+          "pipeline",
+          "multiple factors",
+          "combination"
+        ],
+        "length_threshold": 60,
+        "max_points": 40
+      }
+    },
+    {
+      "id": "q3",
+      "type": "prescriptive",
+      "label": "Question 3 — Prescriptive",
+      "text": "You're briefing the VP of Sales. Based on your analysis, what 2-3 actions would you recommend to prevent another Q3-style dip? Back up each recommendation with data from the table.",
+      "hint": "Strong recommendations reference specific numbers and explain the mechanism (e.g., 'restoring rep headcount because NE lost 2 reps and revenue fell 26%').",
+      "scorer": {
+        "key_concepts": [
+          "maintain headcount",
+          "keep reps",
+          "staffing",
+          "restore reps",
+          "marketing budget",
+          "maintain marketing",
+          "don't cut",
+          "pipeline",
+          "churn",
+          "retention",
+          "specific",
+          "26%",
+          "data",
+          "evidence",
+          "northeast",
+          "west"
+        ],
+        "length_threshold": 80,
+        "max_points": 30
+      }
+    }
+  ],
+  "anomalies": [
+    {
+      "id": "q3_rep_drop",
+      "description": "Sales reps decreased in Q3 across NE (8→6), SE (6→5), and West (10→8) — likely a hiring freeze or layoff.",
+      "severity": "primary"
+    },
+    {
+      "id": "q3_marketing_cut",
+      "description": "Marketing spend was cut 25-35% in Q3 across all regions.",
+      "severity": "primary"
+    },
+    {
+      "id": "q3_churn_spike",
+      "description": "Churn rate spiked in Q3 (up 40-60% across regions), possibly due to reduced support.",
+      "severity": "secondary"
+    },
+    {
+      "id": "ne_avg_deal_q3",
+      "description": "NE avg deal size actually INCREASED in Q3 ($30.5K vs ~$24K) — fewer but larger deals. Not all metrics went down.",
+      "severity": "insight"
+    },
+    {
+      "id": "midwest_resilience",
+      "description": "Midwest was barely affected by Q3 — revenue only dropped ~2%. They had no rep change. Staffing stability may have buffered them.",
+      "severity": "insight"
+    }
+  ],
+  "coaching_tips": [
+    "Always look at multiple columns before drawing conclusions. Revenue alone doesn't tell you why something happened.",
+    "When you see a dip, ask 'what else changed at the same time?' — correlation across dimensions points to root causes.",
+    "The Midwest barely moved in Q3 while others crashed. Comparing the stable case to the unstable cases is a powerful diagnostic strategy.",
+    "Strong recommendations cite specific numbers. 'Maintain headcount' is good; 'NE lost 2 reps and revenue dropped 26%' is better.",
+    "Don't assume the first pattern you see is the only one. Q3 had at least three concurrent factors: rep loss, marketing cuts, and churn spikes."
+  ],
+  "overall_labels": [
+    {
+      "min": 0,
+      "max": 39,
+      "label": "Developing",
+      "emoji": "🌱"
+    },
+    {
+      "min": 40,
+      "max": 59,
+      "label": "Emerging",
+      "emoji": "📊"
+    },
+    {
+      "min": 60,
+      "max": 79,
+      "label": "Proficient",
+      "emoji": "💪"
+    },
+    {
+      "min": 80,
+      "max": 100,
+      "label": "Expert Analyst",
+      "emoji": "🏆"
+    }
+  ]
+}

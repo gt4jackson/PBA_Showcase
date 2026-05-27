@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signal Check — PBA Showcase</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ETS 2024 Rebrand Palette */
+  --bg: #f2e9d8;
+  --surface: #ffffff;
+  --text: #1a212b;
+  --text-secondary: #4a4740;
+  --text-tertiary: #7e7a72;
+  --border: rgba(26,33,43,0.1);
+  --border-strong: rgba(26,33,43,0.2);
+  --accent: #4dd3fe;
+  --accent-dark: #103d4b;
+  --accent-light: rgba(77,211,254,0.1);
+  --periwinkle: #9e9eff;
+  --ets-dark: #1a212b;
+  --ets-cream: #f2e9d8;
+  --ets-teal: #103d4b;
+  --ets-green: #468254;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+body {
+  font-family: 'Beausite Classic', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  background: var(--ets-dark);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  gap: 24px;
+}
+
+/* ── BACK NAV ──────────────────────────────── */
+.back-link {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 50;
+  transition: color 0.15s;
+}
+
+.back-link:hover { color: #fff; }
+
+/* ── INFO TOGGLE ───────────────────────────── */
+.info-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 50;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.8);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+
+.info-toggle:hover { background: rgba(255,255,255,0.2); }
+
+/* ── CONSTRUCT BANNER ──────────────────────── */
+.construct-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(26,33,43,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(242,233,216,0.1);
+  border-radius: 12px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 50;
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  max-width: 90vw;
+  transition: opacity 0.3s;
+}
+
+.construct-banner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.construct-banner-name {
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+}
+
+.construct-banner-expand {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  font-size: 12px;
+  text-decoration: underline;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.construct-banner-expand:hover { color: rgba(255,255,255,0.8); }
+
+.construct-banner.hidden { opacity: 0; pointer-events: none; }
+
+/* ── PHONE FRAME ───────────────────────────── */
+.phone-wrap { width: 390px; position: relative; }
+
+.phone-frame {
+  width: 390px;
+  height: 844px;
+  border-radius: 50px;
+  background: var(--ets-dark);
+  box-shadow:
+    0 0 0 3px #2a2a2a,
+    0 0 0 6px #1a1a1a,
+    0 0 0 9px #333,
+    0 50px 100px rgba(0,0,0,0.6),
+    0 20px 40px rgba(0,0,0,0.4);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ── STATUS BAR ────────────────────────────── */
+.status-bar {
+  background: #242e3d;
+  padding: 14px 20px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.status-time { font-size: 15px; font-weight: 600; color: var(--ets-cream); letter-spacing: -0.3px; }
+.status-icons { display: flex; align-items: center; gap: 6px; }
+.status-icons svg { fill: var(--ets-cream); color: var(--ets-cream); }
+
+/* ── CHAT HEADER ───────────────────────────── */
+.chat-header {
+  background: rgba(36,46,61,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 0.5px solid rgba(242,233,216,0.1);
+  padding: 8px 16px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.header-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--periwinkle) 100%);
+  color: var(--ets-dark);
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-info { flex: 1; padding-left: 6px; }
+.header-name { font-size: 17px; font-weight: 600; color: var(--ets-cream); line-height: 1.2; }
+.header-status-row { display: flex; align-items: center; gap: 4px; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ets-green); flex-shrink: 0; }
+.header-status { font-size: 12px; color: var(--text-tertiary); }
+
+/* ── CHAT BODY ─────────────────────────────── */
+.chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  scroll-behavior: smooth;
+  background: var(--ets-dark);
+}
+
+.chat-body::-webkit-scrollbar { width: 0; }
+
+.timestamp { text-align: center; font-size: 12px; color: var(--text-tertiary); margin: 10px 0 6px; }
+
+.msg-row { display: flex; align-items: flex-end; gap: 6px; margin: 1px 0; }
+.msg-row.received { justify-content: flex-start; }
+.msg-row.sent { justify-content: flex-end; }
+
+.msg-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--periwinkle) 100%);
+  color: var(--ets-dark); font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-bottom: 2px;
+}
+
+.bubble {
+  max-width: 72%; padding: 9px 14px; font-size: 16px; line-height: 1.4; word-break: break-word;
+  animation: bubbleIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; opacity: 0;
+}
+
+.bubble.gray { background: #2c3849; color: var(--ets-cream); border-radius: 18px 18px 18px 4px; }
+.bubble.blue { background: var(--accent); color: var(--ets-dark); border-radius: 18px 18px 4px 18px; margin-left: auto; }
+
+@keyframes bubbleIn {
+  from { opacity: 0; transform: scale(0.88) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ── TYPING INDICATOR ──────────────────────── */
+.typing-row { display: flex; align-items: flex-end; gap: 6px; margin: 2px 0; }
+.typing-bubble {
+  background: #2c3849; border-radius: 18px 18px 18px 4px; padding: 12px 16px;
+  display: flex; gap: 5px; align-items: center;
+  animation: bubbleIn 0.2s ease-out forwards;
+}
+.typing-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--text-tertiary);
+  animation: typingBounce 1.3s infinite ease-in-out;
+}
+.typing-dot:nth-child(1) { animation-delay: 0s; }
+.typing-dot:nth-child(2) { animation-delay: 0.18s; }
+.typing-dot:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes typingBounce {
+  0%, 55%, 100% { transform: translateY(0); opacity: 0.5; }
+  27% { transform: translateY(-7px); opacity: 1; }
+}
+
+/* ── INPUT BAR ─────────────────────────────── */
+.input-bar {
+  padding: 10px 12px 30px;
+  background: rgba(36,46,61,0.97);
+  backdrop-filter: blur(20px);
+  border-top: 0.5px solid rgba(242,233,216,0.1);
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0; z-index: 2;
+}
+
+.input-field {
+  flex: 1; border: 1.5px solid rgba(242,233,216,0.15); border-radius: 20px;
+  padding: 8px 14px; font-size: 16px; font-family: inherit; outline: none;
+  background: #1a212b; color: var(--ets-cream); transition: border-color 0.15s;
+}
+.input-field:focus { border-color: var(--accent); }
+.input-field:disabled { background: #242e3d; color: var(--text-tertiary); cursor: not-allowed; }
+.input-field::placeholder { color: var(--text-tertiary); }
+
+.send-btn {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--accent);
+  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  opacity: 0.35; transition: opacity 0.15s, transform 0.1s; flex-shrink: 0;
+}
+.send-btn.active { opacity: 1; }
+.send-btn:active { transform: scale(0.92); }
+.send-btn svg { fill: var(--ets-dark); color: var(--ets-dark); }
+
+/* ── RESULTS OVERLAY ───────────────────────── */
+.results-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, #1a212b 0%, #103d4b 50%, #1a212b 100%);
+  transform: translateY(100%);
+  transition: transform 0.55s cubic-bezier(0.34, 1.2, 0.64, 1);
+  overflow-y: auto; z-index: 10;
+  display: flex; flex-direction: column;
+}
+.results-overlay.visible { transform: translateY(0); }
+.results-overlay::-webkit-scrollbar { width: 0; }
+
+.results-header { padding: 50px 24px 20px; text-align: center; }
+.results-title { font-size: 14px; color: rgba(255,255,255,0.5); font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+.results-from { font-size: 13px; color: rgba(255,255,255,0.35); margin-bottom: 24px; }
+.result-animation-area { font-size: 48px; margin-bottom: 16px; min-height: 60px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.overall-score-big { font-size: 72px; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 8px; background: linear-gradient(135deg, #4dd3fe, #9e9eff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.overall-label { font-size: 15px; color: rgba(255,255,255,0.7); max-width: 260px; margin: 0 auto 24px; line-height: 1.4; }
+
+.results-body { padding: 0 16px 40px; display: flex; flex-direction: column; gap: 10px; }
+
+.score-card {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px; padding: 14px 18px;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.score-card.visible { opacity: 1; transform: translateY(0); }
+.score-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.score-card-name { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); }
+.score-card-pct { font-size: 20px; font-weight: 700; color: #fff; }
+.score-card-desc { font-size: 12px; color: rgba(255,255,255,0.45); margin-bottom: 10px; line-height: 1.4; }
+.score-bar-track { height: 5px; background: rgba(255,255,255,0.12); border-radius: 3px; overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: 3px; width: 0%; transition: width 1.1s cubic-bezier(0.25, 1, 0.5, 1); }
+
+/* Dynamic fill colors — set via JS from construct pack */
+
+#confettiCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; }
+.thumbs-emoji { display: inline-block; font-size: 48px; animation: thumbBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; opacity: 0; }
+.thumbs-emoji:nth-child(1) { animation-delay: 0.1s; }
+.thumbs-emoji:nth-child(2) { animation-delay: 0.3s; }
+@keyframes thumbBounce { from { opacity: 0; transform: scale(0) rotate(-20deg); } to { opacity: 1; transform: scale(1) rotate(0deg); } }
+.broken-emoji { display: inline-block; font-size: 30px; opacity: 0; animation: brokenDrop 0.5s ease-out forwards; }
+.broken-emoji:nth-child(1) { animation-delay: 0.0s; font-size: 40px; }
+.broken-emoji:nth-child(2) { animation-delay: 0.15s; }
+.broken-emoji:nth-child(3) { animation-delay: 0.3s; }
+.broken-emoji:nth-child(4) { animation-delay: 0.45s; font-size: 24px; }
+.broken-emoji:nth-child(5) { animation-delay: 0.6s; font-size: 24px; }
+@keyframes brokenDrop { from { opacity: 0; transform: translateY(-30px) rotate(15deg); } to { opacity: 1; transform: translateY(0) rotate(0deg); } }
+
+/* ── INFO SIDE PANEL ───────────────────────── */
+.side-info {
+  position: fixed; top: 0; right: 0; width: min(420px, 90vw); height: 100vh;
+  background: #242e3d; z-index: 60;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex; flex-direction: column;
+  box-shadow: -8px 0 30px rgba(0,0,0,0.4);
+}
+.side-info.open { transform: translateX(0); }
+
+.side-info-header {
+  padding: 20px 24px; border-bottom: 1px solid rgba(242,233,216,0.08);
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.side-info-header h2 { font-size: 16px; font-weight: 600; color: var(--ets-cream); font-family: 'Speckless', Georgia, 'Times New Roman', serif; }
+.side-close {
+  width: 32px; height: 32px; border-radius: 50%; border: none;
+  background: rgba(242,233,216,0.08); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--text-tertiary);
+}
+.side-close:hover { background: rgba(242,233,216,0.15); }
+
+.side-info-body { flex: 1; overflow-y: auto; padding: 24px; color: var(--ets-cream); }
+.side-info-body::-webkit-scrollbar { width: 5px; }
+.side-info-body::-webkit-scrollbar-thumb { background: rgba(242,233,216,0.15); border-radius: 3px; }
+.side-info-body h3 { font-size: 14px; font-weight: 600; margin: 16px 0 6px; color: var(--ets-cream); font-family: 'Speckless', Georgia, 'Times New Roman', serif; }
+.side-info-body h3:first-child { margin-top: 0; }
+.side-info-body p { font-size: 13px; color: #b8b0a0; line-height: 1.7; margin-bottom: 10px; }
+.side-info-body .si-table { width: 100%; font-size: 12px; border-collapse: collapse; margin-bottom: 14px; }
+.side-info-body .si-table th { text-align: left; font-weight: 600; padding: 6px 8px; background: var(--ets-dark); border-bottom: 1px solid rgba(242,233,216,0.08); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #b8b0a0; }
+.side-info-body .si-table td { padding: 6px 8px; border-bottom: 1px solid rgba(242,233,216,0.08); color: #b8b0a0; }
+.side-info-body .si-table td:first-child { font-weight: 500; color: var(--ets-cream); }
+.si-callout { background: rgba(77,211,254,0.08); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 10px 14px; margin: 12px 0; font-size: 12px; color: var(--ets-cream); line-height: 1.6; }
+
+.side-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 55;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.side-overlay.open { opacity: 1; pointer-events: auto; }
+
+/* ── RESPONSIVE ────────────────────────────── */
+@media (max-width: 430px) {
+  body { padding: 0; align-items: flex-start; background: var(--ets-dark); }
+  .phone-wrap { width: 100%; }
+  .phone-frame { width: 100%; height: 100dvh; border-radius: 0; box-shadow: none; }
+  .back-link { top: auto; bottom: 8px; left: 8px; background: rgba(0,0,0,0.5); padding: 6px 12px; border-radius: 8px; }
+  .construct-banner { display: none; }
+}
+</style>
+</head>
+<body>
+
+<a class="back-link" href="index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+  Back to Showcase
+</a>
+
+<button class="info-toggle" onclick="toggleSideInfo()">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+  Task info
+</button>
+
+<!-- CONSTRUCT BANNER -->
+<div class="construct-banner" id="constructBanner">
+  <div class="construct-banner-dot"></div>
+  <span>Assessing: <span class="construct-banner-name" id="bannerConstruct">AI Literacy</span></span>
+  <button class="construct-banner-expand" onclick="toggleSideInfo()">What's measured?</button>
+</div>
+
+<!-- PHONE -->
+<div class="phone-wrap">
+  <div class="phone-frame" id="phoneFrame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time" id="statusTime">9:41</span>
+      <div class="status-icons">
+        <svg width="17" height="12" viewBox="0 0 17 12"><rect x="0" y="7" width="3" height="5" rx="0.5" opacity="0.4"/><rect x="4.5" y="5" width="3" height="7" rx="0.5" opacity="0.4"/><rect x="9" y="3" width="3" height="9" rx="0.5" opacity="0.4"/><rect x="13.5" y="0" width="3" height="12" rx="0.5"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M3.5 6.5C4.9 5.1 6.35 4.4 8 4.4s3.1.7 4.5 2.1l1.1-1.1C12 3.9 10.1 3 8 3s-4 .9-5.6 2.4l1.1 1.1z" opacity="0.6"/><path d="M1 4C2.8 2.1 5.3 1 8 1s5.2 1.1 7 3l-1.1 1.1C12.3 3.4 10.3 2.5 8 2.5S3.7 3.4 2.1 5.1L1 4z" opacity="0.3"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="1" width="21" height="10" rx="2" stroke="currentColor" stroke-width="1" fill="none" opacity="0.35"/><rect x="21.5" y="3.5" width="2" height="5" rx="1" opacity="0.4"/><rect x="1.5" y="2.5" width="15" height="7" rx="1.2"/></svg>
+      </div>
+    </div>
+
+    <!-- Chat Header — populated by construct pack -->
+    <div class="chat-header">
+      <div class="header-avatar" id="personaAvatar">R</div>
+      <div class="header-info">
+        <div class="header-name" id="personaName">Riley</div>
+        <div class="header-status-row">
+          <div class="status-dot"></div>
+          <div class="header-status">online</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-body" id="chatBody"></div>
+
+    <div class="input-bar">
+      <input type="text" class="input-field" id="inputField" placeholder="Type your reply..." disabled autocomplete="off" autocorrect="off" spellcheck="false" />
+      <button class="send-btn" id="sendBtn" disabled>
+        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1L7 13M7 1L2 6M7 1L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </button>
+    </div>
+
+    <div class="results-overlay" id="resultsOverlay">
+      <canvas id="confettiCanvas"></canvas>
+      <div class="results-header">
+        <div class="results-title" id="resultsTitle">Score</div>
+        <div class="results-from" id="resultsFrom">assessed by</div>
+        <div class="result-animation-area" id="resultAnimArea"></div>
+        <div class="overall-score-big" id="overallScoreBig">--</div>
+        <div class="overall-label" id="overallLabel">calculating...</div>
+      </div>
+      <div class="results-body" id="resultsBody"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SIDE INFO PANEL -->
+<div class="side-overlay" id="sideOverlay" onclick="toggleSideInfo()"></div>
+<div class="side-info" id="sideInfo">
+  <div class="side-info-header">
+    <h2>Task design info</h2>
+    <button class="side-close" onclick="toggleSideInfo()">&times;</button>
+  </div>
+  <div class="side-info-body" id="sideInfoBody">
+    <!-- Populated dynamically from construct pack -->
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════════════════════════════
+   CONSTRUCT PACK LOADER
+   Default: scenarios/signal-check-ai-literacy.json
+   Override via URL param: ?scenario=scenarios/my-other-pack.json
+   ═══════════════════════════════════════════════════════════════ */
+const DEFAULT_SCENARIO = 'scenarios/signal-check-ai-literacy.json';
+
+/* Inline fallback (used if fetch fails — e.g. file:// protocol) */
+const CONSTRUCT_PACK_INLINE = {
+  construct_id: "ai_literacy",
+  construct_name: "AI Literacy",
+  construct_description: "The ability to understand, critically evaluate, and effectively use artificial intelligence tools and concepts in personal and professional contexts.",
+
+  pba_category: 4,
+  pba_category_name: "Simulation-Based",
+  pba_subtype: "Conversation-Based Assessment (CBA)",
+
+  secondary_dimensions: {
+    stakes: "Low",
+    temporal: "On-Demand",
+    collaboration: "Individual",
+    problem_structure: "Ill-Structured",
+    authenticity: "Proximal",
+    scoring: "Hybrid (rule-based + optional LLM)"
+  },
+
+  dimensions: [
+    { id: "familiarity",  name: "Familiarity",     icon: "\u{1F9E0}", description: "Knowledge of AI tools, concepts, and how they work",            max_questions: 3, max_points_per: 2, color: "#f093fb" },
+    { id: "ethics",       name: "Ethical Reasoning",icon: "\u{2696}\u{FE0F}", description: "Data privacy awareness, bias recognition, and responsible AI use",  max_questions: 3, max_points_per: 2, color: "#4facfe" },
+    { id: "applications", name: "Applications",     icon: "\u{1F6E0}\u{FE0F}", description: "Practical knowledge of AI use cases across domains",               max_questions: 2, max_points_per: 2, color: "#43e97b" },
+    { id: "future",       name: "Future Thinking",  icon: "\u{1F680}", description: "Forward-thinking awareness of where AI is heading and how to keep up", max_questions: 3, max_points_per: 2, color: "#fa709a" }
+  ],
+
+  persona: {
+    name: "Riley",
+    avatar_letter: "R",
+    role: "Your AI-curious friend",
+    tone: "Casual, warm, emoji-friendly — like texting a real friend"
+  },
+
+  intro_messages: [
+    "okay OKAY I've been dying to ask you this stuff \u{1F62D} just text back like normal, no right or wrong answers fr",
+    "hey so i have some questions about AI and you're basically my test subject now \u{1F607} just answer like you'd text a friend",
+    "alright bestie quiz time except not really a quiz. just vibe with me for a sec \u{1F919} about AI stuff"
+  ],
+
+  questions: [
+    {
+      id: 1, dimension: "familiarity",
+      messages: [
+        "ok first off no judgment BUT — do you actually use any AI tools? like chatgpt, copilot, midjourney... or are you still out here using AskJeeves \u{1F480}",
+        "starting easy — what AI tools are you actually using rn? or are we at zero \u{1F62D}",
+        "real question: are you on the AI tools train yet? chatgpt, gemini, anything? or is this new territory lol"
+      ],
+      acknowledgments: [
+        "omg okay okay, noted \u{1F440}",
+        "interesting interesting... filing that away",
+        "lol okay that's a whole situation"
+      ],
+      scorer: { type: "keyword", high: ["chatgpt","gpt","copilot","midjourney","gemini","claude","dall-e","stable diffusion","bard","perplexity","notion ai","grammarly","sora","runway","bing ai","adobe firefly","github copilot","cursor","whisper"], mid: ["ai tool","use ai","artificial intelligence","chatbot","assistant","language model"], low: ["never","nope","don't use","nah","not really","not much","no i"], high_threshold: 1, length_mid: 15 }
+    },
+    {
+      id: 2, dimension: "familiarity",
+      messages: [
+        "genuine question tho — do you have ANY idea how this stuff actually works under the hood? like what's happening when you type to chatgpt \u{1F914}",
+        "okay nerd corner for a sec — do you know how LLMs actually work? like under the hood. no shame either way lol",
+        "be honest: could you explain to someone how AI chatbots actually work? like the very rough idea of what's going on \u{1F9E0}"
+      ],
+      acknowledgments: [
+        "right?? i went down that rabbit hole once and did NOT come back the same",
+        "okay yeah that tracks, it's genuinely wild once you get into it",
+        "honestly same energy, it's a lot to wrap your head around"
+      ],
+      scorer: { type: "keyword", high: ["machine learning","neural network","llm","large language model","training data","trained on","transformer","tokens","predict","parameters","weights","pattern","statistics","algorithm","deep learning","reinforcement","next word","probability"], mid: ["data","learns","math","internet","information","text","processes","reads"], low: ["no idea","don't know","no clue","magic","idk","not sure how","have no idea"], length_mid: 30 }
+    },
+    {
+      id: 3, dimension: "familiarity",
+      messages: [
+        "has it ever totally made something up and said it with full confidence though?? because i have a story \u{1F62D}\u{1F480}",
+        "do you think AI is ever just... wrong? like confidently, embarrassingly wrong?",
+        "have you ever caught AI just straight up lying to you with zero remorse \u{1F480} like it invented a fact"
+      ],
+      acknowledgments: [
+        "RIGHT?? the audacity. the unbothered confidence.",
+        "lmaoo yeah it does that like it's not even a big deal",
+        "the confidence is what gets me every time. zero hesitation."
+      ],
+      scorer: { type: "keyword", high: ["hallucin","made up","made something up","wrong","incorrect","false","fake","fabricat","confident","bias","outdated","lies","lied","error","mistake","inaccurate","invented","not true"], mid: ["sometimes","yeah","yep","yes","it does","can be","not always","depends","occasionally"], low: ["always right","never wrong","perfect","always correct","never makes mistakes"], length_mid: 20 }
+    },
+    {
+      id: 4, dimension: "applications",
+      messages: [
+        "okay but what's your BEST AI use case. like the one that made you go 'ohhhh okay this is actually useful' ✨",
+        "what's something you've actually used AI for that genuinely saved you time or made life easier?",
+        "give me your personal AI highlight reel — what's the most useful thing you've done with it \u{1F3C6}"
+      ],
+      acknowledgments: [
+        "omg okay that's kind of impressive ngl",
+        "okay yeah that's actually a solid use case, i respect it",
+        "that's a good one honestly. okay okay."
+      ],
+      scorer: { type: "keyword", high: ["code","debug","write","draft","email","summarize","research","translate","edit","brainstorm","generate","create","analyze","automate","design","image","script","essay","report","presentation","formula","sql","test","plan","outline","explain"], mid: [], low: ["everything","stuff","many things","various","multiple things"], high_requires_length: 20, length_mid: 30 }
+    },
+    {
+      id: 5, dimension: "applications",
+      messages: [
+        "wait so beyond the chatbot stuff — do you know about like image AI, voice cloning, code tools, any of that? what's on your radar \u{1F441}\u{FE0F}",
+        "how deep does your AI knowledge go? like do you know about stuff beyond just chatgpt — image gen, video AI, code tools?",
+        "okay pop quiz: name some types of AI that AREN'T just text chatbots. what else is out there that you know about \u{1F30D}"
+      ],
+      acknowledgments: [
+        "okay yeah it's gotten WILD out there fr",
+        "right?? it's like a whole ecosystem now and it moves SO fast",
+        "honestly the breadth of it is kind of insane when you lay it all out"
+      ],
+      scorer: { type: "keyword_count", keywords: ["image","midjourney","dall-e","stable diffusion","firefly","flux","voice","audio","music","suno","elevenlabs","cloning","video","sora","runway","pika","heygen","code","copilot","cursor","devin","tabnine","search","perplexity","data","analytics","robotics","robot","medical","healthcare","translation","avatar"], threshold_high: 2, threshold_mid: 1, neg: ["not really"], neg_length: 20 }
+    },
+    {
+      id: 6, dimension: "ethics",
+      messages: [
+        "ok scenario. your boss slides into your DMs like 'hey use AI to write everyone's performance reviews, don't tell the team' — what do you do with that \u{1F480}",
+        "hypothetical: your manager asks you to secretly use AI to make hiring decisions. no one would know. what do you do?",
+        "scenario time: company asks you to use AI to screen job applicants but not disclose it to candidates. thoughts? \u{1F440}"
+      ],
+      acknowledgments: [
+        "oof yeah that's the kind of thing that keeps HR up at night",
+        "yeah that's a real dilemma and companies are actually doing this rn",
+        "right?? it's like... technically possible but should it be allowed"
+      ],
+      scorer: { type: "keyword", high: ["disclose","tell them","transparency","not okay","ethical","consent","should know","push back","refuse","can't do that","wouldn't","shouldn't","inform","let people know","wrong","problem","concern","bias","unfair","legal"], mid: ["depends","talk to","discuss","maybe","uncomfortable","gray area","complicated","not sure"], low: ["sure","fine","do it","no problem","why not","okay with it","just do it","doesn't matter"], low_max_length: 40 }
+    },
+    {
+      id: 7, dimension: "ethics",
+      messages: [
+        "do you ever think about what happens to everything you TYPE into these tools? like... where does it go. be honest \u{1F440}",
+        "random but important — are you careful about what info you share with AI tools? like do you think about the data side of it?",
+        "okay real talk — have you ever pasted something into chatgpt and then gone 'wait should i have done that' \u{1F62C}"
+      ],
+      acknowledgments: [
+        "i know right, it's giving 'terms and conditions i definitely read' \u{1F62D}",
+        "yeah once you start thinking about it it's hard to stop thinking about it",
+        "the data stuff is SO underrated as a concern honestly"
+      ],
+      scorer: { type: "keyword", high: ["training","stored","privacy","sensitive","personal","careful","confidential","data","retention","don't put","terms","server","logged","sold","used for","collected","share","shouldn't have","regret","work stuff","company"], mid: ["somewhere","i guess","not sure but","goes somewhere","probably","wonder","maybe"], low: ["doesn't matter","who cares","no idea","nothing","idk","don't think about"], low_max_length: 25 }
+    },
+    {
+      id: 8, dimension: "ethics",
+      messages: [
+        "hot take time — do you think AI has any biases baked into it? like is it neutral or is it kinda... not \u{1F928}",
+        "do you think AI can be racist, sexist, or otherwise biased? or is it just a neutral tool?",
+        "genuine q: if AI is trained on internet data... do you think that causes any problems in terms of bias or representation? \u{1F914}"
+      ],
+      acknowledgments: [
+        "yeah fr it's not like it fell from the sky fully formed",
+        "exactly — garbage in garbage out as they say, kind of",
+        "right?? it's a whole thing and a lot of people don't think about it"
+      ],
+      scorer: { type: "keyword", high: ["bias","biased","unfair","discriminat","training data","reflect","skewed","prejudice","stereotype","not neutral","systemic","social","political","western","cultural","represent","racist","sexist","internet data","garbage"], mid: ["maybe","probably","could be","i think so","yeah","yes","might be","possibly","some","probably does"], low: ["neutral","no bias","unbiased","objective","it's not biased","nope","not biased"], low_max_length: 30 }
+    },
+    {
+      id: 9, dimension: "future",
+      messages: [
+        "real talk real talk — job replacement. is that a real fear for you or do you think it's kind of overblown sci-fi drama \u{1F914}",
+        "how worried are you about AI taking jobs? like yours specifically or in general?",
+        "be honest — do you think your job (or jobs like yours) will look the same in 10 years given how fast AI is moving?"
+      ],
+      acknowledgments: [
+        "yeah it's genuinely complicated and i feel like everyone has A Take™ on it",
+        "right it's like... the answer is different for every person and every job",
+        "yeah there's no easy answer there, it's one of those things"
+      ],
+      scorer: { type: "keyword", high: ["some jobs","certain jobs","adapt","reskill","augment","complement","already","depends","both sides","nuance","some roles","new jobs","transition","evolv","not all","replace some","worried but","different","change","transform"], mid: ["terrified","definitely replace","taking over","doomed","everyone will lose","completely replace"], low: ["no way","won't happen","not real","nobody","unlikely","exaggerated","overblown","not a concern"], mid_max_length: 40, low_max_length: 30, length_high: 50, length_mid: 25 }
+    },
+    {
+      id: 10, dimension: "future",
+      messages: [
+        "are you doing ANYTHING to keep up with all this? podcasts, newsletters, random youtube holes at 2am... anything \u{1F62D}",
+        "okay are you actively trying to learn more about AI or just kind of... letting it wash over you and hoping for the best lol",
+        "do you feel like you're keeping pace with how fast AI is moving? what are you doing to stay up on it if anything"
+      ],
+      acknowledgments: [
+        "honestly same, i have 47 unread AI newsletters i keep meaning to get to",
+        "the firehose of AI news is genuinely a lot, i respect anyone who keeps up",
+        "yeah it's basically a part time job to stay current at this point"
+      ],
+      scorer: { type: "keyword", high: ["coursera","udemy","youtube","newsletter","substack","twitter","linkedin","podcast","arxiv","course","class","follow","read","watch","article","blog","book","learn","study","research","reddit","discord","hugging face","x.com"], mid: ["trying","should","want to","i should","plan to","working on","kind of","a little","not much but"], low: ["nah","not really","nothing","don't bother","nope","never","not at all","no i don't"], low_max_length: 30 }
+    },
+    {
+      id: 11, dimension: "future",
+      messages: [
+        "okay big brain time — where do you think AI is actually going in the next decade. like genuinely. be a prophet rn \u{1F52E}",
+        "if you had to make one prediction about AI in the next 10 years, what would it be? go off.",
+        "honest take: exciting future, scary future, or somewhere in between for AI? what's your read on where this is heading \u{1F310}"
+      ],
+      acknowledgments: [
+        "okay that's a take. i'm writing this down.",
+        "honestly that's not far off from what a lot of people think",
+        "yeah it really could go so many ways and that's kind of the whole problem lol"
+      ],
+      scorer: { type: "keyword", high: ["agi","general intelligence","exponential","capability","risk","alignment","safety","powerful","disruptive","transform","revolution","singularity","improve","advance","automat","integrat","everywhere","embedded","scary","exciting","concern","dangerous","depend"], mid: ["bigger","more powerful","grow","get better","more stuff","idk","not sure"], high_requires_length: 30, length_high: 50, length_mid: 25 }
+    },
+    {
+      id: 12, dimension: null,
+      messages: [
+        "LAST ONE i promise on my life — real talk, 1 to 10, how AI-literate do you actually think you are? no inflating the grade \u{1F62D}",
+        "okay final question and be HONEST — where would you rate yourself on AI knowledge? 1 (what's AI) to 10 (i work at openai)",
+        "alright last one: if you had to grade yourself on AI literacy right now, what would you give yourself and why \u{1F440}"
+      ],
+      acknowledgments: [
+        "lmao okay okay. alright let me run the numbers real quick...",
+        "noted!! okay give me a sec to tally this up...",
+        "interesting self-assessment \u{1F440} okay let me see what the data says..."
+      ],
+      scorer: null
+    }
+  ],
+
+  overall_labels: [
+    { min: 90, text: "okay you're basically an AI researcher at this point \u{1F52C}" },
+    { min: 75, text: "genuinely impressive — you really get this stuff \u{1F389}" },
+    { min: 60, text: "solid foundation, above average for sure \u{1F4AA}" },
+    { min: 45, text: "getting there! good instincts, some gaps to fill \u{1F4C8}" },
+    { min: 30, text: "AI curious but still on the learning curve... it's fine \u{1F605}" },
+    { min: 0,  text: "okay bestie we need to talk \u{1F480} but also truly no judgment" }
+  ],
+
+  feedback_templates: {
+    high: "You showed strong understanding here — keep building on this foundation.",
+    mid: "Good instincts! A bit more hands-on experience would sharpen this area.",
+    low: "This is a growth area — no shame, everyone starts somewhere. Check out some intro resources."
+  }
+};
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SHELL ENGINE — Construct-agnostic chat assessment
+   ═══════════════════════════════════════════════════════════════ */
+
+const TYPING_SPEED = 20;
+const TYPING_MIN   = 700;
+const TYPING_MAX   = 2800;
+
+let CONSTRUCT_PACK = null;
+let PACK = null;
+
+// ── STATE ──
+const STATE = {
+  phase: 'INTRO',
+  qIndex: 0,
+  scores: {},
+  evidence: [],
+  taskStartTime: null,
+  msgCount: 0,
+  queue: [],
+  draining: false,
+};
+
+// Scores initialized from dimensions in async boot below
+
+// ── DOM REFS ──
+const chatBody       = document.getElementById('chatBody');
+const inputField     = document.getElementById('inputField');
+const sendBtn        = document.getElementById('sendBtn');
+const resultsOverlay = document.getElementById('resultsOverlay');
+const statusTimeEl   = document.getElementById('statusTime');
+const resultAnimArea = document.getElementById('resultAnimArea');
+const overallScoreBig= document.getElementById('overallScoreBig');
+const overallLabel   = document.getElementById('overallLabel');
+const resultsBody    = document.getElementById('resultsBody');
+
+// ── UTILS ──
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function typingDuration(text) { return Math.min(TYPING_MAX, Math.max(TYPING_MIN, text.length * TYPING_SPEED)); }
+function getTimeString() { const n = new Date(); let h = n.getHours(); const m = n.getMinutes().toString().padStart(2,'0'); const a = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; return `${h}:${m} ${a}`; }
+function updateStatusTime() { const n = new Date(); statusTimeEl.textContent = `${(n.getHours()%12||12)}:${n.getMinutes().toString().padStart(2,'0')}`; }
+
+function scrollToBottom() { requestAnimationFrame(() => { chatBody.scrollTop = chatBody.scrollHeight; }); }
+
+// ── EVIDENCE LOGGER ──
+function logEvidence(event, data) {
+  STATE.evidence.push({
+    event,
+    timestamp: Date.now(),
+    elapsed_ms: STATE.taskStartTime ? Date.now() - STATE.taskStartTime : 0,
+    data
+  });
+}
+
+// ── GENERIC SCORER ──
+function scoreResponse(text, scorerSpec) {
+  if (!scorerSpec) return 0;
+  const T = text.toLowerCase();
+
+  if (scorerSpec.type === 'keyword_count') {
+    const count = scorerSpec.keywords.filter(w => T.includes(w)).length;
+    if (scorerSpec.neg && scorerSpec.neg.some(w => T.includes(w)) && T.length < (scorerSpec.neg_length || 20)) return 0;
+    if (count >= scorerSpec.threshold_high) return 2;
+    if (count >= scorerSpec.threshold_mid) return 1;
+    return T.length > (scorerSpec.length_mid || 30) ? 1 : 0;
+  }
+
+  // Default: keyword type
+  const hasHigh = scorerSpec.high && scorerSpec.high.some(w => T.includes(w));
+  const hasMid  = scorerSpec.mid  && scorerSpec.mid.some(w => T.includes(w));
+  const hasLow  = scorerSpec.low  && scorerSpec.low.some(w => T.includes(w));
+
+  if (hasLow && T.length < (scorerSpec.low_max_length || 999)) return 0;
+  if (hasHigh) {
+    if (scorerSpec.high_requires_length && T.length < scorerSpec.high_requires_length) return 1;
+    return 2;
+  }
+  if (hasMid) return 1;
+  if (scorerSpec.length_high && T.length > scorerSpec.length_high) return 2;
+  if (T.length > (scorerSpec.length_mid || 999)) return 1;
+  return 0;
+}
+
+// ── DOM HELPERS ──
+function addTimestamp() {
+  const el = document.createElement('div');
+  el.className = 'timestamp';
+  el.textContent = `Today ${getTimeString()}`;
+  chatBody.appendChild(el);
+  scrollToBottom();
+}
+
+function renderBubble(text, type) {
+  const row = document.createElement('div');
+  row.className = `msg-row ${type === 'persona' ? 'received' : 'sent'}`;
+
+  if (type === 'persona') {
+    const av = document.createElement('div');
+    av.className = 'msg-avatar';
+    av.textContent = PACK.persona.avatar_letter;
+    row.appendChild(av);
+  }
+
+  const bubble = document.createElement('div');
+  bubble.className = `bubble ${type === 'persona' ? 'gray' : 'blue'}`;
+  bubble.textContent = text;
+  row.appendChild(bubble);
+  chatBody.appendChild(row);
+  STATE.msgCount++;
+  if (STATE.msgCount % 7 === 0) addTimestamp();
+  scrollToBottom();
+}
+
+let typingEl = null;
+function showTypingIndicator() {
+  if (typingEl) return;
+  const row = document.createElement('div');
+  row.className = 'typing-row';
+  const av = document.createElement('div');
+  av.className = 'msg-avatar';
+  av.textContent = PACK.persona.avatar_letter;
+  const bubble = document.createElement('div');
+  bubble.className = 'typing-bubble';
+  bubble.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  row.appendChild(av);
+  row.appendChild(bubble);
+  chatBody.appendChild(row);
+  typingEl = row;
+  scrollToBottom();
+}
+
+function hideTypingIndicator() { if (typingEl) { typingEl.remove(); typingEl = null; } }
+
+// ── MESSAGE QUEUE ──
+function enqueue(item) { STATE.queue.push(item); }
+function enqueuePersonaMessage(text, preDelay = 500) {
+  enqueue({ type: 'delay', ms: preDelay });
+  enqueue({ type: 'typing_start' });
+  enqueue({ type: 'delay', ms: typingDuration(text) });
+  enqueue({ type: 'typing_end', text });
+}
+
+function drainQueue() {
+  if (STATE.draining) return;
+  STATE.draining = true;
+  processNext();
+}
+
+function processNext() {
+  if (STATE.queue.length === 0) { STATE.draining = false; return; }
+  const item = STATE.queue.shift();
+  switch (item.type) {
+    case 'delay': setTimeout(processNext, item.ms); break;
+    case 'typing_start': showTypingIndicator(); processNext(); break;
+    case 'typing_end': hideTypingIndicator(); renderBubble(item.text, 'persona'); processNext(); break;
+    case 'unlock_input': unlockInput(); STATE.draining = false; break;
+    case 'show_results': setTimeout(showResults, 1200); STATE.draining = false; break;
+    default: processNext();
+  }
+}
+
+// ── INPUT ──
+function lockInput() { inputField.disabled = true; sendBtn.disabled = true; sendBtn.classList.remove('active'); }
+function unlockInput() { inputField.disabled = false; sendBtn.disabled = false; inputField.focus(); STATE.phase = 'WAITING'; }
+
+function onUserSend() {
+  const text = inputField.value.trim();
+  if (!text || STATE.phase !== 'WAITING') return;
+  lockInput();
+  renderBubble(text, 'user');
+  inputField.value = '';
+
+  const q = PACK.questions[STATE.qIndex];
+
+  // Score
+  const score = scoreResponse(text, q.scorer);
+  if (q.dimension) {
+    STATE.scores[q.dimension] += score;
+  }
+
+  // Log evidence
+  logEvidence('user_response', {
+    question_id: q.id,
+    dimension: q.dimension,
+    response_text: text,
+    response_length: text.length,
+    score: score,
+    response_time_ms: Date.now() - (STATE._lastQuestionTime || Date.now())
+  });
+
+  STATE.qIndex++;
+  STATE.phase = 'THINKING';
+
+  enqueuePersonaMessage(pick(q.acknowledgments), 600);
+
+  if (STATE.qIndex >= PACK.questions.length) {
+    enqueue({ type: 'show_results' });
+  } else {
+    STATE._lastQuestionTime = Date.now();
+    enqueuePersonaMessage(pick(PACK.questions[STATE.qIndex].messages), 400);
+    enqueue({ type: 'unlock_input' });
+  }
+  drainQueue();
+}
+
+// ── SCORING ENGINE ──
+function calculateScores() {
+  const dimScores = {};
+  let total = 0;
+  let count = 0;
+  PACK.dimensions.forEach(d => {
+    const max = d.max_questions * d.max_points_per;
+    const raw = STATE.scores[d.id] || 0;
+    const pct = Math.min(100, Math.max(0, Math.round((raw / max) * 100)));
+    dimScores[d.id] = pct;
+    total += pct;
+    count++;
+  });
+  dimScores._overall = Math.round(total / count);
+  return dimScores;
+}
+
+function getOverallLabel(score) {
+  for (const l of PACK.overall_labels) {
+    if (score >= l.min) return l.text;
+  }
+  return "";
+}
+
+// ── CONFETTI ──
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  const colors = ['#f43f5e','#fb923c','#fbbf24','#34d399','#60a5fa','#a78bfa','#f9a8d4','#fff'];
+  const particles = [];
+  for (let i = 0; i < 120; i++) {
+    particles.push({ x: Math.random()*canvas.width, y: -10-Math.random()*100, w: 6+Math.random()*8, h: 3+Math.random()*5, vx: (Math.random()-0.5)*4, vy: 3+Math.random()*4, rot: Math.random()*360, vr: (Math.random()-0.5)*8, color: colors[Math.floor(Math.random()*colors.length)], alpha: 1 });
+  }
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    for (const p of particles) {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.rot += p.vr;
+      if (p.y > canvas.height*0.8) p.alpha -= 0.025;
+      if (p.alpha <= 0) continue;
+      alive = true;
+      ctx.save(); ctx.globalAlpha = Math.max(0, p.alpha); ctx.translate(p.x, p.y); ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle = p.color; ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h); ctx.restore();
+    }
+    if (alive) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+}
+
+// ── RESULTS ──
+function showResults() {
+  const scores = calculateScores();
+
+  logEvidence('task_end', { overall_score: scores._overall, dimension_scores: scores, total_time_ms: Date.now() - STATE.taskStartTime });
+
+  // Populate header from pack
+  document.getElementById('resultsTitle').textContent = PACK.construct_name + ' Score';
+  document.getElementById('resultsFrom').textContent = `assessed by ${PACK.persona.name}`;
+
+  overallScoreBig.textContent = scores._overall + '%';
+  overallLabel.textContent = getOverallLabel(scores._overall);
+
+  // Build score cards from dimensions
+  resultsBody.innerHTML = '';
+  PACK.dimensions.forEach((d, i) => {
+    const pct = scores[d.id];
+    const card = document.createElement('div');
+    card.className = 'score-card';
+    card.innerHTML = `
+      <div class="score-card-header">
+        <div class="score-card-name">${d.icon} ${d.name}</div>
+        <div class="score-card-pct">${pct}%</div>
+      </div>
+      <div class="score-card-desc">${d.description}</div>
+      <div class="score-bar-track">
+        <div class="score-bar-fill" style="background: ${d.color};" data-pct="${pct}"></div>
+      </div>
+    `;
+    resultsBody.appendChild(card);
+  });
+
+  // Sign-off
+  const signoff = document.createElement('div');
+  signoff.style.cssText = 'text-align:center; color:rgba(255,255,255,0.4); font-size:13px; padding: 20px 0 10px; line-height:1.6;';
+  signoff.innerHTML = `assessed with ❤️ by ${PACK.persona.name}<br><span style="font-size:11px;">refresh to try again</span>`;
+  resultsBody.appendChild(signoff);
+
+  // Animate
+  resultsOverlay.classList.add('visible');
+  document.getElementById('constructBanner').classList.add('hidden');
+
+  const cards = resultsBody.querySelectorAll('.score-card');
+  cards.forEach((card, i) => { setTimeout(() => card.classList.add('visible'), 200 + i * 120); });
+  setTimeout(() => {
+    resultsBody.querySelectorAll('.score-bar-fill').forEach((bar, i) => {
+      setTimeout(() => { bar.style.width = bar.dataset.pct + '%'; }, i * 150);
+    });
+  }, 600);
+
+  setTimeout(() => {
+    if (scores._overall >= 75) { resultAnimArea.innerHTML = '\u{1F389}'; launchConfetti(); }
+    else if (scores._overall >= 45) { resultAnimArea.innerHTML = '<span class="thumbs-emoji">\u{1F44D}</span><span class="thumbs-emoji">\u{1F44D}</span>'; }
+    else { resultAnimArea.innerHTML = ['<span class="broken-emoji">\u{1F5A5}️</span>','<span class="broken-emoji">\u{1F50C}</span>','<span class="broken-emoji">\u{1F4BE}</span>','<span class="broken-emoji">\u{1F4DF}</span>','<span class="broken-emoji">\u{1F527}</span>'].join(''); }
+  }, 400);
+}
+
+// ── START ──
+function startConversation() {
+  STATE.taskStartTime = Date.now();
+  logEvidence('task_start', { construct: PACK.construct_id, persona: PACK.persona.name });
+  addTimestamp();
+  enqueuePersonaMessage(pick(PACK.intro_messages), 800);
+  STATE._lastQuestionTime = Date.now();
+  enqueuePersonaMessage(pick(PACK.questions[0].messages), 600);
+  enqueue({ type: 'unlock_input' });
+  drainQueue();
+}
+
+// ── POPULATE UI FROM PACK ──
+function initFromPack() {
+  document.getElementById('personaAvatar').textContent = PACK.persona.avatar_letter;
+  document.getElementById('personaName').textContent = PACK.persona.name;
+  document.getElementById('bannerConstruct').textContent = PACK.construct_name;
+  document.title = `Signal Check: ${PACK.construct_name} — PBA Showcase`;
+  populateSideInfo();
+}
+
+// ── SIDE INFO PANEL ──
+function populateSideInfo() {
+  const body = document.getElementById('sideInfoBody');
+  let html = '';
+
+  html += `<h3>Task: Signal Check</h3>`;
+  html += `<p>A conversation-based assessment where an AI persona conducts an adaptive dialogue to measure your knowledge and reasoning across multiple dimensions.</p>`;
+
+  html += `<h3>Construct being assessed</h3>`;
+  html += `<p><strong>${PACK.construct_name}</strong> — ${PACK.construct_description}</p>`;
+
+  html += `<h3>Dimensions measured</h3>`;
+  html += `<table class="si-table"><tr><th>Dimension</th><th>Description</th></tr>`;
+  PACK.dimensions.forEach(d => {
+    html += `<tr><td>${d.icon} ${d.name}</td><td>${d.description}</td></tr>`;
+  });
+  html += `</table>`;
+
+  html += `<h3>PBA classification</h3>`;
+  html += `<table class="si-table"><tr><th>Attribute</th><th>Value</th></tr>`;
+  html += `<tr><td>Primary category</td><td>Cat ${PACK.pba_category}: ${PACK.pba_category_name}</td></tr>`;
+  html += `<tr><td>Subtype</td><td>${PACK.pba_subtype}</td></tr>`;
+  Object.entries(PACK.secondary_dimensions).forEach(([k, v]) => {
+    const label = k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    html += `<tr><td>${label}</td><td>${v}</td></tr>`;
+  });
+  html += `</table>`;
+
+  html += `<h3>Construct flexibility</h3>`;
+  html += `<p>This same chat shell can assess different constructs by swapping the JSON construct pack. The UI code doesn't change — only the content.</p>`;
+  html += `<table class="si-table"><tr><th>Construct</th><th>Persona</th></tr>`;
+  html += `<tr><td style="font-weight:600;color:var(--accent);">${PACK.construct_name} (active)</td><td>${PACK.persona.name}</td></tr>`;
+  const alternatives = [
+    ['Financial Literacy', 'Jordan'],
+    ['Data Literacy', 'Sam'],
+    ['Cybersecurity Awareness', 'Alex'],
+    ['Project Management', 'Morgan']
+  ];
+  alternatives.forEach(([c, p]) => {
+    if (c !== PACK.construct_name) {
+      html += `<tr><td style="color:var(--text-tertiary);">${c}</td><td style="color:var(--text-tertiary);">${p}</td></tr>`;
+    }
+  });
+  html += `</table>`;
+
+  html += `<h3>Evidence collected</h3>`;
+  html += `<p>This task logs: raw text responses, response latency per question, word count, score per dimension, and self-assessment calibration. All captured through the universal evidence logger.</p>`;
+
+  html += `<div class="si-callout">`;
+  html += `<strong>Source:</strong> PBA Classification System v1.2, grounded in Messick (1994), Linn, Baker & Dunbar (1991), and Jackson & Zapata-Rivera (2015).`;
+  html += `</div>`;
+
+  body.innerHTML = html;
+}
+
+function toggleSideInfo() {
+  document.getElementById('sideInfo').classList.toggle('open');
+  document.getElementById('sideOverlay').classList.toggle('open');
+}
+
+// ── PACK LOADER ──
+async function loadPack() {
+  const params = new URLSearchParams(window.location.search);
+  const url = params.get('scenario') || DEFAULT_SCENARIO;
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(resp.status);
+    return await resp.json();
+  } catch (e) {
+    console.warn('Could not fetch scenario JSON (' + url + '), using inline fallback:', e.message);
+    return CONSTRUCT_PACK_INLINE;
+  }
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', async () => {
+  CONSTRUCT_PACK = await loadPack();
+  PACK = CONSTRUCT_PACK;
+
+  // Initialize dimension scores now that PACK is loaded
+  PACK.dimensions.forEach(d => { STATE.scores[d.id] = 0; });
+
+  initFromPack();
+  updateStatusTime();
+  setInterval(updateStatusTime, 30000);
+
+  inputField.addEventListener('input', () => {
+    const hasText = inputField.value.trim().length > 0;
+    sendBtn.classList.toggle('active', hasText);
+    sendBtn.disabled = !hasText || inputField.disabled;
+  });
+  inputField.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); onUserSend(); } });
+  sendBtn.addEventListener('click', onUserSend);
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.getElementById('sideInfo').classList.remove('open'); document.getElementById('sideOverlay').classList.remove('open'); } });
+
+  setTimeout(startConversation, 700);
+});
+</script>
+
+</body>
+</html>

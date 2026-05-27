@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PBA Showcase — Performance-Based Assessment Demo</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ETS 2024 Rebrand Palette */
+  --bg: #1a212b;
+  --bg-alt: #222b38;
+  --surface: #242e3d;
+  --surface-hover: #2c3849;
+  --text: #f2e9d8;
+  --text-secondary: #b8b0a0;
+  --text-tertiary: #7e7a72;
+  --border: rgba(242,233,216,0.08);
+  --border-strong: rgba(242,233,216,0.15);
+  --accent: #4dd3fe;
+  --accent-light: rgba(77,211,254,0.1);
+  --teal: #103d4b;
+  --green: #468254;
+  --periwinkle: #9e9eff;
+  --cat1: #4dd3fe;
+  --cat3: #f59e0b;
+  --cat4: #9e9eff;
+  --cat7: #468254;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+body {
+  font-family: 'Beausite Classic', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── HEADER ────────────────────────────────── */
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-mark {
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.logo-text {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.logo-tag {
+  font-size: 12px;
+  color: var(--accent);
+  background: var(--accent-light);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-left: 4px;
+  font-weight: 500;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.btn:hover {
+  background: var(--surface-hover);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background: #3bbde5;
+  border-color: #3bbde5;
+}
+
+.btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* ── MAIN LAYOUT ───────────────────────────── */
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+/* ── HERO ──────────────────────────────────── */
+.hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.hero h1 {
+  font-family: 'Speckless', Georgia, 'Times New Roman', serif;
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: -0.3px;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 16px;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── TASK CARDS GRID ───────────────────────── */
+.tasks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.task-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.task-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+}
+
+.task-card.disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.task-card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.task-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  width: fit-content;
+}
+
+.task-card h3 {
+  font-family: 'Speckless', Georgia, 'Times New Roman', serif;
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 6px;
+  letter-spacing: 0;
+}
+
+.task-card-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 16px;
+  flex: 1;
+}
+
+.task-card-construct {
+  background: var(--bg-alt);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.task-card-construct-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+}
+
+.task-card-construct-name {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.task-card-dims {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.dim-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.task-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.task-card-meta {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.task-card-action {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.task-card-action:hover {
+  text-decoration: underline;
+}
+
+.coming-badge {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* ── INFO PANEL (SLIDE-OVER) ───────────────── */
+.info-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+.info-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.info-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(520px, 90vw);
+  height: 100vh;
+  background: var(--surface);
+  z-index: 101;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 30px rgba(0,0,0,0.4);
+}
+
+.info-panel.open {
+  transform: translateX(0);
+}
+
+.info-panel-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.info-panel-header h2 {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.info-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--text-secondary);
+  transition: background 0.15s;
+}
+
+.info-close-btn:hover {
+  background: var(--surface-hover);
+}
+
+.info-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.info-tab {
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s;
+  font-family: inherit;
+}
+
+.info-tab:hover {
+  color: var(--text-secondary);
+}
+
+.info-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.info-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.info-content::-webkit-scrollbar { width: 6px; }
+.info-content::-webkit-scrollbar-thumb { background: rgba(242,233,216,0.15); border-radius: 3px; }
+
+.info-section {
+  display: none;
+}
+
+.info-section.active {
+  display: block;
+}
+
+.info-section h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin-top: 20px;
+}
+
+.info-section h3:first-child {
+  margin-top: 0;
+}
+
+.info-section p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.info-table {
+  width: 100%;
+  font-size: 13px;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+.info-table th {
+  text-align: left;
+  font-weight: 600;
+  padding: 8px 10px;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.info-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.info-table td:first-child {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.arch-diagram {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--accent);
+  margin-bottom: 16px;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.info-callout {
+  background: var(--accent-light);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.info-callout p {
+  color: var(--text);
+  font-size: 13px;
+  margin: 0;
+}
+
+/* ── FOOTER ────────────────────────────────── */
+.site-footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  border-top: 1px solid var(--border);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── RESPONSIVE ────────────────────────────── */
+@media (max-width: 600px) {
+  .hero h1 { font-size: 24px; }
+  .tasks-grid { grid-template-columns: 1fr; }
+  .logo-tag { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark">P</div>
+      <span class="logo-text">PBA Showcase</span>
+      <span class="logo-tag">Research Preview</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn" onclick="openInfo()" title="About this project">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        About
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main">
+
+  <div class="hero">
+    <h1>Performance tasks you can try</h1>
+    <p>Interactive demonstrations of performance-based assessment across multiple task categories. Each task assesses a real construct and collects rich behavioral evidence.</p>
+  </div>
+
+  <!-- TASK CARDS -->
+  <div class="tasks-grid">
+
+    <!-- Signal Check -->
+    <div class="task-card" onclick="location.href='signal-check.html'">
+      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat4), #a78bfa);"></div>
+      <div class="task-card-badge" style="background: rgba(158,158,255,0.15); color: var(--cat4);">Cat 4 — Simulation</div>
+      <h3>Signal Check</h3>
+      <p class="task-card-desc">Have a casual conversation with an AI persona who adapts questions based on your responses. No right or wrong answers — just real talk.</p>
+      <div class="task-card-construct">
+        <div class="task-card-construct-label">Construct assessed</div>
+        <div class="task-card-construct-name">AI Literacy</div>
+        <div class="task-card-dims">
+          <span class="dim-tag">Familiarity</span>
+          <span class="dim-tag">Ethics</span>
+          <span class="dim-tag">Applications</span>
+          <span class="dim-tag">Future Thinking</span>
+        </div>
+      </div>
+      <div class="task-card-footer">
+        <span class="task-card-meta">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          ~10 min
+        </span>
+        <a class="task-card-action" href="signal-check.html">
+          Start task
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- The Brief -->
+    <div class="task-card">
+      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat7), #34d399);"></div>
+      <div class="task-card-badge" style="background: rgba(70,130,84,0.15); color: var(--cat7);">Cat 7 — AI-Augmented</div>
+      <h3>The Brief</h3>
+      <p class="task-card-desc">Step into a consulting workspace with AI tools, reference files, and a client who needs a deliverable by end of day. Watch out for planted errors.</p>
+      <div class="task-card-construct">
+        <div class="task-card-construct-label">Construct assessed</div>
+        <div class="task-card-construct-name">Critical Thinking + AI Fluency</div>
+        <div class="task-card-dims">
+          <span class="dim-tag">Prompt Engineering</span>
+          <span class="dim-tag">Critical Evaluation</span>
+          <span class="dim-tag">Task Decomposition</span>
+          <span class="dim-tag">Tool Selection</span>
+        </div>
+      </div>
+      <div class="task-card-footer">
+        <span class="task-card-meta">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          ~18 min
+        </span>
+        <a class="task-card-action" href="the-brief.html">
+          Start task
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Data Detective -->
+    <div class="task-card">
+      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat3), #fb923c);"></div>
+      <div class="task-card-badge" style="background: rgba(245,158,11,0.15); color: var(--cat3);">Cat 3 — Process</div>
+      <h3>Data Detective</h3>
+      <p class="task-card-desc">Investigate a business dataset using filters, charts, and your own notes. The system watches how you explore — not just what you conclude.</p>
+      <div class="task-card-construct">
+        <div class="task-card-construct-label">Construct assessed</div>
+        <div class="task-card-construct-name">Data Reasoning</div>
+        <div class="task-card-dims">
+          <span class="dim-tag">Exploration</span>
+          <span class="dim-tag">Hypothesis Testing</span>
+          <span class="dim-tag">Interpretation</span>
+          <span class="dim-tag">Recommendation</span>
+        </div>
+      </div>
+      <div class="task-card-footer">
+        <span class="task-card-meta">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          ~12 min
+        </span>
+        <a class="task-card-action" href="data-detective.html">
+          Start task
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- The Take -->
+    <div class="task-card">
+      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat1), #60a5fa);"></div>
+      <div class="task-card-badge" style="background: rgba(77,211,254,0.15); color: var(--cat1);">Cat 1 — Constructed Response</div>
+      <h3>The Take</h3>
+      <p class="task-card-desc">Read conflicting source documents and write a position memo. Your reading behavior, source evaluation, and argumentation are all part of the evidence.</p>
+      <div class="task-card-construct">
+        <div class="task-card-construct-label">Construct assessed</div>
+        <div class="task-card-construct-name">Argumentation + Evidence Evaluation</div>
+        <div class="task-card-dims">
+          <span class="dim-tag">Claim Clarity</span>
+          <span class="dim-tag">Evidence Use</span>
+          <span class="dim-tag">Source Evaluation</span>
+          <span class="dim-tag">Counterargument</span>
+        </div>
+      </div>
+      <div class="task-card-footer">
+        <span class="task-card-meta">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          ~15 min
+        </span>
+        <a class="task-card-action" href="the-take.html">
+          Start task
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  PBA Showcase — AI Products Team &middot; Classification System v1.2 &middot; May 2026
+</footer>
+
+<!-- INFO PANEL OVERLAY -->
+<div class="info-overlay" id="infoOverlay" onclick="closeInfo()"></div>
+
+<!-- INFO PANEL -->
+<div class="info-panel" id="infoPanel">
+  <div class="info-panel-header">
+    <h2>About this project</h2>
+    <button class="info-close-btn" onclick="closeInfo()">&times;</button>
+  </div>
+
+  <div class="info-tabs">
+    <button class="info-tab active" data-tab="overview">Overview</button>
+    <button class="info-tab" data-tab="taxonomy">Taxonomy</button>
+    <button class="info-tab" data-tab="architecture">Architecture</button>
+    <button class="info-tab" data-tab="flexibility">Construct flexibility</button>
+    <button class="info-tab" data-tab="sample-json">Sample JSON</button>
+  </div>
+
+  <div class="info-content">
+
+    <!-- OVERVIEW TAB -->
+    <div class="info-section active" id="tab-overview">
+      <h3>What is this?</h3>
+      <p>PBA Showcase is an interactive demonstration of performance-based assessment tasks. Each task represents a different category from the PBA Classification System (v1.2), a taxonomy of 7 primary task categories and 6 secondary dimensions for designing and evaluating performance assessments.</p>
+
+      <p>Unlike multiple-choice tests, these tasks require you to <em>do</em> something — have a conversation, investigate data, write an analysis, or use tools to solve a problem. The system collects rich behavioral evidence about your process, not just your final answer.</p>
+
+      <h3>Design constraints</h3>
+      <table class="info-table">
+        <tr><th>Constraint</th><th>How it's met</th></tr>
+        <tr><td>Scalable</td><td>All task content lives in swappable JSON scenario files. New variants take hours, not weeks.</td></tr>
+        <tr><td>Cost-efficient</td><td>Runs in any browser with no backend. Scoring is automated.</td></tr>
+        <tr><td>Evidence-rich</td><td>Every action, timing, and decision is logged — not just final outputs.</td></tr>
+        <tr><td>Positive UX</td><td>Workplace-realistic framing. Feels relevant, not like a sterile exam.</td></tr>
+        <tr><td>Time-bounded</td><td>Each task completes in 10-20 minutes.</td></tr>
+      </table>
+
+      <h3>Who is this for?</h3>
+      <p>ETS stakeholders exploring AI-augmented assessment, external partners evaluating PBA approaches, conference attendees seeing the taxonomy in action, and assessment designers learning how to classify and create performance tasks.</p>
+    </div>
+
+    <!-- TAXONOMY TAB -->
+    <div class="info-section" id="tab-taxonomy">
+      <h3>The 7 primary categories</h3>
+      <p>The PBA Classification System organizes all performance-based tasks into 7 primary categories by the dominant modality of evidence production.</p>
+
+      <table class="info-table">
+        <tr><th>#</th><th>Category</th><th>What it measures</th><th>In this demo</th></tr>
+        <tr><td>1</td><td>Constructed Response</td><td>Written or verbal responses scored against rubrics</td><td style="color:var(--cat1);font-weight:600;">The Take</td></tr>
+        <tr><td>2</td><td>Portfolio / Artifact</td><td>Tangible deliverables created over extended time</td><td style="color:var(--text-tertiary);">Not in v1</td></tr>
+        <tr><td>3</td><td>Process / Demonstration</td><td>Method of execution observed in real time</td><td style="color:var(--cat3);font-weight:600;">Data Detective</td></tr>
+        <tr><td>4</td><td>Simulation-Based</td><td>Decisions in realistic controlled scenarios</td><td style="color:var(--cat4);font-weight:600;">Signal Check</td></tr>
+        <tr><td>5</td><td>Observation-Based</td><td>Expert observation using structured protocols</td><td style="color:var(--text-tertiary);">Not in v1</td></tr>
+        <tr><td>6</td><td>Exhibition / Presentation</td><td>Public presentation and defense of work</td><td style="color:var(--text-tertiary);">Not in v1</td></tr>
+        <tr><td>7</td><td>AI-Augmented</td><td>Human-AI collaboration assessed together</td><td style="color:var(--cat7);font-weight:600;">The Brief</td></tr>
+      </table>
+
+      <h3>6 secondary dimensions</h3>
+      <p>Every task is also classified along 6 secondary dimensions that describe how it's administered and scored.</p>
+
+      <table class="info-table">
+        <tr><th>Dimension</th><th>Options</th></tr>
+        <tr><td>Stakes level</td><td>Low / Medium / High</td></tr>
+        <tr><td>Temporal structure</td><td>On-demand / Extended / Continuous</td></tr>
+        <tr><td>Collaboration mode</td><td>Individual / Collaborative / Hybrid</td></tr>
+        <tr><td>Problem structure</td><td>Well-structured / Ill-structured / Open-ended</td></tr>
+        <tr><td>Authenticity level</td><td>Proximal / Distal / Embedded</td></tr>
+        <tr><td>Scoring method</td><td>Human / Machine / Hybrid / Self-Peer</td></tr>
+      </table>
+
+      <div class="info-callout">
+        <p>Source: PBA Classification System v1.2, AI Products Team, May 2026. Grounded in Messick (1994), Linn, Baker & Dunbar (1991), and Jackson & Zapata-Rivera (2015).</p>
+      </div>
+    </div>
+
+    <!-- ARCHITECTURE TAB -->
+    <div class="info-section" id="tab-architecture">
+      <h3>Shell + construct pack design</h3>
+      <p>Every task is built as two distinct layers: a <strong>task shell</strong> (the interaction mechanics — chat UI, workspace, data explorer, writing editor) and a <strong>construct pack</strong> (the domain content — questions, scenarios, datasets, rubrics).</p>
+
+      <div class="arch-diagram">TASK SHELL (fixed code)
+├── Interaction mechanics
+├── Evidence logger
+├── UI components
+├── Scoring engine
+└── Feedback renderer
+
+CONSTRUCT PACK (swappable JSON)
+├── construct_id + name
+├── dimensions[]
+├── content (questions, data, sources)
+├── scoring_rubric
+├── feedback_templates
+└── persona / framing</div>
+
+      <p>The shell never references a specific construct. It reads dimension names, scoring criteria, persona details, and feedback templates from the construct pack at runtime.</p>
+
+      <h3>Evidence collection</h3>
+      <p>Every task emits events to a universal evidence logger that captures actions, timing, decisions, and revisions. Event types include: task_start/end, item_view, user_input, interaction, revision, and submission.</p>
+
+      <h3>Scoring modes</h3>
+      <table class="info-table">
+        <tr><th>Mode</th><th>How it works</th><th>When to use</th></tr>
+        <tr><td>Demo mode</td><td>Rule-based scoring using keyword matching and answer keys</td><td>Default — works offline, no API needed</td></tr>
+        <tr><td>AI-enhanced</td><td>LLM-as-judge for open-ended responses</td><td>Toggle on for richer scoring of written/verbal responses</td></tr>
+      </table>
+    </div>
+
+    <!-- CONSTRUCT FLEXIBILITY TAB -->
+    <div class="info-section" id="tab-flexibility">
+      <h3>Any shell, any construct</h3>
+      <p>Each task shell can be pivoted to a completely different domain by swapping the construct pack JSON. The UI code doesn't change — only the content.</p>
+
+      <h3>Signal Check (chat shell)</h3>
+      <table class="info-table">
+        <tr><th>Construct</th><th>Persona</th><th>Dimensions</th></tr>
+        <tr><td style="font-weight:600;color:var(--cat4);">AI Literacy (default)</td><td>Riley — tech friend</td><td>Familiarity, Ethics, Applications, Future</td></tr>
+        <tr><td>Financial Literacy</td><td>Jordan — finance friend</td><td>Comprehension, Application, Risk, Ethics</td></tr>
+        <tr><td>Data Literacy</td><td>Sam — analyst colleague</td><td>Reading Data, Interpreting, Bias, Communicating</td></tr>
+        <tr><td>Cybersecurity</td><td>Alex — IT security</td><td>Threats, Practices, Response, Privacy</td></tr>
+        <tr><td>Project Management</td><td>Morgan — PM mentor</td><td>Planning, Risk, Stakeholders, Prioritization</td></tr>
+      </table>
+
+      <h3>The Brief (workspace shell)</h3>
+      <table class="info-table">
+        <tr><th>Construct</th><th>Scenario</th><th>Deliverable</th></tr>
+        <tr><td style="font-weight:600;color:var(--cat7);">AI Fluency (default)</td><td>Market entry consulting</td><td>Strategy memo</td></tr>
+        <tr><td>Financial Analysis</td><td>Acquisition evaluation</td><td>Investment brief</td></tr>
+        <tr><td>Code Review</td><td>PR review before release</td><td>Review summary</td></tr>
+        <tr><td>Project Management</td><td>Troubled project triage</td><td>Recovery plan</td></tr>
+        <tr><td>Clinical Reasoning</td><td>Patient intake review</td><td>Care priority list</td></tr>
+      </table>
+
+      <h3>Effort to add a construct</h3>
+      <table class="info-table">
+        <tr><th>Swap type</th><th>Time</th><th>What's involved</th></tr>
+        <tr><td>JSON-only swap</td><td>2-4 hours</td><td>Write questions, sources, rubrics, feedback</td></tr>
+        <tr><td>+ custom tool widget</td><td>1-2 days</td><td>JSON pack + a domain-specific tool component</td></tr>
+        <tr><td>New shell entirely</td><td>1-2 weeks</td><td>New interaction mechanic (e.g., video, VR)</td></tr>
+      </table>
+
+      <div class="info-callout">
+        <p>The construct is always transparent to the user. Before, during, and after each task, the system shows what's being measured and why — a core fairness principle (Messick, 1994).</p>
+      </div>
+    </div>
+
+    <!-- SAMPLE JSON TAB -->
+    <div class="info-section" id="tab-sample-json">
+      <h3>Construct Pack format</h3>
+      <p>Every task shell reads its content from a <strong>construct pack</strong> — a single JSON object that defines what's assessed, how questions are framed, and how responses are scored. Swapping the pack pivots the task to a new construct without touching the shell code.</p>
+      <p>Below is a trimmed example showing how Signal Check could be reconfigured for <strong>Financial Literacy</strong>. The live AI Literacy pack has 12 questions; this sample shows the structure with 2.</p>
+
+      <div class="arch-diagram">{
+  "construct_id": "financial_literacy",
+  "construct_name": "Financial Literacy",
+  "construct_description": "Understanding of personal finance concepts including budgeting, investing, debt management, and risk assessment.",
+
+  "pba_category": {
+    "id": 4,
+    "name": "Simulation-Based Assessment",
+    "description": "Conversation with a simulated financial advisor"
+  },
+
+  "secondary_dimensions": {
+    "stakes": "Low (formative / demonstration)",
+    "temporal": "Single-session, 10-15 min",
+    "collaboration": "Individual",
+    "problem_structure": "Semi-structured",
+    "authenticity": "Simulated workplace",
+    "scoring": "Automated rule-based + optional AI"
+  },
+
+  "dimensions": [
+    {
+      "id": "budgeting",
+      "name": "Budgeting",
+      "icon": "💰",
+      "description": "Can you create and evaluate a realistic budget?",
+      "max_questions": 3,
+      "max_points_per": 3,
+      "color": "#10b981"
+    },
+    {
+      "id": "investing",
+      "name": "Investing",
+      "icon": "📈",
+      "description": "Do you understand risk, diversification, and return?",
+      "max_questions": 3,
+      "max_points_per": 3,
+      "color": "#6366f1"
+    },
+    {
+      "id": "debt",
+      "name": "Debt Management",
+      "icon": "💳",
+      "description": "Can you evaluate borrowing decisions and repayment strategies?",
+      "max_questions": 3,
+      "max_points_per": 3,
+      "color": "#f59e0b"
+    },
+    {
+      "id": "risk",
+      "name": "Risk Assessment",
+      "icon": "🛡️",
+      "description": "Can you identify and weigh financial risks?",
+      "max_questions": 3,
+      "max_points_per": 3,
+      "color": "#ef4444"
+    }
+  ],
+
+  "persona": {
+    "name": "Morgan",
+    "avatar_letter": "M",
+    "role": "Financial Wellness Coach",
+    "tone": "Warm, practical, encouraging"
+  },
+
+  "framing": {
+    "intro": "You've just been paired with Morgan, a financial wellness coach, to check in on your personal finance skills.",
+    "context": "Think of this as a friendly money chat — not a test."
+  },
+
+  "intro_messages": [
+    "Hey! I'm Morgan, your financial wellness coach. 👋",
+    "Let's do a quick check-in on how you think about money — budgeting, investing, debt, and risk.",
+    "No trick questions — just tell me how you'd handle some real-life money situations. Ready?"
+  ],
+
+  "questions": [
+    {
+      "id": "q1",
+      "dimension": "budgeting",
+      "messages": [
+        "Your friend just got their first full-time job earning $4,000/month after taxes.",
+        "They ask you: 'How should I split up my paycheck?' What would you tell them?"
+      ],
+      "acknowledgments": [
+        "Nice breakdown — I like how practical that is.",
+        "Solid advice! You clearly think about this stuff."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high_keywords": ["50/30/20", "emergency fund", "savings", "needs", "wants", "automate", "budget"],
+        "mid_keywords": ["save", "rent", "bills", "track", "expenses", "percent"],
+        "low_keywords": ["spend", "money", "pay"],
+        "length_threshold": 40
+      }
+    },
+    {
+      "id": "q2",
+      "dimension": "investing",
+      "messages": [
+        "A coworker says: 'I put my entire retirement fund into one tech stock because it's been going up for 2 years.'",
+        "What would you say to them — and why?"
+      ],
+      "acknowledgments": [
+        "Great thinking on the risk side!",
+        "You're spot on about diversification."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high_keywords": ["diversify", "diversification", "index fund", "risk", "portfolio", "asset allocation", "concentration"],
+        "mid_keywords": ["volatile", "spread", "balance", "ETF", "mutual fund", "past performance"],
+        "low_keywords": ["stock", "invest", "market", "return"],
+        "length_threshold": 40
+      }
+    }
+  ],
+
+  "overall_labels": [
+    { "min": 0, "max": 40, "label": "Building foundations", "emoji": "🌱" },
+    { "min": 41, "max": 70, "label": "Growing confidence", "emoji": "📊" },
+    { "min": 71, "max": 90, "label": "Strong literacy", "emoji": "💪" },
+    { "min": 91, "max": 100, "label": "Financial fluency", "emoji": "🏆" }
+  ],
+
+  "feedback_templates": {
+    "high": "You showed strong understanding of {dimension}. Your responses were specific and practical.",
+    "mid": "You have a decent grasp of {dimension}. Adding more concrete strategies would strengthen your approach.",
+    "low": "This is an area to build on. Consider exploring resources on {dimension} to develop your skills."
+  }
+}</div>
+
+      <div class="info-callout">
+        <p><strong>To create a new variant:</strong> Copy this structure, change the construct fields, write dimension-appropriate questions and scorers, and drop it into the shell. No code changes needed — the shell reads everything from the pack at load time.</p>
+      </div>
+
+      <h3>Key design principles</h3>
+      <table class="info-table">
+        <tr><th>Principle</th><th>How the JSON enforces it</th></tr>
+        <tr><td>Construct transparency</td><td><code>construct_name</code> and <code>dimensions[]</code> are shown to the user before, during, and after the task</td></tr>
+        <tr><td>Scorer portability</td><td>Each question carries its own <code>scorer</code> spec — the shell engine is generic</td></tr>
+        <tr><td>Persona flexibility</td><td>The <code>persona</code> object sets name, avatar, role, and tone — no hardcoded characters</td></tr>
+        <tr><td>Dimension independence</td><td>Dimensions are an array — add 3 or 6, the shell adapts automatically</td></tr>
+        <tr><td>Feedback templates</td><td><code>{dimension}</code> placeholder is filled at runtime from the dimension name</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ── Info panel ──
+function openInfo() {
+  document.getElementById('infoOverlay').classList.add('open');
+  document.getElementById('infoPanel').classList.add('open');
+}
+
+function closeInfo() {
+  document.getElementById('infoOverlay').classList.remove('open');
+  document.getElementById('infoPanel').classList.remove('open');
+}
+
+// ── Info tabs ──
+document.querySelectorAll('.info-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.info-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.info-section').forEach(s => s.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ── Keyboard ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeInfo();
+});
+</script>
+
+</body>
+</html>

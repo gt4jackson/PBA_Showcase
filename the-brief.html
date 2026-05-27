@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Brief — PBA Showcase</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ETS 2024 Rebrand Palette */
+  --bg: #1a212b;
+  --surface: #242e3d;
+  --surface-alt: #2c3849;
+  --surface-hover: #344256;
+  --text: #f2e9d8;
+  --text-secondary: #b8b0a0;
+  --text-tertiary: #7e7a72;
+  --border: rgba(242,233,216,0.08);
+  --border-strong: rgba(242,233,216,0.15);
+  --accent: #4dd3fe;
+  --accent-light: rgba(77,211,254,0.12);
+  --accent-glow: rgba(77,211,254,0.3);
+  --emerald: #468254;
+  --emerald-bg: rgba(70,130,84,0.15);
+  --amber: #f59e0b;
+  --amber-bg: rgba(245,158,11,0.15);
+  --rose: #f43f5e;
+  --rose-bg: rgba(244,63,94,0.15);
+  --violet: #9e9eff;
+  --violet-bg: rgba(158,158,255,0.15);
+  --teal: #103d4b;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+body {
+  font-family: 'Beausite Classic', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── SCROLLBAR ──────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.2); border-radius: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ── TOP BAR ──────────────────────────────── */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s;
+}
+
+.back-btn:hover { color: var(--text); background: var(--surface-alt); }
+
+.scenario-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.client-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--surface-alt);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.budget-tag {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.budget-ok { background: var(--emerald-bg); color: var(--emerald); border-color: rgba(16,185,129,0.3); }
+.budget-low { background: var(--amber-bg); color: var(--amber); border-color: rgba(245,158,11,0.3); }
+.budget-critical { background: var(--rose-bg); color: var(--rose); border-color: rgba(244,63,94,0.3); }
+
+.planner-btn, .submit-btn, .info-toggle-btn {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.planner-btn {
+  background: var(--surface-alt);
+  color: var(--text-secondary);
+}
+.planner-btn:hover { background: var(--surface-hover); color: var(--text); }
+
+.info-toggle-btn {
+  background: var(--violet-bg);
+  color: var(--violet);
+  border-color: rgba(139,92,246,0.3);
+}
+.info-toggle-btn:hover { background: rgba(139,92,246,0.25); }
+
+.submit-btn {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  font-weight: 600;
+}
+.submit-btn:hover { background: #3bbde5; }
+.submit-btn:disabled { background: var(--surface-alt); color: var(--text-tertiary); border-color: var(--border); cursor: not-allowed; }
+
+/* ── MAIN LAYOUT ──────────────────────────────── */
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr minmax(260px, 320px);
+  gap: 1px;
+  background: var(--border);
+  min-height: 0;
+  overflow: hidden;
+  max-width: 100vw;
+}
+
+.panel {
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.panel-header-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+}
+
+.panel-tabs {
+  display: flex;
+  gap: 2px;
+}
+
+.panel-tab {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.panel-tab:hover { background: var(--surface-alt); color: var(--text-secondary); }
+.panel-tab.active { background: var(--accent-light); color: var(--accent); }
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* ── LEFT: INBOX & FILES ──────────────────────── */
+.mail-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.1s;
+  color: var(--text);
+}
+
+.mail-item:hover { background: var(--surface-alt); }
+.mail-item.active { background: var(--accent-light); border-left: 3px solid var(--accent); }
+
+.mail-from {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mail-subject {
+  font-size: 13px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mail-preview {
+  padding: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+}
+
+.mail-preview-header {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+
+.mail-preview-subject {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.file-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.1s;
+  color: var(--text);
+}
+
+.file-item:hover { background: var(--surface-alt); }
+.file-item.active { background: var(--accent-light); border-left: 3px solid var(--accent); }
+
+.file-name {
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+}
+
+.file-meta {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.file-reliability-outdated { color: var(--amber); }
+.file-reliability-reliable { color: var(--emerald); }
+
+.file-content-view {
+  padding: 14px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+}
+
+.empty-state {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+/* ── CENTER: BRIEFING + EDITOR ──────────────── */
+.center-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.briefing-bar {
+  padding: 14px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-height: 120px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.briefing-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+}
+
+.deliverable-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.deliverable-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.word-count {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.word-count.over { color: var(--rose); }
+
+.deliverable-instructions {
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+}
+
+.editor-area {
+  flex: 1;
+  min-height: 0;
+}
+
+.editor-area textarea {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  border: none;
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.7;
+  resize: none;
+  outline: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+}
+
+.editor-area textarea::placeholder { color: var(--text-tertiary); }
+
+/* ── RIGHT: AI WORKBENCH ──────────────────── */
+.tool-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.tool-tab {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tool-tab:hover { border-color: var(--accent); color: var(--text); }
+.tool-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+.tool-cost {
+  opacity: 0.6;
+  margin-left: 4px;
+}
+
+.tool-desc {
+  padding: 8px 12px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  line-height: 1.5;
+}
+
+.wb-history {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+.wb-msg {
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  border: 1px solid var(--border);
+}
+
+.wb-msg-user {
+  background: var(--surface-alt);
+  border-color: var(--border);
+}
+
+.wb-msg-tool {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.wb-msg-system {
+  background: var(--amber-bg);
+  border-color: rgba(245,158,11,0.3);
+  color: var(--amber);
+}
+
+.wb-msg-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+
+.wb-input-area {
+  padding: 10px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.wb-input-area textarea {
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+}
+
+.wb-input-area textarea:focus { border-color: var(--accent); }
+
+.wb-input-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.wb-input-meta {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.wb-run-btn {
+  font-size: 11px;
+  padding: 4px 14px;
+  border-radius: 4px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.wb-run-btn:hover { background: #3bbde5; }
+.wb-run-btn:disabled { background: var(--surface-alt); color: var(--text-tertiary); cursor: not-allowed; }
+
+/* ── PLANNER MODAL ──────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 520px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.modal-close:hover { color: var(--text); }
+
+.modal-body {
+  padding: 18px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-hint {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.plan-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.plan-input-row input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+}
+
+.plan-input-row input:focus { border-color: var(--accent); }
+
+.plan-add-btn {
+  padding: 6px 14px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.plan-steps {
+  list-style: none;
+}
+
+.plan-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.plan-step-num {
+  color: var(--text-tertiary);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.plan-step-text { flex: 1; }
+
+.plan-step-remove {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 4px;
+}
+
+.plan-step-remove:hover { color: var(--rose); }
+
+.modal-footer {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ── CONSTRUCT INFO PANEL ──────────────────── */
+.info-drawer {
+  position: fixed;
+  top: 0;
+  right: -380px;
+  width: 380px;
+  height: 100vh;
+  background: var(--surface);
+  border-left: 1px solid var(--border-strong);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.25s ease;
+}
+
+.info-drawer.open { right: 0; }
+
+.info-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.info-drawer-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.info-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+}
+
+.info-drawer-body h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 16px 0 8px;
+}
+
+.info-drawer-body h4:first-child { margin-top: 0; }
+
+.info-drawer-body p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  margin-bottom: 14px;
+}
+
+.info-table th, .info-table td {
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.info-table th {
+  color: var(--text-tertiary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.info-table td { color: var(--text-secondary); }
+
+.dim-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* ── RESULTS OVERLAY ──────────────────────────── */
+.results-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 200;
+  overflow-y: auto;
+  display: none;
+  padding: 40px 20px;
+}
+
+.results-overlay.open { display: block; }
+
+.results-container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.results-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.results-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.results-scenario-title {
+  font-family: 'Speckless', Georgia, 'Times New Roman', serif;
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.composite-block {
+  text-align: right;
+}
+
+.composite-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.composite-score {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tier-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tier-gold { color: #facc15; }
+.tier-silver { color: #cbd5e1; }
+.tier-bronze { color: #fb923c; }
+.tier-none { color: var(--text-tertiary); }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.stat-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+
+.stat-box-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-tertiary);
+}
+
+.stat-box-value {
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.result-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.result-card-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+
+.skill-bar-row {
+  margin-bottom: 10px;
+}
+
+.skill-bar-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  text-transform: capitalize;
+}
+
+.skill-bar-track {
+  height: 8px;
+  background: var(--surface-alt);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.skill-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.skill-high { background: var(--emerald); }
+.skill-mid { background: var(--accent); }
+.skill-low { background: var(--rose); }
+
+.feedback-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.feedback-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.feedback-good { color: var(--emerald); }
+.feedback-bad { color: var(--rose); }
+
+.feedback-dim { font-weight: 600; color: var(--text); }
+.feedback-note { color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
+
+.trap-list {
+  list-style: disc;
+  padding-left: 20px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.results-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.results-actions button {
+  padding: 8px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.btn-primary:hover { background: #3bbde5; }
+
+.btn-ghost {
+  background: var(--surface-alt);
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover { background: var(--surface-hover); color: var(--text); }
+
+/* ── LANDING SCREEN ──────────────────────────── */
+.landing-screen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.landing-inner {
+  max-width: 600px;
+}
+
+.landing-tag {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.landing-title {
+  font-family: 'Speckless', Georgia, 'Times New Roman', serif;
+  font-size: 32px;
+  font-weight: 400;
+  margin-bottom: 14px;
+  line-height: 1.3;
+}
+
+.landing-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.landing-skills {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-bottom: 24px;
+  line-height: 1.8;
+}
+
+.landing-start-btn {
+  padding: 10px 24px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.landing-start-btn:hover { background: #3bbde5; }
+
+/* ── CONSTRUCT BANNER ──────────────────────────── */
+.construct-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  z-index: 50;
+}
+
+.construct-banner-name {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.construct-banner a {
+  color: var(--violet);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.construct-banner a:hover { text-decoration: underline; }
+
+/* ── HIDDEN ──────────────────────────────── */
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  CONSTRUCT PACK LOADER                        -->
+<!--  Default: scenarios/the-brief-critical-thinking.json -->
+<!--  Override via URL param: ?scenario=path.json  -->
+<!--  Inline fallback kept for file:// usage       -->
+<!-- ══════════════════════════════════════════════ -->
+<script>
+const DEFAULT_SCENARIO = 'scenarios/the-brief-critical-thinking.json';
+
+const CONSTRUCT_PACK_INLINE = {
+  construct_id: "critical_thinking_ai",
+  construct_name: "Critical Thinking with AI Tools",
+  construct_description: "The ability to decompose a messy problem, select the right AI tools, write effective prompts, and critically evaluate outputs before acting on them.",
+
+  pba_category: {
+    id: 7,
+    name: "AI-Augmented Performance Tasks",
+    description: "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+
+  secondary_dimensions: {
+    stakes: "Medium (formative / demonstration)",
+    temporal: "Single-session, 15-20 min",
+    collaboration: "Individual",
+    problem_structure: "Ill-structured",
+    authenticity: "Proximal (simulated workplace)",
+    scoring: "Hybrid (rule-based + optional LLM judge)"
+  },
+
+  skills: [
+    { id: "prompt_engineering", name: "Prompt Engineering", icon: "✏️", description: "Writing clear, specific prompts that get useful results from AI tools.", color: "#3b82f6", weight: 0.25 },
+    { id: "critical_evaluation", name: "Critical Evaluation", icon: "🔍", description: "Spotting hallucinations, bias, errors, and unreliable outputs.", color: "#f43f5e", weight: 0.40 },
+    { id: "task_decomposition", name: "Task Decomposition", icon: "🧩", description: "Breaking a messy problem into logical, AI-solvable subtasks.", color: "#10b981", weight: 0.25 },
+    { id: "tool_selection", name: "Tool Selection", icon: "🛠️", description: "Picking the right tool for each subtask (chat, search, calc, expert).", color: "#f59e0b", weight: 0.10 }
+  ],
+
+  scenario: {
+    id: "market_entry_memo",
+    title: "The Market Entry Memo",
+    client: "Brewhaus Coffee Co.",
+    estimated_minutes: 20,
+    budget_tokens: 100,
+
+    briefing: "Brewhaus Coffee Co. is a US-based direct-to-consumer coffee brand considering expansion into Canada. The CEO needs a one-page memo with a clear recommendation (enter / don't enter / enter conditionally) and the reasoning behind it.\n\nYou have the reference files in your workspace and access to the AI Workbench. Be careful — not everything in the reference materials is accurate, and the AI Workbench can make mistakes too.",
+
+    inbox: [
+      {
+        id: "email_1",
+        from: "Jane Kim <jane@brewhaus.example>",
+        subject: "Canada expansion — need your memo by EOD",
+        body: "Hey, welcome aboard.\n\nAs discussed, I need a one-page memo on whether Brewhaus should expand into Canada. Give me a clear recommendation and the top 3 reasons. The board meets tomorrow so please keep it tight.\n\nFiles are in your workspace.\n\n— Jane"
+      },
+      {
+        id: "email_2",
+        from: "Marcus Webb <marcus@brewhaus.example>",
+        subject: "FYI — tariffs rumor",
+        body: "Heads up: I heard on a podcast that Canada just imposed a new 40% tariff on US coffee imports. Haven't verified. Might want to check before you write the memo."
+      },
+      {
+        id: "email_3",
+        from: "Priya Shah <priya@brewhaus.example>",
+        subject: "Customer survey — Canadian interest",
+        body: "Attaching the raw customer survey from last quarter. 312 Canadian respondents said they'd buy from us if we shipped north.\n\n(File: customer_survey.txt)"
+      }
+    ],
+
+    files: [
+      {
+        id: "file_market_report",
+        name: "canada_coffee_market_2019.pdf",
+        type: "reference",
+        reliability: "outdated",
+        content: "CANADA COFFEE MARKET REPORT (2019)\n\nThe Canadian coffee market was valued at $6.2B in 2019, growing at 3.1% annually. Per-capita consumption is among the highest in the world at ~152 liters per year. Direct-to-consumer coffee sales represented 4% of the market in 2019 and were projected to reach 7% by 2023.\n\nTop competitors: Tim Hortons (dominant), Second Cup, independent roasters. DTC players are fragmented.\n\nRegulatory notes (2019): US-origin coffee enters Canada under USMCA / CUSMA with minimal tariffs on raw green coffee; processed/roasted coffee may have small duties depending on HS code.\n\n[NOTE: This report is from 2019 and has not been updated.]"
+      },
+      {
+        id: "file_survey",
+        name: "customer_survey.txt",
+        type: "data",
+        reliability: "reliable",
+        content: "BREWHAUS CUSTOMER SURVEY — Q2 CANADIAN INTEREST\n\nRespondents: 312 self-identified Canadian residents\nRecruitment: Instagram ad, $5 gift card incentive\n\nKey results:\n- 68% said 'yes, I would buy from Brewhaus if shipping were available'\n- 52% said they currently buy specialty coffee online\n- Price sensitivity: median willingness to pay $22/bag (CAD)\n- Shipping tolerance: 74% expect delivery in under 7 days\n\nMethodology caveats: self-selected sample, small N, social-media recruited (likely skews urban / younger / higher-income)."
+      },
+      {
+        id: "file_financials",
+        name: "brewhaus_unit_economics.txt",
+        type: "data",
+        reliability: "reliable",
+        content: "BREWHAUS UNIT ECONOMICS (US DOMESTIC)\n\n- Average order value: $38\n- COGS per order: $14\n- Shipping cost per order (US domestic): $6\n- Contribution margin per order: $18 (47%)\n- Customer acquisition cost: $22\n- Payback period: 1.2 orders\n\nNotes: Cross-border shipping to Canada would add estimated $9-14 per order based on current carrier rates, not including any duties, brokerage, or GST/HST handling."
+      }
+    ],
+
+    workbench_tools: [
+      { id: "chat_llm", name: "Chat AI", description: "General-purpose chat assistant. Good for writing, brainstorming, and summarization. Can make things up.", cost: 5, icon: "💬" },
+      { id: "web_search", name: "Web Search", description: "Searches the web for current information. Good for facts, news, and verifying claims.", cost: 8, icon: "🔎" },
+      { id: "calculator", name: "Calculator", description: "Exact numeric computation. Use for math. Do NOT use a chat LLM for arithmetic.", cost: 1, icon: "🧮" },
+      { id: "expert", name: "Human Expert", description: "Consult a domain expert. Expensive but highly reliable for edge cases and judgment calls.", cost: 25, icon: "👤" }
+    ],
+
+    scripted_responses: [
+      { tool_id: "chat_llm", keywords: ["tariff", "40%", "canada"], response: "Yes, I can confirm that Canada has a 40% tariff on US coffee imports as of early 2024. This applies to both raw green beans and roasted coffee under harmonized HS codes.", is_hallucination: true, trap_id: "tariff_hallucination" },
+      { tool_id: "web_search", keywords: ["tariff", "canada", "coffee"], response: "Search results indicate NO new tariffs on US coffee imports to Canada. Under CUSMA (the updated NAFTA), most coffee products from the US enter Canada duty-free or at very low rates. The '40% tariff' claim appears to originate from a single unverified podcast episode and has been debunked by trade publications.", is_hallucination: false, trap_id: "tariff_hallucination" },
+      { tool_id: "chat_llm", keywords: ["market size", "canada", "coffee"], response: "Based on recent data, the Canadian coffee market is approximately $8.5B as of 2024, growing at around 4% annually. DTC is one of the fastest-growing segments.", is_hallucination: false },
+      { tool_id: "web_search", keywords: ["market size", "canada", "coffee"], response: "Recent industry reports estimate the Canadian coffee market at roughly $8-9B CAD in 2023-2024, with online/DTC representing ~9-11% and growing faster than brick-and-mortar.", is_hallucination: false },
+      { tool_id: "calculator", keywords: ["margin", "canada", "shipping"], response: "Given AOV $38, COGS $14, estimated Canadian shipping $11 (midpoint of $9-14 range):\nContribution per order = $38 - $14 - $11 = $13\nThat's ~34% margin vs the ~47% domestic margin.\nMargin compression: ~28% reduction.", is_hallucination: false },
+      { tool_id: "calculator", keywords: ["38", "14"], response: "38 - 14 = 24\n38 - 14 - 6 = 18 (domestic)\n38 - 14 - 11 = 13 (Canada, midpoint shipping)\n\nDomestic margin: 18/38 = 47.4%\nCanada margin: 13/38 = 34.2%", is_hallucination: false },
+      { tool_id: "expert", keywords: ["recommend", "canada", "expand"], response: "A reasonable recommendation would be 'conditional entry': pilot with a limited SKU range to urban centers (Toronto, Vancouver, Montreal), assume a ~30% margin compression vs US domestic, verify current CUSMA treatment with a customs broker before committing to inventory, and validate the survey signal with a waitlist before full launch. Watch out for GST/HST registration thresholds.", is_hallucination: false },
+      { tool_id: "expert", keywords: ["tariff", "trade"], response: "To my knowledge, there is no 40% tariff on US coffee entering Canada. Under CUSMA, most roasted coffee enters duty-free. I'd recommend verifying directly with a customs broker, but the podcast claim sounds dubious.", is_hallucination: false },
+      { tool_id: "chat_llm", keywords: ["write", "memo", "draft"], response: "Here's a draft structure for your memo:\n\n[DRAFT] Memo: Canada Market Entry Recommendation\n\nRecommendation: [Your call — GO / NO-GO / CONDITIONAL]\n\nKey points to cover:\n1. Market size and growth\n2. Customer signal from survey\n3. Unit economics under new shipping assumptions\n4. Regulatory / tariff situation\n5. Recommended pilot scope if proceeding\n\nWant me to fill this in with a specific recommendation?", is_hallucination: false },
+      { tool_id: "chat_llm", keywords: ["survey", "methodology", "bias"], response: "The survey methodology looks reasonable for directional insight, though there are some caveats: the sample was self-selected via Instagram ads with a gift card incentive, which likely skews toward younger, urban, higher-income respondents. The N of 312 is modest. I'd treat the 68% interest figure as an upper-bound estimate.", is_hallucination: false },
+      { tool_id: "web_search", keywords: ["brewhaus", "coffee"], response: "No results found for 'Brewhaus Coffee Co.' — this appears to be a private or very new brand with no public web presence yet.", is_hallucination: false }
+    ],
+
+    traps: [
+      { id: "tariff_hallucination", type: "hallucination", description: "Chat AI fabricates a 40% Canadian tariff on US coffee imports.", penalty_if_missed: 25, bonus_if_caught: 15 },
+      { id: "outdated_market_report", type: "stale_data", description: "The 2019 market report is 5+ years old. Numbers have changed significantly.", penalty_if_missed: 10, bonus_if_caught: 10 },
+      { id: "survey_methodology", type: "weak_evidence", description: "The customer survey has real methodology issues (self-selected, small N, incentivized).", penalty_if_missed: 10, bonus_if_caught: 10 }
+    ],
+
+    deliverable: {
+      id: "memo",
+      name: "One-page Market Entry Memo",
+      instructions: "Write a one-page memo to the CEO with: (1) a clear recommendation, (2) top 3 supporting reasons, (3) key risks, (4) any assumptions you had to make. Keep it under 400 words.",
+      max_words: 400,
+      min_words: 150
+    },
+
+    rubric: [
+      { id: "clear_recommendation", name: "Clear recommendation", weight: 0.20, description: "Does the memo state a specific, actionable recommendation?", keywords_positive: ["recommend", "should", "pilot", "enter", "do not enter", "conditional", "proceed", "advise", "suggest"] },
+      { id: "uses_reliable_data", name: "Uses reliable data", weight: 0.20, description: "Does the memo cite the survey and unit economics appropriately?", keywords_positive: ["survey", "margin", "unit econ", "shipping", "AOV", "respondents", "$38", "$14", "312", "68%"] },
+      { id: "catches_tariff_trap", name: "Critical evaluation — tariff", weight: 0.25, description: "Does the memo correctly handle the tariff rumor (verify it's false or omit it)?", trap_id: "tariff_hallucination" },
+      { id: "notes_caveats", name: "Notes data caveats", weight: 0.15, description: "Does the memo acknowledge data limitations (outdated report, survey methodology)?", keywords_positive: ["outdated", "stale", "methodology", "self-selected", "small sample", "caveat", "2019", "bias", "skew", "limitation"] },
+      { id: "structure_and_length", name: "Structure and length", weight: 0.10, description: "Is the memo within target length, well-structured, and readable?" },
+      { id: "assumptions_stated", name: "Assumptions stated", weight: 0.10, description: "Does the memo explicitly call out assumptions?", keywords_positive: ["assume", "assumption", "if", "pending", "subject to", "contingent", "provided that"] }
+    ],
+
+    coaching_tips: [
+      "LLMs will confidently state false facts. Always verify numeric or legal claims with a more reliable source (web search or an expert).",
+      "Older reports (like the 2019 market report) can anchor your thinking on outdated numbers. Always check the date.",
+      "Small, self-selected surveys are a weak signal — useful directionally, not as ground truth.",
+      "Matching the tool to the task (calculator for math, search for facts, expert for judgment) saves budget and improves accuracy.",
+      "Plan before you execute. Breaking a messy task into clear steps prevents wasted effort and missed details."
+    ]
+  },
+
+  overall_labels: [
+    { min: 0, max: 59, label: "Developing", emoji: "🌱" },
+    { min: 60, max: 74, label: "Bronze — Competent", emoji: "🥉" },
+    { min: 75, max: 89, label: "Silver — Proficient", emoji: "🥈" },
+    { min: 90, max: 100, label: "Gold — Expert", emoji: "🥇" }
+  ]
+};
+</script>
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  HTML STRUCTURE — all IDs/classes are generic -->
+<!-- ══════════════════════════════════════════════ -->
+
+<!-- LANDING SCREEN -->
+<div id="screen-landing" class="landing-screen">
+  <div class="landing-inner">
+    <div class="landing-tag" id="landing-category">AI-Augmented Task</div>
+    <h1 class="landing-title" id="landing-title">The Market Entry Memo</h1>
+    <p class="landing-desc" id="landing-desc">You're a consultant at Meridian Consulting. A client has sent you a messy problem and needs a deliverable by end of day. Use your workspace — inbox, reference files, and the AI Workbench — to research, plan, and produce a high-quality memo.</p>
+    <div class="landing-skills" id="landing-skills"></div>
+    <button class="landing-start-btn" onclick="startWorkspace()">Accept assignment →</button>
+  </div>
+</div>
+
+<!-- WORKSPACE SCREEN -->
+<div id="screen-workspace" class="hidden" style="flex:1;display:flex;flex-direction:column;height:100vh;">
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <button class="back-btn" onclick="exitToHub()">← Exit</button>
+      <span class="scenario-title" id="ws-title">The Market Entry Memo</span>
+      <span class="client-tag" id="ws-client">Brewhaus Coffee Co.</span>
+    </div>
+    <div class="top-bar-right">
+      <span class="budget-tag budget-ok" id="ws-budget">Budget: 100/100</span>
+      <button class="planner-btn" onclick="openPlanner()" id="ws-planner-btn">Planner (0)</button>
+      <button class="info-toggle-btn" onclick="toggleInfoDrawer()">What's measured?</button>
+      <button class="submit-btn" id="ws-submit-btn" onclick="submitDeliverable()" disabled>Submit deliverable</button>
+    </div>
+  </div>
+
+  <!-- 3-panel workspace -->
+  <div class="workspace" style="flex:1;">
+
+    <!-- LEFT: Inbox / Files -->
+    <div class="panel" id="left-panel">
+      <div class="panel-header">
+        <div class="panel-tabs" id="left-tabs">
+          <button class="panel-tab active" data-left-tab="inbox">Inbox</button>
+          <button class="panel-tab" data-left-tab="files">Files</button>
+        </div>
+      </div>
+      <div class="panel-body" id="left-body">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+
+    <!-- CENTER: Briefing + Editor -->
+    <div class="panel center-panel">
+      <div class="briefing-bar">
+        <div class="briefing-label">Client briefing</div>
+        <div id="ws-briefing">Loading...</div>
+      </div>
+      <div class="deliverable-header">
+        <span class="deliverable-title" id="ws-deliverable-name">Deliverable</span>
+        <span class="word-count" id="ws-word-count">0 / 400 words</span>
+      </div>
+      <div class="deliverable-instructions" id="ws-deliverable-instructions">Instructions loading...</div>
+      <div class="editor-area">
+        <textarea id="ws-editor" placeholder="Draft your deliverable here..."></textarea>
+      </div>
+    </div>
+
+    <!-- RIGHT: AI Workbench -->
+    <div class="panel" id="right-panel">
+      <div class="panel-header">
+        <span class="panel-header-title">AI Workbench</span>
+      </div>
+      <div class="tool-tabs" id="wb-tool-tabs">
+        <!-- Filled by JS -->
+      </div>
+      <div class="tool-desc" id="wb-tool-desc">Select a tool.</div>
+      <div class="wb-history" id="wb-history">
+        <div class="empty-state">Pick a tool, write a prompt, and run it. Tools cost tokens from your budget.</div>
+      </div>
+      <div class="wb-input-area">
+        <textarea id="wb-prompt" placeholder="Write your prompt here... (Ctrl/Cmd+Enter to run)" rows="2"></textarea>
+        <div class="wb-input-footer">
+          <span class="wb-input-meta" id="wb-input-meta">Cost: — · Remaining: —</span>
+          <button class="wb-run-btn" id="wb-run-btn" onclick="runTool()">Run</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PLANNER MODAL -->
+<div class="modal-overlay hidden" id="planner-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Planner — break the task into steps</span>
+      <button class="modal-close" onclick="closePlanner()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-hint" id="planner-hint">Good plans include: understanding the ask, verifying claims, gathering data, analyzing, drafting, and stating a recommendation.</div>
+      <div class="plan-input-row">
+        <input type="text" id="plan-input" placeholder="Next step… (Enter to add)">
+        <button class="plan-add-btn" onclick="addPlanStep()">Add</button>
+      </div>
+      <ol class="plan-steps" id="plan-steps-list">
+        <!-- Filled by JS -->
+      </ol>
+    </div>
+    <div class="modal-footer">
+      <button class="submit-btn" onclick="closePlanner()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONSTRUCT INFO DRAWER -->
+<div class="info-drawer" id="info-drawer">
+  <div class="info-drawer-header">
+    <span class="info-drawer-title">What's being measured</span>
+    <button class="modal-close" onclick="toggleInfoDrawer()">×</button>
+  </div>
+  <div class="info-drawer-body" id="info-drawer-body">
+    <!-- Filled by JS -->
+  </div>
+</div>
+
+<!-- RESULTS OVERLAY -->
+<div class="results-overlay" id="results-overlay">
+  <div class="results-container" id="results-container">
+    <!-- Filled by JS -->
+  </div>
+</div>
+
+<!-- CONSTRUCT BANNER -->
+<div class="construct-banner" id="construct-banner">
+  Assessing: <span class="construct-banner-name" id="banner-construct-name">—</span>
+  · <a onclick="toggleInfoDrawer()">What's measured?</a>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  SHELL ENGINE — zero construct-specific code  -->
+<!-- ══════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ── PACK LOADER ────────────────────────────────
+async function loadPack() {
+  const params = new URLSearchParams(window.location.search);
+  const url = params.get('scenario') || DEFAULT_SCENARIO;
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(resp.status);
+    return await resp.json();
+  } catch (e) {
+    console.warn('Could not fetch scenario JSON (' + url + '), using inline fallback:', e.message);
+    return CONSTRUCT_PACK_INLINE;
+  }
+}
+
+// ── STATE ──────────────────────────────────────
+const STATE = {
+  screen: 'landing',
+  leftTab: 'inbox',
+  selectedEmailId: null,
+  selectedFileId: null,
+  activeTool: null,
+  plan: [],
+  toolCalls: [],
+  tokensSpent: 0,
+  evidence: [],
+  startTime: null,
+  infoDrawerOpen: false
+};
+
+let PACK = null;
+let SC = null;
+
+// ── EVIDENCE LOGGER ──────────────────────────
+function logEvidence(event, data = {}) {
+  STATE.evidence.push({
+    event,
+    timestamp: new Date().toISOString(),
+    elapsed_ms: STATE.startTime ? Date.now() - STATE.startTime : 0,
+    ...data
+  });
+}
+
+// ── WORD COUNT ───────────────────────────────
+function wordCount(s) {
+  return (s || '').trim().split(/\s+/).filter(Boolean).length;
+}
+
+// ── INIT FROM PACK ──────────────────────────
+function initFromPack() {
+  // Landing
+  document.getElementById('landing-category').textContent = PACK.pba_category.name;
+  document.getElementById('landing-title').textContent = SC.title;
+  document.getElementById('landing-desc').textContent = SC.briefing.split('\n')[0];
+  const skillsHtml = PACK.skills.map(s => `${s.icon} <strong>${s.name}</strong> (${Math.round(s.weight * 100)}%) — ${s.description}`).join('<br>');
+  document.getElementById('landing-skills').innerHTML = 'Skills assessed:<br>' + skillsHtml;
+
+  // Title
+  document.title = SC.title + ' — PBA Showcase';
+
+  // Banner
+  document.getElementById('banner-construct-name').textContent = PACK.construct_name;
+
+  // Workspace header
+  document.getElementById('ws-title').textContent = SC.title;
+  document.getElementById('ws-client').textContent = SC.client;
+
+  // Briefing
+  document.getElementById('ws-briefing').textContent = SC.briefing;
+
+  // Deliverable
+  document.getElementById('ws-deliverable-name').textContent = 'Deliverable — ' + SC.deliverable.name;
+  document.getElementById('ws-deliverable-instructions').textContent = SC.deliverable.instructions;
+
+  // Budget
+  updateBudgetDisplay();
+
+  // Left panel — default to first inbox item selected
+  STATE.selectedEmailId = SC.inbox.length > 0 ? SC.inbox[0].id : null;
+  renderLeftPanel();
+
+  // Workbench tools
+  renderToolTabs();
+  if (SC.workbench_tools.length > 0) {
+    STATE.activeTool = SC.workbench_tools[0].id;
+    updateToolSelection();
+  }
+
+  // Info drawer
+  populateInfoDrawer();
+}
+
+// ── LEFT PANEL RENDERING ──────────────────────
+function renderLeftPanel() {
+  const body = document.getElementById('left-body');
+
+  if (STATE.leftTab === 'inbox') {
+    const listHtml = SC.inbox.map(e => `
+      <button class="mail-item ${STATE.selectedEmailId === e.id ? 'active' : ''}" onclick="selectEmail('${e.id}')">
+        <div class="mail-from">${escHtml(e.from)}</div>
+        <div class="mail-subject">${escHtml(e.subject)}</div>
+      </button>
+    `).join('');
+
+    const selected = SC.inbox.find(e => e.id === STATE.selectedEmailId);
+    const previewHtml = selected
+      ? `<div class="mail-preview">
+          <div class="mail-preview-header">From: ${escHtml(selected.from)}</div>
+          <div class="mail-preview-subject">${escHtml(selected.subject)}</div>
+          ${escHtml(selected.body)}
+        </div>`
+      : '<div class="empty-state">Select an email.</div>';
+
+    body.innerHTML = `
+      <div style="border-bottom: 1px solid var(--border); max-height: 180px; overflow-y: auto;">
+        ${listHtml}
+      </div>
+      <div style="flex:1; overflow-y: auto;">
+        ${previewHtml}
+      </div>
+    `;
+  } else {
+    const listHtml = SC.files.map(f => `
+      <button class="file-item ${STATE.selectedFileId === f.id ? 'active' : ''}" onclick="selectFile('${f.id}')">
+        <div class="file-name">${escHtml(f.name)}</div>
+        <div class="file-meta">${escHtml(f.type)} · <span class="file-reliability-${f.reliability}">${f.reliability}</span></div>
+      </button>
+    `).join('');
+
+    const selected = SC.files.find(f => f.id === STATE.selectedFileId);
+    const contentHtml = selected
+      ? `<div class="file-content-view">${escHtml(selected.content)}</div>`
+      : '<div class="empty-state">Select a file.</div>';
+
+    body.innerHTML = `
+      <div style="border-bottom: 1px solid var(--border); max-height: 180px; overflow-y: auto;">
+        ${listHtml}
+      </div>
+      <div style="flex:1; overflow-y: auto;">
+        ${contentHtml}
+      </div>
+    `;
+  }
+}
+
+function selectEmail(id) {
+  STATE.selectedEmailId = id;
+  logEvidence('email_opened', { email_id: id });
+  renderLeftPanel();
+}
+
+function selectFile(id) {
+  STATE.selectedFileId = id;
+  const file = SC.files.find(f => f.id === id);
+  logEvidence('file_opened', { file_id: id, file_name: file?.name, reliability: file?.reliability });
+  renderLeftPanel();
+}
+
+// ── LEFT TAB SWITCHING ──────────────────────
+document.querySelectorAll('[data-left-tab]').forEach(tab => {
+  tab.addEventListener('click', () => {
+    STATE.leftTab = tab.dataset.leftTab;
+    document.querySelectorAll('[data-left-tab]').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    logEvidence('panel_switch', { panel: STATE.leftTab });
+    renderLeftPanel();
+  });
+});
+
+// ── WORKBENCH TOOL TABS ──────────────────────
+function renderToolTabs() {
+  const container = document.getElementById('wb-tool-tabs');
+  container.innerHTML = SC.workbench_tools.map(t => `
+    <button class="tool-tab ${STATE.activeTool === t.id ? 'active' : ''}" data-tool-id="${t.id}">
+      ${t.icon || ''} ${escHtml(t.name)} <span class="tool-cost">· ${t.cost}</span>
+    </button>
+  `).join('');
+
+  container.querySelectorAll('.tool-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      STATE.activeTool = btn.dataset.toolId;
+      updateToolSelection();
+      logEvidence('tool_selected', { tool_id: STATE.activeTool });
+    });
+  });
+}
+
+function updateToolSelection() {
+  document.querySelectorAll('.tool-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.toolId === STATE.activeTool);
+  });
+  const tool = SC.workbench_tools.find(t => t.id === STATE.activeTool);
+  document.getElementById('wb-tool-desc').textContent = tool ? tool.description : '';
+  document.getElementById('wb-input-meta').textContent = tool
+    ? `Cost: ${tool.cost} · Remaining: ${SC.budget_tokens - STATE.tokensSpent}`
+    : 'Select a tool';
+  updateRunButton();
+}
+
+function updateRunButton() {
+  const tool = SC.workbench_tools.find(t => t.id === STATE.activeTool);
+  const prompt = document.getElementById('wb-prompt').value.trim();
+  const btn = document.getElementById('wb-run-btn');
+  btn.disabled = !prompt || !tool || (SC.budget_tokens - STATE.tokensSpent) < tool.cost;
+}
+
+// ── WORKBENCH: RUN TOOL ──────────────────────
+function runTool() {
+  const promptEl = document.getElementById('wb-prompt');
+  const prompt = promptEl.value.trim();
+  if (!prompt) return;
+
+  const tool = SC.workbench_tools.find(t => t.id === STATE.activeTool);
+  if (!tool) return;
+
+  const remaining = SC.budget_tokens - STATE.tokensSpent;
+  if (remaining < tool.cost) {
+    appendWbMessage('system', '', `Not enough budget to run ${tool.name}. (${tool.cost} needed, ${remaining} left)`);
+    return;
+  }
+
+  // Find scripted response
+  const response = pickScriptedResponse(tool.id, prompt);
+
+  // Record the call
+  const call = {
+    tool_id: tool.id,
+    tool_name: tool.name,
+    prompt: prompt,
+    response: response.text,
+    cost: tool.cost,
+    is_hallucination: response.is_hallucination,
+    trap_id: response.trap_id || null
+  };
+
+  STATE.toolCalls.push(call);
+  STATE.tokensSpent += tool.cost;
+
+  logEvidence('tool_call', {
+    tool_id: tool.id,
+    prompt: prompt,
+    prompt_length: prompt.length,
+    response_length: response.text.length,
+    cost: tool.cost,
+    is_hallucination: response.is_hallucination
+  });
+
+  // Render in history
+  appendWbMessage('user', tool.id, prompt);
+  appendWbMessage('tool', tool.id, response.text);
+
+  // Update budget
+  updateBudgetDisplay();
+  updateToolSelection();
+
+  promptEl.value = '';
+}
+
+function pickScriptedResponse(toolId, prompt) {
+  const pLower = prompt.toLowerCase();
+  const candidates = SC.scripted_responses.filter(r => r.tool_id === toolId);
+
+  let best = null;
+  let bestScore = 0;
+  for (const c of candidates) {
+    const hits = (c.keywords || []).filter(k => pLower.includes(k.toLowerCase())).length;
+    if (hits > bestScore) { bestScore = hits; best = c; }
+  }
+
+  if (best && bestScore > 0) {
+    return { text: best.response, is_hallucination: !!best.is_hallucination, trap_id: best.trap_id };
+  }
+
+  // Default responses per tool type
+  const defaults = {
+    chat_llm: "I can help with that. Could you give me more specifics about what you'd like me to produce or analyze?",
+    web_search: "Search returned several results. Refine your query with specific terms (e.g., product, year, region) for more focused results.",
+    calculator: "No computable expression detected. Try something like '38 - 14 - 11'.",
+    expert: "The expert needs a specific question. What decision are you trying to make?"
+  };
+  return { text: defaults[toolId] || "No response available for this query.", is_hallucination: false, trap_id: null };
+}
+
+function appendWbMessage(role, toolId, content) {
+  const history = document.getElementById('wb-history');
+  // Remove empty state
+  const emptyState = history.querySelector('.empty-state');
+  if (emptyState) emptyState.remove();
+
+  const div = document.createElement('div');
+  div.className = `wb-msg wb-msg-${role}`;
+
+  const labelText = role === 'user' ? `You → ${toolId}` : role === 'tool' ? toolId : 'system';
+  div.innerHTML = `
+    <div class="wb-msg-label">${escHtml(labelText)}</div>
+    <div>${escHtml(content)}</div>
+  `;
+  history.appendChild(div);
+  history.scrollTop = history.scrollHeight;
+}
+
+// ── BUDGET DISPLAY ──────────────────────────
+function updateBudgetDisplay() {
+  const remaining = SC.budget_tokens - STATE.tokensSpent;
+  const el = document.getElementById('ws-budget');
+  el.textContent = `Budget: ${remaining}/${SC.budget_tokens}`;
+  el.className = 'budget-tag ' + (remaining > 50 ? 'budget-ok' : remaining > 20 ? 'budget-low' : 'budget-critical');
+}
+
+// ── EDITOR ──────────────────────────────────
+const editor = document.getElementById('ws-editor');
+editor.addEventListener('input', () => {
+  const wc = wordCount(editor.value);
+  const wcEl = document.getElementById('ws-word-count');
+  wcEl.textContent = `${wc} / ${SC.deliverable.max_words} words`;
+  wcEl.className = 'word-count' + (wc > SC.deliverable.max_words ? ' over' : '');
+
+  // Enable/disable submit
+  document.getElementById('ws-submit-btn').disabled = wc < SC.deliverable.min_words;
+});
+
+// Log typing periodically
+let lastTypingLog = 0;
+editor.addEventListener('input', () => {
+  const now = Date.now();
+  if (now - lastTypingLog > 5000) {
+    lastTypingLog = now;
+    logEvidence('editor_snapshot', { word_count: wordCount(editor.value), char_count: editor.value.length });
+  }
+});
+
+// ── PLANNER ──────────────────────────────────
+function openPlanner() {
+  document.getElementById('planner-overlay').classList.remove('hidden');
+  document.getElementById('plan-input').focus();
+  logEvidence('planner_opened', { steps_count: STATE.plan.length });
+}
+
+function closePlanner() {
+  document.getElementById('planner-overlay').classList.add('hidden');
+  logEvidence('planner_closed', { steps_count: STATE.plan.length });
+  document.getElementById('ws-planner-btn').textContent = `Planner (${STATE.plan.length})`;
+}
+
+function addPlanStep() {
+  const input = document.getElementById('plan-input');
+  const text = input.value.trim();
+  if (!text) return;
+  STATE.plan.push({ id: Date.now() + Math.random(), text });
+  logEvidence('plan_step_added', { step_text: text, total_steps: STATE.plan.length });
+  input.value = '';
+  renderPlanSteps();
+}
+
+function removePlanStep(id) {
+  STATE.plan = STATE.plan.filter(s => s.id !== id);
+  logEvidence('plan_step_removed', { total_steps: STATE.plan.length });
+  renderPlanSteps();
+}
+
+function renderPlanSteps() {
+  const list = document.getElementById('plan-steps-list');
+  if (STATE.plan.length === 0) {
+    list.innerHTML = '<li class="empty-state" style="padding:10px;">No steps yet.</li>';
+    return;
+  }
+  list.innerHTML = STATE.plan.map((s, i) => `
+    <li class="plan-step">
+      <span class="plan-step-num">${i + 1}.</span>
+      <span class="plan-step-text">${escHtml(s.text)}</span>
+      <button class="plan-step-remove" onclick="removePlanStep(${s.id})">×</button>
+    </li>
+  `).join('');
+}
+
+// Enter key in plan input
+document.getElementById('plan-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addPlanStep();
+});
+
+// ── WORKBENCH PROMPT SHORTCUTS ──────────────
+document.getElementById('wb-prompt').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) runTool();
+});
+
+document.getElementById('wb-prompt').addEventListener('input', updateRunButton);
+
+// ── INFO DRAWER ──────────────────────────────
+function toggleInfoDrawer() {
+  STATE.infoDrawerOpen = !STATE.infoDrawerOpen;
+  document.getElementById('info-drawer').classList.toggle('open', STATE.infoDrawerOpen);
+}
+
+function populateInfoDrawer() {
+  const body = document.getElementById('info-drawer-body');
+
+  const dimRows = PACK.skills.map(s => `
+    <tr>
+      <td><span class="dim-color" style="background:${s.color}"></span>${s.icon} ${escHtml(s.name)}</td>
+      <td>${Math.round(s.weight * 100)}%</td>
+      <td>${escHtml(s.description)}</td>
+    </tr>
+  `).join('');
+
+  const secDimRows = Object.entries(PACK.secondary_dimensions).map(([k, v]) => `
+    <tr><td style="text-transform:capitalize;">${escHtml(k)}</td><td>${escHtml(v)}</td></tr>
+  `).join('');
+
+  const toolRows = SC.workbench_tools.map(t => `
+    <tr><td>${t.icon} ${escHtml(t.name)}</td><td>${t.cost}</td><td>${escHtml(t.description)}</td></tr>
+  `).join('');
+
+  const trapRows = SC.traps.map(t => `
+    <tr><td>${escHtml(t.type)}</td><td>${escHtml(t.description)}</td></tr>
+  `).join('');
+
+  body.innerHTML = `
+    <h4>Construct</h4>
+    <p><strong>${escHtml(PACK.construct_name)}</strong><br>${escHtml(PACK.construct_description)}</p>
+
+    <h4>Skills assessed</h4>
+    <table class="info-table">
+      <tr><th>Skill</th><th>Weight</th><th>Description</th></tr>
+      ${dimRows}
+    </table>
+
+    <h4>PBA classification</h4>
+    <table class="info-table">
+      <tr><th>Category</th><td>${PACK.pba_category.id} — ${escHtml(PACK.pba_category.name)}</td></tr>
+      ${secDimRows}
+    </table>
+
+    <h4>Available tools</h4>
+    <table class="info-table">
+      <tr><th>Tool</th><th>Cost</th><th>Description</th></tr>
+      ${toolRows}
+    </table>
+
+    <h4>What to watch for</h4>
+    <p>This scenario contains planted errors and traps. Your score is affected by whether you catch them.</p>
+    <table class="info-table">
+      <tr><th>Type</th><th>Description</th></tr>
+      ${trapRows}
+    </table>
+
+    <h4>Evidence collected</h4>
+    <p>Every action in this workspace is logged: tool calls (prompt text, tool chosen, cost), files and emails opened, planning steps, editor drafts, revision history, and timing data. Scoring uses both your final deliverable and your process.</p>
+  `;
+}
+
+// ── SCORING ENGINE ──────────────────────────
+function scoreRun() {
+  const memo = editor.value;
+  const memoLower = memo.toLowerCase();
+  const wc = wordCount(memo);
+
+  const feedback = [];
+  const rubricScores = {};
+
+  for (const dim of SC.rubric) {
+    let score = 0;
+
+    if (dim.trap_id) {
+      // Special handling for trap-based dimensions
+      const mentionsTrap = /tariff|40\s?%/.test(memoLower);
+      const notesFalse = /(unverified|no new tariff|no tariff|debunked|not accurate|false|could not confirm|rumou?r|incorrect|disproven)/.test(memoLower);
+      let good = false;
+      if (!mentionsTrap) { score = 85; good = true; }
+      else if (notesFalse) { score = 100; good = true; }
+      else { score = 10; good = false; }
+      feedback.push({ dim: dim.name, good, note: good
+        ? "Handled appropriately — either verified as false or omitted."
+        : "Appears to accept an unverified claim. Always verify facts before using them."
+      });
+    } else if (dim.id === 'structure_and_length') {
+      const inRange = wc >= SC.deliverable.min_words && wc <= SC.deliverable.max_words;
+      const hasStructure = /recommendation|reason|risk|assumption/i.test(memo);
+      if (inRange && hasStructure) score = 100;
+      else if (inRange || hasStructure) score = 65;
+      else score = 30;
+      feedback.push({ dim: dim.name, good: score >= 80,
+        note: `Length: ${wc} words (target ${SC.deliverable.min_words}-${SC.deliverable.max_words}). ${hasStructure ? 'Structure detected.' : 'Consider adding clear sections (Recommendation / Reasons / Risks / Assumptions).'}`
+      });
+    } else if (dim.keywords_positive) {
+      const hits = dim.keywords_positive.filter(k => memoLower.includes(k.toLowerCase())).length;
+      score = Math.min(100, 20 + hits * 16);
+      const good = hits >= 2;
+      feedback.push({ dim: dim.name, good, note: good
+        ? `Referenced ${hits} relevant data points or indicators.`
+        : `Few or no relevant indicators detected. ${dim.description}`
+      });
+    } else {
+      score = 50;
+      feedback.push({ dim: dim.name, good: false, note: 'Could not auto-score this dimension.' });
+    }
+
+    rubricScores[dim.id] = { score, weight: dim.weight, name: dim.name };
+  }
+
+  // Output quality composite
+  const outputQuality = Math.round(
+    Object.values(rubricScores).reduce((sum, r) => sum + r.score * r.weight, 0)
+  );
+
+  // Process quality
+  const plannedSteps = STATE.plan.length;
+  const usedVerification = STATE.toolCalls.some(c =>
+    (c.tool_id === 'web_search' || c.tool_id === 'expert') && /tariff|canada/i.test(c.prompt)
+  );
+  const usedCalculator = STATE.toolCalls.some(c =>
+    c.tool_id === 'calculator' && /margin|shipping|aov|38|14/i.test(c.prompt)
+  );
+
+  let processQuality = 0;
+  processQuality += plannedSteps >= 3 ? 35 : plannedSteps >= 1 ? 15 : 0;
+  processQuality += usedVerification ? 35 : 0;
+  processQuality += usedCalculator ? 15 : 0;
+  processQuality += STATE.toolCalls.length >= 3 ? 15 : STATE.toolCalls.length >= 1 ? 5 : 0;
+  processQuality = Math.min(100, processQuality);
+
+  // Efficiency
+  const remaining = SC.budget_tokens - STATE.tokensSpent;
+  const efficiency = outputQuality >= 60 ? Math.round((remaining / SC.budget_tokens) * 100) : 0;
+
+  // Skill scores
+  const skillScores = computeSkillScores(rubricScores, outputQuality, processQuality);
+
+  // Composite
+  const composite = Math.round(outputQuality * 0.55 + processQuality * 0.30 + efficiency * 0.15);
+
+  // Tier
+  const minSkill = Math.min(...Object.values(skillScores));
+  let tier = 'None';
+  if (composite >= 90 && minSkill >= 50) tier = 'Gold';
+  else if (composite >= 75 && minSkill >= 50) tier = 'Silver';
+  else if (composite >= 60 && minSkill >= 50) tier = 'Bronze';
+
+  return { rubricScores, outputQuality, processQuality, efficiency, skillScores, composite, tier, feedback };
+}
+
+function computeSkillScores(rubricScores, outputQuality, processQuality) {
+  const scores = {};
+
+  for (const skill of PACK.skills) {
+    let score = 50; // baseline
+
+    if (skill.id === 'prompt_engineering') {
+      if (STATE.toolCalls.length > 0) {
+        const avgLen = STATE.toolCalls.reduce((s, c) => s + c.prompt.length, 0) / STATE.toolCalls.length;
+        const specific = STATE.toolCalls.filter(c => c.prompt.length > 30).length;
+        score = Math.min(100, Math.round(30 + (avgLen / 3) + specific * 8));
+      } else { score = 0; }
+    }
+
+    else if (skill.id === 'critical_evaluation') {
+      const tariff = rubricScores['catches_tariff_trap']?.score || 0;
+      const caveats = rubricScores['notes_caveats']?.score || 0;
+      score = Math.round(tariff * 0.7 + caveats * 0.3);
+    }
+
+    else if (skill.id === 'task_decomposition') {
+      const plan = STATE.plan;
+      const joined = plan.map(p => p.text.toLowerCase()).join(' ');
+      score = 0;
+      score += plan.length >= 3 ? 40 : plan.length * 12;
+      if (/verify|check|confirm|research/.test(joined)) score += 20;
+      if (/draft|write|memo/.test(joined)) score += 20;
+      if (/recommend|decide|conclusion/.test(joined)) score += 20;
+      score = Math.min(100, score);
+    }
+
+    else if (skill.id === 'tool_selection') {
+      score = 50;
+      if (STATE.toolCalls.some(c => c.tool_id === 'web_search' && /tariff|canada|coffee/i.test(c.prompt))) score += 20;
+      if (STATE.toolCalls.some(c => c.tool_id === 'calculator' && /margin|shipping/i.test(c.prompt))) score += 15;
+      if (STATE.toolCalls.some(c => c.tool_id === 'expert')) score += 10;
+      if (STATE.toolCalls.some(c => c.tool_id === 'chat_llm' && /\b\d+\s*[\+\-\*\/]\s*\d+/.test(c.prompt))) score -= 15;
+      score = Math.max(0, Math.min(100, score));
+    }
+
+    scores[skill.id] = score;
+  }
+
+  return scores;
+}
+
+// ── SUBMIT DELIVERABLE ──────────────────────
+function submitDeliverable() {
+  logEvidence('deliverable_submitted', {
+    word_count: wordCount(editor.value),
+    tool_calls_count: STATE.toolCalls.length,
+    plan_steps: STATE.plan.length,
+    tokens_spent: STATE.tokensSpent,
+    elapsed_ms: Date.now() - STATE.startTime
+  });
+
+  const result = scoreRun();
+  logEvidence('scoring_complete', { composite: result.composite, tier: result.tier });
+
+  renderResults(result);
+  document.getElementById('results-overlay').classList.add('open');
+  document.getElementById('construct-banner').classList.add('hidden');
+}
+
+// ── RENDER RESULTS ──────────────────────────
+function renderResults(result) {
+  const tierColorClass = { Gold: 'tier-gold', Silver: 'tier-silver', Bronze: 'tier-bronze', None: 'tier-none' }[result.tier];
+
+  const statGridHtml = `
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-box-label">Output quality</div><div class="stat-box-value">${result.outputQuality}</div></div>
+      <div class="stat-box"><div class="stat-box-label">Process quality</div><div class="stat-box-value">${result.processQuality}</div></div>
+      <div class="stat-box"><div class="stat-box-label">Efficiency</div><div class="stat-box-value">${result.efficiency}</div></div>
+    </div>
+  `;
+
+  const skillBarsHtml = PACK.skills.map(s => {
+    const val = result.skillScores[s.id] || 0;
+    const barClass = val >= 75 ? 'skill-high' : val >= 50 ? 'skill-mid' : 'skill-low';
+    return `
+      <div class="skill-bar-row">
+        <div class="skill-bar-header"><span>${s.icon} ${escHtml(s.name)}</span><span>${val}</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill ${barClass}" style="width:${Math.max(2, val)}%"></div></div>
+      </div>
+    `;
+  }).join('');
+
+  const feedbackHtml = result.feedback.map(f => `
+    <div class="feedback-item">
+      <span class="feedback-icon ${f.good ? 'feedback-good' : 'feedback-bad'}">${f.good ? '✓' : '✗'}</span>
+      <div>
+        <div class="feedback-dim">${escHtml(f.dim)}</div>
+        <div class="feedback-note">${escHtml(f.note)}</div>
+      </div>
+    </div>
+  `).join('');
+
+  const tipsHtml = SC.coaching_tips.map(t => `<li>${escHtml(t)}</li>`).join('');
+
+  const overallLabel = PACK.overall_labels.find(l => result.composite >= l.min && result.composite <= l.max) || PACK.overall_labels[0];
+
+  document.getElementById('results-container').innerHTML = `
+    <div class="results-header">
+      <div>
+        <div class="results-label">Scenario report</div>
+        <div class="results-scenario-title">${escHtml(SC.title)}</div>
+      </div>
+      <div class="composite-block">
+        <div class="composite-label">Composite</div>
+        <div class="composite-score">${result.composite}</div>
+        <div class="tier-label ${tierColorClass}">${overallLabel.emoji} ${escHtml(overallLabel.label)}</div>
+      </div>
+    </div>
+
+    ${statGridHtml}
+
+    <div class="result-card">
+      <div class="result-card-title">Skill breakdown</div>
+      ${skillBarsHtml}
+    </div>
+
+    <div class="result-card">
+      <div class="result-card-title">Rubric feedback</div>
+      ${feedbackHtml}
+    </div>
+
+    <div class="result-card">
+      <div class="result-card-title">Tips for next time</div>
+      <ul class="trap-list">${tipsHtml}</ul>
+    </div>
+
+    <div class="result-card">
+      <div class="result-card-title">Evidence summary</div>
+      <table class="info-table">
+        <tr><td>Tool calls made</td><td>${STATE.toolCalls.length}</td></tr>
+        <tr><td>Budget spent</td><td>${STATE.tokensSpent} / ${SC.budget_tokens}</td></tr>
+        <tr><td>Planning steps</td><td>${STATE.plan.length}</td></tr>
+        <tr><td>Files opened</td><td>${STATE.evidence.filter(e => e.event === 'file_opened').length}</td></tr>
+        <tr><td>Emails read</td><td>${STATE.evidence.filter(e => e.event === 'email_opened').length}</td></tr>
+        <tr><td>Total time</td><td>${Math.round((Date.now() - STATE.startTime) / 1000 / 60)} min</td></tr>
+        <tr><td>Word count</td><td>${wordCount(editor.value)}</td></tr>
+        <tr><td>Evidence events logged</td><td>${STATE.evidence.length}</td></tr>
+      </table>
+    </div>
+
+    <div class="results-actions">
+      <button class="btn-primary" onclick="tryAgain()">Try again</button>
+      <button class="btn-ghost" onclick="exitToHub()">Back to showcase</button>
+    </div>
+  `;
+}
+
+// ── NAVIGATION ──────────────────────────────
+function startWorkspace() {
+  STATE.startTime = Date.now();
+  logEvidence('task_started');
+  document.getElementById('screen-landing').classList.add('hidden');
+  const ws = document.getElementById('screen-workspace');
+  ws.classList.remove('hidden');
+  ws.style.display = 'flex';
+  document.getElementById('construct-banner').style.display = 'flex';
+}
+
+function exitToHub() {
+  window.location.href = 'index.html';
+}
+
+function tryAgain() {
+  window.location.reload();
+}
+
+// ── UTILITIES ────────────────────────────────
+function escHtml(s) {
+  const div = document.createElement('div');
+  div.textContent = s || '';
+  return div.innerHTML;
+}
+
+// ── KEYBOARD SHORTCUTS ──────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (!document.getElementById('planner-overlay').classList.contains('hidden')) {
+      closePlanner();
+    } else if (STATE.infoDrawerOpen) {
+      toggleInfoDrawer();
+    }
+  }
+});
+
+// ── BOOT ─────────────────────────────────────
+(async () => {
+  PACK = await loadPack();
+  SC = PACK.scenario;
+  initFromPack();
+})();
+</script>
+
+</body>
+</html>

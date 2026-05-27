@@ -1,0 +1,390 @@
+{
+  "construct_id": "critical_thinking_ai",
+  "construct_name": "Critical Thinking with AI Tools",
+  "construct_description": "The ability to decompose a messy problem, select the right AI tools, write effective prompts, and critically evaluate outputs before acting on them.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "Medium (formative / demonstration)",
+    "temporal": "Single-session, 15-20 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated workplace)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "prompt_engineering",
+      "name": "Prompt Engineering",
+      "icon": "✏️",
+      "description": "Writing clear, specific prompts that get useful results from AI tools.",
+      "color": "#3b82f6",
+      "weight": 0.25
+    },
+    {
+      "id": "critical_evaluation",
+      "name": "Critical Evaluation",
+      "icon": "🔍",
+      "description": "Spotting hallucinations, bias, errors, and unreliable outputs.",
+      "color": "#f43f5e",
+      "weight": 0.4
+    },
+    {
+      "id": "task_decomposition",
+      "name": "Task Decomposition",
+      "icon": "🧩",
+      "description": "Breaking a messy problem into logical, AI-solvable subtasks.",
+      "color": "#10b981",
+      "weight": 0.25
+    },
+    {
+      "id": "tool_selection",
+      "name": "Tool Selection",
+      "icon": "🛠️",
+      "description": "Picking the right tool for each subtask (chat, search, calc, expert).",
+      "color": "#f59e0b",
+      "weight": 0.1
+    }
+  ],
+  "scenario": {
+    "id": "market_entry_memo",
+    "title": "The Market Entry Memo",
+    "client": "Brewhaus Coffee Co.",
+    "estimated_minutes": 20,
+    "budget_tokens": 100,
+    "briefing": "Brewhaus Coffee Co. is a US-based direct-to-consumer coffee brand considering expansion into Canada. The CEO needs a one-page memo with a clear recommendation (enter / don't enter / enter conditionally) and the reasoning behind it.\n\nYou have the reference files in your workspace and access to the AI Workbench. Be careful — not everything in the reference materials is accurate, and the AI Workbench can make mistakes too.",
+    "inbox": [
+      {
+        "id": "email_1",
+        "from": "Jane Kim <jane@brewhaus.example>",
+        "subject": "Canada expansion — need your memo by EOD",
+        "body": "Hey, welcome aboard.\n\nAs discussed, I need a one-page memo on whether Brewhaus should expand into Canada. Give me a clear recommendation and the top 3 reasons. The board meets tomorrow so please keep it tight.\n\nFiles are in your workspace.\n\n— Jane"
+      },
+      {
+        "id": "email_2",
+        "from": "Marcus Webb <marcus@brewhaus.example>",
+        "subject": "FYI — tariffs rumor",
+        "body": "Heads up: I heard on a podcast that Canada just imposed a new 40% tariff on US coffee imports. Haven't verified. Might want to check before you write the memo."
+      },
+      {
+        "id": "email_3",
+        "from": "Priya Shah <priya@brewhaus.example>",
+        "subject": "Customer survey — Canadian interest",
+        "body": "Attaching the raw customer survey from last quarter. 312 Canadian respondents said they'd buy from us if we shipped north.\n\n(File: customer_survey.txt)"
+      }
+    ],
+    "files": [
+      {
+        "id": "file_market_report",
+        "name": "canada_coffee_market_2019.pdf",
+        "type": "reference",
+        "reliability": "outdated",
+        "content": "CANADA COFFEE MARKET REPORT (2019)\n\nThe Canadian coffee market was valued at $6.2B in 2019, growing at 3.1% annually. Per-capita consumption is among the highest in the world at ~152 liters per year. Direct-to-consumer coffee sales represented 4% of the market in 2019 and were projected to reach 7% by 2023.\n\nTop competitors: Tim Hortons (dominant), Second Cup, independent roasters. DTC players are fragmented.\n\nRegulatory notes (2019): US-origin coffee enters Canada under USMCA / CUSMA with minimal tariffs on raw green coffee; processed/roasted coffee may have small duties depending on HS code.\n\n[NOTE: This report is from 2019 and has not been updated.]"
+      },
+      {
+        "id": "file_survey",
+        "name": "customer_survey.txt",
+        "type": "data",
+        "reliability": "reliable",
+        "content": "BREWHAUS CUSTOMER SURVEY — Q2 CANADIAN INTEREST\n\nRespondents: 312 self-identified Canadian residents\nRecruitment: Instagram ad, $5 gift card incentive\n\nKey results:\n- 68% said 'yes, I would buy from Brewhaus if shipping were available'\n- 52% said they currently buy specialty coffee online\n- Price sensitivity: median willingness to pay $22/bag (CAD)\n- Shipping tolerance: 74% expect delivery in under 7 days\n\nMethodology caveats: self-selected sample, small N, social-media recruited (likely skews urban / younger / higher-income)."
+      },
+      {
+        "id": "file_financials",
+        "name": "brewhaus_unit_economics.txt",
+        "type": "data",
+        "reliability": "reliable",
+        "content": "BREWHAUS UNIT ECONOMICS (US DOMESTIC)\n\n- Average order value: $38\n- COGS per order: $14\n- Shipping cost per order (US domestic): $6\n- Contribution margin per order: $18 (47%)\n- Customer acquisition cost: $22\n- Payback period: 1.2 orders\n\nNotes: Cross-border shipping to Canada would add estimated $9-14 per order based on current carrier rates, not including any duties, brokerage, or GST/HST handling."
+      }
+    ],
+    "workbench_tools": [
+      {
+        "id": "chat_llm",
+        "name": "Chat AI",
+        "description": "General-purpose chat assistant. Good for writing, brainstorming, and summarization. Can make things up.",
+        "cost": 5,
+        "icon": "💬"
+      },
+      {
+        "id": "web_search",
+        "name": "Web Search",
+        "description": "Searches the web for current information. Good for facts, news, and verifying claims.",
+        "cost": 8,
+        "icon": "🔎"
+      },
+      {
+        "id": "calculator",
+        "name": "Calculator",
+        "description": "Exact numeric computation. Use for math. Do NOT use a chat LLM for arithmetic.",
+        "cost": 1,
+        "icon": "🧮"
+      },
+      {
+        "id": "expert",
+        "name": "Human Expert",
+        "description": "Consult a domain expert. Expensive but highly reliable for edge cases and judgment calls.",
+        "cost": 25,
+        "icon": "👤"
+      }
+    ],
+    "scripted_responses": [
+      {
+        "tool_id": "chat_llm",
+        "keywords": [
+          "tariff",
+          "40%",
+          "canada"
+        ],
+        "response": "Yes, I can confirm that Canada has a 40% tariff on US coffee imports as of early 2024. This applies to both raw green beans and roasted coffee under harmonized HS codes.",
+        "is_hallucination": true,
+        "trap_id": "tariff_hallucination"
+      },
+      {
+        "tool_id": "web_search",
+        "keywords": [
+          "tariff",
+          "canada",
+          "coffee"
+        ],
+        "response": "Search results indicate NO new tariffs on US coffee imports to Canada. Under CUSMA (the updated NAFTA), most coffee products from the US enter Canada duty-free or at very low rates. The '40% tariff' claim appears to originate from a single unverified podcast episode and has been debunked by trade publications.",
+        "is_hallucination": false,
+        "trap_id": "tariff_hallucination"
+      },
+      {
+        "tool_id": "chat_llm",
+        "keywords": [
+          "market size",
+          "canada",
+          "coffee"
+        ],
+        "response": "Based on recent data, the Canadian coffee market is approximately $8.5B as of 2024, growing at around 4% annually. DTC is one of the fastest-growing segments.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "keywords": [
+          "market size",
+          "canada",
+          "coffee"
+        ],
+        "response": "Recent industry reports estimate the Canadian coffee market at roughly $8-9B CAD in 2023-2024, with online/DTC representing ~9-11% and growing faster than brick-and-mortar.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "keywords": [
+          "margin",
+          "canada",
+          "shipping"
+        ],
+        "response": "Given AOV $38, COGS $14, estimated Canadian shipping $11 (midpoint of $9-14 range):\nContribution per order = $38 - $14 - $11 = $13\nThat's ~34% margin vs the ~47% domestic margin.\nMargin compression: ~28% reduction.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "keywords": [
+          "38",
+          "14"
+        ],
+        "response": "38 - 14 = 24\n38 - 14 - 6 = 18 (domestic)\n38 - 14 - 11 = 13 (Canada, midpoint shipping)\n\nDomestic margin: 18/38 = 47.4%\nCanada margin: 13/38 = 34.2%",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "keywords": [
+          "recommend",
+          "canada",
+          "expand"
+        ],
+        "response": "A reasonable recommendation would be 'conditional entry': pilot with a limited SKU range to urban centers (Toronto, Vancouver, Montreal), assume a ~30% margin compression vs US domestic, verify current CUSMA treatment with a customs broker before committing to inventory, and validate the survey signal with a waitlist before full launch. Watch out for GST/HST registration thresholds.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "keywords": [
+          "tariff",
+          "trade"
+        ],
+        "response": "To my knowledge, there is no 40% tariff on US coffee entering Canada. Under CUSMA, most roasted coffee enters duty-free. I'd recommend verifying directly with a customs broker, but the podcast claim sounds dubious.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "keywords": [
+          "write",
+          "memo",
+          "draft"
+        ],
+        "response": "Here's a draft structure for your memo:\n\n[DRAFT] Memo: Canada Market Entry Recommendation\n\nRecommendation: [Your call — GO / NO-GO / CONDITIONAL]\n\nKey points to cover:\n1. Market size and growth\n2. Customer signal from survey\n3. Unit economics under new shipping assumptions\n4. Regulatory / tariff situation\n5. Recommended pilot scope if proceeding\n\nWant me to fill this in with a specific recommendation?",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "keywords": [
+          "survey",
+          "methodology",
+          "bias"
+        ],
+        "response": "The survey methodology looks reasonable for directional insight, though there are some caveats: the sample was self-selected via Instagram ads with a gift card incentive, which likely skews toward younger, urban, higher-income respondents. The N of 312 is modest. I'd treat the 68% interest figure as an upper-bound estimate.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "keywords": [
+          "brewhaus",
+          "coffee"
+        ],
+        "response": "No results found for 'Brewhaus Coffee Co.' — this appears to be a private or very new brand with no public web presence yet.",
+        "is_hallucination": false
+      }
+    ],
+    "traps": [
+      {
+        "id": "tariff_hallucination",
+        "type": "hallucination",
+        "description": "Chat AI fabricates a 40% Canadian tariff on US coffee imports.",
+        "penalty_if_missed": 25,
+        "bonus_if_caught": 15
+      },
+      {
+        "id": "outdated_market_report",
+        "type": "stale_data",
+        "description": "The 2019 market report is 5+ years old. Numbers have changed significantly.",
+        "penalty_if_missed": 10,
+        "bonus_if_caught": 10
+      },
+      {
+        "id": "survey_methodology",
+        "type": "weak_evidence",
+        "description": "The customer survey has real methodology issues (self-selected, small N, incentivized).",
+        "penalty_if_missed": 10,
+        "bonus_if_caught": 10
+      }
+    ],
+    "deliverable": {
+      "id": "memo",
+      "name": "One-page Market Entry Memo",
+      "instructions": "Write a one-page memo to the CEO with: (1) a clear recommendation, (2) top 3 supporting reasons, (3) key risks, (4) any assumptions you had to make. Keep it under 400 words.",
+      "max_words": 400,
+      "min_words": 150
+    },
+    "rubric": [
+      {
+        "id": "clear_recommendation",
+        "name": "Clear recommendation",
+        "weight": 0.2,
+        "description": "Does the memo state a specific, actionable recommendation?",
+        "keywords_positive": [
+          "recommend",
+          "should",
+          "pilot",
+          "enter",
+          "do not enter",
+          "conditional",
+          "proceed",
+          "advise",
+          "suggest"
+        ]
+      },
+      {
+        "id": "uses_reliable_data",
+        "name": "Uses reliable data",
+        "weight": 0.2,
+        "description": "Does the memo cite the survey and unit economics appropriately?",
+        "keywords_positive": [
+          "survey",
+          "margin",
+          "unit econ",
+          "shipping",
+          "AOV",
+          "respondents",
+          "$38",
+          "$14",
+          "312",
+          "68%"
+        ]
+      },
+      {
+        "id": "catches_tariff_trap",
+        "name": "Critical evaluation — tariff",
+        "weight": 0.25,
+        "description": "Does the memo correctly handle the tariff rumor (verify it's false or omit it)?",
+        "trap_id": "tariff_hallucination"
+      },
+      {
+        "id": "notes_caveats",
+        "name": "Notes data caveats",
+        "weight": 0.15,
+        "description": "Does the memo acknowledge data limitations (outdated report, survey methodology)?",
+        "keywords_positive": [
+          "outdated",
+          "stale",
+          "methodology",
+          "self-selected",
+          "small sample",
+          "caveat",
+          "2019",
+          "bias",
+          "skew",
+          "limitation"
+        ]
+      },
+      {
+        "id": "structure_and_length",
+        "name": "Structure and length",
+        "weight": 0.1,
+        "description": "Is the memo within target length, well-structured, and readable?"
+      },
+      {
+        "id": "assumptions_stated",
+        "name": "Assumptions stated",
+        "weight": 0.1,
+        "description": "Does the memo explicitly call out assumptions?",
+        "keywords_positive": [
+          "assume",
+          "assumption",
+          "if",
+          "pending",
+          "subject to",
+          "contingent",
+          "provided that"
+        ]
+      }
+    ],
+    "coaching_tips": [
+      "LLMs will confidently state false facts. Always verify numeric or legal claims with a more reliable source (web search or an expert).",
+      "Older reports (like the 2019 market report) can anchor your thinking on outdated numbers. Always check the date.",
+      "Small, self-selected surveys are a weak signal — useful directionally, not as ground truth.",
+      "Matching the tool to the task (calculator for math, search for facts, expert for judgment) saves budget and improves accuracy.",
+      "Plan before you execute. Breaking a messy task into clear steps prevents wasted effort and missed details."
+    ]
+  },
+  "overall_labels": [
+    {
+      "min": 0,
+      "max": 59,
+      "label": "Developing",
+      "emoji": "🌱"
+    },
+    {
+      "min": 60,
+      "max": 74,
+      "label": "Bronze — Competent",
+      "emoji": "🥉"
+    },
+    {
+      "min": 75,
+      "max": 89,
+      "label": "Silver — Proficient",
+      "emoji": "🥈"
+    },
+    {
+      "min": 90,
+      "max": 100,
+      "label": "Gold — Expert",
+      "emoji": "🥇"
+    }
+  ]
+}

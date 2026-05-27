@@ -1,0 +1,754 @@
+{
+  "construct_id": "ai_literacy",
+  "construct_name": "AI Literacy",
+  "construct_description": "The ability to understand, critically evaluate, and effectively use artificial intelligence tools and concepts in personal and professional contexts.",
+  "pba_category": 4,
+  "pba_category_name": "Simulation-Based",
+  "pba_subtype": "Conversation-Based Assessment (CBA)",
+  "secondary_dimensions": {
+    "stakes": "Low",
+    "temporal": "On-Demand",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-Structured",
+    "authenticity": "Proximal",
+    "scoring": "Hybrid (rule-based + optional LLM)"
+  },
+  "dimensions": [
+    {
+      "id": "familiarity",
+      "name": "Familiarity",
+      "icon": "🧠",
+      "description": "Knowledge of AI tools, concepts, and how they work",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#f093fb"
+    },
+    {
+      "id": "ethics",
+      "name": "Ethical Reasoning",
+      "icon": "⚖️",
+      "description": "Data privacy awareness, bias recognition, and responsible AI use",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#4facfe"
+    },
+    {
+      "id": "applications",
+      "name": "Applications",
+      "icon": "🛠️",
+      "description": "Practical knowledge of AI use cases across domains",
+      "max_questions": 2,
+      "max_points_per": 2,
+      "color": "#43e97b"
+    },
+    {
+      "id": "future",
+      "name": "Future Thinking",
+      "icon": "🚀",
+      "description": "Forward-thinking awareness of where AI is heading and how to keep up",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#fa709a"
+    }
+  ],
+  "persona": {
+    "name": "Riley",
+    "avatar_letter": "R",
+    "role": "Your AI-curious friend",
+    "tone": "Casual, warm, emoji-friendly — like texting a real friend"
+  },
+  "intro_messages": [
+    "okay OKAY I've been dying to ask you this stuff 😭 just text back like normal, no right or wrong answers fr",
+    "hey so i have some questions about AI and you're basically my test subject now 😇 just answer like you'd text a friend",
+    "alright bestie quiz time except not really a quiz. just vibe with me for a sec 🤙 about AI stuff"
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "dimension": "familiarity",
+      "messages": [
+        "ok first off no judgment BUT — do you actually use any AI tools? like chatgpt, copilot, midjourney... or are you still out here using AskJeeves 💀",
+        "starting easy — what AI tools are you actually using rn? or are we at zero 😭",
+        "real question: are you on the AI tools train yet? chatgpt, gemini, anything? or is this new territory lol"
+      ],
+      "acknowledgments": [
+        "omg okay okay, noted 👀",
+        "interesting interesting... filing that away",
+        "lol okay that's a whole situation"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "chatgpt",
+          "gpt",
+          "copilot",
+          "midjourney",
+          "gemini",
+          "claude",
+          "dall-e",
+          "stable diffusion",
+          "bard",
+          "perplexity",
+          "notion ai",
+          "grammarly",
+          "sora",
+          "runway",
+          "bing ai",
+          "adobe firefly",
+          "github copilot",
+          "cursor",
+          "whisper"
+        ],
+        "mid": [
+          "ai tool",
+          "use ai",
+          "artificial intelligence",
+          "chatbot",
+          "assistant",
+          "language model"
+        ],
+        "low": [
+          "never",
+          "nope",
+          "don't use",
+          "nah",
+          "not really",
+          "not much",
+          "no i"
+        ],
+        "high_threshold": 1,
+        "length_mid": 15
+      }
+    },
+    {
+      "id": 2,
+      "dimension": "familiarity",
+      "messages": [
+        "genuine question tho — do you have ANY idea how this stuff actually works under the hood? like what's happening when you type to chatgpt 🤔",
+        "okay nerd corner for a sec — do you know how LLMs actually work? like under the hood. no shame either way lol",
+        "be honest: could you explain to someone how AI chatbots actually work? like the very rough idea of what's going on 🧠"
+      ],
+      "acknowledgments": [
+        "right?? i went down that rabbit hole once and did NOT come back the same",
+        "okay yeah that tracks, it's genuinely wild once you get into it",
+        "honestly same energy, it's a lot to wrap your head around"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "machine learning",
+          "neural network",
+          "llm",
+          "large language model",
+          "training data",
+          "trained on",
+          "transformer",
+          "tokens",
+          "predict",
+          "parameters",
+          "weights",
+          "pattern",
+          "statistics",
+          "algorithm",
+          "deep learning",
+          "reinforcement",
+          "next word",
+          "probability"
+        ],
+        "mid": [
+          "data",
+          "learns",
+          "math",
+          "internet",
+          "information",
+          "text",
+          "processes",
+          "reads"
+        ],
+        "low": [
+          "no idea",
+          "don't know",
+          "no clue",
+          "magic",
+          "idk",
+          "not sure how",
+          "have no idea"
+        ],
+        "length_mid": 30
+      }
+    },
+    {
+      "id": 3,
+      "dimension": "familiarity",
+      "messages": [
+        "has it ever totally made something up and said it with full confidence though?? because i have a story 😭💀",
+        "do you think AI is ever just... wrong? like confidently, embarrassingly wrong?",
+        "have you ever caught AI just straight up lying to you with zero remorse 💀 like it invented a fact"
+      ],
+      "acknowledgments": [
+        "RIGHT?? the audacity. the unbothered confidence.",
+        "lmaoo yeah it does that like it's not even a big deal",
+        "the confidence is what gets me every time. zero hesitation."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "hallucin",
+          "made up",
+          "made something up",
+          "wrong",
+          "incorrect",
+          "false",
+          "fake",
+          "fabricat",
+          "confident",
+          "bias",
+          "outdated",
+          "lies",
+          "lied",
+          "error",
+          "mistake",
+          "inaccurate",
+          "invented",
+          "not true"
+        ],
+        "mid": [
+          "sometimes",
+          "yeah",
+          "yep",
+          "yes",
+          "it does",
+          "can be",
+          "not always",
+          "depends",
+          "occasionally"
+        ],
+        "low": [
+          "always right",
+          "never wrong",
+          "perfect",
+          "always correct",
+          "never makes mistakes"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 4,
+      "dimension": "applications",
+      "messages": [
+        "okay but what's your BEST AI use case. like the one that made you go 'ohhhh okay this is actually useful' ✨",
+        "what's something you've actually used AI for that genuinely saved you time or made life easier?",
+        "give me your personal AI highlight reel — what's the most useful thing you've done with it 🏆"
+      ],
+      "acknowledgments": [
+        "omg okay that's kind of impressive ngl",
+        "okay yeah that's actually a solid use case, i respect it",
+        "that's a good one honestly. okay okay."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "code",
+          "debug",
+          "write",
+          "draft",
+          "email",
+          "summarize",
+          "research",
+          "translate",
+          "edit",
+          "brainstorm",
+          "generate",
+          "create",
+          "analyze",
+          "automate",
+          "design",
+          "image",
+          "script",
+          "essay",
+          "report",
+          "presentation",
+          "formula",
+          "sql",
+          "test",
+          "plan",
+          "outline",
+          "explain"
+        ],
+        "mid": [],
+        "low": [
+          "everything",
+          "stuff",
+          "many things",
+          "various",
+          "multiple things"
+        ],
+        "high_requires_length": 20,
+        "length_mid": 30
+      }
+    },
+    {
+      "id": 5,
+      "dimension": "applications",
+      "messages": [
+        "wait so beyond the chatbot stuff — do you know about like image AI, voice cloning, code tools, any of that? what's on your radar 👁️",
+        "how deep does your AI knowledge go? like do you know about stuff beyond just chatgpt — image gen, video AI, code tools?",
+        "okay pop quiz: name some types of AI that AREN'T just text chatbots. what else is out there that you know about 🌍"
+      ],
+      "acknowledgments": [
+        "okay yeah it's gotten WILD out there fr",
+        "right?? it's like a whole ecosystem now and it moves SO fast",
+        "honestly the breadth of it is kind of insane when you lay it all out"
+      ],
+      "scorer": {
+        "type": "keyword_count",
+        "keywords": [
+          "image",
+          "midjourney",
+          "dall-e",
+          "stable diffusion",
+          "firefly",
+          "flux",
+          "voice",
+          "audio",
+          "music",
+          "suno",
+          "elevenlabs",
+          "cloning",
+          "video",
+          "sora",
+          "runway",
+          "pika",
+          "heygen",
+          "code",
+          "copilot",
+          "cursor",
+          "devin",
+          "tabnine",
+          "search",
+          "perplexity",
+          "data",
+          "analytics",
+          "robotics",
+          "robot",
+          "medical",
+          "healthcare",
+          "translation",
+          "avatar"
+        ],
+        "threshold_high": 2,
+        "threshold_mid": 1,
+        "neg": [
+          "not really"
+        ],
+        "neg_length": 20
+      }
+    },
+    {
+      "id": 6,
+      "dimension": "ethics",
+      "messages": [
+        "ok scenario. your boss slides into your DMs like 'hey use AI to write everyone's performance reviews, don't tell the team' — what do you do with that 💀",
+        "hypothetical: your manager asks you to secretly use AI to make hiring decisions. no one would know. what do you do?",
+        "scenario time: company asks you to use AI to screen job applicants but not disclose it to candidates. thoughts? 👀"
+      ],
+      "acknowledgments": [
+        "oof yeah that's the kind of thing that keeps HR up at night",
+        "yeah that's a real dilemma and companies are actually doing this rn",
+        "right?? it's like... technically possible but should it be allowed"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "disclose",
+          "tell them",
+          "transparency",
+          "not okay",
+          "ethical",
+          "consent",
+          "should know",
+          "push back",
+          "refuse",
+          "can't do that",
+          "wouldn't",
+          "shouldn't",
+          "inform",
+          "let people know",
+          "wrong",
+          "problem",
+          "concern",
+          "bias",
+          "unfair",
+          "legal"
+        ],
+        "mid": [
+          "depends",
+          "talk to",
+          "discuss",
+          "maybe",
+          "uncomfortable",
+          "gray area",
+          "complicated",
+          "not sure"
+        ],
+        "low": [
+          "sure",
+          "fine",
+          "do it",
+          "no problem",
+          "why not",
+          "okay with it",
+          "just do it",
+          "doesn't matter"
+        ],
+        "low_max_length": 40
+      }
+    },
+    {
+      "id": 7,
+      "dimension": "ethics",
+      "messages": [
+        "do you ever think about what happens to everything you TYPE into these tools? like... where does it go. be honest 👀",
+        "random but important — are you careful about what info you share with AI tools? like do you think about the data side of it?",
+        "okay real talk — have you ever pasted something into chatgpt and then gone 'wait should i have done that' 😬"
+      ],
+      "acknowledgments": [
+        "i know right, it's giving 'terms and conditions i definitely read' 😭",
+        "yeah once you start thinking about it it's hard to stop thinking about it",
+        "the data stuff is SO underrated as a concern honestly"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "training",
+          "stored",
+          "privacy",
+          "sensitive",
+          "personal",
+          "careful",
+          "confidential",
+          "data",
+          "retention",
+          "don't put",
+          "terms",
+          "server",
+          "logged",
+          "sold",
+          "used for",
+          "collected",
+          "share",
+          "shouldn't have",
+          "regret",
+          "work stuff",
+          "company"
+        ],
+        "mid": [
+          "somewhere",
+          "i guess",
+          "not sure but",
+          "goes somewhere",
+          "probably",
+          "wonder",
+          "maybe"
+        ],
+        "low": [
+          "doesn't matter",
+          "who cares",
+          "no idea",
+          "nothing",
+          "idk",
+          "don't think about"
+        ],
+        "low_max_length": 25
+      }
+    },
+    {
+      "id": 8,
+      "dimension": "ethics",
+      "messages": [
+        "hot take time — do you think AI has any biases baked into it? like is it neutral or is it kinda... not 🤨",
+        "do you think AI can be racist, sexist, or otherwise biased? or is it just a neutral tool?",
+        "genuine q: if AI is trained on internet data... do you think that causes any problems in terms of bias or representation? 🤔"
+      ],
+      "acknowledgments": [
+        "yeah fr it's not like it fell from the sky fully formed",
+        "exactly — garbage in garbage out as they say, kind of",
+        "right?? it's a whole thing and a lot of people don't think about it"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "bias",
+          "biased",
+          "unfair",
+          "discriminat",
+          "training data",
+          "reflect",
+          "skewed",
+          "prejudice",
+          "stereotype",
+          "not neutral",
+          "systemic",
+          "social",
+          "political",
+          "western",
+          "cultural",
+          "represent",
+          "racist",
+          "sexist",
+          "internet data",
+          "garbage"
+        ],
+        "mid": [
+          "maybe",
+          "probably",
+          "could be",
+          "i think so",
+          "yeah",
+          "yes",
+          "might be",
+          "possibly",
+          "some",
+          "probably does"
+        ],
+        "low": [
+          "neutral",
+          "no bias",
+          "unbiased",
+          "objective",
+          "it's not biased",
+          "nope",
+          "not biased"
+        ],
+        "low_max_length": 30
+      }
+    },
+    {
+      "id": 9,
+      "dimension": "future",
+      "messages": [
+        "real talk real talk — job replacement. is that a real fear for you or do you think it's kind of overblown sci-fi drama 🤔",
+        "how worried are you about AI taking jobs? like yours specifically or in general?",
+        "be honest — do you think your job (or jobs like yours) will look the same in 10 years given how fast AI is moving?"
+      ],
+      "acknowledgments": [
+        "yeah it's genuinely complicated and i feel like everyone has A Take™ on it",
+        "right it's like... the answer is different for every person and every job",
+        "yeah there's no easy answer there, it's one of those things"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "some jobs",
+          "certain jobs",
+          "adapt",
+          "reskill",
+          "augment",
+          "complement",
+          "already",
+          "depends",
+          "both sides",
+          "nuance",
+          "some roles",
+          "new jobs",
+          "transition",
+          "evolv",
+          "not all",
+          "replace some",
+          "worried but",
+          "different",
+          "change",
+          "transform"
+        ],
+        "mid": [
+          "terrified",
+          "definitely replace",
+          "taking over",
+          "doomed",
+          "everyone will lose",
+          "completely replace"
+        ],
+        "low": [
+          "no way",
+          "won't happen",
+          "not real",
+          "nobody",
+          "unlikely",
+          "exaggerated",
+          "overblown",
+          "not a concern"
+        ],
+        "mid_max_length": 40,
+        "low_max_length": 30,
+        "length_high": 50,
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 10,
+      "dimension": "future",
+      "messages": [
+        "are you doing ANYTHING to keep up with all this? podcasts, newsletters, random youtube holes at 2am... anything 😭",
+        "okay are you actively trying to learn more about AI or just kind of... letting it wash over you and hoping for the best lol",
+        "do you feel like you're keeping pace with how fast AI is moving? what are you doing to stay up on it if anything"
+      ],
+      "acknowledgments": [
+        "honestly same, i have 47 unread AI newsletters i keep meaning to get to",
+        "the firehose of AI news is genuinely a lot, i respect anyone who keeps up",
+        "yeah it's basically a part time job to stay current at this point"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "coursera",
+          "udemy",
+          "youtube",
+          "newsletter",
+          "substack",
+          "twitter",
+          "linkedin",
+          "podcast",
+          "arxiv",
+          "course",
+          "class",
+          "follow",
+          "read",
+          "watch",
+          "article",
+          "blog",
+          "book",
+          "learn",
+          "study",
+          "research",
+          "reddit",
+          "discord",
+          "hugging face",
+          "x.com"
+        ],
+        "mid": [
+          "trying",
+          "should",
+          "want to",
+          "i should",
+          "plan to",
+          "working on",
+          "kind of",
+          "a little",
+          "not much but"
+        ],
+        "low": [
+          "nah",
+          "not really",
+          "nothing",
+          "don't bother",
+          "nope",
+          "never",
+          "not at all",
+          "no i don't"
+        ],
+        "low_max_length": 30
+      }
+    },
+    {
+      "id": 11,
+      "dimension": "future",
+      "messages": [
+        "okay big brain time — where do you think AI is actually going in the next decade. like genuinely. be a prophet rn 🔮",
+        "if you had to make one prediction about AI in the next 10 years, what would it be? go off.",
+        "honest take: exciting future, scary future, or somewhere in between for AI? what's your read on where this is heading 🌐"
+      ],
+      "acknowledgments": [
+        "okay that's a take. i'm writing this down.",
+        "honestly that's not far off from what a lot of people think",
+        "yeah it really could go so many ways and that's kind of the whole problem lol"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "agi",
+          "general intelligence",
+          "exponential",
+          "capability",
+          "risk",
+          "alignment",
+          "safety",
+          "powerful",
+          "disruptive",
+          "transform",
+          "revolution",
+          "singularity",
+          "improve",
+          "advance",
+          "automat",
+          "integrat",
+          "everywhere",
+          "embedded",
+          "scary",
+          "exciting",
+          "concern",
+          "dangerous",
+          "depend"
+        ],
+        "mid": [
+          "bigger",
+          "more powerful",
+          "grow",
+          "get better",
+          "more stuff",
+          "idk",
+          "not sure"
+        ],
+        "high_requires_length": 30,
+        "length_high": 50,
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 12,
+      "dimension": null,
+      "messages": [
+        "LAST ONE i promise on my life — real talk, 1 to 10, how AI-literate do you actually think you are? no inflating the grade 😭",
+        "okay final question and be HONEST — where would you rate yourself on AI knowledge? 1 (what's AI) to 10 (i work at openai)",
+        "alright last one: if you had to grade yourself on AI literacy right now, what would you give yourself and why 👀"
+      ],
+      "acknowledgments": [
+        "lmao okay okay. alright let me run the numbers real quick...",
+        "noted!! okay give me a sec to tally this up...",
+        "interesting self-assessment 👀 okay let me see what the data says..."
+      ],
+      "scorer": null
+    }
+  ],
+  "overall_labels": [
+    {
+      "min": 90,
+      "text": "okay you're basically an AI researcher at this point 🔬"
+    },
+    {
+      "min": 75,
+      "text": "genuinely impressive — you really get this stuff 🎉"
+    },
+    {
+      "min": 60,
+      "text": "solid foundation, above average for sure 💪"
+    },
+    {
+      "min": 45,
+      "text": "getting there! good instincts, some gaps to fill 📈"
+    },
+    {
+      "min": 30,
+      "text": "AI curious but still on the learning curve... it's fine 😅"
+    },
+    {
+      "min": 0,
+      "text": "okay bestie we need to talk 💀 but also truly no judgment"
+    }
+  ],
+  "feedback_templates": {
+    "high": "You showed strong understanding here — keep building on this foundation.",
+    "mid": "Good instincts! A bit more hands-on experience would sharpen this area.",
+    "low": "This is a growth area — no shame, everyone starts somewhere. Check out some intro resources."
+  }
+}
