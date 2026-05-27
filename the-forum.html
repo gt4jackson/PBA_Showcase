@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Forum — PBA Showcase</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a212b;
+  --surface: #242e3d;
+  --surface-alt: #2c3849;
+  --surface-hover: #344256;
+  --text: #f2e9d8;
+  --text-secondary: #b8b0a0;
+  --text-tertiary: #7e7a72;
+  --border: rgba(242,233,216,0.08);
+  --border-strong: rgba(242,233,216,0.15);
+  --accent: #4dd3fe;
+  --accent-light: rgba(77,211,254,0.12);
+  --accent-glow: rgba(77,211,254,0.3);
+  --emerald: #468254;
+  --emerald-bg: rgba(70,130,84,0.15);
+  --amber: #f59e0b;
+  --amber-bg: rgba(245,158,11,0.15);
+  --rose: #f43f5e;
+  --rose-bg: rgba(244,63,94,0.15);
+  --violet: #9e9eff;
+  --violet-bg: rgba(158,158,255,0.15);
+  --teal: #103d4b;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+body {
+  font-family: 'Beausite Classic', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg); color: var(--text);
+  height: 100vh; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: rgba(242,233,216,0.15); border-radius: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ── TOP BAR ─────────────────────────────── */
+.top-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; background: var(--surface);
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.top-bar-left { display: flex; align-items: center; gap: 12px; }
+.top-bar-right { display: flex; align-items: center; gap: 10px; }
+.back-btn {
+  background: none; border: none; color: var(--text-tertiary);
+  cursor: pointer; font-size: 13px; padding: 4px 8px;
+  border-radius: var(--radius-sm); transition: all 0.15s;
+}
+.back-btn:hover { color: var(--text); background: var(--surface-alt); }
+.scenario-title { font-size: 14px; font-weight: 600; }
+.tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border); }
+.tag-violet { background: var(--violet-bg); color: var(--violet); border-color: rgba(158,158,255,0.2); }
+.timer-tag {
+  font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 4px;
+  background: var(--surface-alt); color: var(--text-secondary); border: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+}
+.info-btn {
+  font-size: 12px; padding: 6px 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); cursor: pointer; font-weight: 500;
+  background: none; color: var(--text-secondary); transition: all 0.15s;
+}
+.info-btn:hover { color: var(--text); background: var(--surface-alt); }
+.submit-btn {
+  font-size: 12px; padding: 6px 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--accent); cursor: pointer; font-weight: 600;
+  background: var(--accent); color: #0a1628; transition: all 0.15s;
+}
+.submit-btn:hover { background: #3bbde5; }
+.submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── CONSTRUCT BANNER ────────────────────── */
+.construct-banner {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 16px; background: rgba(26,33,43,0.85);
+  border-bottom: 1px solid var(--border); font-size: 12px; flex-shrink: 0;
+}
+.construct-banner.hidden { display: none; }
+.cb-label { color: var(--text-tertiary); }
+.cb-name { color: var(--accent); font-weight: 600; }
+.cb-plus { color: var(--text-tertiary); margin: 0 2px; }
+.cb-name2 { color: var(--emerald); font-weight: 600; }
+.cb-dims { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; }
+.cb-dim { padding: 2px 8px; border-radius: 3px; font-size: 10px; background: var(--accent-light); color: var(--accent); border: 1px solid rgba(77,211,254,0.15); }
+.cb-dim-collab { background: var(--emerald-bg); color: var(--emerald); border-color: rgba(70,130,84,0.2); }
+
+/* ── WORKSPACE ───────────────────────────── */
+.workspace { flex: 1; display: flex; overflow: hidden; max-width: 100vw; }
+
+/* LEFT: Thread */
+.thread-panel {
+  flex: 1; min-width: 0; display: flex; flex-direction: column;
+  border-right: 1px solid var(--border);
+}
+.thread-header {
+  padding: 10px 16px; background: var(--surface);
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+  font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+}
+.thread-header .channel-icon { color: var(--text-tertiary); }
+.thread-body {
+  flex: 1; overflow-y: auto; padding: 16px; display: flex;
+  flex-direction: column; gap: 2px;
+}
+
+/* Messages */
+.msg { display: flex; gap: 10px; padding: 6px 0; }
+.msg-avatar {
+  width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: var(--bg);
+}
+.msg-body { flex: 1; min-width: 0; }
+.msg-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 2px; }
+.msg-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.msg-role { font-size: 10px; color: var(--text-tertiary); padding: 1px 5px; border-radius: 3px; background: var(--surface-alt); }
+.msg-time { font-size: 10px; color: var(--text-tertiary); }
+.msg-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+.msg-text strong { color: var(--text); }
+.msg-actions {
+  display: flex; gap: 4px; margin-top: 4px; opacity: 0;
+  transition: opacity 0.15s;
+}
+.msg:hover .msg-actions { opacity: 1; }
+.msg-action-btn {
+  font-size: 10px; padding: 2px 8px; border-radius: 4px;
+  background: var(--surface-alt); color: var(--text-tertiary);
+  border: 1px solid var(--border); cursor: pointer;
+}
+.msg-action-btn:hover { color: var(--text); border-color: var(--border-strong); }
+
+.msg-reactions { display: flex; gap: 4px; margin-top: 4px; }
+.reaction-chip {
+  font-size: 11px; padding: 2px 6px; border-radius: 10px;
+  background: var(--surface-alt); border: 1px solid var(--border); cursor: pointer;
+}
+.reaction-chip.user-reacted { border-color: var(--accent); background: var(--accent-light); }
+
+.msg-divider {
+  text-align: center; font-size: 10px; color: var(--text-tertiary);
+  margin: 12px 0; position: relative;
+}
+.msg-divider::before, .msg-divider::after {
+  content: ''; position: absolute; top: 50%; height: 1px;
+  background: var(--border); width: 35%;
+}
+.msg-divider::before { left: 0; }
+.msg-divider::after { right: 0; }
+
+.typing-indicator {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 0; font-size: 12px; color: var(--text-tertiary);
+}
+.typing-dots { display: flex; gap: 3px; }
+.typing-dots span {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--text-tertiary);
+  animation: dotPulse 1.3s infinite ease-in-out;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.18s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes dotPulse {
+  0%,55%,100% { opacity: 0.3; transform: translateY(0); }
+  27% { opacity: 1; transform: translateY(-3px); }
+}
+
+/* Compose */
+.compose-bar {
+  padding: 12px 16px; background: var(--surface);
+  border-top: 1px solid var(--border); flex-shrink: 0;
+}
+.compose-replying {
+  font-size: 11px; color: var(--text-tertiary); margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.compose-replying .cancel-reply {
+  background: none; border: none; color: var(--text-tertiary);
+  cursor: pointer; font-size: 14px; padding: 0 4px;
+}
+.compose-replying .cancel-reply:hover { color: var(--rose); }
+.compose-row { display: flex; gap: 8px; align-items: flex-end; }
+.compose-input {
+  flex: 1; background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 8px 12px;
+  color: var(--text); font-family: inherit; font-size: 13px;
+  resize: none; outline: none; min-height: 38px; max-height: 120px;
+  line-height: 1.5;
+}
+.compose-input:focus { border-color: var(--accent); }
+.compose-input::placeholder { color: var(--text-tertiary); }
+.compose-send {
+  padding: 8px 16px; background: var(--accent); color: var(--bg);
+  border: none; border-radius: var(--radius-sm); font-size: 12px;
+  font-weight: 600; cursor: pointer; flex-shrink: 0; height: 38px;
+}
+.compose-send:hover { background: #3bbde5; }
+.compose-send:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* RIGHT: Context sidebar */
+.context-panel {
+  width: 300px; min-width: 0; flex-shrink: 0;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.context-tabs {
+  display: flex; background: var(--surface);
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.ctx-tab {
+  flex: 1; padding: 10px 8px; font-size: 11px; font-weight: 500;
+  color: var(--text-tertiary); background: none; border: none;
+  cursor: pointer; text-align: center; position: relative;
+}
+.ctx-tab:hover { color: var(--text-secondary); }
+.ctx-tab.active { color: var(--accent); }
+.ctx-tab.active::after {
+  content: ''; position: absolute; bottom: 0; left: 8px; right: 8px;
+  height: 2px; background: var(--accent); border-radius: 1px;
+}
+.context-body { flex: 1; overflow-y: auto; padding: 14px; }
+
+/* Context: Agenda */
+.agenda-item {
+  padding: 10px 12px; border-radius: var(--radius-sm); margin-bottom: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+}
+.agenda-item.active { border-color: var(--accent); background: var(--accent-light); }
+.agenda-item.completed { border-color: rgba(70,130,84,0.3); }
+.agenda-num {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--text-tertiary); margin-bottom: 2px;
+}
+.agenda-item.active .agenda-num { color: var(--accent); }
+.agenda-item.completed .agenda-num { color: var(--emerald); }
+.agenda-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.agenda-desc { font-size: 11px; color: var(--text-tertiary); line-height: 1.4; }
+.agenda-check { color: var(--emerald); margin-right: 4px; }
+
+/* Context: Team roster */
+.team-card {
+  display: flex; gap: 10px; padding: 10px; border-radius: var(--radius-sm);
+  background: var(--surface); border: 1px solid var(--border); margin-bottom: 8px;
+}
+.team-card-avatar {
+  width: 32px; height: 32px; border-radius: 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: var(--bg);
+}
+.team-card-info { flex: 1; min-width: 0; }
+.team-card-name { font-size: 12px; font-weight: 600; color: var(--text); }
+.team-card-role { font-size: 11px; color: var(--text-tertiary); }
+.team-card-trait { font-size: 10px; color: var(--text-tertiary); font-style: italic; margin-top: 2px; }
+
+/* Context: Reference */
+.ref-block {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 8px;
+}
+.ref-block h4 {
+  font-family: 'Speckless', Georgia, 'Times New Roman', serif;
+  font-size: 12px; margin-bottom: 6px;
+}
+.ref-block p, .ref-block li { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+.ref-block ul { padding-left: 14px; margin: 4px 0; }
+.ref-block table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 6px 0; }
+.ref-block th { text-align: left; padding: 4px 6px; background: var(--bg); color: var(--text-secondary); font-weight: 600; border-bottom: 1px solid var(--border-strong); }
+.ref-block td { padding: 3px 6px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+
+/* ── DECISION MODAL ──────────────────────── */
+.decision-overlay {
+  position: fixed; inset: 0; z-index: 150;
+  background: rgba(10,22,40,0.85); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+}
+.decision-overlay.hidden { display: none; }
+.decision-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); max-width: 520px; width: 90%;
+  padding: 24px 28px; box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+}
+.decision-card h3 {
+  font-family: 'Speckless', Georgia, 'Times New Roman', serif;
+  font-size: 16px; margin-bottom: 12px;
+}
+.decision-card p { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.5; }
+.decision-options { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.decision-opt {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  border-radius: var(--radius-sm); background: var(--bg);
+  border: 1px solid var(--border); cursor: pointer; transition: all 0.15s;
+}
+.decision-opt:hover { border-color: var(--border-strong); }
+.decision-opt.selected { border-color: var(--accent); background: var(--accent-light); }
+.decision-opt input[type="checkbox"] { accent-color: var(--accent); }
+.decision-opt-label { font-size: 12px; color: var(--text); }
+.decision-opt-desc { font-size: 11px; color: var(--text-tertiary); }
+.decision-rationale {
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 12px;
+  color: var(--text); font-family: inherit; font-size: 12px;
+  line-height: 1.6; resize: vertical; min-height: 70px; outline: none;
+}
+.decision-rationale:focus { border-color: var(--accent); }
+.decision-rationale::placeholder { color: var(--text-tertiary); }
+.decision-submit {
+  margin-top: 14px; width: 100%; padding: 10px; background: var(--accent);
+  color: #0a1628; border: none; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 700; cursor: pointer;
+}
+.decision-submit:hover { background: #3bbde5; }
+.decision-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── WELCOME OVERLAY ─────────────────────── */
+.welcome-overlay {
+  position: fixed; inset: 0; z-index: 160;
+  background: rgba(10,22,40,0.85); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+}
+.welcome-overlay.hidden { display: none; }
+.welcome-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); max-width: 560px; width: 90%;
+  padding: 28px 32px; box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+}
+.welcome-card h2 {
+  font-family: 'Speckless', Georgia, 'Times New Roman', serif;
+  font-size: 20px; margin-bottom: 8px;
+}
+.welcome-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 10px; }
+.welcome-constructs {
+  display: flex; gap: 10px; margin: 14px 0;
+}
+.wc-box {
+  flex: 1; padding: 10px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.wc-box-label { font-size: 10px; color: var(--text-tertiary); margin-bottom: 2px; }
+.wc-box-name { font-size: 13px; font-weight: 600; }
+.wc-accent .wc-box-name { color: var(--accent); }
+.wc-green .wc-box-name { color: var(--emerald); }
+.welcome-dims { display: flex; gap: 5px; flex-wrap: wrap; margin: 6px 0 16px; }
+.welcome-start {
+  width: 100%; padding: 12px; background: var(--accent); color: #0a1628;
+  border: none; border-radius: var(--radius-sm); font-size: 14px;
+  font-weight: 700; cursor: pointer;
+}
+.welcome-start:hover { background: #3bbde5; }
+
+/* ── RESULTS OVERLAY ─────────────────────── */
+.results-overlay { display: none; position: fixed; inset: 0; z-index: 200; background: linear-gradient(160deg,#1a212b 0%,#103d4b 50%,#1a212b 100%); overflow-y: auto; }
+.results-overlay.open { display: block; }
+.results-container { max-width: 700px; margin: 40px auto; padding: 0 20px 60px; }
+.results-header { text-align: center; margin-bottom: 20px; }
+.results-header h2 { font-family: 'Speckless', Georgia, 'Times New Roman', serif; font-size: 26px; margin-bottom: 4px; }
+.results-header p { color: var(--text-secondary); font-size: 14px; }
+
+.dual-scores { display: flex; gap: 20px; justify-content: center; margin: 24px 0; }
+.score-circle-wrap { text-align: center; }
+.score-circle {
+  width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; box-shadow: 0 0 30px rgba(77,211,254,0.12);
+}
+.score-circle-domain { background: linear-gradient(135deg, var(--accent), var(--violet)); }
+.score-circle-collab { background: linear-gradient(135deg, var(--emerald), #5cb86f); }
+.score-circle .sc-num { font-size: 32px; font-weight: 700; color: #fff; line-height: 1; }
+.score-circle .sc-of { font-size: 10px; color: rgba(255,255,255,0.7); }
+.score-circle-label { font-size: 12px; color: var(--text-secondary); font-weight: 600; }
+
+.results-tier { text-align: center; font-size: 14px; font-weight: 600; margin-bottom: 20px; padding: 6px 18px; border-radius: 20px; display: inline-block; }
+.tier-gold { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.tier-silver { background: rgba(148,163,184,0.15); color: #94a3b8; }
+.tier-bronze { background: rgba(205,127,50,0.15); color: #cd7f32; }
+.tier-developing { background: rgba(244,63,94,0.1); color: var(--rose); }
+
+.results-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 14px; }
+.results-card h4 { font-family: 'Speckless', Georgia, 'Times New Roman', serif; font-size: 14px; margin-bottom: 12px; }
+.skill-bar-row { margin-bottom: 10px; }
+.skill-bar-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; color: var(--text-secondary); }
+.skill-bar-track { height: 6px; border-radius: 3px; background: var(--bg); overflow: hidden; }
+.skill-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.bar-high { background: linear-gradient(90deg, var(--emerald), #5cb86f); }
+.bar-mid { background: linear-gradient(90deg, var(--amber), #fbbf24); }
+.bar-low { background: linear-gradient(90deg, var(--rose), #fb7185); }
+.feedback-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.feedback-item:last-child { border-bottom: none; }
+.feedback-icon { font-size: 14px; flex-shrink: 0; width: 20px; text-align: center; }
+.feedback-good { color: var(--emerald); }
+.feedback-bad { color: var(--rose); }
+.feedback-dim { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.feedback-note { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.process-stat { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.process-stat:last-child { border-bottom: none; }
+.process-stat-label { color: var(--text-secondary); }
+.process-stat-value { color: var(--text); font-weight: 600; }
+.coaching-list { padding-left: 16px; }
+.coaching-list li { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; line-height: 1.5; }
+.results-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+.results-actions a, .results-actions button { padding: 10px 22px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; border: 1px solid var(--border); transition: all 0.15s; }
+.results-primary { background: var(--accent); color: #0a1628; border-color: var(--accent); }
+.results-primary:hover { background: #3bbde5; }
+.results-secondary { background: none; color: var(--text-secondary); }
+.results-secondary:hover { background: var(--surface-alt); color: var(--text); }
+
+/* ── INFO DRAWER ─────────────────────────── */
+.info-drawer { position: fixed; top: 0; right: -400px; width: 380px; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 100; transition: right 0.25s ease; display: flex; flex-direction: column; box-shadow: -8px 0 24px rgba(0,0,0,0.3); }
+.info-drawer.open { right: 0; }
+.info-drawer-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.info-drawer-header h3 { font-family: 'Speckless', Georgia, 'Times New Roman', serif; font-size: 14px; }
+.info-close { background: none; border: none; color: var(--text-tertiary); cursor: pointer; font-size: 18px; padding: 2px 6px; }
+.info-drawer-body { flex: 1; overflow-y: auto; padding: 16px; font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+.info-drawer-body h4 { font-size: 13px; color: var(--text); margin: 14px 0 6px; font-family: 'Speckless', Georgia, 'Times New Roman', serif; }
+.info-drawer-body h4:first-child { margin-top: 0; }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ═══ CONSTRUCT PACK LOADER ═══ -->
+<script>
+const DEFAULT_SCENARIO = 'scenarios/the-forum-project-prioritization.json';
+
+const CONSTRUCT_PACK_INLINE = {
+  construct_id: "project_prioritization",
+  construct_name: "Project Prioritization",
+  construct_description: "The ability to evaluate competing proposals against constraints, weigh trade-offs, and drive a team toward a sound decision under uncertainty.",
+
+  collaboration_construct: {
+    id: "collaboration",
+    name: "Collaboration Quality",
+    description: "How effectively the participant engages with teammates — building on ideas, challenging constructively, and synthesizing toward consensus.",
+    dimensions: [
+      { id: "engagement", name: "Engagement", icon: "💬", description: "Actively participates and responds to teammates", max_score: 25 },
+      { id: "building", name: "Building", icon: "🧱", description: "References, quotes, and extends others' ideas", max_score: 25 },
+      { id: "challenging", name: "Challenging", icon: "⚡", description: "Pushes back constructively with reasoning", max_score: 25 },
+      { id: "synthesizing", name: "Synthesizing", icon: "🔗", description: "Combines viewpoints and moves toward a decision", max_score: 25 }
+    ]
+  },
+
+  domain_dimensions: [
+    { id: "tradeoff_analysis", name: "Trade-off Analysis", icon: "⚖️", description: "Identifies and weighs competing priorities", max_score: 25 },
+    { id: "evidence_use", name: "Evidence Use", icon: "📊", description: "References data and constraints in arguments", max_score: 25 },
+    { id: "flaw_detection", name: "Flaw Detection", icon: "🔍", description: "Spots weak arguments or missing considerations", max_score: 25 },
+    { id: "decision_quality", name: "Decision Quality", icon: "🎯", description: "Final recommendation is well-justified and feasible", max_score: 25 }
+  ],
+
+  scenario: {
+    title: "Q3 Feature Prioritization",
+    channel_name: "q3-planning",
+    prompt: "Your product team must choose 2 of 5 proposed features to ship in Q3. Engineering capacity is fixed at 1,200 story points. Your team needs to reach a recommendation for the VP of Product by end of day.",
+    user_role: { name: "You", title: "Product Lead", color: "#f59e0b" },
+
+    teammates: [
+      { id: "jordan", name: "Jordan", title: "Program Manager", color: "#4dd3fe", avatar: "🧑‍💼", trait: "Organized & pragmatic — sometimes oversimplifies" },
+      { id: "priya", name: "Priya", title: "Data Analyst", color: "#9e9eff", avatar: "👩‍🔬", trait: "Data-driven & cautious — can stall decisions" },
+      { id: "marcus", name: "Marcus", title: "Design Lead", color: "#468254", avatar: "🎨", trait: "Creative & enthusiastic — sometimes off-topic" }
+    ],
+
+    decision_options: [
+      { id: "feat_a", name: "Smart Search Revamp", points: 480, desc: "Rebuild search with AI — high user demand (NPS #1 request), but large scope" },
+      { id: "feat_b", name: "Dashboard Redesign", points: 350, desc: "Modernize analytics dashboard — improves retention metrics, moderate effort" },
+      { id: "feat_c", name: "Mobile Push Notifications", points: 280, desc: "Push alerts for key events — quick win, strong engagement data" },
+      { id: "feat_d", name: "API v2 Launch", points: 620, desc: "New API for enterprise partners — high revenue potential, huge engineering lift" },
+      { id: "feat_e", name: "Onboarding Flow v3", points: 310, desc: "Streamlined onboarding — reduces churn by est. 12%, moderate scope" }
+    ],
+
+    budget_points: 1200,
+
+    reference_data_html: `<h4>Engineering Capacity</h4><p>1,200 story points available for Q3 (after maintenance & tech debt allocation).</p>
+      <h4>Feature Comparison</h4>
+      <table><tr><th>Feature</th><th>Points</th><th>Revenue Impact</th><th>User Demand</th></tr>
+      <tr><td>Smart Search</td><td>480</td><td>Medium</td><td>Very High</td></tr>
+      <tr><td>Dashboard</td><td>350</td><td>Medium</td><td>Medium</td></tr>
+      <tr><td>Push Notifs</td><td>280</td><td>Low</td><td>High</td></tr>
+      <tr><td>API v2</td><td>620</td><td>Very High</td><td>Low (enterprise)</td></tr>
+      <tr><td>Onboarding v3</td><td>310</td><td>High</td><td>Medium</td></tr></table>
+      <h4>Key Constraints</h4>
+      <ul><li>Enterprise contract renewal (Q4) depends on API v2 progress</li>
+      <li>Mobile engagement dropped 18% last quarter</li>
+      <li>Search is #1 NPS detractor for 3 consecutive quarters</li>
+      <li>Churn rate increased 2.3% — onboarding is a known lever</li></ul>`,
+
+    agenda: [
+      { id: "a1", label: "Round 1", title: "Share Perspectives", desc: "Each teammate proposes their top pick and why." },
+      { id: "a2", label: "Round 2", title: "Debate Trade-offs", desc: "Challenge assumptions, identify the key tensions." },
+      { id: "a3", label: "Round 3", title: "Decide", desc: "Converge on 2 features and write a rationale." }
+    ],
+
+    message_schedule: [
+      { id: "m1", from: "jordan", round: 1, delay: 0, text: "Alright team, let's get this sorted. I've been looking at the numbers and I think we should go with **Smart Search + Push Notifications**. That's 760 points — well under budget — and it addresses our two biggest user-facing pain points. Simple, clean, done by mid-August." },
+      { id: "m2", from: "priya", round: 1, delay: 4000, text: "Hold on — I want to flag something. The API v2 is 620 points on its own, which looks expensive, but the enterprise renewal in Q4 is worth $2.1M ARR. If we lose that contract because API v2 isn't ready, the ROI math on everything else is irrelevant. I think we need API v2 + one smaller item." },
+      { id: "m3", from: "marcus", round: 1, delay: 8000, text: "OK but have you *seen* the onboarding flow lately? It's embarrassing 😅 We're losing 23% of signups in the first 3 days. Onboarding v3 + Dashboard Redesign would completely transform the first-time experience. Sometimes you have to invest in the product story, not just the spreadsheet." },
+
+      { id: "m4", from: "jordan", round: 2, delay: 3000, text: "Marcus, I hear you on onboarding but that's 660 points for two features that don't move revenue directly. @Priya — the API point is valid but 620 points for one feature means we're betting everything on one card. What if it slips?" },
+      { id: "m5", from: "priya", round: 2, delay: 7000, text: "Fair concern on scope risk. But I ran the numbers — if API v2 ships even 80% complete, the enterprise team can demo it for the renewal. We could pair it with Push Notifications (280 pts) and land at exactly 900 points with buffer. The data supports this combination.", "trigger_if": null },
+      { id: "m6", from: "marcus", round: 2, delay: 11000, text: "I just feel like we keep deprioritizing user experience for revenue. The dashboard hasn't been touched in 18 months. Our design debt is real. Also — random idea — what if we did a lighter version of Smart Search? Like, phase 1 only? Would that be fewer points?" },
+      { id: "m7", from: "jordan", round: 2, delay: 15000, text: "That's actually not a bad idea Marcus. But we don't have a scoped-down estimate for Search. We should work with what we have. I think we're circling — we need someone to make a call here." },
+
+      { id: "m8", from: "priya", round: 3, delay: 3000, text: "Agreed, we need to converge. I still think API v2 has to be in the mix given the contract risk. But I'm open to hearing what combination everyone thinks is strongest. What's the proposal?" },
+      { id: "m9", from: "marcus", round: 3, delay: 7000, text: "Fine, I'll compromise. If we go API v2, I want the second slot to be something user-facing. Push Notifications or Onboarding — either works for me. Just not *only* backend stuff. Deal?" }
+    ],
+
+    trigger_messages: [
+      { trigger: "user_mentions_api", keywords: ["api", "enterprise", "contract", "renewal"], from: "priya", text: "Exactly — thank you. The enterprise angle is the strongest ROI argument we have this quarter.", once: true },
+      { trigger: "user_mentions_search", keywords: ["search", "nps", "user demand", "detractor"], from: "jordan", text: "Strong point about NPS. Search has been the #1 complaint for three quarters running — that's hard to ignore.", once: true },
+      { trigger: "user_mentions_onboarding", keywords: ["onboarding", "churn", "signup", "retention"], from: "marcus", text: "Yes! Churn is the silent killer. If we fix the front door, everything else gets better.", once: true },
+      { trigger: "user_pushback", keywords: ["disagree", "but", "however", "not sure about", "problem with", "issue with", "concern"], from: "jordan", text: "OK, fair pushback. Let's make sure we're weighing all the trade-offs before we lock anything in.", once: true },
+      { trigger: "user_synthesizes", keywords: ["combine", "both", "pair", "compromise", "middle ground", "balance", "what if we"], from: "priya", text: "I like that you're trying to find the synthesis here. Can you lay out the specific combination and the math?", once: true }
+    ]
+  },
+
+  rubric: {
+    domain: {
+      tradeoff_keywords: ["trade-off", "tradeoff", "versus", "vs", "competing", "balance", "cost", "risk", "points", "budget", "capacity", "scope"],
+      evidence_keywords: ["data", "numbers", "revenue", "$2.1", "arr", "nps", "18%", "23%", "2.3%", "churn", "retention", "engagement", "story points", "1200", "480", "350", "280", "620", "310"],
+      flaw_keywords: ["oversimplif", "assuming", "but what if", "risk", "slip", "missing", "not accounting for", "problem with", "issue", "concern", "ignoring", "overlooking"],
+      decision_valid_combos: [
+        { ids: ["feat_a", "feat_c"], points: 760, label: "Search + Push — user-focused" },
+        { ids: ["feat_a", "feat_e"], points: 790, label: "Search + Onboarding — growth-focused" },
+        { ids: ["feat_d", "feat_c"], points: 900, label: "API + Push — revenue + engagement" },
+        { ids: ["feat_d", "feat_e"], points: 930, label: "API + Onboarding — revenue + retention" },
+        { ids: ["feat_b", "feat_c"], points: 630, label: "Dashboard + Push — UX-focused" },
+        { ids: ["feat_b", "feat_e"], points: 660, label: "Dashboard + Onboarding — UX refresh" },
+        { ids: ["feat_a", "feat_b"], points: 830, label: "Search + Dashboard — UX overhaul" }
+      ]
+    },
+    collaboration: {
+      min_replies: 4,
+      build_keywords: ["agree", "good point", "building on", "adding to", "yes and", "exactly", "you're right", "like.*said", "as.*mentioned"],
+      challenge_keywords: ["disagree", "but", "however", "not sure", "concern", "risk", "what about", "overlooking", "missing", "problem", "issue", "counter"],
+      synthesis_keywords: ["combine", "both", "compromise", "middle ground", "what if we", "proposal", "recommend", "suggest", "let's go with", "my recommendation"]
+    }
+  },
+
+  overall_labels: [
+    { min: 90, max: 100, label: "Gold — Distinguished", tier: "gold" },
+    { min: 75, max: 89, label: "Silver — Proficient", tier: "silver" },
+    { min: 60, max: 74, label: "Bronze — Developing", tier: "bronze" },
+    { min: 0, max: 59, label: "Emerging", tier: "developing" }
+  ],
+
+  coaching_tips: [
+    "The best collaborators don't just state their opinion — they respond to specific points teammates have made.",
+    "Quoting or @mentioning a teammate shows you're listening. Do it at least twice per discussion.",
+    "When you disagree, explain *why* with evidence. 'I see it differently because the data shows...' is stronger than 'I disagree.'",
+    "Look for the synthesis: can two proposals be combined? Is there a creative middle ground?",
+    "In prioritization, always check the math — do your selected features fit within the constraint?",
+    "Strong decision-makers acknowledge what they're giving up, not just what they're choosing."
+  ]
+};
+</script>
+
+<!-- ═══ TOP BAR ═══ -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <a class="back-btn" href="index.html">← Hub</a>
+    <span class="scenario-title" id="scenario-title"></span>
+    <span class="tag tag-violet" id="topic-tag"></span>
+  </div>
+  <div class="top-bar-right">
+    <span class="timer-tag" id="timer">00:00</span>
+    <button class="info-btn" onclick="toggleInfo()">ℹ Rubric</button>
+    <button class="submit-btn" id="decide-btn" onclick="openDecision()" disabled>Propose Decision</button>
+  </div>
+</div>
+
+<div class="construct-banner" id="construct-banner">
+  <span class="cb-label">Assessing:</span>
+  <span class="cb-name" id="cb-domain"></span>
+  <span class="cb-plus">+</span>
+  <span class="cb-name2" id="cb-collab"></span>
+  <div class="cb-dims" id="cb-dims"></div>
+</div>
+
+<!-- ═══ WORKSPACE ═══ -->
+<div class="workspace">
+  <div class="thread-panel">
+    <div class="thread-header">
+      <span class="channel-icon">#</span>
+      <span id="channel-name"></span>
+    </div>
+    <div class="thread-body" id="thread-body"></div>
+    <div class="compose-bar">
+      <div class="compose-replying hidden" id="compose-replying">
+        Replying to <strong id="reply-target-name"></strong>
+        <button class="cancel-reply" onclick="cancelReply()">✕</button>
+      </div>
+      <div class="compose-row">
+        <textarea class="compose-input" id="compose-input" placeholder="Type your message..." rows="1" oninput="autoGrow(this)"></textarea>
+        <button class="compose-send" id="send-btn" onclick="sendMessage()" disabled>Send</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="context-panel">
+    <div class="context-tabs">
+      <button class="ctx-tab active" data-tab="agenda" onclick="switchCtx('agenda')">Agenda</button>
+      <button class="ctx-tab" data-tab="team" onclick="switchCtx('team')">Team</button>
+      <button class="ctx-tab" data-tab="reference" onclick="switchCtx('reference')">Data</button>
+    </div>
+    <div class="context-body" id="ctx-body"></div>
+  </div>
+</div>
+
+<!-- Overlays -->
+<div class="decision-overlay hidden" id="decision-overlay"></div>
+<div class="welcome-overlay" id="welcome-overlay"></div>
+<div class="results-overlay" id="results-overlay"><div class="results-container" id="results-container"></div></div>
+<div class="info-drawer" id="info-drawer">
+  <div class="info-drawer-header"><h3>Task Information</h3><button class="info-close" onclick="toggleInfo()">✕</button></div>
+  <div class="info-drawer-body" id="info-body"></div>
+</div>
+
+<!-- ═══ SHELL ENGINE ═══ -->
+<script>
+'use strict';
+
+async function loadPack() {
+  const params = new URLSearchParams(window.location.search);
+  const url = params.get('scenario') || DEFAULT_SCENARIO;
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(resp.status);
+    return await resp.json();
+  } catch (e) {
+    console.warn('Fetch failed, using inline fallback:', e.message);
+    return CONSTRUCT_PACK_INLINE;
+  }
+}
+
+let PACK = null, SC = null;
+
+const STATE = {
+  startTime: null, round: 0, evidence: [],
+  userMessages: [], replyTargets: {}, reactions: {},
+  scheduledFired: {}, triggersFired: {},
+  currentReplyTo: null, ctxTab: 'agenda',
+  decisionSubmitted: false, submitted: false,
+  messageReadTimes: {}
+};
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s||''; return d.innerHTML; }
+function logEvidence(event, data={}) { STATE.evidence.push({ event, ...data, ts: Date.now(), elapsed_ms: STATE.startTime ? Date.now()-STATE.startTime : 0 }); }
+
+// ── TIMER ──
+function startTimer() {
+  STATE.startTime = Date.now();
+  setInterval(() => {
+    const s = Math.floor((Date.now()-STATE.startTime)/1000);
+    document.getElementById('timer').textContent = `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  }, 1000);
+}
+
+// ── THREAD RENDERING ──
+function addMessage(from, text, opts={}) {
+  const tb = document.getElementById('thread-body');
+  const teammate = SC.teammates.find(t => t.id === from);
+  const isUser = !teammate;
+  const name = isUser ? SC.user_role.name : teammate.name;
+  const title = isUser ? SC.user_role.title : teammate.title;
+  const color = isUser ? SC.user_role.color : teammate.color;
+  const avatar = isUser ? '👤' : teammate.avatar;
+  const elapsed = STATE.startTime ? Math.floor((Date.now()-STATE.startTime)/1000) : 0;
+  const timeStr = `${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')}`;
+  const msgId = 'msg-' + Date.now() + '-' + Math.random().toString(36).slice(2,6);
+
+  const div = document.createElement('div');
+  div.className = 'msg';
+  div.id = msgId;
+  div.innerHTML = `
+    <div class="msg-avatar" style="background:${color}">${avatar}</div>
+    <div class="msg-body">
+      <div class="msg-header">
+        <span class="msg-name">${esc(name)}</span>
+        <span class="msg-role">${esc(title)}</span>
+        <span class="msg-time">${timeStr}</span>
+      </div>
+      <div class="msg-text">${text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+      ${!isUser ? `<div class="msg-actions">
+        <button class="msg-action-btn" onclick="setReply('${from}','${msgId}')">↩ Reply</button>
+        <button class="msg-action-btn" onclick="addReaction('${msgId}','👍')">👍</button>
+        <button class="msg-action-btn" onclick="addReaction('${msgId}','🤔')">🤔</button>
+      </div>` : ''}
+      <div class="msg-reactions" id="reactions-${msgId}"></div>
+    </div>`;
+  tb.appendChild(div);
+  tb.scrollTop = tb.scrollHeight;
+
+  if (!isUser) {
+    logEvidence('teammate_message', { from, msg_id: msgId, round: STATE.round });
+  }
+  return msgId;
+}
+
+function showTyping(name) {
+  const tb = document.getElementById('thread-body');
+  const el = document.createElement('div');
+  el.className = 'typing-indicator';
+  el.id = 'typing-' + name;
+  el.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div> ${esc(name)} is typing...`;
+  tb.appendChild(el);
+  tb.scrollTop = tb.scrollHeight;
+}
+function hideTyping(name) {
+  const el = document.getElementById('typing-' + name);
+  if (el) el.remove();
+}
+
+function addDivider(text) {
+  const tb = document.getElementById('thread-body');
+  const div = document.createElement('div');
+  div.className = 'msg-divider';
+  div.textContent = text;
+  tb.appendChild(div);
+  tb.scrollTop = tb.scrollHeight;
+}
+
+// ── REACTIONS ──
+function addReaction(msgId, emoji) {
+  if (!STATE.reactions[msgId]) STATE.reactions[msgId] = {};
+  STATE.reactions[msgId][emoji] = !STATE.reactions[msgId][emoji];
+  const container = document.getElementById('reactions-' + msgId);
+  if (container) {
+    container.innerHTML = Object.entries(STATE.reactions[msgId])
+      .filter(([,v]) => v)
+      .map(([e]) => `<span class="reaction-chip user-reacted">${e} 1</span>`)
+      .join('');
+  }
+  logEvidence('reaction', { msg_id: msgId, emoji, added: STATE.reactions[msgId][emoji] });
+}
+
+// ── REPLY TARGETING ──
+function setReply(from, msgId) {
+  const tm = SC.teammates.find(t => t.id === from);
+  STATE.currentReplyTo = { from, msgId };
+  document.getElementById('reply-target-name').textContent = tm ? tm.name : from;
+  document.getElementById('compose-replying').classList.remove('hidden');
+  document.getElementById('compose-input').focus();
+}
+function cancelReply() {
+  STATE.currentReplyTo = null;
+  document.getElementById('compose-replying').classList.add('hidden');
+}
+
+// ── COMPOSE ──
+function autoGrow(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  document.getElementById('send-btn').disabled = el.value.trim().length === 0;
+}
+
+function sendMessage() {
+  const input = document.getElementById('compose-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const msgId = addMessage('user', esc(text));
+  STATE.userMessages.push({ id: msgId, text, replyTo: STATE.currentReplyTo, round: STATE.round, ts: Date.now() });
+
+  logEvidence('user_message', {
+    msg_id: msgId, text, word_count: text.split(/\s+/).length,
+    reply_to: STATE.currentReplyTo ? STATE.currentReplyTo.from : null,
+    round: STATE.round
+  });
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+  cancelReply();
+
+  // Check triggers
+  checkTriggers(text);
+
+  // Enable decision after enough participation
+  if (STATE.userMessages.length >= 3 && STATE.round >= 3) {
+    document.getElementById('decide-btn').disabled = false;
+  }
+}
+
+// ── TRIGGER ENGINE ──
+function checkTriggers(text) {
+  const lower = text.toLowerCase();
+  for (const trig of SC.trigger_messages) {
+    if (STATE.triggersFired[trig.trigger] && trig.once) continue;
+    const match = trig.keywords.some(k => lower.includes(k.toLowerCase()));
+    if (match) {
+      STATE.triggersFired[trig.trigger] = true;
+      const tm = SC.teammates.find(t => t.id === trig.from);
+      setTimeout(() => {
+        showTyping(tm.name);
+        setTimeout(() => {
+          hideTyping(tm.name);
+          addMessage(trig.from, trig.text);
+        }, 1500 + Math.random() * 1500);
+      }, 1000 + Math.random() * 2000);
+    }
+  }
+}
+
+// ── ROUND SCHEDULER ──
+function runRound(roundNum) {
+  STATE.round = roundNum;
+  const msgs = SC.message_schedule.filter(m => m.round === roundNum);
+  const agenda = SC.agenda[roundNum - 1];
+
+  // Update agenda
+  if (agenda) {
+    document.querySelectorAll('.agenda-item').forEach(el => {
+      const id = el.dataset.id;
+      const idx = SC.agenda.findIndex(a => a.id === id);
+      if (idx < roundNum - 1) { el.classList.add('completed'); el.classList.remove('active'); }
+      else if (idx === roundNum - 1) { el.classList.add('active'); el.classList.remove('completed'); }
+      else { el.classList.remove('active', 'completed'); }
+    });
+  }
+
+  addDivider(agenda ? `— ${agenda.title} —` : `— Round ${roundNum} —`);
+
+  msgs.forEach(m => {
+    const tm = SC.teammates.find(t => t.id === m.from);
+    setTimeout(() => {
+      showTyping(tm.name);
+      setTimeout(() => {
+        hideTyping(tm.name);
+        addMessage(m.from, m.text);
+        STATE.scheduledFired[m.id] = true;
+      }, 1200 + Math.random() * 1800);
+    }, m.delay);
+  });
+}
+
+function advanceRound() {
+  const next = STATE.round + 1;
+  if (next <= 3) {
+    setTimeout(() => runRound(next), 2000);
+  }
+}
+
+// ── CONTEXT PANEL ──
+function switchCtx(tab) {
+  STATE.ctxTab = tab;
+  document.querySelectorAll('.ctx-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  renderCtx();
+}
+
+function renderCtx() {
+  const body = document.getElementById('ctx-body');
+  if (STATE.ctxTab === 'agenda') {
+    body.innerHTML = SC.agenda.map(a => `
+      <div class="agenda-item" data-id="${a.id}">
+        <div class="agenda-num">${esc(a.label)}</div>
+        <div class="agenda-title">${esc(a.title)}</div>
+        <div class="agenda-desc">${esc(a.desc)}</div>
+      </div>`).join('') + `
+      <div style="margin-top:12px;padding:10px 12px;border-radius:6px;background:var(--surface);border:1px solid var(--border)">
+        <div style="font-size:11px;color:var(--text-tertiary);margin-bottom:4px">Scenario</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.5">${esc(SC.prompt)}</div>
+      </div>`;
+  } else if (STATE.ctxTab === 'team') {
+    const userCard = `<div class="team-card">
+      <div class="team-card-avatar" style="background:${SC.user_role.color}">👤</div>
+      <div class="team-card-info">
+        <div class="team-card-name">${esc(SC.user_role.name)} (you)</div>
+        <div class="team-card-role">${esc(SC.user_role.title)}</div>
+      </div></div>`;
+    body.innerHTML = userCard + SC.teammates.map(t => `
+      <div class="team-card">
+        <div class="team-card-avatar" style="background:${t.color}">${t.avatar}</div>
+        <div class="team-card-info">
+          <div class="team-card-name">${esc(t.name)}</div>
+          <div class="team-card-role">${esc(t.title)}</div>
+          <div class="team-card-trait">${esc(t.trait)}</div>
+        </div></div>`).join('');
+  } else {
+    body.innerHTML = `<div class="ref-block">${SC.reference_data_html}</div>`;
+  }
+}
+
+// ── DECISION MODAL ──
+function openDecision() {
+  const ol = document.getElementById('decision-overlay');
+  ol.classList.remove('hidden');
+  ol.innerHTML = `<div class="decision-card">
+    <h3>Propose Your Decision</h3>
+    <p>Select exactly <strong>2 features</strong> that fit within the ${SC.budget_points}-point budget. Then write a brief rationale.</p>
+    <div class="decision-options" id="decision-options">
+      ${SC.decision_options.map(o => `
+        <label class="decision-opt" id="opt-${o.id}">
+          <input type="checkbox" value="${o.id}" onchange="updateDecision()">
+          <div><div class="decision-opt-label">${esc(o.name)} <span style="color:var(--text-tertiary)">(${o.points} pts)</span></div>
+          <div class="decision-opt-desc">${esc(o.desc)}</div></div>
+        </label>`).join('')}
+    </div>
+    <div id="points-display" style="font-size:11px;color:var(--text-tertiary);margin-bottom:10px"></div>
+    <textarea class="decision-rationale" id="decision-rationale" placeholder="Why these two? (2-3 sentences)"></textarea>
+    <button class="decision-submit" id="decision-submit-btn" onclick="submitDecision()" disabled>Submit Proposal</button>
+  </div>`;
+}
+
+function updateDecision() {
+  const checks = [...document.querySelectorAll('#decision-options input:checked')];
+  const ids = checks.map(c => c.value);
+  const totalPts = ids.reduce((sum, id) => sum + (SC.decision_options.find(o => o.id === id)?.points || 0), 0);
+
+  document.querySelectorAll('.decision-opt').forEach(el => {
+    el.classList.toggle('selected', el.querySelector('input').checked);
+  });
+
+  const display = document.getElementById('points-display');
+  const overBudget = totalPts > SC.budget_points;
+  display.innerHTML = `Selected: ${totalPts} / ${SC.budget_points} pts ${overBudget ? '<span style="color:var(--rose)">— Over budget!</span>' : ids.length === 2 ? '<span style="color:var(--emerald)">✓ Within budget</span>' : ''}`;
+
+  const rationale = document.getElementById('decision-rationale')?.value?.trim() || '';
+  document.getElementById('decision-submit-btn').disabled = ids.length !== 2 || overBudget || rationale.length < 10;
+
+  // Also re-check on rationale input
+  document.getElementById('decision-rationale').oninput = () => {
+    const r = document.getElementById('decision-rationale').value.trim();
+    document.getElementById('decision-submit-btn').disabled = ids.length !== 2 || overBudget || r.length < 10;
+  };
+}
+
+function submitDecision() {
+  const checks = [...document.querySelectorAll('#decision-options input:checked')];
+  const ids = checks.map(c => c.value);
+  const rationale = document.getElementById('decision-rationale').value.trim();
+  const totalPts = ids.reduce((sum, id) => sum + (SC.decision_options.find(o => o.id === id)?.points || 0), 0);
+
+  STATE.decisionSubmitted = true;
+  document.getElementById('decision-overlay').classList.add('hidden');
+
+  // Post decision to thread
+  const featureNames = ids.map(id => SC.decision_options.find(o => o.id === id)?.name).join(' + ');
+  addMessage('user', `**My proposal:** ${featureNames} (${totalPts} pts)\n\n${esc(rationale)}`);
+
+  logEvidence('decision_submitted', { features: ids, total_points: totalPts, rationale, within_budget: totalPts <= SC.budget_points });
+
+  // Teammates react
+  setTimeout(() => {
+    showTyping(SC.teammates[0].name);
+    setTimeout(() => {
+      hideTyping(SC.teammates[0].name);
+      addMessage(SC.teammates[0].id, "Thanks for pulling that together. I can work with this — let's write it up for the VP.");
+      setTimeout(() => finalSubmit(), 2000);
+    }, 2000);
+  }, 1500);
+}
+
+// ── FINAL SCORING ──
+function finalSubmit() {
+  if (STATE.submitted) return;
+  STATE.submitted = true;
+
+  logEvidence('task_completed', { total_messages: STATE.userMessages.length, elapsed_ms: Date.now()-STATE.startTime, evidence_events: STATE.evidence.length });
+
+  const result = scoreRun();
+  renderResults(result);
+  document.getElementById('results-overlay').classList.add('open');
+  document.getElementById('construct-banner').classList.add('hidden');
+}
+
+function scoreRun() {
+  const allText = STATE.userMessages.map(m => m.text).join(' ').toLowerCase();
+  const msgCount = STATE.userMessages.length;
+  const repliedTo = new Set(STATE.userMessages.filter(m => m.replyTo).map(m => m.replyTo.from));
+  const reactionCount = Object.values(STATE.reactions).reduce((s, r) => s + Object.values(r).filter(Boolean).length, 0);
+  const totalWords = STATE.userMessages.reduce((s, m) => s + m.text.split(/\s+/).length, 0);
+
+  // COLLABORATION SCORING
+  const collabDims = {};
+  // Engagement
+  const engScore = Math.min(100, msgCount * 18 + reactionCount * 5);
+  collabDims.engagement = engScore;
+
+  // Building
+  const buildHits = PACK.rubric.collaboration.build_keywords.filter(k => allText.match(new RegExp(k, 'i'))).length;
+  const buildScore = Math.min(100, repliedTo.size * 20 + buildHits * 12);
+  collabDims.building = buildScore;
+
+  // Challenging
+  const challengeHits = PACK.rubric.collaboration.challenge_keywords.filter(k => allText.includes(k)).length;
+  collabDims.challenging = Math.min(100, challengeHits * 15);
+
+  // Synthesizing
+  const synthHits = PACK.rubric.collaboration.synthesis_keywords.filter(k => allText.includes(k)).length;
+  collabDims.synthesizing = Math.min(100, synthHits * 20 + (STATE.decisionSubmitted ? 30 : 0));
+
+  const collabComposite = Math.round(Object.values(collabDims).reduce((a, b) => a + b, 0) / 4);
+
+  // DOMAIN SCORING
+  const domainDims = {};
+  const tradeHits = PACK.rubric.domain.tradeoff_keywords.filter(k => allText.includes(k)).length;
+  domainDims.tradeoff_analysis = Math.min(100, tradeHits * 12);
+
+  const evidHits = PACK.rubric.domain.evidence_keywords.filter(k => allText.includes(k)).length;
+  domainDims.evidence_use = Math.min(100, evidHits * 10);
+
+  const flawHits = PACK.rubric.domain.flaw_keywords.filter(k => allText.includes(k)).length;
+  domainDims.flaw_detection = Math.min(100, flawHits * 15);
+
+  // Decision quality
+  let dqScore = 0;
+  if (STATE.decisionSubmitted) {
+    const decEvt = STATE.evidence.find(e => e.event === 'decision_submitted');
+    if (decEvt) {
+      dqScore += decEvt.within_budget ? 40 : 0;
+      dqScore += decEvt.features.length === 2 ? 20 : 0;
+      dqScore += decEvt.rationale.length >= 40 ? 20 : 10;
+      const validCombo = PACK.rubric.domain.decision_valid_combos.find(c =>
+        c.ids.length === decEvt.features.length && c.ids.every(id => decEvt.features.includes(id)));
+      dqScore += validCombo ? 20 : 0;
+    }
+  }
+  domainDims.decision_quality = Math.min(100, dqScore);
+
+  const domainComposite = Math.round(Object.values(domainDims).reduce((a, b) => a + b, 0) / 4);
+  const composite = Math.round((domainComposite + collabComposite) / 2);
+  const overallLabel = PACK.overall_labels.find(l => composite >= l.min && composite <= l.max) || PACK.overall_labels[PACK.overall_labels.length-1];
+
+  // Feedback
+  const feedback = [];
+  PACK.domain_dimensions.forEach(d => {
+    const val = domainDims[d.id] || 0;
+    feedback.push({ dim: `${d.icon} ${d.name}`, good: val >= 50, note: val >= 50 ? `Solid — scored ${val}/100 on ${d.name.toLowerCase()}.` : `Room to grow — only ${val}/100. Try referencing more specific data and trade-offs.` });
+  });
+  PACK.collaboration_construct.dimensions.forEach(d => {
+    const val = collabDims[d.id] || 0;
+    feedback.push({ dim: `${d.icon} ${d.name}`, good: val >= 50, note: val >= 50 ? `Strong collaboration signal — ${val}/100.` : `More ${d.name.toLowerCase()} needed — ${val}/100. Try replying directly to teammates.` });
+  });
+
+  const elapsedMin = Math.round((Date.now()-STATE.startTime)/60000);
+
+  return { domainDims, collabDims, domainComposite, collabComposite, composite, overallLabel, feedback, msgCount, totalWords, repliedTo: repliedTo.size, reactionCount, elapsedMin };
+}
+
+// ── RENDER RESULTS ──
+function renderResults(r) {
+  const makeBars = (dims, dimDefs) => dimDefs.map(d => {
+    const val = dims[d.id] || 0;
+    const cls = val >= 70 ? 'bar-high' : val >= 40 ? 'bar-mid' : 'bar-low';
+    return `<div class="skill-bar-row"><div class="skill-bar-header"><span>${d.icon} ${esc(d.name)}</span><span>${val}</span></div><div class="skill-bar-track"><div class="skill-bar-fill ${cls}" style="width:${Math.max(2,val)}%"></div></div></div>`;
+  }).join('');
+
+  const feedbackHtml = r.feedback.map(f => `<div class="feedback-item"><span class="feedback-icon ${f.good?'feedback-good':'feedback-bad'}">${f.good?'✓':'✗'}</span><div><div class="feedback-dim">${f.dim}</div><div class="feedback-note">${esc(f.note)}</div></div></div>`).join('');
+  const tipsHtml = PACK.coaching_tips.map(t => `<li>${esc(t)}</li>`).join('');
+
+  document.getElementById('results-container').innerHTML = `
+    <div class="results-header">
+      <h2>Discussion Results</h2>
+      <p>${esc(PACK.construct_name)} + ${esc(PACK.collaboration_construct.name)}</p>
+      <div class="dual-scores">
+        <div class="score-circle-wrap">
+          <div class="score-circle score-circle-domain"><span class="sc-num">${r.domainComposite}</span><span class="sc-of">/ 100</span></div>
+          <div class="score-circle-label">${esc(PACK.construct_name)}</div>
+        </div>
+        <div class="score-circle-wrap">
+          <div class="score-circle score-circle-collab"><span class="sc-num">${r.collabComposite}</span><span class="sc-of">/ 100</span></div>
+          <div class="score-circle-label">Collaboration</div>
+        </div>
+      </div>
+      <div style="text-align:center"><span class="results-tier tier-${r.overallLabel.tier}">${esc(r.overallLabel.label)}</span></div>
+    </div>
+    <div class="results-card"><h4>Domain: ${esc(PACK.construct_name)}</h4>${makeBars(r.domainDims, PACK.domain_dimensions)}</div>
+    <div class="results-card"><h4>Collaboration Quality</h4>${makeBars(r.collabDims, PACK.collaboration_construct.dimensions)}</div>
+    <div class="results-card"><h4>Feedback</h4>${feedbackHtml}</div>
+    <div class="results-card"><h4>Process Evidence</h4>
+      <div class="process-stat"><span class="process-stat-label">Messages sent</span><span class="process-stat-value">${r.msgCount}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Total words</span><span class="process-stat-value">${r.totalWords}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Teammates replied to</span><span class="process-stat-value">${r.repliedTo} / ${SC.teammates.length}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Reactions given</span><span class="process-stat-value">${r.reactionCount}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Time spent</span><span class="process-stat-value">${r.elapsedMin} min</span></div>
+    </div>
+    <div class="results-card"><h4>Coaching Tips</h4><ul class="coaching-list">${tipsHtml}</ul></div>
+    <div class="results-actions">
+      <a class="results-primary" href="index.html">Back to Hub</a>
+      <button class="results-secondary" onclick="document.getElementById('results-overlay').classList.remove('open')">Review Thread</button>
+    </div>`;
+}
+
+// ── INFO DRAWER ──
+function toggleInfo() { document.getElementById('info-drawer').classList.toggle('open'); }
+
+function renderInfo() {
+  const domainRows = PACK.domain_dimensions.map(d => `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span>${d.icon} ${esc(d.name)}</span><span>${d.max_score} pts</span></div>`).join('');
+  const collabRows = PACK.collaboration_construct.dimensions.map(d => `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span>${d.icon} ${esc(d.name)}</span><span>${d.max_score} pts</span></div>`).join('');
+
+  document.getElementById('info-body').innerHTML = `
+    <h4>Your Task</h4><p>${esc(SC.prompt)}</p>
+    <h4>Domain Scoring: ${esc(PACK.construct_name)}</h4>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;margin:8px 0">${domainRows}</div>
+    <h4>Collaboration Scoring</h4>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;margin:8px 0">${collabRows}</div>
+    <h4>Tips</h4><ul style="padding-left:16px">${PACK.coaching_tips.slice(0,3).map(t => `<li style="font-size:12px;margin-bottom:4px">${esc(t)}</li>`).join('')}</ul>`;
+}
+
+// ── WELCOME ──
+function renderWelcome() {
+  const domainDims = PACK.domain_dimensions.map(d => `<span class="cb-dim">${d.icon} ${esc(d.name)}</span>`).join('');
+  const collabDims = PACK.collaboration_construct.dimensions.map(d => `<span class="cb-dim cb-dim-collab">${d.icon} ${esc(d.name)}</span>`).join('');
+
+  document.getElementById('welcome-overlay').innerHTML = `<div class="welcome-card">
+    <h2>${esc(SC.title)}</h2>
+    <p>${esc(SC.prompt)}</p>
+    <div class="welcome-constructs">
+      <div class="wc-box wc-accent"><div class="wc-box-label">Domain construct</div><div class="wc-box-name">${esc(PACK.construct_name)}</div></div>
+      <div class="wc-box wc-green"><div class="wc-box-label">Also measured</div><div class="wc-box-name">${esc(PACK.collaboration_construct.name)}</div></div>
+    </div>
+    <div class="welcome-dims">${domainDims}${collabDims}</div>
+    <p style="font-size:12px;color:var(--text-tertiary)">You'll join a team discussion with 3 scripted teammates. Read their messages, reply, react, and help the team reach a decision. ~12 minutes.</p>
+    <button class="welcome-start" onclick="beginTask()">Join Discussion</button>
+  </div>`;
+}
+
+function beginTask() {
+  document.getElementById('welcome-overlay').classList.add('hidden');
+  startTimer();
+  logEvidence('task_started');
+  runRound(1);
+
+  // Auto-advance rounds based on user participation
+  const checkAdvance = setInterval(() => {
+    if (STATE.submitted) { clearInterval(checkAdvance); return; }
+    const userInRound = STATE.userMessages.filter(m => m.round === STATE.round).length;
+    if (userInRound >= 1 && STATE.round < 3) {
+      advanceRound();
+    }
+  }, 3000);
+}
+
+// ── INIT ──
+(async () => {
+  PACK = await loadPack();
+  SC = PACK.scenario;
+
+  document.getElementById('scenario-title').textContent = SC.title;
+  document.getElementById('topic-tag').textContent = PACK.construct_name;
+  document.getElementById('channel-name').textContent = SC.channel_name;
+  document.getElementById('cb-domain').textContent = PACK.construct_name;
+  document.getElementById('cb-collab').textContent = PACK.collaboration_construct.name;
+
+  const dimsHtml = PACK.domain_dimensions.map(d => `<span class="cb-dim">${d.icon} ${esc(d.name)}</span>`).join('') +
+    PACK.collaboration_construct.dimensions.map(d => `<span class="cb-dim cb-dim-collab">${d.icon} ${esc(d.name)}</span>`).join('');
+  document.getElementById('cb-dims').innerHTML = dimsHtml;
+
+  renderCtx();
+  renderInfo();
+  renderWelcome();
+
+  document.getElementById('compose-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.getElementById('info-drawer').classList.remove('open'); } });
+})();
+</script>
+</body>
+</html>

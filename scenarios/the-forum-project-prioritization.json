@@ -1,0 +1,114 @@
+{
+  "construct_id": "project_prioritization",
+  "construct_name": "Project Prioritization",
+  "construct_description": "The ability to evaluate competing proposals against constraints, weigh trade-offs, and drive a team toward a sound decision under uncertainty.",
+
+  "collaboration_construct": {
+    "id": "collaboration",
+    "name": "Collaboration Quality",
+    "description": "How effectively the participant engages with teammates — building on ideas, challenging constructively, and synthesizing toward consensus.",
+    "dimensions": [
+      { "id": "engagement", "name": "Engagement", "icon": "💬", "description": "Actively participates and responds to teammates", "max_score": 25 },
+      { "id": "building", "name": "Building", "icon": "🧱", "description": "References, quotes, and extends others' ideas", "max_score": 25 },
+      { "id": "challenging", "name": "Challenging", "icon": "⚡", "description": "Pushes back constructively with reasoning", "max_score": 25 },
+      { "id": "synthesizing", "name": "Synthesizing", "icon": "🔗", "description": "Combines viewpoints and moves toward a decision", "max_score": 25 }
+    ]
+  },
+
+  "domain_dimensions": [
+    { "id": "tradeoff_analysis", "name": "Trade-off Analysis", "icon": "⚖️", "description": "Identifies and weighs competing priorities", "max_score": 25 },
+    { "id": "evidence_use", "name": "Evidence Use", "icon": "📊", "description": "References data and constraints in arguments", "max_score": 25 },
+    { "id": "flaw_detection", "name": "Flaw Detection", "icon": "🔍", "description": "Spots weak arguments or missing considerations", "max_score": 25 },
+    { "id": "decision_quality", "name": "Decision Quality", "icon": "🎯", "description": "Final recommendation is well-justified and feasible", "max_score": 25 }
+  ],
+
+  "scenario": {
+    "title": "Q3 Feature Prioritization",
+    "channel_name": "q3-planning",
+    "prompt": "Your product team must choose 2 of 5 proposed features to ship in Q3. Engineering capacity is fixed at 1,200 story points. Your team needs to reach a recommendation for the VP of Product by end of day.",
+    "user_role": { "name": "You", "title": "Product Lead", "color": "#f59e0b" },
+
+    "teammates": [
+      { "id": "jordan", "name": "Jordan", "title": "Program Manager", "color": "#4dd3fe", "avatar": "🧑‍💼", "trait": "Organized & pragmatic — sometimes oversimplifies" },
+      { "id": "priya", "name": "Priya", "title": "Data Analyst", "color": "#9e9eff", "avatar": "👩‍🔬", "trait": "Data-driven & cautious — can stall decisions" },
+      { "id": "marcus", "name": "Marcus", "title": "Design Lead", "color": "#468254", "avatar": "🎨", "trait": "Creative & enthusiastic — sometimes off-topic" }
+    ],
+
+    "decision_options": [
+      { "id": "feat_a", "name": "Smart Search Revamp", "points": 480, "desc": "Rebuild search with AI — high user demand (NPS #1 request), but large scope" },
+      { "id": "feat_b", "name": "Dashboard Redesign", "points": 350, "desc": "Modernize analytics dashboard — improves retention metrics, moderate effort" },
+      { "id": "feat_c", "name": "Mobile Push Notifications", "points": 280, "desc": "Push alerts for key events — quick win, strong engagement data" },
+      { "id": "feat_d", "name": "API v2 Launch", "points": 620, "desc": "New API for enterprise partners — high revenue potential, huge engineering lift" },
+      { "id": "feat_e", "name": "Onboarding Flow v3", "points": 310, "desc": "Streamlined onboarding — reduces churn by est. 12%, moderate scope" }
+    ],
+
+    "budget_points": 1200,
+
+    "reference_data_html": "<h4>Engineering Capacity</h4><p>1,200 story points available for Q3 (after maintenance & tech debt allocation).</p><h4>Feature Comparison</h4><table><tr><th>Feature</th><th>Points</th><th>Revenue Impact</th><th>User Demand</th></tr><tr><td>Smart Search</td><td>480</td><td>Medium</td><td>Very High</td></tr><tr><td>Dashboard</td><td>350</td><td>Medium</td><td>Medium</td></tr><tr><td>Push Notifs</td><td>280</td><td>Low</td><td>High</td></tr><tr><td>API v2</td><td>620</td><td>Very High</td><td>Low (enterprise)</td></tr><tr><td>Onboarding v3</td><td>310</td><td>High</td><td>Medium</td></tr></table><h4>Key Constraints</h4><ul><li>Enterprise contract renewal (Q4) depends on API v2 progress</li><li>Mobile engagement dropped 18% last quarter</li><li>Search is #1 NPS detractor for 3 consecutive quarters</li><li>Churn rate increased 2.3% — onboarding is a known lever</li></ul>",
+
+    "agenda": [
+      { "id": "a1", "label": "Round 1", "title": "Share Perspectives", "desc": "Each teammate proposes their top pick and why." },
+      { "id": "a2", "label": "Round 2", "title": "Debate Trade-offs", "desc": "Challenge assumptions, identify the key tensions." },
+      { "id": "a3", "label": "Round 3", "title": "Decide", "desc": "Converge on 2 features and write a rationale." }
+    ],
+
+    "message_schedule": [
+      { "id": "m1", "from": "jordan", "round": 1, "delay": 0, "text": "Alright team, let's get this sorted. I've been looking at the numbers and I think we should go with **Smart Search + Push Notifications**. That's 760 points — well under budget — and it addresses our two biggest user-facing pain points. Simple, clean, done by mid-August." },
+      { "id": "m2", "from": "priya", "round": 1, "delay": 4000, "text": "Hold on — I want to flag something. The API v2 is 620 points on its own, which looks expensive, but the enterprise renewal in Q4 is worth $2.1M ARR. If we lose that contract because API v2 isn't ready, the ROI math on everything else is irrelevant. I think we need API v2 + one smaller item." },
+      { "id": "m3", "from": "marcus", "round": 1, "delay": 8000, "text": "OK but have you *seen* the onboarding flow lately? It's embarrassing. We're losing 23% of signups in the first 3 days. Onboarding v3 + Dashboard Redesign would completely transform the first-time experience. Sometimes you have to invest in the product story, not just the spreadsheet." },
+      { "id": "m4", "from": "jordan", "round": 2, "delay": 3000, "text": "Marcus, I hear you on onboarding but that's 660 points for two features that don't move revenue directly. @Priya — the API point is valid but 620 points for one feature means we're betting everything on one card. What if it slips?" },
+      { "id": "m5", "from": "priya", "round": 2, "delay": 7000, "text": "Fair concern on scope risk. But I ran the numbers — if API v2 ships even 80% complete, the enterprise team can demo it for the renewal. We could pair it with Push Notifications (280 pts) and land at exactly 900 points with buffer. The data supports this combination." },
+      { "id": "m6", "from": "marcus", "round": 2, "delay": 11000, "text": "I just feel like we keep deprioritizing user experience for revenue. The dashboard hasn't been touched in 18 months. Our design debt is real. Also — random idea — what if we did a lighter version of Smart Search? Like, phase 1 only? Would that be fewer points?" },
+      { "id": "m7", "from": "jordan", "round": 2, "delay": 15000, "text": "That's actually not a bad idea Marcus. But we don't have a scoped-down estimate for Search. We should work with what we have. I think we're circling — we need someone to make a call here." },
+      { "id": "m8", "from": "priya", "round": 3, "delay": 3000, "text": "Agreed, we need to converge. I still think API v2 has to be in the mix given the contract risk. But I'm open to hearing what combination everyone thinks is strongest. What's the proposal?" },
+      { "id": "m9", "from": "marcus", "round": 3, "delay": 7000, "text": "Fine, I'll compromise. If we go API v2, I want the second slot to be something user-facing. Push Notifications or Onboarding — either works for me. Just not *only* backend stuff. Deal?" }
+    ],
+
+    "trigger_messages": [
+      { "trigger": "user_mentions_api", "keywords": ["api", "enterprise", "contract", "renewal"], "from": "priya", "text": "Exactly — thank you. The enterprise angle is the strongest ROI argument we have this quarter.", "once": true },
+      { "trigger": "user_mentions_search", "keywords": ["search", "nps", "user demand", "detractor"], "from": "jordan", "text": "Strong point about NPS. Search has been the #1 complaint for three quarters running — that's hard to ignore.", "once": true },
+      { "trigger": "user_mentions_onboarding", "keywords": ["onboarding", "churn", "signup", "retention"], "from": "marcus", "text": "Yes! Churn is the silent killer. If we fix the front door, everything else gets better.", "once": true },
+      { "trigger": "user_pushback", "keywords": ["disagree", "but", "however", "not sure about", "problem with", "issue with", "concern"], "from": "jordan", "text": "OK, fair pushback. Let's make sure we're weighing all the trade-offs before we lock anything in.", "once": true },
+      { "trigger": "user_synthesizes", "keywords": ["combine", "both", "pair", "compromise", "middle ground", "balance", "what if we"], "from": "priya", "text": "I like that you're trying to find the synthesis here. Can you lay out the specific combination and the math?", "once": true }
+    ]
+  },
+
+  "rubric": {
+    "domain": {
+      "tradeoff_keywords": ["trade-off", "tradeoff", "versus", "vs", "competing", "balance", "cost", "risk", "points", "budget", "capacity", "scope"],
+      "evidence_keywords": ["data", "numbers", "revenue", "$2.1", "arr", "nps", "18%", "23%", "2.3%", "churn", "retention", "engagement", "story points", "1200", "480", "350", "280", "620", "310"],
+      "flaw_keywords": ["oversimplif", "assuming", "but what if", "risk", "slip", "missing", "not accounting for", "problem with", "issue", "concern", "ignoring", "overlooking"],
+      "decision_valid_combos": [
+        { "ids": ["feat_a", "feat_c"], "points": 760, "label": "Search + Push — user-focused" },
+        { "ids": ["feat_a", "feat_e"], "points": 790, "label": "Search + Onboarding — growth-focused" },
+        { "ids": ["feat_d", "feat_c"], "points": 900, "label": "API + Push — revenue + engagement" },
+        { "ids": ["feat_d", "feat_e"], "points": 930, "label": "API + Onboarding — revenue + retention" },
+        { "ids": ["feat_b", "feat_c"], "points": 630, "label": "Dashboard + Push — UX-focused" },
+        { "ids": ["feat_b", "feat_e"], "points": 660, "label": "Dashboard + Onboarding — UX refresh" },
+        { "ids": ["feat_a", "feat_b"], "points": 830, "label": "Search + Dashboard — UX overhaul" }
+      ]
+    },
+    "collaboration": {
+      "min_replies": 4,
+      "build_keywords": ["agree", "good point", "building on", "adding to", "yes and", "exactly", "you're right", "like.*said", "as.*mentioned"],
+      "challenge_keywords": ["disagree", "but", "however", "not sure", "concern", "risk", "what about", "overlooking", "missing", "problem", "issue", "counter"],
+      "synthesis_keywords": ["combine", "both", "compromise", "middle ground", "what if we", "proposal", "recommend", "suggest", "let's go with", "my recommendation"]
+    }
+  },
+
+  "overall_labels": [
+    { "min": 90, "max": 100, "label": "Gold — Distinguished", "tier": "gold" },
+    { "min": 75, "max": 89, "label": "Silver — Proficient", "tier": "silver" },
+    { "min": 60, "max": 74, "label": "Bronze — Developing", "tier": "bronze" },
+    { "min": 0, "max": 59, "label": "Emerging", "tier": "developing" }
+  ],
+
+  "coaching_tips": [
+    "The best collaborators don't just state their opinion — they respond to specific points teammates have made.",
+    "Quoting or @mentioning a teammate shows you're listening. Do it at least twice per discussion.",
+    "When you disagree, explain *why* with evidence. 'I see it differently because the data shows...' is stronger than 'I disagree.'",
+    "Look for the synthesis: can two proposals be combined? Is there a creative middle ground?",
+    "In prioritization, always check the math — do your selected features fit within the constraint?",
+    "Strong decision-makers acknowledge what they're giving up, not just what they're choosing."
+  ]
+}
