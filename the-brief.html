@@ -696,6 +696,13 @@ body {
 }
 
 .info-drawer-body h4:first-child { margin-top: 0; }
+.info-tabs { display: flex; gap: 1px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+.info-tab { background: none; border: none; color: var(--text-tertiary); font-size: 12px; font-weight: 500; cursor: pointer; padding: 8px 12px; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+.info-tab:hover { color: var(--text); }
+.info-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.info-tab-pane { display: none; }
+.info-tab-pane.active { display: block; }
+.json-viewer { font-size: 11px; font-family: 'SF Mono', 'Fira Code', Consolas, monospace; white-space: pre-wrap; word-break: break-word; color: var(--accent); background: var(--bg); border: 1px solid rgba(77,211,254,0.15); border-radius: 6px; padding: 12px; line-height: 1.5; }
 
 .info-drawer-body p {
   font-size: 12px;
@@ -1746,7 +1753,7 @@ function populateInfoDrawer() {
     <tr><td>${escHtml(t.type)}</td><td>${escHtml(t.description)}</td></tr>
   `).join('');
 
-  body.innerHTML = `
+  const _overview = `
     <h4>Construct</h4>
     <p><strong>${escHtml(PACK.construct_name)}</strong><br>${escHtml(PACK.construct_description)}</p>
 
@@ -1778,6 +1785,15 @@ function populateInfoDrawer() {
     <h4>Evidence collected</h4>
     <p>Every action in this workspace is logged: tool calls (prompt text, tool chosen, cost), files and emails opened, planning steps, editor drafts, revision history, and timing data. Scoring uses both your final deliverable and your process.</p>
   `;
+  const _jsonStr = JSON.stringify(PACK, null, 2).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  body.innerHTML = `<div class="info-tabs"><button class="info-tab active" onclick="switchInfoTab('overview',this)">Overview</button><button class="info-tab" onclick="switchInfoTab('json',this)">Construct JSON</button></div><div class="info-tab-pane active" id="info-pane-overview">${_overview}</div><div class="info-tab-pane" id="info-pane-json"><pre class="json-viewer">${_jsonStr}</pre></div>`;
+}
+
+function switchInfoTab(tab, btn) {
+  btn.closest('.info-tabs').querySelectorAll('.info-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('info-pane-overview').classList.toggle('active', tab === 'overview');
+  document.getElementById('info-pane-json').classList.toggle('active', tab === 'json');
 }
 
 // ── SCORING ENGINE ──────────────────────────
