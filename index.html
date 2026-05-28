@@ -512,6 +512,81 @@ body {
   margin: 0 auto;
 }
 
+/* ── MODE TOGGLE ──────────────────────────── */
+.mode-toggle-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.mode-toggle-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  transition: color 0.2s;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mode-toggle-label.active {
+  color: var(--text);
+}
+
+.mode-toggle {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.mode-toggle.mobile {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.mode-toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--text);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+
+.mode-toggle.mobile .mode-toggle-thumb {
+  transform: translateX(24px);
+  background: var(--bg);
+}
+
+.mobile-badge {
+  display: none;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(77,211,254,0.12);
+  color: var(--accent);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.mobile-mode .mobile-badge { display: inline; }
+
 /* ── RESPONSIVE ────────────────────────────── */
 @media (max-width: 600px) {
   .hero h1 { font-size: 24px; }
@@ -547,14 +622,27 @@ body {
     <p>Interactive demonstrations of performance-based assessment across multiple task categories. Each task assesses a real construct and collects rich behavioral evidence.</p>
   </div>
 
+  <!-- MODE TOGGLE -->
+  <div class="mode-toggle-bar">
+    <span class="mode-toggle-label active" id="labelDesktop" onclick="setMode('desktop')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px;"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Desktop
+    </span>
+    <div class="mode-toggle" id="modeToggle" onclick="toggleMode()">
+      <div class="mode-toggle-thumb" id="modeThumb"></div>
+    </div>
+    <span class="mode-toggle-label" id="labelMobile" onclick="setMode('mobile')">
+      <svg width="12" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px;"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M12 18h.01"/></svg>Mobile
+    </span>
+  </div>
+
   <!-- TASK CARDS -->
   <div class="tasks-grid">
 
     <!-- Signal Check -->
-    <div class="task-card" onclick="location.href='signal-check.html'">
+    <div class="task-card" data-desktop="signal-check.html" data-mobile="signal-check.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat4), #a78bfa);"></div>
       <div class="task-card-badge" style="background: rgba(158,158,255,0.15); color: var(--cat4);">Cat 4 — Simulation</div>
-      <h3>Signal Check</h3>
+      <h3>Signal Check <span class="mobile-badge" style="display:none!important">Already mobile-ready</span></h3>
       <p class="task-card-desc">Have a casual conversation with an AI persona who adapts questions based on your responses. No right or wrong answers — just real talk.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Construct assessed</div>
@@ -579,10 +667,10 @@ body {
     </div>
 
     <!-- The Brief -->
-    <div class="task-card">
+    <div class="task-card" data-desktop="the-brief.html" data-mobile="the-brief-mobile.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat7), #34d399);"></div>
       <div class="task-card-badge" style="background: rgba(70,130,84,0.15); color: var(--cat7);">Cat 7 — AI-Augmented</div>
-      <h3>The Brief</h3>
+      <h3>The Brief <span class="mobile-badge">Simplified</span></h3>
       <p class="task-card-desc">Step into a consulting workspace with AI tools, reference files, and a client who needs a deliverable by end of day. Watch out for planted errors.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Construct assessed</div>
@@ -607,10 +695,10 @@ body {
     </div>
 
     <!-- Data Detective -->
-    <div class="task-card">
+    <div class="task-card" data-desktop="data-detective.html" data-mobile="data-detective-mobile.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat3), #fb923c);"></div>
       <div class="task-card-badge" style="background: rgba(245,158,11,0.15); color: var(--cat3);">Cat 3 — Process</div>
-      <h3>Data Detective</h3>
+      <h3>Data Detective <span class="mobile-badge">Simplified</span></h3>
       <p class="task-card-desc">Investigate a business dataset using filters, charts, and your own notes. The system watches how you explore — not just what you conclude.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Construct assessed</div>
@@ -635,10 +723,10 @@ body {
     </div>
 
     <!-- The Take -->
-    <div class="task-card">
+    <div class="task-card" data-desktop="the-take.html" data-mobile="the-take-mobile.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat1), #60a5fa);"></div>
       <div class="task-card-badge" style="background: rgba(77,211,254,0.15); color: var(--cat1);">Cat 1 — Constructed Response</div>
-      <h3>The Take</h3>
+      <h3>The Take <span class="mobile-badge">Simplified</span></h3>
       <p class="task-card-desc">Read conflicting source documents and write a position memo. Your reading behavior, source evaluation, and argumentation are all part of the evidence.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Construct assessed</div>
@@ -663,10 +751,10 @@ body {
     </div>
 
     <!-- The Forum -->
-    <div class="task-card" onclick="location.href='the-forum.html'">
+    <div class="task-card" data-desktop="the-forum.html" data-mobile="the-forum-mobile.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, #e879f9, #c084fc);"></div>
       <div class="task-card-badge" style="background: rgba(232,121,249,0.15); color: #e879f9;">Cat 6 — Collaborative</div>
-      <h3>The Forum</h3>
+      <h3>The Forum <span class="mobile-badge">Simplified</span></h3>
       <p class="task-card-desc">Join a team discussion with scripted teammates who have competing priorities. Engage, challenge, synthesize — and drive the group to a decision.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Constructs assessed</div>
@@ -1001,6 +1089,55 @@ CONSTRUCT PACK (swappable JSON)
 
 <script>
 'use strict';
+
+// ── Mode toggle ──
+let currentMode = 'desktop';
+
+function setMode(mode) {
+  currentMode = mode;
+  const toggle = document.getElementById('modeToggle');
+  const labelD = document.getElementById('labelDesktop');
+  const labelM = document.getElementById('labelMobile');
+
+  if (mode === 'mobile') {
+    toggle.classList.add('mobile');
+    labelD.classList.remove('active');
+    labelM.classList.add('active');
+    document.body.classList.add('mobile-mode');
+  } else {
+    toggle.classList.remove('mobile');
+    labelD.classList.add('active');
+    labelM.classList.remove('active');
+    document.body.classList.remove('mobile-mode');
+  }
+
+  // Swap all card links
+  document.querySelectorAll('.task-card[data-desktop]').forEach(card => {
+    const href = card.dataset[mode];
+    const link = card.querySelector('.task-card-action');
+    if (link) link.href = href;
+  });
+
+  localStorage.setItem('pba-hub-mode', mode);
+}
+
+function toggleMode() {
+  setMode(currentMode === 'desktop' ? 'mobile' : 'desktop');
+}
+
+// Card click handler — delegate to the action link
+document.querySelectorAll('.task-card[data-desktop]').forEach(card => {
+  card.addEventListener('click', e => {
+    // Don't double-navigate if they clicked the link itself
+    if (e.target.closest('.task-card-action')) return;
+    const link = card.querySelector('.task-card-action');
+    if (link) location.href = link.href;
+  });
+});
+
+// Restore saved mode
+const saved = localStorage.getItem('pba-hub-mode');
+if (saved === 'mobile') setMode('mobile');
 
 // ── Info panel ──
 function openInfo() {

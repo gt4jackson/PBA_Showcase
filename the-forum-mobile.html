@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>The Forum — Mobile</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #1a212b; --surface: #242e3d; --surface-alt: #2c3849; --surface-hover: #344256;
+  --text: #f2e9d8; --text-secondary: #b8b0a0; --text-tertiary: #7e7a72;
+  --border: rgba(242,233,216,0.08); --border-strong: rgba(242,233,216,0.15);
+  --accent: #4dd3fe; --accent-light: rgba(77,211,254,0.12);
+  --emerald: #468254; --emerald-bg: rgba(70,130,84,0.15);
+  --amber: #f59e0b; --amber-bg: rgba(245,158,11,0.15);
+  --rose: #f43f5e; --rose-bg: rgba(244,63,94,0.15);
+  --violet: #9e9eff; --violet-bg: rgba(158,158,255,0.15);
+  --radius: 10px; --radius-sm: 6px;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg); color: var(--text);
+  height: 100vh; height: 100dvh; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: rgba(242,233,216,0.15); border-radius: 2px; }
+
+/* ── TOP BAR ── */
+.top-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.top-bar-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.back-btn { background: none; border: none; color: var(--text-tertiary); cursor: pointer; font-size: 20px; padding: 4px; }
+.scenario-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.timer-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: var(--surface-alt); color: var(--text-secondary); border: 1px solid var(--border); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+/* ── CONTEXT ACCORDION ── */
+.ctx-accordion { background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.ctx-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; cursor: pointer; font-size: 12px; color: var(--text-secondary);
+  -webkit-tap-highlight-color: transparent;
+}
+.ctx-toggle .arrow { transition: transform 0.2s; font-size: 14px; }
+.ctx-accordion.open .arrow { transform: rotate(180deg); }
+.ctx-body { display: none; padding: 0 14px 12px; max-height: 45vh; overflow-y: auto; }
+.ctx-accordion.open .ctx-body { display: block; }
+.ctx-tabs { display: flex; gap: 0; margin-bottom: 8px; }
+.ctx-tab {
+  flex: 1; padding: 6px 0; font-size: 11px; font-weight: 600; text-align: center;
+  background: var(--bg); border: 1px solid var(--border); color: var(--text-tertiary);
+  cursor: pointer; transition: all 0.15s;
+}
+.ctx-tab:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+.ctx-tab:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.ctx-tab.active { background: var(--accent-light); color: var(--accent); border-color: rgba(77,211,254,0.3); }
+.agenda-item { padding: 8px; border-left: 3px solid var(--border); margin-bottom: 6px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; background: var(--bg); }
+.agenda-item.active { border-left-color: var(--accent); background: var(--accent-light); }
+.agenda-item.completed { border-left-color: var(--emerald); opacity: 0.5; }
+.agenda-num { font-size: 10px; font-weight: 600; color: var(--accent); text-transform: uppercase; }
+.agenda-title { font-size: 13px; font-weight: 600; margin: 2px 0; }
+.agenda-desc { font-size: 11px; color: var(--text-tertiary); }
+.team-card { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.team-card-avatar { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.team-card-name { font-size: 13px; font-weight: 600; }
+.team-card-role { font-size: 11px; color: var(--text-secondary); }
+.team-card-trait { font-size: 11px; color: var(--text-tertiary); font-style: italic; }
+.ref-block { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.ref-block h4 { font-size: 12px; color: var(--accent); margin: 8px 0 4px; }
+.ref-block table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 4px 0; }
+.ref-block th, .ref-block td { padding: 4px 6px; border: 1px solid var(--border); text-align: left; }
+.ref-block th { background: var(--surface-alt); color: var(--text); font-weight: 600; }
+.ref-block ul { padding-left: 16px; margin: 4px 0; }
+.ref-block li { margin-bottom: 3px; font-size: 11px; }
+
+/* ── ROUND INDICATOR ── */
+.round-bar {
+  display: flex; gap: 4px; padding: 6px 14px; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.round-pip {
+  flex: 1; height: 4px; border-radius: 2px; background: var(--border-strong); transition: background 0.3s;
+}
+.round-pip.active { background: var(--accent); }
+.round-pip.done { background: var(--emerald); }
+
+/* ── THREAD ── */
+.thread-body {
+  flex: 1; overflow-y: auto; padding: 10px 12px; -webkit-overflow-scrolling: touch;
+}
+.msg { display: flex; gap: 8px; margin-bottom: 12px; animation: fadeIn 0.25s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.msg-avatar { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.msg-body { flex: 1; min-width: 0; }
+.msg-header { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.msg-name { font-size: 13px; font-weight: 600; }
+.msg-role { font-size: 10px; color: var(--text-tertiary); }
+.msg-time { font-size: 10px; color: var(--text-tertiary); }
+.msg-text { font-size: 13px; line-height: 1.5; color: var(--text-secondary); margin-top: 2px; word-wrap: break-word; }
+.msg-text strong { color: var(--text); font-weight: 600; }
+.msg-actions { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+.msg-action-btn {
+  font-size: 12px; padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border);
+  background: var(--bg); color: var(--text-tertiary); cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.msg-action-btn:active { background: var(--surface-alt); color: var(--text); }
+.msg-reactions { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+.reaction-chip { font-size: 11px; padding: 2px 8px; border-radius: 12px; background: var(--surface-alt); border: 1px solid var(--border); }
+.reaction-chip.user-reacted { border-color: rgba(77,211,254,0.3); background: var(--accent-light); }
+.msg-divider { text-align: center; font-size: 11px; color: var(--text-tertiary); padding: 10px 0; font-weight: 600; }
+.typing-indicator { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-tertiary); padding: 4px 0; }
+.typing-dots { display: flex; gap: 3px; }
+.typing-dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--text-tertiary); animation: blink 1.2s infinite; }
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%,60%,100% { opacity: 0.3 } 30% { opacity: 1 } }
+
+/* ── COMPOSE ── */
+.compose-bar {
+  padding: 8px 12px; background: var(--surface); border-top: 1px solid var(--border); flex-shrink: 0;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+.compose-replying {
+  font-size: 11px; color: var(--accent); padding: 4px 8px; margin-bottom: 6px;
+  background: var(--accent-light); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: space-between;
+}
+.compose-replying.hidden { display: none; }
+.cancel-reply { background: none; border: none; color: var(--accent); font-size: 14px; cursor: pointer; padding: 0 4px; }
+.compose-row { display: flex; gap: 8px; align-items: flex-end; }
+.compose-input {
+  flex: 1; padding: 10px 12px; border-radius: var(--radius); border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); font-size: 15px; resize: none; font-family: inherit;
+  min-height: 42px; max-height: 120px; line-height: 1.4;
+}
+.compose-input:focus { outline: none; border-color: rgba(77,211,254,0.4); }
+.compose-send {
+  padding: 10px 16px; border-radius: var(--radius); border: none;
+  background: var(--accent); color: #0a1628; font-weight: 600; font-size: 14px;
+  cursor: pointer; flex-shrink: 0; min-height: 42px;
+}
+.compose-send:disabled { opacity: 0.3; cursor: default; }
+.compose-send:active:not(:disabled) { background: #3bbde5; }
+
+/* ── DECISION ACTION ── */
+.decide-float {
+  position: fixed; bottom: max(80px, calc(env(safe-area-inset-bottom) + 80px)); right: 14px;
+  padding: 10px 18px; border-radius: 24px; border: none;
+  background: var(--accent); color: #0a1628; font-weight: 700; font-size: 13px;
+  cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.4); z-index: 10;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.decide-float:disabled { opacity: 0; pointer-events: none; transform: scale(0.8); }
+.decide-float:active:not(:disabled) { background: #3bbde5; transform: scale(0.95); }
+
+/* ── OVERLAYS ── */
+.overlay { position: fixed; inset: 0; background: var(--bg); z-index: 100; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.overlay.hidden { display: none; }
+.overlay-inner { padding: 20px 16px; max-width: 440px; margin: 0 auto; }
+
+/* Welcome */
+.welcome-card h2 { font-size: 20px; margin-bottom: 8px; }
+.welcome-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
+.wc-boxes { display: flex; gap: 8px; margin-bottom: 12px; }
+.wc-box { flex: 1; padding: 10px; border-radius: var(--radius); }
+.wc-accent { background: var(--accent-light); border: 1px solid rgba(77,211,254,0.2); }
+.wc-green { background: var(--emerald-bg); border: 1px solid rgba(70,130,84,0.2); }
+.wc-box-label { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; }
+.wc-box-name { font-size: 13px; font-weight: 600; margin-top: 2px; }
+.dim-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 16px; }
+.dim-tag { font-size: 10px; padding: 3px 8px; border-radius: 4px; background: var(--surface-alt); border: 1px solid var(--border); color: var(--text-secondary); }
+.dim-tag-collab { background: var(--emerald-bg); border-color: rgba(70,130,84,0.2); color: var(--emerald); }
+.welcome-start {
+  width: 100%; padding: 14px; border-radius: var(--radius); border: none;
+  background: var(--accent); color: #0a1628; font-weight: 700; font-size: 16px; cursor: pointer;
+}
+.welcome-start:active { background: #3bbde5; }
+
+/* Decision */
+.decision-card h3 { font-size: 18px; margin-bottom: 6px; }
+.decision-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
+.decision-opt {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); margin-bottom: 8px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.decision-opt.selected { border-color: rgba(77,211,254,0.4); background: var(--accent-light); }
+.decision-opt input[type="checkbox"] { margin-top: 3px; accent-color: var(--accent); }
+.decision-opt-label { font-size: 13px; font-weight: 600; }
+.decision-opt-desc { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+.decision-rationale {
+  width: 100%; min-height: 80px; padding: 10px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--bg); color: var(--text);
+  font-family: inherit; font-size: 14px; resize: vertical; margin-bottom: 10px;
+}
+.decision-submit {
+  width: 100%; padding: 12px; border-radius: var(--radius); border: none;
+  background: var(--accent); color: #0a1628; font-weight: 700; font-size: 15px; cursor: pointer;
+}
+.decision-submit:disabled { opacity: 0.35; cursor: default; }
+
+/* Results */
+.results-header { text-align: center; margin-bottom: 20px; }
+.results-header h2 { font-size: 20px; margin-bottom: 4px; }
+.results-header p { font-size: 13px; color: var(--text-secondary); }
+.dual-scores { display: flex; justify-content: center; gap: 24px; margin: 16px 0; }
+.score-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.score-circle-domain { background: var(--accent-light); border: 2px solid var(--accent); }
+.score-circle-collab { background: var(--emerald-bg); border: 2px solid var(--emerald); }
+.sc-num { font-size: 22px; font-weight: 700; line-height: 1; }
+.sc-of { font-size: 10px; color: var(--text-tertiary); }
+.score-circle-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; text-align: center; }
+.results-tier { display: inline-block; padding: 4px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+.tier-gold { background: rgba(245,158,11,0.15); color: var(--amber); }
+.tier-silver { background: var(--surface-alt); color: var(--text); }
+.tier-bronze { background: rgba(180,120,60,0.15); color: #c08040; }
+.tier-developing { background: var(--surface-alt); color: var(--text-tertiary); }
+.results-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; }
+.results-card h4 { font-size: 13px; margin-bottom: 8px; color: var(--accent); }
+.skill-bar-row { margin-bottom: 8px; }
+.skill-bar-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px; }
+.skill-bar-track { height: 6px; border-radius: 3px; background: var(--bg); }
+.skill-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.bar-high { background: var(--emerald); } .bar-mid { background: var(--amber); } .bar-low { background: var(--rose); }
+.feedback-item { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.feedback-icon { font-size: 14px; flex-shrink: 0; width: 18px; text-align: center; }
+.feedback-good { color: var(--emerald); } .feedback-bad { color: var(--rose); }
+.feedback-dim { font-size: 12px; font-weight: 600; } .feedback-note { font-size: 11px; color: var(--text-secondary); }
+.process-stat { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.process-stat-label { color: var(--text-secondary); } .process-stat-value { font-weight: 600; }
+.coaching-list { padding-left: 16px; font-size: 12px; color: var(--text-secondary); } .coaching-list li { margin-bottom: 4px; }
+.results-actions { display: flex; gap: 10px; margin-top: 16px; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+.results-primary { flex: 1; text-align: center; padding: 12px; border-radius: var(--radius); background: var(--accent); color: #0a1628; font-weight: 700; font-size: 14px; text-decoration: none; }
+.results-secondary { flex: 1; padding: 12px; border-radius: var(--radius); border: 1px solid var(--border); background: none; color: var(--text-secondary); font-size: 14px; font-weight: 500; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<script>
+const DEFAULT_SCENARIO = 'scenarios/the-forum-project-prioritization.json';
+const CONSTRUCT_PACK_INLINE = {
+  construct_id: "project_prioritization",
+  construct_name: "Project Prioritization",
+  construct_description: "The ability to evaluate competing proposals against constraints, weigh trade-offs, and drive a team toward a sound decision under uncertainty.",
+  collaboration_construct: {
+    id: "collaboration", name: "Collaboration Quality",
+    description: "How effectively the participant engages with teammates — building on ideas, challenging constructively, and synthesizing toward consensus.",
+    dimensions: [
+      { id: "engagement", name: "Engagement", icon: "💬", description: "Actively participates and responds to teammates", max_score: 25 },
+      { id: "building", name: "Building", icon: "🧱", description: "References, quotes, and extends others' ideas", max_score: 25 },
+      { id: "challenging", name: "Challenging", icon: "⚡", description: "Pushes back constructively with reasoning", max_score: 25 },
+      { id: "synthesizing", name: "Synthesizing", icon: "🔗", description: "Combines viewpoints and moves toward a decision", max_score: 25 }
+    ]
+  },
+  domain_dimensions: [
+    { id: "tradeoff_analysis", name: "Trade-off Analysis", icon: "⚖️", description: "Identifies and weighs competing priorities", max_score: 25 },
+    { id: "evidence_use", name: "Evidence Use", icon: "📊", description: "References data and constraints in arguments", max_score: 25 },
+    { id: "flaw_detection", name: "Flaw Detection", icon: "🔍", description: "Spots weak arguments or missing considerations", max_score: 25 },
+    { id: "decision_quality", name: "Decision Quality", icon: "🎯", description: "Final recommendation is well-justified and feasible", max_score: 25 }
+  ],
+  scenario: {
+    title: "Q3 Feature Prioritization", channel_name: "q3-planning",
+    prompt: "Your product team must choose 2 of 5 proposed features to ship in Q3. Engineering capacity is fixed at 1,200 story points. Your team needs to reach a recommendation for the VP of Product by end of day.",
+    user_role: { name: "You", title: "Product Lead", color: "#f59e0b" },
+    teammates: [
+      { id: "jordan", name: "Jordan", title: "Program Manager", color: "#4dd3fe", avatar: "🧑‍💼", trait: "Organized & pragmatic" },
+      { id: "priya", name: "Priya", title: "Data Analyst", color: "#9e9eff", avatar: "👩‍🔬", trait: "Data-driven & cautious" },
+      { id: "marcus", name: "Marcus", title: "Design Lead", color: "#468254", avatar: "🎨", trait: "Creative & enthusiastic" }
+    ],
+    decision_options: [
+      { id: "feat_a", name: "Smart Search Revamp", points: 480, desc: "AI search — high user demand, large scope" },
+      { id: "feat_b", name: "Dashboard Redesign", points: 350, desc: "Modernize analytics — moderate effort" },
+      { id: "feat_c", name: "Mobile Push Notifications", points: 280, desc: "Push alerts — quick win, strong data" },
+      { id: "feat_d", name: "API v2 Launch", points: 620, desc: "Enterprise API — high revenue, huge lift" },
+      { id: "feat_e", name: "Onboarding Flow v3", points: 310, desc: "Reduce churn ~12% — moderate scope" }
+    ],
+    budget_points: 1200,
+    reference_data_html: `<h4>Engineering Capacity</h4><p>1,200 story points for Q3.</p><h4>Feature Comparison</h4><table><tr><th>Feature</th><th>Pts</th><th>Revenue</th><th>Demand</th></tr><tr><td>Search</td><td>480</td><td>Med</td><td>Very High</td></tr><tr><td>Dashboard</td><td>350</td><td>Med</td><td>Med</td></tr><tr><td>Push</td><td>280</td><td>Low</td><td>High</td></tr><tr><td>API v2</td><td>620</td><td>V.High</td><td>Low</td></tr><tr><td>Onboarding</td><td>310</td><td>High</td><td>Med</td></tr></table><h4>Key Constraints</h4><ul><li>Enterprise renewal (Q4) depends on API v2</li><li>Mobile engagement dropped 18%</li><li>Search is #1 NPS detractor × 3 quarters</li><li>Churn up 2.3% — onboarding is a lever</li></ul>`,
+    agenda: [
+      { id: "a1", label: "Round 1", title: "Share Perspectives", desc: "Each teammate proposes their top pick." },
+      { id: "a2", label: "Round 2", title: "Debate Trade-offs", desc: "Challenge assumptions, find tensions." },
+      { id: "a3", label: "Round 3", title: "Decide", desc: "Converge on 2 features and a rationale." }
+    ],
+    message_schedule: [
+      { id: "m1", from: "jordan", round: 1, delay: 0, text: "Let's get this sorted. I think **Smart Search + Push Notifications** — 760 points, well under budget, hits our two biggest user pain points." },
+      { id: "m2", from: "priya", round: 1, delay: 4000, text: "Hold on — API v2 is 620 points but the enterprise renewal is worth $2.1M ARR. If we lose that contract, the ROI on everything else is irrelevant. API v2 + one smaller item." },
+      { id: "m3", from: "marcus", round: 1, delay: 8000, text: "Have you *seen* onboarding lately? We're losing 23% of signups in 3 days. Onboarding v3 + Dashboard Redesign would transform the first-time experience." },
+      { id: "m4", from: "jordan", round: 2, delay: 3000, text: "Marcus, 660 points for two features that don't move revenue. @Priya — 620 for one feature is betting everything on one card. What if it slips?" },
+      { id: "m5", from: "priya", round: 2, delay: 7000, text: "Even 80% of API v2 is enough for the enterprise demo. Pair it with Push Notifications — 900 points with buffer. The data supports this." },
+      { id: "m6", from: "marcus", round: 2, delay: 11000, text: "We keep deprioritizing UX for revenue. Dashboard hasn't been touched in 18 months. Our design debt is real." },
+      { id: "m7", from: "jordan", round: 2, delay: 15000, text: "We're circling. We need someone to make a call here." },
+      { id: "m8", from: "priya", round: 3, delay: 3000, text: "Let's converge. API v2 has to be in the mix given contract risk. What combination is strongest?" },
+      { id: "m9", from: "marcus", round: 3, delay: 7000, text: "Fine — if API v2, then the second slot has to be user-facing. Push or Onboarding. Deal?" }
+    ],
+    trigger_messages: [
+      { trigger: "user_mentions_api", keywords: ["api", "enterprise", "contract", "renewal"], from: "priya", text: "Exactly — the enterprise angle is the strongest ROI argument this quarter.", once: true },
+      { trigger: "user_mentions_search", keywords: ["search", "nps", "user demand", "detractor"], from: "jordan", text: "Strong point about NPS. #1 complaint for three quarters running.", once: true },
+      { trigger: "user_mentions_onboarding", keywords: ["onboarding", "churn", "signup", "retention"], from: "marcus", text: "Yes! Churn is the silent killer. Fix the front door, everything gets better.", once: true },
+      { trigger: "user_pushback", keywords: ["disagree", "but", "however", "not sure about", "problem with"], from: "jordan", text: "Fair pushback. Let's weigh all the trade-offs before locking in.", once: true },
+      { trigger: "user_synthesizes", keywords: ["combine", "both", "pair", "compromise", "middle ground", "what if we"], from: "priya", text: "I like that synthesis. Can you lay out the specific combination and math?", once: true }
+    ]
+  },
+  rubric: {
+    domain: {
+      tradeoff_keywords: ["trade-off", "tradeoff", "versus", "vs", "competing", "balance", "cost", "risk", "points", "budget", "capacity", "scope"],
+      evidence_keywords: ["data", "numbers", "revenue", "$2.1", "arr", "nps", "18%", "23%", "2.3%", "churn", "retention", "engagement", "story points", "1200", "480", "350", "280", "620", "310"],
+      flaw_keywords: ["oversimplif", "assuming", "but what if", "risk", "slip", "missing", "not accounting for", "problem with", "issue", "concern", "ignoring"],
+      decision_valid_combos: [
+        { ids: ["feat_a", "feat_c"], points: 760 }, { ids: ["feat_a", "feat_e"], points: 790 },
+        { ids: ["feat_d", "feat_c"], points: 900 }, { ids: ["feat_d", "feat_e"], points: 930 },
+        { ids: ["feat_b", "feat_c"], points: 630 }, { ids: ["feat_b", "feat_e"], points: 660 },
+        { ids: ["feat_a", "feat_b"], points: 830 }
+      ]
+    },
+    collaboration: {
+      min_replies: 4,
+      build_keywords: ["agree", "good point", "building on", "adding to", "yes and", "exactly", "you're right"],
+      challenge_keywords: ["disagree", "but", "however", "not sure", "concern", "risk", "what about", "overlooking", "missing", "problem"],
+      synthesis_keywords: ["combine", "both", "compromise", "middle ground", "what if we", "proposal", "recommend", "suggest", "let's go with"]
+    }
+  },
+  overall_labels: [
+    { min: 90, max: 100, label: "Gold — Distinguished", tier: "gold" },
+    { min: 75, max: 89, label: "Silver — Proficient", tier: "silver" },
+    { min: 60, max: 74, label: "Bronze — Developing", tier: "bronze" },
+    { min: 0, max: 59, label: "Emerging", tier: "developing" }
+  ],
+  coaching_tips: [
+    "Respond to specific points teammates made — don't just broadcast your own opinion.",
+    "When you disagree, explain *why* with data.",
+    "Look for the synthesis: can two proposals combine?",
+    "Always check the math — do your picks fit the budget?",
+    "Strong decision-makers acknowledge what they're giving up."
+  ]
+};
+</script>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <a class="back-btn" href="index.html">←</a>
+    <span class="scenario-title" id="scenario-title"></span>
+  </div>
+  <span class="timer-tag" id="timer">00:00</span>
+</div>
+
+<!-- CONTEXT ACCORDION -->
+<div class="ctx-accordion" id="ctx-accordion">
+  <div class="ctx-toggle" onclick="toggleCtx()">
+    <span>📋 <span id="ctx-label">Agenda & Data</span></span>
+    <span class="arrow">▾</span>
+  </div>
+  <div class="ctx-body">
+    <div class="ctx-tabs">
+      <button class="ctx-tab active" data-tab="agenda" onclick="switchCtx('agenda')">Agenda</button>
+      <button class="ctx-tab" data-tab="team" onclick="switchCtx('team')">Team</button>
+      <button class="ctx-tab" data-tab="reference" onclick="switchCtx('reference')">Data</button>
+    </div>
+    <div id="ctx-content"></div>
+  </div>
+</div>
+
+<!-- ROUND PROGRESS -->
+<div class="round-bar">
+  <div class="round-pip" id="pip-1"></div>
+  <div class="round-pip" id="pip-2"></div>
+  <div class="round-pip" id="pip-3"></div>
+</div>
+
+<!-- THREAD -->
+<div class="thread-body" id="thread-body"></div>
+
+<!-- COMPOSE -->
+<div class="compose-bar">
+  <div class="compose-replying hidden" id="compose-replying">
+    Replying to <strong id="reply-target-name"></strong>
+    <button class="cancel-reply" onclick="cancelReply()">✕</button>
+  </div>
+  <div class="compose-row">
+    <textarea class="compose-input" id="compose-input" placeholder="Type your message..." rows="1" oninput="autoGrow(this)"></textarea>
+    <button class="compose-send" id="send-btn" onclick="sendMessage()" disabled>Send</button>
+  </div>
+</div>
+
+<!-- FLOATING DECIDE BUTTON -->
+<button class="decide-float" id="decide-btn" onclick="openDecision()" disabled>✋ Propose Decision</button>
+
+<!-- OVERLAYS -->
+<div class="overlay" id="welcome-overlay"></div>
+<div class="overlay hidden" id="decision-overlay"></div>
+<div class="overlay hidden" id="results-overlay"></div>
+
+<script>
+'use strict';
+let PACK = null, SC = null;
+const STATE = {
+  startTime: null, round: 0, evidence: [],
+  userMessages: [], replyTargets: {}, reactions: {},
+  scheduledFired: {}, triggersFired: {},
+  currentReplyTo: null, ctxTab: 'agenda',
+  decisionSubmitted: false, submitted: false
+};
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s||''; return d.innerHTML; }
+function logEvidence(event, data={}) { STATE.evidence.push({ event, ...data, ts: Date.now(), elapsed_ms: STATE.startTime ? Date.now()-STATE.startTime : 0 }); }
+
+async function loadPack() {
+  const params = new URLSearchParams(window.location.search);
+  const url = params.get('scenario') || DEFAULT_SCENARIO;
+  try { const r = await fetch(url); if (!r.ok) throw new Error(r.status); return await r.json(); }
+  catch (e) { return CONSTRUCT_PACK_INLINE; }
+}
+
+// Timer
+function startTimer() {
+  STATE.startTime = Date.now();
+  setInterval(() => {
+    const s = Math.floor((Date.now()-STATE.startTime)/1000);
+    document.getElementById('timer').textContent = `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  }, 1000);
+}
+
+// Context accordion
+function toggleCtx() { document.getElementById('ctx-accordion').classList.toggle('open'); }
+function switchCtx(tab) {
+  STATE.ctxTab = tab;
+  document.querySelectorAll('.ctx-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  renderCtx();
+}
+function renderCtx() {
+  const body = document.getElementById('ctx-content');
+  if (STATE.ctxTab === 'agenda') {
+    body.innerHTML = SC.agenda.map(a => `<div class="agenda-item" data-id="${a.id}"><div class="agenda-num">${esc(a.label)}</div><div class="agenda-title">${esc(a.title)}</div><div class="agenda-desc">${esc(a.desc)}</div></div>`).join('');
+  } else if (STATE.ctxTab === 'team') {
+    body.innerHTML = `<div class="team-card"><div class="team-card-avatar" style="background:${SC.user_role.color}">👤</div><div><div class="team-card-name">${esc(SC.user_role.name)} (you)</div><div class="team-card-role">${esc(SC.user_role.title)}</div></div></div>` +
+      SC.teammates.map(t => `<div class="team-card"><div class="team-card-avatar" style="background:${t.color}">${t.avatar}</div><div><div class="team-card-name">${esc(t.name)}</div><div class="team-card-role">${esc(t.title)}</div><div class="team-card-trait">${esc(t.trait)}</div></div></div>`).join('');
+  } else {
+    body.innerHTML = `<div class="ref-block">${SC.reference_data_html}</div>`;
+  }
+}
+
+// Messages
+function addMessage(from, text, opts={}) {
+  const tb = document.getElementById('thread-body');
+  const teammate = SC.teammates.find(t => t.id === from);
+  const isUser = !teammate;
+  const name = isUser ? SC.user_role.name : teammate.name;
+  const title = isUser ? SC.user_role.title : teammate.title;
+  const color = isUser ? SC.user_role.color : teammate.color;
+  const avatar = isUser ? '👤' : teammate.avatar;
+  const elapsed = STATE.startTime ? Math.floor((Date.now()-STATE.startTime)/1000) : 0;
+  const timeStr = `${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')}`;
+  const msgId = 'msg-' + Date.now() + '-' + Math.random().toString(36).slice(2,6);
+
+  const div = document.createElement('div');
+  div.className = 'msg'; div.id = msgId;
+  div.innerHTML = `<div class="msg-avatar" style="background:${color}">${avatar}</div><div class="msg-body">
+    <div class="msg-header"><span class="msg-name">${esc(name)}</span><span class="msg-role">${esc(title)}</span><span class="msg-time">${timeStr}</span></div>
+    <div class="msg-text">${text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+    ${!isUser ? `<div class="msg-actions"><button class="msg-action-btn" onclick="setReply('${from}','${msgId}')">↩ Reply</button><button class="msg-action-btn" onclick="addReaction('${msgId}','👍')">👍</button><button class="msg-action-btn" onclick="addReaction('${msgId}','🤔')">🤔</button></div>` : ''}
+    <div class="msg-reactions" id="reactions-${msgId}"></div>
+  </div>`;
+  tb.appendChild(div);
+  tb.scrollTop = tb.scrollHeight;
+  if (!isUser) logEvidence('teammate_message', { from, msg_id: msgId, round: STATE.round });
+  return msgId;
+}
+
+function showTyping(name) {
+  const tb = document.getElementById('thread-body');
+  const el = document.createElement('div'); el.className = 'typing-indicator'; el.id = 'typing-' + name;
+  el.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div> ${esc(name)} is typing...`;
+  tb.appendChild(el); tb.scrollTop = tb.scrollHeight;
+}
+function hideTyping(name) { const el = document.getElementById('typing-' + name); if (el) el.remove(); }
+
+function addDivider(text) {
+  const tb = document.getElementById('thread-body');
+  const div = document.createElement('div'); div.className = 'msg-divider'; div.textContent = text;
+  tb.appendChild(div); tb.scrollTop = tb.scrollHeight;
+}
+
+function addReaction(msgId, emoji) {
+  if (!STATE.reactions[msgId]) STATE.reactions[msgId] = {};
+  STATE.reactions[msgId][emoji] = !STATE.reactions[msgId][emoji];
+  const c = document.getElementById('reactions-' + msgId);
+  if (c) c.innerHTML = Object.entries(STATE.reactions[msgId]).filter(([,v])=>v).map(([e])=>`<span class="reaction-chip user-reacted">${e} 1</span>`).join('');
+  logEvidence('reaction', { msg_id: msgId, emoji, added: STATE.reactions[msgId][emoji] });
+}
+
+function setReply(from, msgId) {
+  const tm = SC.teammates.find(t => t.id === from);
+  STATE.currentReplyTo = { from, msgId };
+  document.getElementById('reply-target-name').textContent = tm ? tm.name : from;
+  document.getElementById('compose-replying').classList.remove('hidden');
+  document.getElementById('compose-input').focus();
+}
+function cancelReply() { STATE.currentReplyTo = null; document.getElementById('compose-replying').classList.add('hidden'); }
+
+function autoGrow(el) {
+  el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  document.getElementById('send-btn').disabled = el.value.trim().length === 0;
+}
+
+function sendMessage() {
+  const input = document.getElementById('compose-input');
+  const text = input.value.trim(); if (!text) return;
+  const msgId = addMessage('user', esc(text));
+  STATE.userMessages.push({ id: msgId, text, replyTo: STATE.currentReplyTo, round: STATE.round, ts: Date.now() });
+  logEvidence('user_message', { msg_id: msgId, text, word_count: text.split(/\s+/).length, reply_to: STATE.currentReplyTo ? STATE.currentReplyTo.from : null, round: STATE.round });
+  input.value = ''; input.style.height = 'auto'; document.getElementById('send-btn').disabled = true; cancelReply();
+  checkTriggers(text);
+  if (STATE.userMessages.length >= 3 && STATE.round >= 3) document.getElementById('decide-btn').disabled = false;
+}
+
+function checkTriggers(text) {
+  const lower = text.toLowerCase();
+  for (const trig of SC.trigger_messages) {
+    if (STATE.triggersFired[trig.trigger] && trig.once) continue;
+    if (trig.keywords.some(k => lower.includes(k.toLowerCase()))) {
+      STATE.triggersFired[trig.trigger] = true;
+      const tm = SC.teammates.find(t => t.id === trig.from);
+      setTimeout(() => { showTyping(tm.name); setTimeout(() => { hideTyping(tm.name); addMessage(trig.from, trig.text); }, 1500 + Math.random()*1500); }, 1000 + Math.random()*2000);
+    }
+  }
+}
+
+// Rounds
+function runRound(roundNum) {
+  STATE.round = roundNum;
+  // Update pips
+  for (let i = 1; i <= 3; i++) {
+    const pip = document.getElementById('pip-' + i);
+    pip.classList.toggle('active', i === roundNum);
+    pip.classList.toggle('done', i < roundNum);
+  }
+  // Update agenda items
+  document.querySelectorAll('.agenda-item').forEach(el => {
+    const id = el.dataset.id;
+    const idx = SC.agenda.findIndex(a => a.id === id);
+    if (idx < roundNum - 1) { el.classList.add('completed'); el.classList.remove('active'); }
+    else if (idx === roundNum - 1) { el.classList.add('active'); el.classList.remove('completed'); }
+    else { el.classList.remove('active', 'completed'); }
+  });
+
+  const agenda = SC.agenda[roundNum - 1];
+  addDivider(agenda ? `— ${agenda.title} —` : `— Round ${roundNum} —`);
+
+  SC.message_schedule.filter(m => m.round === roundNum).forEach(m => {
+    const tm = SC.teammates.find(t => t.id === m.from);
+    setTimeout(() => { showTyping(tm.name); setTimeout(() => { hideTyping(tm.name); addMessage(m.from, m.text); STATE.scheduledFired[m.id] = true; }, 1200 + Math.random()*1800); }, m.delay);
+  });
+}
+
+function advanceRound() { if (STATE.round + 1 <= 3) setTimeout(() => runRound(STATE.round + 1), 2000); }
+
+// Decision
+function openDecision() {
+  const ol = document.getElementById('decision-overlay');
+  ol.classList.remove('hidden');
+  ol.innerHTML = `<div class="overlay-inner"><div class="decision-card">
+    <h3>Propose Your Decision</h3>
+    <p>Select <strong>2 features</strong> within ${SC.budget_points} points. Write a brief rationale.</p>
+    <div id="decision-options">${SC.decision_options.map(o => `
+      <label class="decision-opt" id="opt-${o.id}"><input type="checkbox" value="${o.id}" onchange="updateDecision()">
+      <div><div class="decision-opt-label">${esc(o.name)} <span style="color:var(--text-tertiary)">(${o.points} pts)</span></div>
+      <div class="decision-opt-desc">${esc(o.desc)}</div></div></label>`).join('')}</div>
+    <div id="points-display" style="font-size:12px;color:var(--text-tertiary);margin:8px 0"></div>
+    <textarea class="decision-rationale" id="decision-rationale" placeholder="Why these two? (2-3 sentences)"></textarea>
+    <button class="decision-submit" id="decision-submit-btn" onclick="submitDecision()" disabled>Submit Proposal</button>
+  </div></div>`;
+}
+
+function updateDecision() {
+  const checks = [...document.querySelectorAll('#decision-options input:checked')];
+  const ids = checks.map(c => c.value);
+  const totalPts = ids.reduce((sum, id) => sum + (SC.decision_options.find(o => o.id === id)?.points || 0), 0);
+  document.querySelectorAll('.decision-opt').forEach(el => el.classList.toggle('selected', el.querySelector('input').checked));
+  const over = totalPts > SC.budget_points;
+  document.getElementById('points-display').innerHTML = `Selected: ${totalPts} / ${SC.budget_points} pts ${over ? '<span style="color:var(--rose)">Over budget!</span>' : ids.length === 2 ? '<span style="color:var(--emerald)">✓ Within budget</span>' : ''}`;
+  const r = document.getElementById('decision-rationale')?.value?.trim() || '';
+  document.getElementById('decision-submit-btn').disabled = ids.length !== 2 || over || r.length < 10;
+  document.getElementById('decision-rationale').oninput = () => {
+    const r2 = document.getElementById('decision-rationale').value.trim();
+    document.getElementById('decision-submit-btn').disabled = ids.length !== 2 || over || r2.length < 10;
+  };
+}
+
+function submitDecision() {
+  const checks = [...document.querySelectorAll('#decision-options input:checked')];
+  const ids = checks.map(c => c.value);
+  const rationale = document.getElementById('decision-rationale').value.trim();
+  const totalPts = ids.reduce((sum, id) => sum + (SC.decision_options.find(o => o.id === id)?.points || 0), 0);
+  STATE.decisionSubmitted = true;
+  document.getElementById('decision-overlay').classList.add('hidden');
+  const names = ids.map(id => SC.decision_options.find(o => o.id === id)?.name).join(' + ');
+  addMessage('user', `**My proposal:** ${names} (${totalPts} pts)\n\n${esc(rationale)}`);
+  logEvidence('decision_submitted', { features: ids, total_points: totalPts, rationale, within_budget: totalPts <= SC.budget_points });
+  setTimeout(() => { showTyping(SC.teammates[0].name); setTimeout(() => { hideTyping(SC.teammates[0].name); addMessage(SC.teammates[0].id, "Thanks for pulling that together. Let's write it up for the VP."); setTimeout(() => finalSubmit(), 2000); }, 2000); }, 1500);
+}
+
+// Scoring (identical logic to desktop)
+function finalSubmit() {
+  if (STATE.submitted) return; STATE.submitted = true;
+  logEvidence('task_completed', { total_messages: STATE.userMessages.length, elapsed_ms: Date.now()-STATE.startTime });
+  const result = scoreRun(); renderResults(result);
+  document.getElementById('results-overlay').classList.remove('hidden');
+  document.getElementById('decide-btn').disabled = true;
+}
+
+function scoreRun() {
+  const allText = STATE.userMessages.map(m => m.text).join(' ').toLowerCase();
+  const msgCount = STATE.userMessages.length;
+  const repliedTo = new Set(STATE.userMessages.filter(m => m.replyTo).map(m => m.replyTo.from));
+  const reactionCount = Object.values(STATE.reactions).reduce((s,r) => s + Object.values(r).filter(Boolean).length, 0);
+  const totalWords = STATE.userMessages.reduce((s,m) => s + m.text.split(/\s+/).length, 0);
+
+  const collabDims = {};
+  collabDims.engagement = Math.min(100, msgCount * 18 + reactionCount * 5);
+  const buildHits = PACK.rubric.collaboration.build_keywords.filter(k => allText.match(new RegExp(k, 'i'))).length;
+  collabDims.building = Math.min(100, repliedTo.size * 20 + buildHits * 12);
+  collabDims.challenging = Math.min(100, PACK.rubric.collaboration.challenge_keywords.filter(k => allText.includes(k)).length * 15);
+  const synthHits = PACK.rubric.collaboration.synthesis_keywords.filter(k => allText.includes(k)).length;
+  collabDims.synthesizing = Math.min(100, synthHits * 20 + (STATE.decisionSubmitted ? 30 : 0));
+  const collabComposite = Math.round(Object.values(collabDims).reduce((a,b)=>a+b,0)/4);
+
+  const domainDims = {};
+  domainDims.tradeoff_analysis = Math.min(100, PACK.rubric.domain.tradeoff_keywords.filter(k => allText.includes(k)).length * 12);
+  domainDims.evidence_use = Math.min(100, PACK.rubric.domain.evidence_keywords.filter(k => allText.includes(k)).length * 10);
+  domainDims.flaw_detection = Math.min(100, PACK.rubric.domain.flaw_keywords.filter(k => allText.includes(k)).length * 15);
+  let dqScore = 0;
+  if (STATE.decisionSubmitted) {
+    const decEvt = STATE.evidence.find(e => e.event === 'decision_submitted');
+    if (decEvt) {
+      dqScore += decEvt.within_budget ? 40 : 0; dqScore += decEvt.features.length === 2 ? 20 : 0;
+      dqScore += decEvt.rationale.length >= 40 ? 20 : 10;
+      dqScore += PACK.rubric.domain.decision_valid_combos.find(c => c.ids.length === decEvt.features.length && c.ids.every(id => decEvt.features.includes(id))) ? 20 : 0;
+    }
+  }
+  domainDims.decision_quality = Math.min(100, dqScore);
+  const domainComposite = Math.round(Object.values(domainDims).reduce((a,b)=>a+b,0)/4);
+  const composite = Math.round((domainComposite + collabComposite)/2);
+  const overallLabel = PACK.overall_labels.find(l => composite >= l.min && composite <= l.max) || PACK.overall_labels[PACK.overall_labels.length-1];
+
+  const feedback = [];
+  PACK.domain_dimensions.forEach(d => { const v = domainDims[d.id]||0; feedback.push({ dim: `${d.icon} ${d.name}`, good: v>=50, note: v>=50 ? `Solid — ${v}/100.` : `Room to grow — ${v}/100.` }); });
+  PACK.collaboration_construct.dimensions.forEach(d => { const v = collabDims[d.id]||0; feedback.push({ dim: `${d.icon} ${d.name}`, good: v>=50, note: v>=50 ? `Strong — ${v}/100.` : `More needed — ${v}/100.` }); });
+
+  return { domainDims, collabDims, domainComposite, collabComposite, composite, overallLabel, feedback, msgCount, totalWords, repliedTo: repliedTo.size, reactionCount, elapsedMin: Math.round((Date.now()-STATE.startTime)/60000) };
+}
+
+function renderResults(r) {
+  const makeBars = (dims, defs) => defs.map(d => {
+    const v = dims[d.id]||0; const cls = v>=70?'bar-high':v>=40?'bar-mid':'bar-low';
+    return `<div class="skill-bar-row"><div class="skill-bar-header"><span>${d.icon} ${esc(d.name)}</span><span>${v}</span></div><div class="skill-bar-track"><div class="skill-bar-fill ${cls}" style="width:${Math.max(2,v)}%"></div></div></div>`;
+  }).join('');
+
+  const feedbackHtml = r.feedback.map(f => `<div class="feedback-item"><span class="feedback-icon ${f.good?'feedback-good':'feedback-bad'}">${f.good?'✓':'✗'}</span><div><div class="feedback-dim">${f.dim}</div><div class="feedback-note">${esc(f.note)}</div></div></div>`).join('');
+  const tipsHtml = PACK.coaching_tips.map(t => `<li>${esc(t)}</li>`).join('');
+
+  document.getElementById('results-overlay').innerHTML = `<div class="overlay-inner">
+    <div class="results-header"><h2>Discussion Results</h2><p>${esc(PACK.construct_name)} + ${esc(PACK.collaboration_construct.name)}</p>
+      <div class="dual-scores"><div><div class="score-circle score-circle-domain"><span class="sc-num">${r.domainComposite}</span><span class="sc-of">/ 100</span></div><div class="score-circle-label">${esc(PACK.construct_name)}</div></div>
+      <div><div class="score-circle score-circle-collab"><span class="sc-num">${r.collabComposite}</span><span class="sc-of">/ 100</span></div><div class="score-circle-label">Collaboration</div></div></div>
+      <div style="text-align:center"><span class="results-tier tier-${r.overallLabel.tier}">${esc(r.overallLabel.label)}</span></div>
+    </div>
+    <div class="results-card"><h4>Domain: ${esc(PACK.construct_name)}</h4>${makeBars(r.domainDims, PACK.domain_dimensions)}</div>
+    <div class="results-card"><h4>Collaboration</h4>${makeBars(r.collabDims, PACK.collaboration_construct.dimensions)}</div>
+    <div class="results-card"><h4>Feedback</h4>${feedbackHtml}</div>
+    <div class="results-card"><h4>Process</h4>
+      <div class="process-stat"><span class="process-stat-label">Messages</span><span class="process-stat-value">${r.msgCount}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Words</span><span class="process-stat-value">${r.totalWords}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Teammates replied to</span><span class="process-stat-value">${r.repliedTo} / ${SC.teammates.length}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Reactions</span><span class="process-stat-value">${r.reactionCount}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Time</span><span class="process-stat-value">${r.elapsedMin} min</span></div>
+    </div>
+    <div class="results-card"><h4>Tips</h4><ul class="coaching-list">${tipsHtml}</ul></div>
+    <div class="results-actions"><a class="results-primary" href="index.html">Back to Hub</a><button class="results-secondary" onclick="document.getElementById('results-overlay').classList.add('hidden')">Review Thread</button></div>
+  </div>`;
+}
+
+// Welcome
+function renderWelcome() {
+  const domainDims = PACK.domain_dimensions.map(d => `<span class="dim-tag">${d.icon} ${esc(d.name)}</span>`).join('');
+  const collabDims = PACK.collaboration_construct.dimensions.map(d => `<span class="dim-tag dim-tag-collab">${d.icon} ${esc(d.name)}</span>`).join('');
+  document.getElementById('welcome-overlay').innerHTML = `<div class="overlay-inner"><div class="welcome-card">
+    <h2>${esc(SC.title)}</h2>
+    <p>${esc(SC.prompt)}</p>
+    <div class="wc-boxes">
+      <div class="wc-box wc-accent"><div class="wc-box-label">Domain</div><div class="wc-box-name">${esc(PACK.construct_name)}</div></div>
+      <div class="wc-box wc-green"><div class="wc-box-label">Also measured</div><div class="wc-box-name">${esc(PACK.collaboration_construct.name)}</div></div>
+    </div>
+    <div class="dim-tags">${domainDims}${collabDims}</div>
+    <p style="font-size:12px;color:var(--text-tertiary)">Chat with 3 teammates. Reply, react, and drive a group decision. ~12 min.</p>
+    <button class="welcome-start" onclick="beginTask()">Join Discussion</button>
+  </div></div>`;
+}
+
+function beginTask() {
+  document.getElementById('welcome-overlay').classList.add('hidden');
+  startTimer(); logEvidence('task_started'); runRound(1);
+  const checkAdvance = setInterval(() => {
+    if (STATE.submitted) { clearInterval(checkAdvance); return; }
+    if (STATE.userMessages.filter(m => m.round === STATE.round).length >= 1 && STATE.round < 3) advanceRound();
+  }, 3000);
+}
+
+// Init
+(async () => {
+  PACK = await loadPack(); SC = PACK.scenario;
+  document.getElementById('scenario-title').textContent = SC.title;
+  renderCtx(); renderWelcome();
+  document.getElementById('compose-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+})();
+</script>
+</body>
+</html>

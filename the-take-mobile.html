@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>The Take — Mobile</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a212b;
+  --surface: #242e3d;
+  --surface-alt: #2c3849;
+  --surface-hover: #344256;
+  --text: #f2e9d8;
+  --text-secondary: #b8b0a0;
+  --text-tertiary: #7e7a72;
+  --border: rgba(242,233,216,0.08);
+  --border-strong: rgba(242,233,216,0.15);
+  --accent: #4dd3fe;
+  --accent-light: rgba(77,211,254,0.12);
+  --accent-glow: rgba(77,211,254,0.3);
+  --emerald: #468254;
+  --emerald-bg: rgba(70,130,84,0.15);
+  --amber: #f59e0b;
+  --amber-bg: rgba(245,158,11,0.15);
+  --rose: #f43f5e;
+  --rose-bg: rgba(244,63,94,0.15);
+  --violet: #9e9eff;
+  --violet-bg: rgba(158,158,255,0.15);
+  --teal: #103d4b;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100dvh;
+  overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.2); border-radius: 2px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ── TOP BAR ── */
+.top-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px; background: var(--surface);
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+  min-height: 44px;
+}
+.top-bar-left { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
+.top-bar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+.back-btn {
+  background: none; border: none; color: var(--text-tertiary);
+  cursor: pointer; font-size: 18px; padding: 4px;
+  min-width: 42px; min-height: 42px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-sm); text-decoration: none;
+}
+.back-btn:active { background: var(--surface-alt); }
+
+.scenario-title {
+  font-size: 14px; font-weight: 600; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.timer-tag {
+  font-size: 12px; font-weight: 600; padding: 4px 10px;
+  border-radius: 4px; background: var(--surface-alt);
+  color: var(--text-secondary); border: 1px solid var(--border);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+
+.info-btn {
+  background: none; border: none; color: var(--text-tertiary);
+  font-size: 18px; min-width: 42px; min-height: 42px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-sm); cursor: pointer;
+}
+.info-btn:active { background: var(--surface-alt); }
+
+/* ── MAIN TAB SWITCHER ── */
+.main-tabs {
+  display: flex; background: var(--surface); flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+}
+.main-tab {
+  flex: 1; padding: 12px 0; font-size: 14px; font-weight: 600;
+  color: var(--text-tertiary); background: none; border: none;
+  cursor: pointer; position: relative; text-align: center;
+  min-height: 44px; transition: color 0.15s;
+}
+.main-tab.active { color: var(--accent); }
+.main-tab.active::after {
+  content: ''; position: absolute; bottom: 0; left: 16px; right: 16px;
+  height: 2px; background: var(--accent); border-radius: 1px;
+}
+.main-tab .tab-badge {
+  display: inline-block; font-size: 10px; padding: 1px 6px;
+  border-radius: 8px; margin-left: 4px; vertical-align: middle;
+  background: var(--accent-light); color: var(--accent);
+}
+
+/* ── PANEL CONTAINER ── */
+.panel-container {
+  flex: 1; overflow: hidden; position: relative;
+}
+.panel {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.15s;
+}
+.panel.active { opacity: 1; pointer-events: auto; }
+
+/* ── SOURCES PANEL ── */
+.source-tabs-row {
+  display: flex; overflow-x: auto; flex-shrink: 0;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.source-tabs-row::-webkit-scrollbar { display: none; }
+
+.source-tab {
+  padding: 10px 14px; font-size: 12px; font-weight: 500;
+  color: var(--text-tertiary); cursor: pointer; border: none;
+  background: none; white-space: nowrap; position: relative;
+  min-height: 42px; transition: color 0.15s;
+}
+.source-tab:active { background: var(--surface-alt); }
+.source-tab.active { color: var(--accent); }
+.source-tab.active::after {
+  content: ''; position: absolute; bottom: 0; left: 6px; right: 6px;
+  height: 2px; background: var(--accent); border-radius: 1px;
+}
+.source-tab .reliability-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-left: 4px; vertical-align: middle;
+}
+.rel-high { background: var(--emerald); }
+.rel-mixed { background: var(--amber); }
+.rel-low { background: var(--rose); }
+
+.source-content {
+  flex: 1; overflow-y: auto; padding: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+.source-content h4 {
+  font-size: 16px; color: var(--text); margin-bottom: 4px; line-height: 1.3;
+}
+.source-meta {
+  font-size: 11px; color: var(--text-tertiary); margin-bottom: 14px;
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.source-meta-tag {
+  padding: 2px 6px; border-radius: 3px; font-size: 10px;
+}
+.source-content p, .source-content li {
+  font-size: 14px; color: var(--text-secondary); line-height: 1.65;
+  margin-bottom: 10px;
+}
+.source-content ul { padding-left: 18px; }
+.source-content table {
+  width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px;
+}
+.source-content th {
+  text-align: left; padding: 6px 8px; background: var(--surface);
+  color: var(--text-secondary); border-bottom: 1px solid var(--border-strong);
+  font-weight: 600;
+}
+.source-content td {
+  padding: 5px 8px; border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.source-bottom-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px; background: var(--surface);
+  border-top: 1px solid var(--border); flex-shrink: 0;
+  padding-bottom: calc(8px + var(--safe-bottom));
+}
+.source-bottom-bar span { font-size: 11px; color: var(--text-tertiary); }
+.cite-btn {
+  background: var(--accent); color: #0a1628; border: none;
+  font-size: 13px; font-weight: 600; padding: 10px 16px;
+  border-radius: var(--radius-sm); cursor: pointer;
+  min-height: 42px; display: flex; align-items: center; gap: 4px;
+}
+.cite-btn:active { background: #3bbde5; }
+
+/* ── WRITE PANEL ── */
+.write-scroll {
+  flex: 1; overflow-y: auto; padding: 12px;
+  -webkit-overflow-scrolling: touch;
+  display: flex; flex-direction: column; gap: 12px;
+  padding-bottom: calc(80px + var(--safe-bottom));
+}
+
+.editor-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.editor-section-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 10px 12px; background: var(--surface-alt);
+  border-bottom: 1px solid var(--border); gap: 8px;
+}
+.editor-section-label {
+  font-size: 13px; font-weight: 600; color: var(--text);
+}
+.editor-section-hint {
+  font-size: 11px; color: var(--text-tertiary); font-style: italic;
+  text-align: right; flex-shrink: 1;
+}
+.editor-section textarea {
+  width: 100%; min-height: 100px; padding: 12px;
+  background: transparent; border: none; color: var(--text);
+  font-family: inherit; font-size: 16px; line-height: 1.6;
+  resize: none; outline: none;
+  -webkit-appearance: none;
+}
+.editor-section textarea::placeholder { color: var(--text-tertiary); }
+.editor-section textarea:focus { background: rgba(77,211,254,0.03); }
+
+.section-tag-bar {
+  display: flex; gap: 6px; padding: 6px 12px 10px;
+  flex-wrap: wrap;
+}
+.source-ref-tag {
+  font-size: 11px; padding: 4px 8px; border-radius: 4px;
+  background: var(--violet-bg); color: var(--violet);
+  border: 1px solid rgba(158,158,255,0.15); cursor: pointer;
+  min-height: 28px; display: flex; align-items: center;
+}
+.source-ref-tag:active { background: rgba(158,158,255,0.25); }
+.source-ref-tag.inserted { background: var(--emerald-bg); color: var(--emerald); border-color: rgba(70,130,84,0.3); }
+
+/* Write bottom bar */
+.write-bottom-bar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px;
+  padding-bottom: calc(10px + var(--safe-bottom));
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+.word-count-tag {
+  font-size: 12px; padding: 4px 10px; border-radius: 4px;
+  background: var(--surface-alt); color: var(--text-secondary);
+  font-variant-numeric: tabular-nums; font-weight: 600;
+}
+.word-count-tag.in-range { background: var(--emerald-bg); color: var(--emerald); }
+.word-count-tag.over { background: var(--amber-bg); color: var(--amber); }
+
+.target-range-label {
+  font-size: 11px; color: var(--text-tertiary);
+}
+
+.submit-btn {
+  background: var(--accent); color: #0a1628; border: none;
+  font-size: 14px; font-weight: 700; padding: 10px 20px;
+  border-radius: var(--radius-sm); cursor: pointer;
+  min-height: 42px;
+}
+.submit-btn:active { background: #3bbde5; }
+.submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── INFO OVERLAY ── */
+.info-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(10,22,40,0.9); backdrop-filter: blur(4px);
+  display: none; flex-direction: column;
+}
+.info-overlay.open { display: flex; }
+.info-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; background: var(--surface);
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.info-header h3 { font-size: 15px; }
+.info-close-btn {
+  background: none; border: none; color: var(--text-tertiary);
+  font-size: 22px; min-width: 42px; min-height: 42px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.info-body {
+  flex: 1; overflow-y: auto; padding: 16px;
+  -webkit-overflow-scrolling: touch;
+  font-size: 14px; color: var(--text-secondary); line-height: 1.6;
+  padding-bottom: calc(24px + var(--safe-bottom));
+}
+.info-body h4 {
+  font-size: 14px; color: var(--text); margin: 16px 0 6px;
+}
+.info-body h4:first-child { margin-top: 0; }
+.info-body ul { padding-left: 16px; margin: 4px 0 10px; }
+.info-body li { margin-bottom: 4px; }
+.rubric-preview {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px; margin: 8px 0;
+}
+.rubric-preview-row {
+  display: flex; justify-content: space-between; padding: 6px 0;
+  border-bottom: 1px solid var(--border); font-size: 13px;
+}
+.rubric-preview-row:last-child { border-bottom: none; }
+
+/* ── WELCOME OVERLAY ── */
+.welcome-overlay {
+  position: fixed; inset: 0; z-index: 150;
+  background: rgba(10,22,40,0.92); backdrop-filter: blur(4px);
+  display: flex; flex-direction: column;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.welcome-overlay.hidden { display: none; }
+.welcome-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); margin: 20px 12px;
+  padding: 24px 18px; box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+  margin-bottom: calc(20px + var(--safe-bottom));
+}
+.welcome-card h2 { font-size: 20px; margin-bottom: 10px; }
+.welcome-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
+.welcome-card .construct-info {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px; margin: 12px 0;
+}
+.welcome-card .ci-label { font-size: 11px; color: var(--text-tertiary); margin-bottom: 3px; }
+.welcome-card .ci-name { font-size: 15px; font-weight: 600; color: var(--accent); }
+.welcome-card .ci-desc { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
+.welcome-dims {
+  display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 16px;
+}
+.welcome-dims .dim-tag {
+  font-size: 11px; padding: 4px 8px; border-radius: 4px;
+  background: var(--accent-light); color: var(--accent);
+  border: 1px solid rgba(77,211,254,0.15);
+}
+.welcome-start-btn {
+  width: 100%; padding: 14px; background: var(--accent); color: #0a1628;
+  border: none; border-radius: var(--radius-sm); font-size: 15px;
+  font-weight: 700; cursor: pointer; min-height: 48px;
+}
+.welcome-start-btn:active { background: #3bbde5; }
+
+/* ── RESULTS OVERLAY ── */
+.results-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: linear-gradient(160deg, #1a212b 0%, #103d4b 50%, #1a212b 100%);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.results-overlay.open { display: block; }
+.results-container {
+  max-width: 600px; margin: 0 auto; padding: 24px 14px;
+  padding-bottom: calc(40px + var(--safe-bottom));
+}
+.results-header { text-align: center; margin-bottom: 24px; }
+.results-header h2 { font-size: 22px; margin-bottom: 4px; }
+.results-header p { color: var(--text-secondary); font-size: 13px; }
+.results-score-circle {
+  width: 110px; height: 110px; border-radius: 50%; margin: 18px auto;
+  background: linear-gradient(135deg, var(--accent), var(--violet));
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; box-shadow: 0 0 40px rgba(77,211,254,0.15);
+}
+.results-score-circle .score-num { font-size: 34px; font-weight: 700; color: #fff; line-height: 1; }
+.results-score-circle .score-of { font-size: 11px; color: rgba(255,255,255,0.7); }
+.results-tier {
+  text-align: center; font-size: 13px; font-weight: 600; margin-bottom: 18px;
+  padding: 6px 16px; border-radius: 20px; display: inline-block;
+}
+.tier-gold { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.tier-silver { background: rgba(148,163,184,0.15); color: #94a3b8; }
+.tier-bronze { background: rgba(205,127,50,0.15); color: #cd7f32; }
+.tier-developing { background: rgba(244,63,94,0.1); color: var(--rose); }
+
+.results-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 12px;
+}
+.results-card h4 { font-size: 14px; margin-bottom: 12px; }
+
+.skill-bar-row { margin-bottom: 10px; }
+.skill-bar-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; color: var(--text-secondary); }
+.skill-bar-track { height: 6px; border-radius: 3px; background: var(--bg); overflow: hidden; }
+.skill-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.bar-high { background: linear-gradient(90deg, var(--emerald), #5cb86f); }
+.bar-mid { background: linear-gradient(90deg, var(--amber), #fbbf24); }
+.bar-low { background: linear-gradient(90deg, var(--rose), #fb7185); }
+
+.feedback-item {
+  display: flex; gap: 10px; padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.feedback-item:last-child { border-bottom: none; }
+.feedback-icon { font-size: 14px; flex-shrink: 0; width: 20px; text-align: center; }
+.feedback-good { color: var(--emerald); }
+.feedback-bad { color: var(--rose); }
+.feedback-dim { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.feedback-note { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+.process-stat {
+  display: flex; justify-content: space-between; padding: 6px 0;
+  border-bottom: 1px solid var(--border); font-size: 12px;
+}
+.process-stat:last-child { border-bottom: none; }
+.process-stat-label { color: var(--text-secondary); }
+.process-stat-value { color: var(--text); font-weight: 600; }
+
+.coaching-list { padding-left: 16px; margin: 0; }
+.coaching-list li { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; line-height: 1.5; }
+
+.results-actions {
+  display: flex; gap: 10px; justify-content: center; margin-top: 18px;
+  flex-wrap: wrap;
+}
+.results-actions a, .results-actions button {
+  padding: 12px 22px; border-radius: var(--radius-sm); font-size: 14px;
+  font-weight: 600; cursor: pointer; text-decoration: none;
+  border: 1px solid var(--border); min-height: 44px;
+  display: flex; align-items: center; justify-content: center;
+}
+.results-primary { background: var(--accent); color: #0a1628; border-color: var(--accent); }
+.results-primary:active { background: #3bbde5; }
+.results-secondary { background: none; color: var(--text-secondary); }
+.results-secondary:active { background: var(--surface-alt); color: var(--text); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #0a1628; font-size: 13px; font-weight: 600;
+  padding: 8px 16px; border-radius: 20px; z-index: 50;
+  opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- CONSTRUCT PACK -->
+<script>
+const DEFAULT_SCENARIO = 'scenarios/the-take-argumentation.json';
+
+const CONSTRUCT_PACK_INLINE = {
+  construct_id: "argumentation",
+  construct_name: "Argumentation & Evidence Evaluation",
+  construct_description: "The ability to formulate clear claims, select and evaluate evidence from multiple sources, address counterarguments, and communicate a well-reasoned position in writing.",
+  dimensions: [
+    { id: "claim_clarity", name: "Claim Clarity", icon: "\u{1F3AF}", description: "States a clear, specific position that directly addresses the prompt", max_score: 20 },
+    { id: "evidence_use", name: "Evidence Use", icon: "\u{1F4CA}", description: "Selects relevant evidence from provided sources and integrates it effectively", max_score: 25 },
+    { id: "source_evaluation", name: "Source Evaluation", icon: "\u{1F50D}", description: "Distinguishes stronger from weaker sources and addresses credibility", max_score: 20 },
+    { id: "counterargument", name: "Counterargument", icon: "⚖️", description: "Acknowledges opposing viewpoints and responds substantively", max_score: 20 },
+    { id: "writing_quality", name: "Writing Quality", icon: "✍️", description: "Organized, clear, professional tone appropriate for the audience", max_score: 15 }
+  ],
+
+  scenario: {
+    title: "The AI Tutoring Decision",
+    audience: "Riverside Unified School Board",
+    prompt: "The Riverside Unified School District is considering a $2.4M contract to adopt MathMentor AI, an AI-powered tutoring platform, across all middle schools. As a policy analyst, write a position memo to the school board recommending whether to adopt, modify, or reject the proposal. Support your position with evidence from the provided sources.",
+    word_range: [300, 500],
+
+    sources: [
+      {
+        id: "src_research",
+        tab_label: "Research Summary",
+        type: "Academic Research",
+        reliability: "high",
+        title: "AI Tutoring Systems in K-12 Mathematics: A Meta-Analysis",
+        author: "Chen, Rodriguez & Park",
+        publication: "Journal of Educational Technology, 2025",
+        content_html: `<p>This meta-analysis examined 47 randomized controlled trials of AI tutoring systems in K-12 mathematics classrooms (N = 31,400 students) published between 2019 and 2024.</p>
+          <p><strong>Key findings:</strong></p>
+          <ul>
+            <li>Students using AI tutoring showed a mean effect size of <strong>d = 0.38</strong> on standardized math assessments compared to control groups — a moderate, statistically significant improvement.</li>
+            <li>Effects were strongest for students performing in the 25th–50th percentile at baseline (d = 0.52), suggesting AI tutoring may be most effective for struggling learners.</li>
+            <li>Effects diminished after 18 months of use (d = 0.18), raising questions about long-term sustainability.</li>
+            <li>Implementation quality was the strongest moderator: schools with dedicated training for teachers saw nearly double the effect size of those without.</li>
+            <li>No significant differences were found between specific AI platforms when controlling for implementation quality.</li>
+          </ul>
+          <p><strong>Limitations:</strong> Most studies were 6–12 months in duration. Only 8 of 47 studies examined effects beyond one academic year. Publication bias may inflate reported effect sizes.</p>`
+      },
+      {
+        id: "src_news",
+        tab_label: "News Article",
+        type: "News Report",
+        reliability: "mixed",
+        title: "MathMentor AI: The App That’s Dividing Educators",
+        author: "Sarah Kowalski",
+        publication: "EdTech Weekly, March 2026",
+        content_html: `<p>MathMentor AI has been called “revolutionary” by its CEO, Dylan Voss, who claims the platform “delivers the equivalent of a personal tutor for every student at a fraction of the cost.”</p>
+          <p>The company points to its pilot program in the Austin Independent School District, where MathMentor schools saw a <strong>23% increase in state math proficiency rates</strong> over two years. “The data speaks for itself,” Voss said at the National EdTech Conference last month.</p>
+          <p>But critics note the Austin pilot was not a controlled experiment. Dr. Maria Santos, an education researcher at UT Austin, said: “The MathMentor schools also received additional funding, new textbooks, and smaller class sizes as part of a broader initiative. Attributing the gains solely to the AI platform is misleading.”</p>
+          <p>Teacher reactions are mixed. “My students love it — engagement is through the roof,” said 7th-grade teacher James Wu. But veteran math teacher Linda Okafor pushed back: “They’re clicking through gamified exercises, not developing mathematical thinking. When I give them a novel problem, they’re just as lost as before.”</p>
+          <p>MathMentor’s $2.4M price tag for a mid-size district includes licensing, hardware upgrades, and first-year support — but not the ongoing annual renewal of $600K, a detail some board members have flagged.</p>`
+      },
+      {
+        id: "src_parent",
+        tab_label: "Parent Letter",
+        type: "Stakeholder Correspondence",
+        reliability: "low",
+        title: "Open Letter from the Riverside Parent-Teacher Alliance",
+        author: "Riverside PTA Board",
+        publication: "Submitted to District Board, April 2026",
+        content_html: `<p>Dear Members of the School Board,</p>
+          <p>As parents and caregivers of Riverside students, we write with serious concerns about the proposed MathMentor AI contract.</p>
+          <p><strong>Our concerns:</strong></p>
+          <ul>
+            <li><strong>Screen time:</strong> Our children already spend 4-6 hours daily on screens. Adding AI tutoring sessions means more time staring at devices instead of engaging with teachers and peers.</li>
+            <li><strong>Data privacy:</strong> MathMentor collects detailed behavioral data on every student interaction. Their privacy policy allows sharing aggregated data with “research partners.” We do not believe sufficient safeguards are in place.</li>
+            <li><strong>Teacher replacement:</strong> We’ve heard rumors that the district plans to increase class sizes once MathMentor is in place. Our children need human teachers, not algorithms.</li>
+            <li><strong>Cost:</strong> $2.4 million could fund 30 additional teaching positions. We believe investing in people, not software, is the better path.</li>
+          </ul>
+          <p>We urge the board to reject this proposal and instead invest in hiring and retaining qualified math teachers.</p>
+          <p>Respectfully,<br/>The Riverside Parent-Teacher Alliance<br/>(Representing 847 families)</p>`
+      },
+      {
+        id: "src_budget",
+        tab_label: "Budget Analysis",
+        type: "Financial Projection",
+        reliability: "high",
+        title: "MathMentor AI: 5-Year Cost-Benefit Projection",
+        author: "Riverside USD Office of Finance",
+        publication: "Internal Document, April 2026",
+        content_html: `<table>
+            <tr><th>Item</th><th>Year 1</th><th>Yrs 2-5</th><th>5-Yr Total</th></tr>
+            <tr><td>Licensing</td><td>$1,200,000</td><td>$600,000</td><td>$3,600,000</td></tr>
+            <tr><td>Hardware</td><td>$480,000</td><td>$0</td><td>$480,000</td></tr>
+            <tr><td>Training</td><td>$320,000</td><td>$80,000</td><td>$640,000</td></tr>
+            <tr><td>IT support</td><td>$45,000</td><td>$45,000</td><td>$225,000</td></tr>
+            <tr><td><strong>Total</strong></td><td><strong>$2,045,000</strong></td><td><strong>$725,000</strong></td><td><strong>$4,945,000</strong></td></tr>
+          </table>
+          <p style="margin-top:14px"><strong>Comparison — hiring 15 new math teachers:</strong></p>
+          <table>
+            <tr><th>Item</th><th>Year 1</th><th>Yrs 2-5</th><th>5-Yr Total</th></tr>
+            <tr><td>Salaries (avg $62K)</td><td>$930,000</td><td>$958,000*</td><td>$4,804,000</td></tr>
+            <tr><td>Benefits (32%)</td><td>$297,600</td><td>$306,500</td><td>$1,523,600</td></tr>
+            <tr><td>Onboarding & PD</td><td>$120,000</td><td>$30,000</td><td>$240,000</td></tr>
+            <tr><td><strong>Total</strong></td><td><strong>$1,347,600</strong></td><td><strong>$1,294,500</strong></td><td><strong>$6,567,600</strong></td></tr>
+          </table>
+          <p style="margin-top:8px;font-size:11px;color:var(--text-tertiary)">* Assumes 3% annual salary increase</p>
+          <p style="margin-top:12px"><strong>Notes:</strong> The MathMentor contract does not include a performance guarantee. The district may terminate after Year 1 with a $180,000 early termination fee. Teacher hiring projections assume current labor market conditions; recruitment in math is historically challenging (average time-to-fill: 4.2 months).</p>`
+      },
+      {
+        id: "src_usage",
+        tab_label: "Usage Data",
+        type: "Platform Analytics",
+        reliability: "mixed",
+        title: "MathMentor AI: Riverside Pilot Usage Report (Q1 2026)",
+        author: "MathMentor Analytics Team",
+        publication: "Vendor Report, April 2026",
+        content_html: `<p>Pilot deployment across 3 Riverside middle schools (1,240 students, 14 classrooms).</p>
+          <table>
+            <tr><th>Metric</th><th>Value</th></tr>
+            <tr><td>Avg sessions/student/week</td><td>3.2</td></tr>
+            <tr><td>Avg session duration</td><td>18 min</td></tr>
+            <tr><td>Concept mastery rate</td><td>71%</td></tr>
+            <tr><td>Student satisfaction</td><td>4.1 / 5.0</td></tr>
+            <tr><td>Teacher satisfaction</td><td>3.4 / 5.0</td></tr>
+            <tr><td>Completed all modules</td><td>58%</td></tr>
+            <tr><td>Help-desk tickets</td><td>127</td></tr>
+          </table>
+          <p style="margin-top:14px"><strong>Student performance (pilot vs. district avg):</strong></p>
+          <table>
+            <tr><th>Assessment</th><th>Pilot</th><th>District</th><th>Diff</th></tr>
+            <tr><td>Q1 Benchmark (% prof.)</td><td>64%</td><td>59%</td><td>+5 pts</td></tr>
+            <tr><td>Q1 Benchmark (avg)</td><td>72.3</td><td>68.1</td><td>+4.2 pts</td></tr>
+          </table>
+          <p style="margin-top:12px"><strong>Caveats:</strong> Pilot schools were selected by the vendor based on “readiness criteria.” Comparison is not randomized. Platform-defined “concept mastery” uses a proprietary algorithm and may not align with state standards. Only 58% of students completed all assigned modules, which may skew results toward more engaged students.</p>`
+      }
+    ]
+  },
+
+  rubric: {
+    claim_clarity: {
+      keywords: ["recommend", "adopt", "reject", "modify", "position", "propose", "conditional", "phased"],
+      strong_indicators: ["conditional adoption", "phased rollout", "pilot expansion", "reject the proposal", "recommend adoption with modifications"],
+      weak_indicators: ["maybe", "it depends", "hard to say", "both sides have merit"]
+    },
+    evidence_use: {
+      source_refs: ["meta-analysis", "effect size", "0.38", "chen", "rodriguez", "budget", "cost", "$2.4", "pilot", "benchmark", "proficiency", "satisfaction", "usage"],
+      min_sources_referenced: 3,
+      integration_keywords: ["according to", "the research shows", "data indicates", "the budget analysis", "usage report", "the evidence suggests"]
+    },
+    source_evaluation: {
+      credibility_keywords: ["peer-reviewed", "controlled", "randomized", "bias", "vendor-provided", "not randomized", "self-selected", "proprietary", "readiness criteria", "confounding", "stakeholder", "anecdotal"],
+      strongest_sources: ["src_research", "src_budget"],
+      weakest_sources: ["src_parent"]
+    },
+    counterargument: {
+      keywords: ["however", "on the other hand", "critics", "opponents", "some argue", "while", "although", "despite", "concede", "acknowledge"],
+      counter_concepts: ["screen time", "privacy", "teacher replacement", "cost", "long-term", "sustainability", "diminishing", "implementation"]
+    },
+    writing_quality: {
+      min_words: 300,
+      max_words: 500,
+      section_completeness: ["position", "evidence", "counterargument", "recommendation"]
+    }
+  },
+
+  overall_labels: [
+    { min: 90, max: 100, label: "Gold — Distinguished", tier: "gold" },
+    { min: 75, max: 89, label: "Silver — Proficient", tier: "silver" },
+    { min: 60, max: 74, label: "Bronze — Developing", tier: "bronze" },
+    { min: 0, max: 59, label: "Emerging", tier: "developing" }
+  ],
+
+  coaching_tips: [
+    "Strong memos state a clear position in the opening sentence — don’t leave the reader guessing.",
+    "Reference at least 3 sources and explain why you trust some more than others.",
+    "Identify which sources are vendor-provided vs. independent — this matters for credibility.",
+    "The best counterarguments don’t just list objections — they respond to them with evidence.",
+    "Budget comparisons become more persuasive when you address the 5-year total, not just Year 1.",
+    "Note the caveats in the usage data: pilot schools were vendor-selected and completion was only 58%."
+  ]
+};
+
+let PACK = null;
+let SCENARIO = null;
+
+async function loadPack() {
+  const params = new URLSearchParams(window.location.search);
+  const url = params.get('scenario') || DEFAULT_SCENARIO;
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(resp.status);
+    return await resp.json();
+  } catch (e) {
+    console.warn('Could not fetch scenario JSON (' + url + '), using inline fallback:', e.message);
+    return CONSTRUCT_PACK_INLINE;
+  }
+}
+</script>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <a class="back-btn" href="index.html" aria-label="Back">&larr;</a>
+    <span class="scenario-title" id="scenario-title"></span>
+  </div>
+  <div class="top-bar-right">
+    <span class="timer-tag" id="timer">00:00</span>
+    <button class="info-btn" onclick="toggleInfo()" aria-label="Task info">&#9432;</button>
+  </div>
+</div>
+
+<!-- MAIN TAB SWITCHER -->
+<div class="main-tabs">
+  <button class="main-tab active" id="tab-sources" onclick="switchMainTab('sources')">&#x1F4D6; Sources</button>
+  <button class="main-tab" id="tab-write" onclick="switchMainTab('write')">&#x270D;&#xFE0F; Write <span class="tab-badge" id="write-badge">0</span></button>
+</div>
+
+<!-- PANEL CONTAINER -->
+<div class="panel-container">
+
+  <!-- SOURCES PANEL -->
+  <div class="panel active" id="panel-sources">
+    <div class="source-tabs-row" id="source-tabs"></div>
+    <div class="source-content" id="source-content"></div>
+    <div class="source-bottom-bar">
+      <span id="read-time-display">Reading: 0s</span>
+      <button class="cite-btn" onclick="insertSourceRef()">&#x1F4CC; Cite Source</button>
+    </div>
+  </div>
+
+  <!-- WRITE PANEL -->
+  <div class="panel" id="panel-write">
+    <div class="write-scroll" id="editor-sections"></div>
+    <div class="write-bottom-bar">
+      <div>
+        <span class="word-count-tag" id="word-count">0 words</span>
+        <span class="target-range-label" id="target-range"></span>
+      </div>
+      <button class="submit-btn" id="submit-btn" onclick="submitMemo()" disabled>Submit</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- INFO OVERLAY -->
+<div class="info-overlay" id="info-overlay">
+  <div class="info-header">
+    <h3>Task Information</h3>
+    <button class="info-close-btn" onclick="toggleInfo()">&times;</button>
+  </div>
+  <div class="info-body" id="info-body"></div>
+</div>
+
+<!-- RESULTS OVERLAY -->
+<div class="results-overlay" id="results-overlay">
+  <div class="results-container" id="results-container"></div>
+</div>
+
+<!-- WELCOME OVERLAY -->
+<div class="welcome-overlay" id="welcome-overlay">
+  <div class="welcome-card" id="welcome-card"></div>
+</div>
+
+<!-- LOGIC -->
+<script>
+/* ── STATE ── */
+const STATE = {
+  startTime: null,
+  currentSourceIndex: 0,
+  sourceReadTimes: {},
+  sourceEnteredAt: null,
+  evidence: [],
+  sectionSnapshots: [],
+  snapshotInterval: null,
+  submitted: false,
+  activeMainTab: 'sources',
+  lastFocusedTextarea: null
+};
+
+/* ── HELPERS ── */
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function logEvidence(event, data = {}) {
+  STATE.evidence.push({ event, ...data, ts: Date.now(), elapsed_ms: STATE.startTime ? Date.now() - STATE.startTime : 0 });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+function getTotalWords() {
+  let total = 0;
+  document.querySelectorAll('.section-textarea').forEach(ta => {
+    const w = ta.value.trim().split(/\s+/).filter(Boolean).length;
+    total += w;
+  });
+  return total;
+}
+
+function updateWordCount() {
+  const words = getTotalWords();
+  const el = document.getElementById('word-count');
+  el.textContent = `${words} word${words !== 1 ? 's' : ''}`;
+
+  const badge = document.getElementById('write-badge');
+  if (badge) badge.textContent = words;
+
+  const [lo, hi] = SCENARIO.word_range;
+  el.classList.remove('in-range', 'over');
+  if (words >= lo && words <= hi) el.classList.add('in-range');
+  else if (words > hi) el.classList.add('over');
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = words < Math.round(lo * 0.5);
+}
+
+/* ── MAIN TAB SWITCHING ── */
+function switchMainTab(tab) {
+  STATE.activeMainTab = tab;
+  document.getElementById('tab-sources').classList.toggle('active', tab === 'sources');
+  document.getElementById('tab-write').classList.toggle('active', tab === 'write');
+  document.getElementById('panel-sources').classList.toggle('active', tab === 'sources');
+  document.getElementById('panel-write').classList.toggle('active', tab === 'write');
+}
+
+/* ── TIMER ── */
+function startTimer() {
+  STATE.startTime = Date.now();
+  setInterval(() => {
+    const s = Math.floor((Date.now() - STATE.startTime) / 1000);
+    const m = Math.floor(s / 60);
+    document.getElementById('timer').textContent =
+      `${String(m).padStart(2,'0')}:${String(s % 60).padStart(2,'0')}`;
+  }, 1000);
+}
+
+/* ── SOURCE READING ── */
+function renderSourceTabs() {
+  const tabs = document.getElementById('source-tabs');
+  tabs.innerHTML = SCENARIO.sources.map((s, i) => {
+    const relClass = s.reliability === 'high' ? 'rel-high' : s.reliability === 'mixed' ? 'rel-mixed' : 'rel-low';
+    return `<button class="source-tab ${i === 0 ? 'active' : ''}" data-idx="${i}" onclick="switchSource(${i})">
+      ${esc(s.tab_label)}<span class="reliability-dot ${relClass}"></span>
+    </button>`;
+  }).join('');
+}
+
+function switchSource(idx) {
+  flushReadTime();
+  STATE.currentSourceIndex = idx;
+  STATE.sourceEnteredAt = Date.now();
+
+  document.querySelectorAll('.source-tab').forEach((t, i) => {
+    t.classList.toggle('active', i === idx);
+  });
+
+  const src = SCENARIO.sources[idx];
+  const relLabel = src.reliability === 'high' ? 'High reliability' : src.reliability === 'mixed' ? 'Mixed reliability' : 'Lower reliability';
+  const relClass = src.reliability === 'high' ? 'emerald' : src.reliability === 'mixed' ? 'amber' : 'rose';
+
+  document.getElementById('source-content').innerHTML = `
+    <h4>${esc(src.title)}</h4>
+    <div class="source-meta">
+      <span>${esc(src.author)}</span>
+      <span>·</span>
+      <span>${esc(src.publication)}</span>
+      <span class="source-meta-tag" style="background:var(--${relClass}-bg);color:var(--${relClass})">${relLabel}</span>
+    </div>
+    ${src.content_html}
+  `;
+
+  // Scroll active tab into view
+  const activeTab = document.querySelector('.source-tab.active');
+  if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+
+  logEvidence('source_opened', { source_id: src.id, source_label: src.tab_label });
+}
+
+function flushReadTime() {
+  if (STATE.sourceEnteredAt) {
+    const src = SCENARIO.sources[STATE.currentSourceIndex];
+    const dt = Date.now() - STATE.sourceEnteredAt;
+    STATE.sourceReadTimes[src.id] = (STATE.sourceReadTimes[src.id] || 0) + dt;
+    STATE.sourceEnteredAt = null;
+
+    const totalSec = Math.round(STATE.sourceReadTimes[src.id] / 1000);
+    logEvidence('source_read_time', { source_id: src.id, cumulative_seconds: totalSec });
+  }
+}
+
+function updateReadTimeDisplay() {
+  const src = SCENARIO.sources[STATE.currentSourceIndex];
+  let ms = STATE.sourceReadTimes[src.id] || 0;
+  if (STATE.sourceEnteredAt) ms += Date.now() - STATE.sourceEnteredAt;
+  document.getElementById('read-time-display').textContent = `Reading: ${Math.round(ms / 1000)}s`;
+}
+
+function insertSourceRef() {
+  const src = SCENARIO.sources[STATE.currentSourceIndex];
+  let target = STATE.lastFocusedTextarea || document.querySelector('.section-textarea');
+  if (target) {
+    const ref = `[${src.tab_label}]`;
+    const pos = target.selectionStart || target.value.length;
+    target.value = target.value.slice(0, pos) + ref + target.value.slice(pos);
+    updateWordCount();
+    logEvidence('source_cited', { source_id: src.id, section: target.dataset.section });
+    document.querySelectorAll(`.source-ref-tag[data-src="${src.id}"]`).forEach(t => t.classList.add('inserted'));
+
+    // Auto-switch to Write tab
+    switchMainTab('write');
+    showToast(`Cited: ${src.tab_label}`);
+
+    // Focus the textarea
+    setTimeout(() => {
+      target.focus();
+      target.selectionStart = target.selectionEnd = pos + ref.length;
+    }, 100);
+  }
+}
+
+/* ── EDITOR SECTIONS ── */
+const SECTIONS = [
+  { id: 'position', label: 'Your Position', hint: 'State your recommendation clearly in 1-2 sentences', placeholder: 'I recommend that the Riverside school board...' },
+  { id: 'evidence', label: 'Key Evidence', hint: 'What evidence supports your position? Reference specific sources.', placeholder: 'The strongest evidence for this recommendation comes from...' },
+  { id: 'counterargument', label: 'Counterargument', hint: 'What is the strongest objection? How do you respond?', placeholder: 'Opponents of this position might argue that...' },
+  { id: 'recommendation', label: 'Recommendation & Next Steps', hint: 'What specifically should the board do?', placeholder: 'Based on this analysis, I recommend the following actions...' }
+];
+
+function renderEditor() {
+  const container = document.getElementById('editor-sections');
+  const sourceTagsHtml = SCENARIO.sources.map(s =>
+    `<span class="source-ref-tag" data-src="${s.id}" onclick="citeFromTag('${s.id}')">${esc(s.tab_label)}</span>`
+  ).join('');
+
+  container.innerHTML = SECTIONS.map(sec => `
+    <div class="editor-section">
+      <div class="editor-section-header">
+        <span class="editor-section-label">${esc(sec.label)}</span>
+        <span class="editor-section-hint">${esc(sec.hint)}</span>
+      </div>
+      <textarea class="section-textarea" data-section="${sec.id}"
+        placeholder="${esc(sec.placeholder)}"
+        oninput="onSectionInput('${sec.id}', this)"
+        onfocus="onSectionFocus('${sec.id}', this)"></textarea>
+      <div class="section-tag-bar">${sourceTagsHtml}</div>
+    </div>
+  `).join('');
+}
+
+function citeFromTag(srcId) {
+  const src = SCENARIO.sources.find(s => s.id === srcId);
+  if (!src) return;
+  let target = STATE.lastFocusedTextarea || document.querySelector('.section-textarea');
+  if (target) {
+    const ref = `[${src.tab_label}]`;
+    const pos = target.selectionStart || target.value.length;
+    target.value = target.value.slice(0, pos) + ref + target.value.slice(pos);
+    target.focus();
+    target.selectionStart = target.selectionEnd = pos + ref.length;
+    updateWordCount();
+    logEvidence('source_cited', { source_id: src.id, section: target.dataset.section });
+    document.querySelectorAll(`.source-ref-tag[data-src="${srcId}"]`).forEach(t => t.classList.add('inserted'));
+  }
+}
+
+let firstKeystrokeLogged = false;
+function onSectionInput(sectionId, textarea) {
+  updateWordCount();
+  if (!firstKeystrokeLogged && textarea.value.trim().length > 0) {
+    logEvidence('first_keystroke', { section: sectionId, elapsed_ms: Date.now() - STATE.startTime });
+    firstKeystrokeLogged = true;
+  }
+}
+
+function onSectionFocus(sectionId, textarea) {
+  STATE.lastFocusedTextarea = textarea;
+  logEvidence('section_focused', { section: sectionId });
+}
+
+/* ── WRITING SNAPSHOTS ── */
+function takeSnapshot() {
+  const snap = {};
+  document.querySelectorAll('.section-textarea').forEach(ta => {
+    snap[ta.dataset.section] = { text: ta.value, words: ta.value.trim().split(/\s+/).filter(Boolean).length };
+  });
+  STATE.sectionSnapshots.push({ ts: Date.now(), elapsed_ms: Date.now() - STATE.startTime, sections: snap, total_words: getTotalWords() });
+}
+
+/* ── INFO OVERLAY ── */
+function toggleInfo() {
+  document.getElementById('info-overlay').classList.toggle('open');
+}
+
+function renderInfoDrawer() {
+  const rubricRows = PACK.dimensions.map(d =>
+    `<div class="rubric-preview-row"><span>${d.icon} ${esc(d.name)}</span><span>${d.max_score} pts</span></div>`
+  ).join('');
+
+  document.getElementById('info-body').innerHTML = `
+    <h4>Your Task</h4>
+    <p>${esc(SCENARIO.prompt)}</p>
+    <h4>Audience</h4>
+    <p>${esc(SCENARIO.audience)}</p>
+    <h4>Word Range</h4>
+    <p>${SCENARIO.word_range[0]}–${SCENARIO.word_range[1]} words across all sections</p>
+    <h4>Scoring Rubric</h4>
+    <div class="rubric-preview">${rubricRows}</div>
+    <h4>Memo Structure</h4>
+    <ul>${SECTIONS.map(s => `<li><strong>${esc(s.label)}</strong> — ${esc(s.hint)}</li>`).join('')}</ul>
+    <h4>Tips</h4>
+    <ul>${PACK.coaching_tips.slice(0, 3).map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+  `;
+}
+
+/* ── WELCOME MODAL ── */
+function renderWelcome() {
+  const dims = PACK.dimensions.map(d =>
+    `<span class="dim-tag">${d.icon} ${esc(d.name)}</span>`
+  ).join('');
+
+  document.getElementById('welcome-card').innerHTML = `
+    <h2>${esc(SCENARIO.title)}</h2>
+    <p>${esc(SCENARIO.prompt)}</p>
+    <div class="construct-info">
+      <div class="ci-label">Construct being assessed</div>
+      <div class="ci-name">${esc(PACK.construct_name)}</div>
+      <div class="ci-desc">${esc(PACK.construct_description)}</div>
+    </div>
+    <div class="welcome-dims">${dims}</div>
+    <p style="font-size:13px;color:var(--text-tertiary)">
+      Read 5 source documents under Sources, then write your position memo under Write.
+      Target: ${SCENARIO.word_range[0]}–${SCENARIO.word_range[1]} words · ~15–20 minutes
+    </p>
+    <button class="welcome-start-btn" onclick="beginTask()">Begin Task</button>
+  `;
+}
+
+function beginTask() {
+  document.getElementById('welcome-overlay').classList.add('hidden');
+  startTimer();
+  STATE.sourceEnteredAt = Date.now();
+  logEvidence('task_started', {});
+
+  STATE.snapshotInterval = setInterval(takeSnapshot, 30000);
+  setInterval(updateReadTimeDisplay, 1000);
+}
+
+/* ── SCORING (identical to desktop) ── */
+function scoreRun() {
+  const sections = {};
+  document.querySelectorAll('.section-textarea').forEach(ta => {
+    sections[ta.dataset.section] = ta.value;
+  });
+
+  const fullText = Object.values(sections).join(' ').toLowerCase();
+  const totalWords = getTotalWords();
+  const dimScores = {};
+  const feedback = [];
+
+  // 1. Claim Clarity
+  const claimText = (sections.position || '').toLowerCase();
+  const claimMax = PACK.dimensions.find(d => d.id === 'claim_clarity').max_score;
+  let claimScore = 0;
+  const strongClaim = PACK.rubric.claim_clarity.strong_indicators.some(i => claimText.includes(i.toLowerCase()));
+  const weakClaim = PACK.rubric.claim_clarity.weak_indicators.some(i => claimText.includes(i.toLowerCase()));
+  const hasKeywords = PACK.rubric.claim_clarity.keywords.filter(k => claimText.includes(k)).length;
+
+  if (strongClaim) claimScore = claimMax;
+  else if (hasKeywords >= 2 && !weakClaim) claimScore = Math.round(claimMax * 0.75);
+  else if (hasKeywords >= 1) claimScore = Math.round(claimMax * 0.5);
+  else if (claimText.length > 20) claimScore = Math.round(claimMax * 0.25);
+
+  dimScores.claim_clarity = Math.round((claimScore / claimMax) * 100);
+  feedback.push({
+    dim: '\u{1F3AF} Claim Clarity',
+    good: claimScore >= claimMax * 0.6,
+    note: strongClaim
+      ? 'Clear, specific position stated — the board knows exactly what you recommend.'
+      : claimScore >= claimMax * 0.5
+        ? 'Position is present but could be more specific. Try leading with a direct recommendation.'
+        : 'Your position is unclear. Start with "I recommend..." to anchor the reader.'
+  });
+
+  // 2. Evidence Use
+  const evidMax = PACK.dimensions.find(d => d.id === 'evidence_use').max_score;
+  const sourceRefs = PACK.rubric.evidence_use.source_refs.filter(k => fullText.includes(k.toLowerCase())).length;
+  const integrationHits = PACK.rubric.evidence_use.integration_keywords.filter(k => fullText.includes(k.toLowerCase())).length;
+  const sourcesRead = Object.keys(STATE.sourceReadTimes).length;
+  const citedSources = new Set();
+  SCENARIO.sources.forEach(s => {
+    if (fullText.includes(s.tab_label.toLowerCase())) citedSources.add(s.id);
+  });
+
+  let evidScore = 0;
+  evidScore += Math.min(evidMax * 0.5, (sourceRefs / PACK.rubric.evidence_use.source_refs.length) * evidMax * 0.5);
+  evidScore += Math.min(evidMax * 0.3, (citedSources.size / PACK.rubric.evidence_use.min_sources_referenced) * evidMax * 0.3);
+  evidScore += Math.min(evidMax * 0.2, integrationHits * (evidMax * 0.05));
+  evidScore = Math.min(evidMax, Math.round(evidScore));
+
+  dimScores.evidence_use = Math.round((evidScore / evidMax) * 100);
+  feedback.push({
+    dim: '\u{1F4CA} Evidence Use',
+    good: evidScore >= evidMax * 0.6,
+    note: citedSources.size >= 3
+      ? `Strong evidence integration — referenced ${citedSources.size} sources with ${sourceRefs} specific data points.`
+      : `Only ${citedSources.size} source(s) explicitly referenced. Aim for at least ${PACK.rubric.evidence_use.min_sources_referenced} to show balanced analysis.`
+  });
+
+  // 3. Source Evaluation
+  const seMax = PACK.dimensions.find(d => d.id === 'source_evaluation').max_score;
+  const credHits = PACK.rubric.source_evaluation.credibility_keywords.filter(k => fullText.includes(k.toLowerCase())).length;
+  const identifiedStrong = PACK.rubric.source_evaluation.strongest_sources.some(id => {
+    const s = SCENARIO.sources.find(src => src.id === id);
+    return s && fullText.includes(s.tab_label.toLowerCase());
+  });
+  const identifiedWeak = PACK.rubric.source_evaluation.weakest_sources.some(id => {
+    const s = SCENARIO.sources.find(src => src.id === id);
+    return s && (fullText.includes('stakeholder') || fullText.includes('anecdotal') || fullText.includes('parent'));
+  });
+
+  let seScore = 0;
+  seScore += Math.min(seMax * 0.4, credHits * (seMax * 0.08));
+  if (identifiedStrong) seScore += seMax * 0.3;
+  if (identifiedWeak) seScore += seMax * 0.3;
+  seScore = Math.min(seMax, Math.round(seScore));
+
+  dimScores.source_evaluation = Math.round((seScore / seMax) * 100);
+  feedback.push({
+    dim: '\u{1F50D} Source Evaluation',
+    good: seScore >= seMax * 0.6,
+    note: credHits >= 3
+      ? `Good critical lens — you used ${credHits} credibility-related terms and distinguished source quality.`
+      : 'Try to explicitly evaluate source credibility. Which sources are peer-reviewed? Which are vendor-provided?'
+  });
+
+  // 4. Counterargument
+  const caMax = PACK.dimensions.find(d => d.id === 'counterargument').max_score;
+  const caText = (sections.counterargument || '').toLowerCase();
+  const caKeywords = PACK.rubric.counterargument.keywords.filter(k => caText.includes(k)).length;
+  const caConcepts = PACK.rubric.counterargument.counter_concepts.filter(k => caText.includes(k)).length;
+  const caFullKeywords = PACK.rubric.counterargument.keywords.filter(k => fullText.includes(k)).length;
+
+  let caScore = 0;
+  caScore += Math.min(caMax * 0.4, caKeywords * (caMax * 0.1));
+  caScore += Math.min(caMax * 0.4, caConcepts * (caMax * 0.1));
+  if (caFullKeywords > caKeywords) caScore += caMax * 0.2;
+  caScore = Math.min(caMax, Math.round(caScore));
+
+  dimScores.counterargument = Math.round((caScore / caMax) * 100);
+  feedback.push({
+    dim: '⚖️ Counterargument',
+    good: caScore >= caMax * 0.6,
+    note: caConcepts >= 2
+      ? `Solid engagement with ${caConcepts} opposing concerns — your memo addresses key objections.`
+      : 'Your counterargument section needs more depth. What would opponents say, and how do you respond?'
+  });
+
+  // 5. Writing Quality
+  const wqMax = PACK.dimensions.find(d => d.id === 'writing_quality').max_score;
+  const [minW, maxW] = SCENARIO.word_range;
+  const inRange = totalWords >= minW && totalWords <= maxW;
+  const sectionsUsed = SECTIONS.filter(s => (sections[s.id] || '').trim().length > 10).length;
+  const allSections = sectionsUsed === SECTIONS.length;
+
+  let wqScore = 0;
+  if (inRange) wqScore += wqMax * 0.4;
+  else if (totalWords >= minW * 0.7) wqScore += wqMax * 0.2;
+  wqScore += (sectionsUsed / SECTIONS.length) * wqMax * 0.4;
+  const posText = (sections.position || '').toLowerCase();
+  const recText = (sections.recommendation || '').toLowerCase();
+  const positionTerms = ['adopt', 'reject', 'modify', 'conditional', 'phase'];
+  const aligned = positionTerms.some(t => posText.includes(t) && recText.includes(t));
+  if (aligned) wqScore += wqMax * 0.2;
+  wqScore = Math.min(wqMax, Math.round(wqScore));
+
+  dimScores.writing_quality = Math.round((wqScore / wqMax) * 100);
+  feedback.push({
+    dim: '✍️ Writing Quality',
+    good: wqScore >= wqMax * 0.6,
+    note: allSections && inRange
+      ? `Well-structured memo — all sections completed within the ${minW}–${maxW} word target.`
+      : !allSections
+        ? `Only ${sectionsUsed} of ${SECTIONS.length} sections completed. Each section contributes to your score.`
+        : `Word count (${totalWords}) is outside the ${minW}–${maxW} target range.`
+  });
+
+  // Composite
+  const totalScore = claimScore + evidScore + seScore + caScore + wqScore;
+  const maxTotal = PACK.dimensions.reduce((a, d) => a + d.max_score, 0);
+  const composite = Math.round((totalScore / maxTotal) * 100);
+
+  // Process metrics
+  const readSources = Object.keys(STATE.sourceReadTimes).length;
+  const totalReadSec = Math.round(Object.values(STATE.sourceReadTimes).reduce((a, b) => a + b, 0) / 1000);
+  const elapsedMin = STATE.startTime ? Math.round((Date.now() - STATE.startTime) / 60000) : 0;
+
+  const processScore = Math.min(100, Math.round(
+    (readSources / SCENARIO.sources.length) * 40 +
+    (citedSources.size >= 3 ? 30 : citedSources.size * 10) +
+    (totalReadSec >= 60 ? 20 : totalReadSec / 3) +
+    (STATE.sectionSnapshots.length >= 3 ? 10 : STATE.sectionSnapshots.length * 3)
+  ));
+
+  const overallLabel = PACK.overall_labels.find(l => composite >= l.min && composite <= l.max) || PACK.overall_labels[PACK.overall_labels.length - 1];
+
+  return {
+    dimScores, composite, totalScore, maxTotal, feedback, overallLabel,
+    processScore, readSources, totalReadSec, citedSources: citedSources.size,
+    totalWords, elapsedMin, snapshots: STATE.sectionSnapshots.length
+  };
+}
+
+/* ── SUBMIT ── */
+function submitMemo() {
+  if (STATE.submitted) return;
+  STATE.submitted = true;
+
+  flushReadTime();
+  takeSnapshot();
+  clearInterval(STATE.snapshotInterval);
+
+  const sections = {};
+  document.querySelectorAll('.section-textarea').forEach(ta => {
+    sections[ta.dataset.section] = ta.value;
+  });
+
+  logEvidence('memo_submitted', {
+    total_words: getTotalWords(),
+    sections_filled: SECTIONS.filter(s => (sections[s.id] || '').trim().length > 10).length,
+    elapsed_ms: Date.now() - STATE.startTime,
+    sources_read: Object.keys(STATE.sourceReadTimes).length,
+    snapshots: STATE.sectionSnapshots.length,
+    evidence_events: STATE.evidence.length
+  });
+
+  const result = scoreRun();
+  renderResults(result);
+  document.getElementById('results-overlay').classList.add('open');
+}
+
+/* ── RENDER RESULTS ── */
+function renderResults(r) {
+  const dimBarsHtml = PACK.dimensions.map(d => {
+    const val = r.dimScores[d.id] || 0;
+    const barClass = val >= 70 ? 'bar-high' : val >= 40 ? 'bar-mid' : 'bar-low';
+    return `<div class="skill-bar-row">
+      <div class="skill-bar-header"><span>${d.icon} ${esc(d.name)}</span><span>${val}</span></div>
+      <div class="skill-bar-track"><div class="skill-bar-fill ${barClass}" style="width:${Math.max(2, val)}%"></div></div>
+    </div>`;
+  }).join('');
+
+  const feedbackHtml = r.feedback.map(f => `
+    <div class="feedback-item">
+      <span class="feedback-icon ${f.good ? 'feedback-good' : 'feedback-bad'}">${f.good ? '✓' : '✗'}</span>
+      <div><div class="feedback-dim">${f.dim}</div><div class="feedback-note">${esc(f.note)}</div></div>
+    </div>
+  `).join('');
+
+  const tipsHtml = PACK.coaching_tips.map(t => `<li>${esc(t)}</li>`).join('');
+  const tierClass = `tier-${r.overallLabel.tier}`;
+
+  document.getElementById('results-container').innerHTML = `
+    <div class="results-header">
+      <h2>Memo Results</h2>
+      <p>${esc(PACK.construct_name)}</p>
+      <div class="results-score-circle">
+        <span class="score-num">${r.composite}</span>
+        <span class="score-of">/ 100</span>
+      </div>
+      <div style="text-align:center">
+        <span class="results-tier ${tierClass}">${esc(r.overallLabel.label)}</span>
+      </div>
+    </div>
+
+    <div class="results-card">
+      <h4>Dimension Scores</h4>
+      ${dimBarsHtml}
+    </div>
+
+    <div class="results-card">
+      <h4>Feedback</h4>
+      ${feedbackHtml}
+    </div>
+
+    <div class="results-card">
+      <h4>Process Evidence</h4>
+      <div class="process-stat"><span class="process-stat-label">Sources read</span><span class="process-stat-value">${r.readSources} / ${SCENARIO.sources.length}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Total reading time</span><span class="process-stat-value">${r.totalReadSec}s</span></div>
+      <div class="process-stat"><span class="process-stat-label">Sources cited</span><span class="process-stat-value">${r.citedSources}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Final word count</span><span class="process-stat-value">${r.totalWords}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Time spent</span><span class="process-stat-value">${r.elapsedMin} min</span></div>
+      <div class="process-stat"><span class="process-stat-label">Writing snapshots</span><span class="process-stat-value">${r.snapshots}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Process score</span><span class="process-stat-value">${r.processScore} / 100</span></div>
+    </div>
+
+    <div class="results-card">
+      <h4>Coaching Tips</h4>
+      <ul class="coaching-list">${tipsHtml}</ul>
+    </div>
+
+    <div class="results-actions">
+      <a class="results-primary" href="index.html">Back to Hub</a>
+      <button class="results-secondary" onclick="document.getElementById('results-overlay').classList.remove('open')">Review Memo</button>
+    </div>
+  `;
+}
+
+/* ── INIT ── */
+function init() {
+  document.getElementById('scenario-title').textContent = SCENARIO.title;
+  document.getElementById('target-range').textContent = ` / ${SCENARIO.word_range[0]}–${SCENARIO.word_range[1]}`;
+
+  renderSourceTabs();
+  switchSource(0);
+  renderEditor();
+  renderInfoDrawer();
+  renderWelcome();
+}
+
+(async () => {
+  PACK = await loadPack();
+  SCENARIO = PACK.scenario;
+  init();
+})();
+</script>
+
+</body>
+</html>

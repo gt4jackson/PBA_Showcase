@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>The Brief — Mobile</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #1a212b; --surface: #242e3d; --surface-alt: #2c3849; --surface-hover: #344256;
+  --text: #f2e9d8; --text-secondary: #b8b0a0; --text-tertiary: #7e7a72;
+  --border: rgba(242,233,216,0.08); --border-strong: rgba(242,233,216,0.15);
+  --accent: #4dd3fe; --accent-light: rgba(77,211,254,0.12);
+  --emerald: #468254; --emerald-bg: rgba(70,130,84,0.15);
+  --amber: #f59e0b; --amber-bg: rgba(245,158,11,0.15);
+  --rose: #f43f5e; --rose-bg: rgba(244,63,94,0.15);
+  --violet: #9e9eff; --radius: 10px; --radius-sm: 6px;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: rgba(242,233,216,0.15); border-radius: 2px; }
+
+/* TOP BAR */
+.top-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.top-bar-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.back-btn { background: none; border: none; color: var(--text-tertiary); cursor: pointer; font-size: 20px; padding: 4px; text-decoration: none; }
+.scenario-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.budget-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.budget-ok { background: var(--emerald-bg); color: var(--emerald); }
+.budget-low { background: var(--amber-bg); color: var(--amber); }
+.budget-critical { background: var(--rose-bg); color: var(--rose); }
+.timer-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: var(--surface-alt); color: var(--text-secondary); border: 1px solid var(--border); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+/* TAB PANELS */
+.tab-content { flex: 1; overflow: hidden; position: relative; }
+.tab-panel { position: absolute; inset: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: none; }
+.tab-panel.active { display: block; }
+
+/* BOTTOM NAV */
+.bottom-nav { display: flex; background: var(--surface); border-top: 1px solid var(--border); flex-shrink: 0; padding-bottom: max(4px, env(safe-area-inset-bottom)); }
+.nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; background: none; border: none; color: var(--text-tertiary); font-size: 10px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; position: relative; }
+.nav-btn.active { color: var(--accent); }
+.nav-btn .nav-icon { font-size: 18px; }
+.nav-badge { position: absolute; top: 4px; right: 20%; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: none; }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-bottom: 10px; }
+.card h4 { font-size: 13px; color: var(--accent); margin-bottom: 6px; }
+.card p, .card li { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.card-label { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.card-value { font-size: 13px; font-weight: 600; }
+
+/* BRIEF TAB: email/file items */
+.item-btn { display: block; width: 100%; text-align: left; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.item-btn.active { border-color: rgba(77,211,254,0.3); background: var(--accent-light); }
+.item-from { font-size: 12px; font-weight: 600; color: var(--text); }
+.item-subject { font-size: 12px; color: var(--text-secondary); }
+.item-meta { font-size: 10px; color: var(--text-tertiary); margin-top: 2px; }
+.file-reliability-outdated { color: var(--amber); } .file-reliability-reliable { color: var(--emerald); }
+.detail-view { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; margin-top: 8px; font-size: 13px; color: var(--text-secondary); line-height: 1.6; white-space: pre-wrap; }
+
+/* AI CHAT TAB */
+.chat-messages { flex: 1; overflow-y: auto; padding: 0 0 8px; }
+.chat-msg { margin-bottom: 10px; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.chat-msg-label { font-size: 10px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 2px; text-transform: uppercase; }
+.chat-msg-user .chat-msg-label { color: var(--accent); }
+.chat-msg-body { font-size: 13px; color: var(--text-secondary); line-height: 1.5; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; white-space: pre-wrap; }
+.chat-msg-user .chat-msg-body { background: var(--accent-light); border-color: rgba(77,211,254,0.2); }
+.chat-msg-system .chat-msg-body { background: var(--amber-bg); border-color: rgba(245,158,11,0.2); color: var(--amber); }
+.tool-selector { display: flex; gap: 4px; margin-bottom: 8px; overflow-x: auto; flex-shrink: 0; -webkit-overflow-scrolling: touch; }
+.tool-btn { white-space: nowrap; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); color: var(--text-secondary); font-size: 12px; cursor: pointer; flex-shrink: 0; }
+.tool-btn.active { border-color: rgba(77,211,254,0.3); background: var(--accent-light); color: var(--accent); }
+.tool-cost { font-size: 10px; color: var(--text-tertiary); }
+.chat-input-area { flex-shrink: 0; border-top: 1px solid var(--border); padding: 8px 0 0; }
+.chat-input-row { display: flex; gap: 8px; }
+.chat-input { flex: 1; padding: 10px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 15px; font-family: inherit; resize: none; min-height: 42px; max-height: 100px; }
+.chat-input:focus { outline: none; border-color: rgba(77,211,254,0.4); }
+.chat-send { padding: 10px 16px; border-radius: var(--radius); border: none; background: var(--accent); color: #0a1628; font-weight: 600; font-size: 14px; cursor: pointer; flex-shrink: 0; min-height: 42px; }
+.chat-send:disabled { opacity: 0.3; }
+
+/* DRAFT TAB */
+.draft-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.draft-title { font-size: 14px; font-weight: 600; }
+.word-count { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--surface-alt); color: var(--text-secondary); }
+.word-count.over { background: var(--rose-bg); color: var(--rose); }
+.word-count.in-range { background: var(--emerald-bg); color: var(--emerald); }
+.draft-instructions { font-size: 12px; color: var(--text-tertiary); margin-bottom: 10px; line-height: 1.5; }
+.draft-editor { width: 100%; min-height: 300px; padding: 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg); color: var(--text); font-family: inherit; font-size: 15px; line-height: 1.6; resize: vertical; }
+.draft-editor:focus { outline: none; border-color: rgba(77,211,254,0.4); }
+.submit-bar { position: sticky; bottom: 0; padding: 10px 0; background: var(--bg); }
+.submit-btn { width: 100%; padding: 14px; border-radius: var(--radius); border: none; background: var(--accent); color: #0a1628; font-weight: 700; font-size: 15px; cursor: pointer; }
+.submit-btn:disabled { opacity: 0.35; cursor: default; }
+
+/* STATUS TAB */
+.status-item { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 6px; }
+.status-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border-strong); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+.status-check.done { background: var(--emerald-bg); border-color: var(--emerald); color: var(--emerald); }
+.status-label { font-size: 13px; } .status-hint { font-size: 11px; color: var(--text-tertiary); }
+
+/* PLANNER */
+.planner-section { margin-top: 16px; }
+.plan-input-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.plan-input { flex: 1; padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; font-family: inherit; }
+.plan-add { padding: 10px 16px; border-radius: var(--radius-sm); border: none; background: var(--accent); color: #0a1628; font-weight: 600; font-size: 14px; cursor: pointer; }
+.plan-step { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 4px; font-size: 13px; }
+.plan-step-num { color: var(--accent); font-weight: 700; flex-shrink: 0; }
+.plan-step-remove { margin-left: auto; background: none; border: none; color: var(--text-tertiary); font-size: 16px; cursor: pointer; padding: 4px 8px; }
+
+/* OVERLAYS */
+.overlay { position: fixed; inset: 0; background: var(--bg); z-index: 100; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.overlay.hidden { display: none; }
+.overlay-inner { padding: 20px 16px; max-width: 440px; margin: 0 auto; }
+
+/* WELCOME */
+.welcome-card h2 { font-size: 20px; margin-bottom: 8px; }
+.welcome-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
+.skill-row { display: flex; gap: 8px; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.skill-icon { font-size: 16px; flex-shrink: 0; }
+.skill-name { font-size: 12px; font-weight: 600; }
+.skill-desc { font-size: 11px; color: var(--text-tertiary); }
+.skill-weight { font-size: 10px; color: var(--accent); flex-shrink: 0; }
+.welcome-start { width: 100%; padding: 14px; border-radius: var(--radius); border: none; background: var(--accent); color: #0a1628; font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 16px; }
+
+/* RESULTS */
+.results-header { text-align: center; margin-bottom: 20px; }
+.results-header h2 { font-size: 20px; margin-bottom: 4px; }
+.results-header p { font-size: 13px; color: var(--text-secondary); }
+.composite-circle { width: 90px; height: 90px; border-radius: 50%; margin: 16px auto; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--accent-light); border: 2px solid var(--accent); }
+.composite-num { font-size: 28px; font-weight: 700; line-height: 1; }
+.composite-of { font-size: 10px; color: var(--text-tertiary); }
+.tier-badge { display: inline-block; padding: 4px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+.tier-gold { background: var(--amber-bg); color: var(--amber); }
+.tier-silver { background: var(--surface-alt); color: var(--text); }
+.tier-bronze { background: rgba(180,120,60,0.15); color: #c08040; }
+.tier-none { background: var(--surface-alt); color: var(--text-tertiary); }
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.stat-box { background: var(--surface); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
+.stat-box-label { font-size: 10px; color: var(--text-tertiary); }
+.stat-box-value { font-size: 18px; font-weight: 700; }
+.results-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; }
+.results-card h4 { font-size: 13px; color: var(--accent); margin-bottom: 8px; }
+.skill-bar-row { margin-bottom: 8px; }
+.skill-bar-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px; }
+.skill-bar-track { height: 6px; border-radius: 3px; background: var(--bg); }
+.skill-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.skill-high { background: var(--emerald); } .skill-mid { background: var(--amber); } .skill-low { background: var(--rose); }
+.feedback-item { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.feedback-icon { font-size: 14px; flex-shrink: 0; width: 18px; text-align: center; }
+.feedback-good { color: var(--emerald); } .feedback-bad { color: var(--rose); }
+.feedback-dim { font-size: 12px; font-weight: 600; } .feedback-note { font-size: 11px; color: var(--text-secondary); }
+.process-stat { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.process-stat-label { color: var(--text-secondary); } .process-stat-value { font-weight: 600; }
+.coaching-list { padding-left: 16px; font-size: 12px; color: var(--text-secondary); } .coaching-list li { margin-bottom: 4px; }
+.results-actions { display: flex; gap: 10px; margin-top: 16px; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+.results-primary { flex: 1; text-align: center; padding: 12px; border-radius: var(--radius); background: var(--accent); color: #0a1628; font-weight: 700; font-size: 14px; text-decoration: none; }
+.results-secondary { flex: 1; padding: 12px; border-radius: var(--radius); border: 1px solid var(--border); background: none; color: var(--text-secondary); font-size: 14px; font-weight: 500; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<script>
+const DEFAULT_SCENARIO = 'scenarios/the-brief-critical-thinking.json';
+const CONSTRUCT_PACK_INLINE = {
+  construct_id: "critical_thinking_ai",
+  construct_name: "Critical Thinking with AI Tools",
+  construct_description: "The ability to decompose a messy problem, select the right AI tools, write effective prompts, and critically evaluate outputs before acting on them.",
+  pba_category: { id: 7, name: "AI-Augmented Performance Tasks", description: "Tasks where the test-taker uses AI tools as part of their workflow." },
+  secondary_dimensions: { stakes: "Medium (formative)", temporal: "Single-session, 15-20 min", collaboration: "Individual", problem_structure: "Ill-structured", authenticity: "Proximal (simulated workplace)", scoring: "Hybrid" },
+  skills: [
+    { id: "prompt_engineering", name: "Prompt Engineering", icon: "✏️", description: "Writing clear, specific prompts that get useful results from AI tools.", color: "#3b82f6", weight: 0.25 },
+    { id: "critical_evaluation", name: "Critical Evaluation", icon: "🔍", description: "Spotting hallucinations, bias, errors, and unreliable outputs.", color: "#f43f5e", weight: 0.40 },
+    { id: "task_decomposition", name: "Task Decomposition", icon: "🧩", description: "Breaking a messy problem into logical, AI-solvable subtasks.", color: "#10b981", weight: 0.25 },
+    { id: "tool_selection", name: "Tool Selection", icon: "🛠️", description: "Picking the right tool for each subtask.", color: "#f59e0b", weight: 0.10 }
+  ],
+  scenario: {
+    id: "market_entry_memo", title: "The Market Entry Memo", client: "Brewhaus Coffee Co.", estimated_minutes: 20, budget_tokens: 100,
+    briefing: "Brewhaus Coffee Co. is a US-based direct-to-consumer coffee brand considering expansion into Canada. The CEO needs a one-page memo with a clear recommendation (enter / don't enter / enter conditionally) and the reasoning behind it.\n\nYou have the reference files in your workspace and access to the AI Workbench. Be careful — not everything in the reference materials is accurate, and the AI Workbench can make mistakes too.",
+    inbox: [
+      { id: "email_1", from: "Jane Kim <jane@brewhaus.example>", subject: "Canada expansion — need your memo by EOD", body: "Hey, welcome aboard.\n\nAs discussed, I need a one-page memo on whether Brewhaus should expand into Canada. Give me a clear recommendation and the top 3 reasons. The board meets tomorrow so please keep it tight.\n\nFiles are in your workspace.\n\n— Jane" },
+      { id: "email_2", from: "Marcus Webb <marcus@brewhaus.example>", subject: "FYI — tariffs rumor", body: "Heads up: I heard on a podcast that Canada just imposed a new 40% tariff on US coffee imports. Haven't verified. Might want to check before you write the memo." },
+      { id: "email_3", from: "Priya Shah <priya@brewhaus.example>", subject: "Customer survey — Canadian interest", body: "Attaching the raw customer survey from last quarter. 312 Canadian respondents said they'd buy from us if we shipped north.\n\n(File: customer_survey.txt)" }
+    ],
+    files: [
+      { id: "file_market_report", name: "canada_coffee_market_2019.pdf", type: "reference", reliability: "outdated", content: "CANADA COFFEE MARKET REPORT (2019)\n\nThe Canadian coffee market was valued at $6.2B in 2019, growing at 3.1% annually. Per-capita consumption is among the highest in the world at ~152 liters per year. Direct-to-consumer coffee sales represented 4% of the market in 2019 and were projected to reach 7% by 2023.\n\nTop competitors: Tim Hortons (dominant), Second Cup, independent roasters. DTC players are fragmented.\n\nRegulatory notes (2019): US-origin coffee enters Canada under USMCA / CUSMA with minimal tariffs on raw green coffee; processed/roasted coffee may have small duties depending on HS code.\n\n[NOTE: This report is from 2019 and has not been updated.]" },
+      { id: "file_survey", name: "customer_survey.txt", type: "data", reliability: "reliable", content: "BREWHAUS CUSTOMER SURVEY — Q2 CANADIAN INTEREST\n\nRespondents: 312 self-identified Canadian residents\nRecruitment: Instagram ad, $5 gift card incentive\n\nKey results:\n- 68% said 'yes, I would buy from Brewhaus if shipping were available'\n- 52% said they currently buy specialty coffee online\n- Price sensitivity: median willingness to pay $22/bag (CAD)\n- Shipping tolerance: 74% expect delivery in under 7 days\n\nMethodology caveats: self-selected sample, small N, social-media recruited (likely skews urban / younger / higher-income)." },
+      { id: "file_financials", name: "brewhaus_unit_economics.txt", type: "data", reliability: "reliable", content: "BREWHAUS UNIT ECONOMICS (US DOMESTIC)\n\n- Average order value: $38\n- COGS per order: $14\n- Shipping cost per order (US domestic): $6\n- Contribution margin per order: $18 (47%)\n- Customer acquisition cost: $22\n- Payback period: 1.2 orders\n\nNotes: Cross-border shipping to Canada would add estimated $9-14 per order based on current carrier rates, not including any duties, brokerage, or GST/HST handling." }
+    ],
+    workbench_tools: [
+      { id: "chat_llm", name: "Chat AI", description: "General-purpose chat. Good for writing & brainstorming. Can make things up.", cost: 5, icon: "💬" },
+      { id: "web_search", name: "Web Search", description: "Searches web for current info. Good for facts & verifying claims.", cost: 8, icon: "🔎" },
+      { id: "calculator", name: "Calculator", description: "Exact numeric computation. Do NOT use chat LLM for math.", cost: 1, icon: "🧮" },
+      { id: "expert", name: "Human Expert", description: "Domain expert. Expensive but highly reliable.", cost: 25, icon: "👤" }
+    ],
+    scripted_responses: [
+      { tool_id: "chat_llm", keywords: ["tariff", "40%", "canada"], response: "Yes, I can confirm that Canada has a 40% tariff on US coffee imports as of early 2024. This applies to both raw green beans and roasted coffee under harmonized HS codes.", is_hallucination: true, trap_id: "tariff_hallucination" },
+      { tool_id: "web_search", keywords: ["tariff", "canada", "coffee"], response: "Search results indicate NO new tariffs on US coffee imports to Canada. Under CUSMA (the updated NAFTA), most coffee products from the US enter Canada duty-free or at very low rates. The '40%' claim appears to originate from a single unverified podcast and has been debunked.", is_hallucination: false, trap_id: "tariff_hallucination" },
+      { tool_id: "chat_llm", keywords: ["market size", "canada", "coffee"], response: "The Canadian coffee market is approximately $8.5B as of 2024, growing at around 4% annually. DTC is one of the fastest-growing segments.", is_hallucination: false },
+      { tool_id: "web_search", keywords: ["market size", "canada", "coffee"], response: "Recent industry reports estimate the Canadian coffee market at roughly $8-9B CAD in 2023-2024, with online/DTC representing ~9-11% and growing faster than brick-and-mortar.", is_hallucination: false },
+      { tool_id: "calculator", keywords: ["margin", "canada", "shipping"], response: "Given AOV $38, COGS $14, estimated Canadian shipping $11 (midpoint of $9-14):\nContribution per order = $38 - $14 - $11 = $13\nThat's ~34% margin vs ~47% domestic.\nMargin compression: ~28% reduction.", is_hallucination: false },
+      { tool_id: "calculator", keywords: ["38", "14"], response: "38 - 14 = 24\n38 - 14 - 6 = 18 (domestic)\n38 - 14 - 11 = 13 (Canada, midpoint shipping)\n\nDomestic margin: 18/38 = 47.4%\nCanada margin: 13/38 = 34.2%", is_hallucination: false },
+      { tool_id: "expert", keywords: ["recommend", "canada", "expand"], response: "A reasonable recommendation would be 'conditional entry': pilot with a limited SKU range to urban centers (Toronto, Vancouver, Montreal), assume ~30% margin compression vs US domestic, verify current CUSMA treatment with a customs broker before committing to inventory, and validate the survey signal with a waitlist before full launch. Watch out for GST/HST registration thresholds.", is_hallucination: false },
+      { tool_id: "expert", keywords: ["tariff", "trade"], response: "To my knowledge, there is no 40% tariff on US coffee entering Canada. Under CUSMA, most roasted coffee enters duty-free. I'd recommend verifying with a customs broker, but the podcast claim sounds dubious.", is_hallucination: false },
+      { tool_id: "chat_llm", keywords: ["write", "memo", "draft"], response: "Here's a draft structure:\n\n[DRAFT] Memo: Canada Market Entry\n\nRecommendation: [GO / NO-GO / CONDITIONAL]\n\nKey points:\n1. Market size and growth\n2. Customer signal from survey\n3. Unit economics under new shipping\n4. Regulatory / tariff situation\n5. Recommended pilot scope\n\nWant me to fill this in?", is_hallucination: false },
+      { tool_id: "chat_llm", keywords: ["survey", "methodology", "bias"], response: "The survey methodology is okay for directional insight, but caveats: self-selected via Instagram ads with gift card incentive, skews urban/younger/higher-income. N of 312 is modest. Treat the 68% interest as an upper-bound estimate.", is_hallucination: false },
+      { tool_id: "web_search", keywords: ["brewhaus", "coffee"], response: "No results found for 'Brewhaus Coffee Co.' — appears to be a private or very new brand.", is_hallucination: false }
+    ],
+    traps: [
+      { id: "tariff_hallucination", type: "hallucination", description: "Chat AI fabricates a 40% Canadian tariff on US coffee imports.", penalty_if_missed: 25, bonus_if_caught: 15 },
+      { id: "outdated_market_report", type: "stale_data", description: "The 2019 market report is 5+ years old.", penalty_if_missed: 10, bonus_if_caught: 10 },
+      { id: "survey_methodology", type: "weak_evidence", description: "Customer survey has methodology issues (self-selected, small N).", penalty_if_missed: 10, bonus_if_caught: 10 }
+    ],
+    deliverable: { id: "memo", name: "One-page Market Entry Memo", instructions: "Write a one-page memo to the CEO with: (1) a clear recommendation, (2) top 3 supporting reasons, (3) key risks, (4) any assumptions. Keep it under 400 words.", max_words: 400, min_words: 150 },
+    rubric: [
+      { id: "clear_recommendation", name: "Clear recommendation", weight: 0.20, description: "Does the memo state a specific, actionable recommendation?", keywords_positive: ["recommend", "should", "pilot", "enter", "do not enter", "conditional", "proceed", "advise", "suggest"] },
+      { id: "uses_reliable_data", name: "Uses reliable data", weight: 0.20, description: "Does the memo cite the survey and unit economics appropriately?", keywords_positive: ["survey", "margin", "unit econ", "shipping", "AOV", "respondents", "$38", "$14", "312", "68%"] },
+      { id: "catches_tariff_trap", name: "Critical evaluation — tariff", weight: 0.25, description: "Correctly handles the tariff rumor?", trap_id: "tariff_hallucination" },
+      { id: "notes_caveats", name: "Notes data caveats", weight: 0.15, description: "Acknowledges data limitations?", keywords_positive: ["outdated", "stale", "methodology", "self-selected", "small sample", "caveat", "2019", "bias", "skew", "limitation"] },
+      { id: "structure_and_length", name: "Structure and length", weight: 0.10, description: "Within target length, well-structured?" },
+      { id: "assumptions_stated", name: "Assumptions stated", weight: 0.10, description: "Explicitly calls out assumptions?", keywords_positive: ["assume", "assumption", "if", "pending", "subject to", "contingent", "provided that"] }
+    ],
+    coaching_tips: [
+      "LLMs will confidently state false facts. Always verify numeric or legal claims with a more reliable source.",
+      "Older reports (like the 2019 one) can anchor your thinking on outdated numbers. Always check the date.",
+      "Small, self-selected surveys are a weak signal — useful directionally, not as ground truth.",
+      "Matching the tool to the task saves budget and improves accuracy.",
+      "Plan before you execute. Breaking a task into steps prevents wasted effort."
+    ]
+  },
+  overall_labels: [
+    { min: 0, max: 59, label: "Developing", emoji: "🌱" },
+    { min: 60, max: 74, label: "Bronze — Competent", emoji: "🥉" },
+    { min: 75, max: 89, label: "Silver — Proficient", emoji: "🥈" },
+    { min: 90, max: 100, label: "Gold — Expert", emoji: "🥇" }
+  ]
+};
+</script>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <a class="back-btn" href="index.html">&larr;</a>
+    <span class="scenario-title" id="scenario-title"></span>
+  </div>
+  <div style="display:flex;gap:6px;align-items:center;">
+    <span class="budget-tag budget-ok" id="budget-display">100</span>
+    <span class="timer-tag" id="timer">00:00</span>
+  </div>
+</div>
+
+<!-- TAB CONTENT -->
+<div class="tab-content">
+  <div class="tab-panel active" id="panel-brief"></div>
+  <div class="tab-panel" id="panel-chat" style="display:none;flex-direction:column;padding-bottom:0;"></div>
+  <div class="tab-panel" id="panel-draft"></div>
+  <div class="tab-panel" id="panel-status"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn active" data-tab="brief" onclick="switchTab('brief')"><span class="nav-icon">📋</span>Brief</button>
+  <button class="nav-btn" data-tab="chat" onclick="switchTab('chat')"><span class="nav-icon">🤖</span>AI Chat</button>
+  <button class="nav-btn" data-tab="draft" onclick="switchTab('draft')"><span class="nav-icon">📄</span>Draft</button>
+  <button class="nav-btn" data-tab="status" onclick="switchTab('status')"><span class="nav-icon">📊</span>Status</button>
+</div>
+
+<!-- OVERLAYS -->
+<div class="overlay" id="welcome-overlay"></div>
+<div class="overlay hidden" id="results-overlay"></div>
+
+<script>
+'use strict';
+let PACK = null, SC = null;
+const STATE = {
+  startTime: null, activeTool: null, plan: [], toolCalls: [], tokensSpent: 0,
+  evidence: [], selectedEmailId: null, selectedFileId: null, activeTab: 'brief'
+};
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s||''; return d.innerHTML; }
+function logEvidence(event, data={}) { STATE.evidence.push({ event, ...data, ts: Date.now(), elapsed_ms: STATE.startTime ? Date.now()-STATE.startTime : 0 }); }
+function wordCount(s) { return (s||'').trim().split(/\s+/).filter(Boolean).length; }
+
+async function loadPack() {
+  const params = new URLSearchParams(window.location.search);
+  const url = params.get('scenario') || DEFAULT_SCENARIO;
+  try { const r = await fetch(url); if (!r.ok) throw new Error(r.status); return await r.json(); }
+  catch(e) { return CONSTRUCT_PACK_INLINE; }
+}
+
+// Timer
+function startTimer() {
+  STATE.startTime = Date.now();
+  setInterval(() => {
+    const s = Math.floor((Date.now()-STATE.startTime)/1000);
+    document.getElementById('timer').textContent = `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  }, 1000);
+}
+
+// Tab switching
+function switchTab(tab) {
+  STATE.activeTab = tab;
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab-panel').forEach(p => {
+    const isActive = p.id === 'panel-' + tab;
+    p.classList.toggle('active', isActive);
+    p.style.display = isActive ? (tab === 'chat' ? 'flex' : 'block') : 'none';
+  });
+  logEvidence('tab_switch', { tab });
+  if (tab === 'status') renderStatus();
+}
+
+// ── BRIEF TAB ──
+function renderBrief() {
+  const panel = document.getElementById('panel-brief');
+  const briefCard = `<div class="card"><h4>Client Briefing</h4><p>${esc(SC.briefing)}</p></div>`;
+  const emailCards = SC.inbox.map(e => `<button class="item-btn" onclick="selectEmail('${e.id}')" id="email-${e.id}">
+    <div class="item-from">${esc(e.from)}</div><div class="item-subject">${esc(e.subject)}</div></button>`).join('');
+  const fileCards = SC.files.map(f => `<button class="item-btn" onclick="selectFile('${f.id}')" id="file-${f.id}">
+    <div class="item-from">${esc(f.name)}</div><div class="item-meta">${esc(f.type)} · <span class="file-reliability-${f.reliability}">${f.reliability}</span></div></button>`).join('');
+
+  panel.innerHTML = `${briefCard}
+    <div class="card"><h4>Inbox (${SC.inbox.length})</h4>${emailCards}<div id="email-detail"></div></div>
+    <div class="card"><h4>Files (${SC.files.length})</h4>${fileCards}<div id="file-detail"></div></div>`;
+}
+function selectEmail(id) {
+  STATE.selectedEmailId = id;
+  logEvidence('email_opened', { email_id: id });
+  document.querySelectorAll('[id^="email-"].item-btn').forEach(b => b.classList.toggle('active', b.id === 'email-'+id));
+  const e = SC.inbox.find(x => x.id === id);
+  document.getElementById('email-detail').innerHTML = e ? `<div class="detail-view">${esc(e.body)}</div>` : '';
+}
+function selectFile(id) {
+  STATE.selectedFileId = id;
+  const f = SC.files.find(x => x.id === id);
+  logEvidence('file_opened', { file_id: id, file_name: f?.name, reliability: f?.reliability });
+  document.querySelectorAll('[id^="file-"].item-btn').forEach(b => b.classList.toggle('active', b.id === 'file-'+id));
+  document.getElementById('file-detail').innerHTML = f ? `<div class="detail-view">${esc(f.content)}</div>` : '';
+}
+
+// ── CHAT TAB ──
+function renderChat() {
+  const panel = document.getElementById('panel-chat');
+  const toolBtns = SC.workbench_tools.map(t =>
+    `<button class="tool-btn${STATE.activeTool===t.id?' active':''}" data-tool="${t.id}" onclick="selectTool('${t.id}')">${t.icon} ${esc(t.name)} <span class="tool-cost">${t.cost}</span></button>`
+  ).join('');
+  panel.innerHTML = `
+    <div class="tool-selector" id="tool-selector">${toolBtns}</div>
+    <div class="chat-messages" id="chat-messages"><div style="padding:20px;text-align:center;color:var(--text-tertiary);font-size:13px;">Pick a tool, write a prompt, and run it.<br>Tools cost tokens from your budget.</div></div>
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <textarea class="chat-input" id="chat-input" placeholder="Write your prompt..." rows="1" oninput="autoGrow(this);updateRunBtn()"></textarea>
+        <button class="chat-send" id="run-btn" onclick="runTool()" disabled>Run</button>
+      </div>
+    </div>`;
+  if (SC.workbench_tools.length > 0 && !STATE.activeTool) { STATE.activeTool = SC.workbench_tools[0].id; selectTool(STATE.activeTool); }
+}
+function selectTool(id) {
+  STATE.activeTool = id;
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.toggle('active', b.dataset.tool === id));
+  logEvidence('tool_selected', { tool_id: id });
+  updateRunBtn();
+}
+function autoGrow(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 100) + 'px'; }
+function updateRunBtn() {
+  const tool = SC.workbench_tools.find(t => t.id === STATE.activeTool);
+  const prompt = (document.getElementById('chat-input')?.value || '').trim();
+  const btn = document.getElementById('run-btn');
+  if (btn) btn.disabled = !prompt || !tool || (SC.budget_tokens - STATE.tokensSpent) < tool.cost;
+}
+function runTool() {
+  const input = document.getElementById('chat-input');
+  const prompt = input.value.trim(); if (!prompt) return;
+  const tool = SC.workbench_tools.find(t => t.id === STATE.activeTool); if (!tool) return;
+  const remaining = SC.budget_tokens - STATE.tokensSpent;
+  if (remaining < tool.cost) { appendChat('system', '', 'Not enough budget.'); return; }
+
+  const response = pickResponse(tool.id, prompt);
+  STATE.toolCalls.push({ tool_id: tool.id, tool_name: tool.name, prompt, response: response.text, cost: tool.cost, is_hallucination: response.is_hallucination, trap_id: response.trap_id });
+  STATE.tokensSpent += tool.cost;
+  logEvidence('tool_call', { tool_id: tool.id, prompt, prompt_length: prompt.length, cost: tool.cost, is_hallucination: response.is_hallucination });
+
+  appendChat('user', tool.id, prompt);
+  appendChat('tool', tool.id, response.text);
+  updateBudget();
+  updateRunBtn();
+  input.value = ''; input.style.height = 'auto';
+}
+function pickResponse(toolId, prompt) {
+  const pLower = prompt.toLowerCase();
+  const candidates = SC.scripted_responses.filter(r => r.tool_id === toolId);
+  let best = null, bestScore = 0;
+  for (const c of candidates) {
+    const hits = (c.keywords||[]).filter(k => pLower.includes(k.toLowerCase())).length;
+    if (hits > bestScore) { bestScore = hits; best = c; }
+  }
+  if (best && bestScore > 0) return { text: best.response, is_hallucination: !!best.is_hallucination, trap_id: best.trap_id };
+  const defaults = { chat_llm: "Could you give me more specifics?", web_search: "Refine your query with specific terms.", calculator: "No computable expression detected. Try something like '38 - 14 - 11'.", expert: "The expert needs a specific question." };
+  return { text: defaults[toolId] || "No response available.", is_hallucination: false, trap_id: null };
+}
+function appendChat(role, toolId, content) {
+  const container = document.getElementById('chat-messages');
+  const empty = container.querySelector('div[style*="text-align:center"]');
+  if (empty) empty.remove();
+  const div = document.createElement('div');
+  div.className = `chat-msg chat-msg-${role}`;
+  const label = role === 'user' ? `You → ${toolId}` : role === 'tool' ? toolId : 'system';
+  div.innerHTML = `<div class="chat-msg-label">${esc(label)}</div><div class="chat-msg-body">${esc(content)}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+function updateBudget() {
+  const remaining = SC.budget_tokens - STATE.tokensSpent;
+  const el = document.getElementById('budget-display');
+  el.textContent = `${remaining}/${SC.budget_tokens}`;
+  el.className = 'budget-tag ' + (remaining > 50 ? 'budget-ok' : remaining > 20 ? 'budget-low' : 'budget-critical');
+}
+
+// ── DRAFT TAB ──
+function renderDraft() {
+  const panel = document.getElementById('panel-draft');
+  panel.innerHTML = `
+    <div class="draft-header"><span class="draft-title">${esc(SC.deliverable.name)}</span><span class="word-count" id="wc-display">0 / ${SC.deliverable.max_words}</span></div>
+    <div class="draft-instructions">${esc(SC.deliverable.instructions)}</div>
+    <textarea class="draft-editor" id="draft-editor" placeholder="Draft your memo here..." oninput="onDraftInput()"></textarea>
+    <div class="submit-bar"><button class="submit-btn" id="submit-btn" onclick="submitDeliverable()" disabled>Submit Memo</button></div>`;
+}
+function onDraftInput() {
+  const editor = document.getElementById('draft-editor');
+  const wc = wordCount(editor.value);
+  const el = document.getElementById('wc-display');
+  el.textContent = `${wc} / ${SC.deliverable.max_words}`;
+  el.className = 'word-count' + (wc > SC.deliverable.max_words ? ' over' : wc >= SC.deliverable.min_words ? ' in-range' : '');
+  document.getElementById('submit-btn').disabled = wc < SC.deliverable.min_words;
+}
+
+// ── STATUS TAB ──
+function renderStatus() {
+  const emailsRead = new Set(STATE.evidence.filter(e => e.event === 'email_opened').map(e => e.email_id)).size;
+  const filesRead = new Set(STATE.evidence.filter(e => e.event === 'file_opened').map(e => e.file_id)).size;
+  const toolsUsed = STATE.toolCalls.length;
+  const draftWc = wordCount(document.getElementById('draft-editor')?.value || '');
+  const hasPlan = STATE.plan.length >= 1;
+
+  const checks = [
+    { done: emailsRead >= SC.inbox.length, label: `Read all emails (${emailsRead}/${SC.inbox.length})`, hint: 'Check the Brief tab' },
+    { done: filesRead >= SC.files.length, label: `Reviewed all files (${filesRead}/${SC.files.length})`, hint: 'Check the Brief tab' },
+    { done: hasPlan, label: `Created a plan (${STATE.plan.length} steps)`, hint: 'Use the planner below' },
+    { done: toolsUsed >= 1, label: `Used AI tools (${toolsUsed} calls)`, hint: 'Check the AI Chat tab' },
+    { done: draftWc >= SC.deliverable.min_words, label: `Draft memo (${draftWc} words)`, hint: `Need ${SC.deliverable.min_words}+ words in Draft tab` },
+  ];
+
+  const checksHtml = checks.map(c => `<div class="status-item">
+    <div class="status-check${c.done?' done':''}">${c.done?'✓':''}</div>
+    <div><div class="status-label">${esc(c.label)}</div><div class="status-hint">${c.done?'Complete':esc(c.hint)}</div></div>
+  </div>`).join('');
+
+  const planSteps = STATE.plan.map((s,i) => `<div class="plan-step"><span class="plan-step-num">${i+1}.</span>${esc(s.text)}<button class="plan-step-remove" onclick="removePlanStep(${s.id})">×</button></div>`).join('') || '<div style="font-size:12px;color:var(--text-tertiary);padding:8px;">No steps yet.</div>';
+
+  document.getElementById('panel-status').innerHTML = `
+    <div class="card"><h4>Progress Checklist</h4>${checksHtml}</div>
+    <div class="card"><h4>Budget</h4>
+      <div style="font-size:13px;">${SC.budget_tokens - STATE.tokensSpent} / ${SC.budget_tokens} tokens remaining</div>
+      <div style="height:6px;border-radius:3px;background:var(--bg);margin-top:6px;"><div style="height:100%;border-radius:3px;background:var(--emerald);width:${Math.max(2,((SC.budget_tokens-STATE.tokensSpent)/SC.budget_tokens)*100)}%;transition:width 0.3s;"></div></div>
+    </div>
+    <div class="planner-section">
+      <div class="card"><h4>Planner</h4>
+        <div style="font-size:11px;color:var(--text-tertiary);margin-bottom:8px;">Break the task into steps before diving in.</div>
+        <div class="plan-input-row"><input class="plan-input" id="plan-input" placeholder="Next step..." onkeydown="if(event.key==='Enter')addPlanStep()"><button class="plan-add" onclick="addPlanStep()">Add</button></div>
+        <div id="plan-list">${planSteps}</div>
+      </div>
+    </div>`;
+}
+function addPlanStep() {
+  const input = document.getElementById('plan-input');
+  const text = input.value.trim(); if (!text) return;
+  STATE.plan.push({ id: Date.now() + Math.random(), text });
+  logEvidence('plan_step_added', { step_text: text, total_steps: STATE.plan.length });
+  input.value = '';
+  renderStatus();
+}
+function removePlanStep(id) {
+  STATE.plan = STATE.plan.filter(s => s.id !== id);
+  logEvidence('plan_step_removed', { total_steps: STATE.plan.length });
+  renderStatus();
+}
+
+// ── SCORING ──
+function scoreRun() {
+  const memo = document.getElementById('draft-editor').value;
+  const memoLower = memo.toLowerCase();
+  const wc = wordCount(memo);
+  const feedback = [], rubricScores = {};
+
+  for (const dim of SC.rubric) {
+    let score = 0;
+    if (dim.trap_id) {
+      const mentions = /tariff|40\s?%/.test(memoLower);
+      const notesFalse = /(unverified|no new tariff|no tariff|debunked|not accurate|false|could not confirm|rumou?r|incorrect|disproven)/.test(memoLower);
+      let good = false;
+      if (!mentions) { score = 85; good = true; } else if (notesFalse) { score = 100; good = true; } else { score = 10; }
+      feedback.push({ dim: dim.name, good, note: good ? "Handled appropriately." : "Appears to accept an unverified claim." });
+    } else if (dim.id === 'structure_and_length') {
+      const inRange = wc >= SC.deliverable.min_words && wc <= SC.deliverable.max_words;
+      const hasStructure = /recommendation|reason|risk|assumption/i.test(memo);
+      score = (inRange && hasStructure) ? 100 : (inRange || hasStructure) ? 65 : 30;
+      feedback.push({ dim: dim.name, good: score >= 80, note: `${wc} words (target ${SC.deliverable.min_words}-${SC.deliverable.max_words}).` });
+    } else if (dim.keywords_positive) {
+      const hits = dim.keywords_positive.filter(k => memoLower.includes(k.toLowerCase())).length;
+      score = Math.min(100, 20 + hits * 16);
+      feedback.push({ dim: dim.name, good: hits >= 2, note: hits >= 2 ? `Referenced ${hits} relevant indicators.` : `Few indicators detected. ${dim.description}` });
+    } else {
+      score = 50;
+      feedback.push({ dim: dim.name, good: false, note: 'Could not auto-score.' });
+    }
+    rubricScores[dim.id] = { score, weight: dim.weight, name: dim.name };
+  }
+
+  const outputQuality = Math.round(Object.values(rubricScores).reduce((s,r) => s + r.score * r.weight, 0));
+  const usedVerification = STATE.toolCalls.some(c => (c.tool_id === 'web_search' || c.tool_id === 'expert') && /tariff|canada/i.test(c.prompt));
+  const usedCalculator = STATE.toolCalls.some(c => c.tool_id === 'calculator' && /margin|shipping|aov|38|14/i.test(c.prompt));
+  let processQuality = 0;
+  processQuality += STATE.plan.length >= 3 ? 35 : STATE.plan.length >= 1 ? 15 : 0;
+  processQuality += usedVerification ? 35 : 0;
+  processQuality += usedCalculator ? 15 : 0;
+  processQuality += STATE.toolCalls.length >= 3 ? 15 : STATE.toolCalls.length >= 1 ? 5 : 0;
+  processQuality = Math.min(100, processQuality);
+
+  const remaining = SC.budget_tokens - STATE.tokensSpent;
+  const efficiency = outputQuality >= 60 ? Math.round((remaining / SC.budget_tokens) * 100) : 0;
+
+  // Skill scores
+  const skillScores = {};
+  for (const skill of PACK.skills) {
+    let s = 50;
+    if (skill.id === 'prompt_engineering') {
+      if (STATE.toolCalls.length > 0) { const avg = STATE.toolCalls.reduce((a,c)=>a+c.prompt.length,0)/STATE.toolCalls.length; const spec = STATE.toolCalls.filter(c=>c.prompt.length>30).length; s = Math.min(100, Math.round(30+(avg/3)+spec*8)); } else s = 0;
+    } else if (skill.id === 'critical_evaluation') {
+      s = Math.round((rubricScores['catches_tariff_trap']?.score||0)*0.7 + (rubricScores['notes_caveats']?.score||0)*0.3);
+    } else if (skill.id === 'task_decomposition') {
+      const j = STATE.plan.map(p=>p.text.toLowerCase()).join(' '); s = 0;
+      s += STATE.plan.length >= 3 ? 40 : STATE.plan.length * 12;
+      if (/verify|check|confirm|research/.test(j)) s += 20; if (/draft|write|memo/.test(j)) s += 20; if (/recommend|decide|conclusion/.test(j)) s += 20;
+      s = Math.min(100, s);
+    } else if (skill.id === 'tool_selection') {
+      s = 50;
+      if (STATE.toolCalls.some(c=>c.tool_id==='web_search'&&/tariff|canada|coffee/i.test(c.prompt))) s += 20;
+      if (STATE.toolCalls.some(c=>c.tool_id==='calculator'&&/margin|shipping/i.test(c.prompt))) s += 15;
+      if (STATE.toolCalls.some(c=>c.tool_id==='expert')) s += 10;
+      if (STATE.toolCalls.some(c=>c.tool_id==='chat_llm'&&/\b\d+\s*[\+\-\*\/]\s*\d+/.test(c.prompt))) s -= 15;
+      s = Math.max(0, Math.min(100, s));
+    }
+    skillScores[skill.id] = s;
+  }
+
+  const composite = Math.round(outputQuality * 0.55 + processQuality * 0.30 + efficiency * 0.15);
+  const minSkill = Math.min(...Object.values(skillScores));
+  let tier = 'None';
+  if (composite >= 90 && minSkill >= 50) tier = 'Gold'; else if (composite >= 75 && minSkill >= 50) tier = 'Silver'; else if (composite >= 60 && minSkill >= 50) tier = 'Bronze';
+
+  return { rubricScores, outputQuality, processQuality, efficiency, skillScores, composite, tier, feedback };
+}
+
+// ── SUBMIT ──
+function submitDeliverable() {
+  logEvidence('deliverable_submitted', { word_count: wordCount(document.getElementById('draft-editor').value), tool_calls: STATE.toolCalls.length, plan_steps: STATE.plan.length, tokens_spent: STATE.tokensSpent });
+  const result = scoreRun();
+  renderResults(result);
+  document.getElementById('results-overlay').classList.remove('hidden');
+}
+
+function renderResults(r) {
+  const tierMap = { Gold: 'tier-gold', Silver: 'tier-silver', Bronze: 'tier-bronze', None: 'tier-none' };
+  const overallLabel = PACK.overall_labels.find(l => r.composite >= l.min && r.composite <= l.max) || PACK.overall_labels[0];
+
+  const skillBars = PACK.skills.map(s => {
+    const v = r.skillScores[s.id]||0; const cls = v>=75?'skill-high':v>=50?'skill-mid':'skill-low';
+    return `<div class="skill-bar-row"><div class="skill-bar-header"><span>${s.icon} ${esc(s.name)}</span><span>${v}</span></div><div class="skill-bar-track"><div class="skill-bar-fill ${cls}" style="width:${Math.max(2,v)}%"></div></div></div>`;
+  }).join('');
+
+  const feedbackHtml = r.feedback.map(f => `<div class="feedback-item"><span class="feedback-icon ${f.good?'feedback-good':'feedback-bad'}">${f.good?'✓':'✗'}</span><div><div class="feedback-dim">${esc(f.dim)}</div><div class="feedback-note">${esc(f.note)}</div></div></div>`).join('');
+  const tipsHtml = SC.coaching_tips.map(t => `<li>${esc(t)}</li>`).join('');
+
+  document.getElementById('results-overlay').innerHTML = `<div class="overlay-inner">
+    <div class="results-header"><h2>Scenario Report</h2><p>${esc(SC.title)}</p>
+      <div class="composite-circle"><span class="composite-num">${r.composite}</span><span class="composite-of">/ 100</span></div>
+      <div style="text-align:center"><span class="tier-badge ${tierMap[r.tier]}">${overallLabel.emoji} ${esc(overallLabel.label)}</span></div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-box-label">Output</div><div class="stat-box-value">${r.outputQuality}</div></div>
+      <div class="stat-box"><div class="stat-box-label">Process</div><div class="stat-box-value">${r.processQuality}</div></div>
+      <div class="stat-box"><div class="stat-box-label">Efficiency</div><div class="stat-box-value">${r.efficiency}</div></div>
+    </div>
+    <div class="results-card"><h4>Skill Breakdown</h4>${skillBars}</div>
+    <div class="results-card"><h4>Rubric Feedback</h4>${feedbackHtml}</div>
+    <div class="results-card"><h4>Process Evidence</h4>
+      <div class="process-stat"><span class="process-stat-label">Tool calls</span><span class="process-stat-value">${STATE.toolCalls.length}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Budget spent</span><span class="process-stat-value">${STATE.tokensSpent} / ${SC.budget_tokens}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Plan steps</span><span class="process-stat-value">${STATE.plan.length}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Files opened</span><span class="process-stat-value">${new Set(STATE.evidence.filter(e=>e.event==='file_opened').map(e=>e.file_id)).size}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Emails read</span><span class="process-stat-value">${new Set(STATE.evidence.filter(e=>e.event==='email_opened').map(e=>e.email_id)).size}</span></div>
+      <div class="process-stat"><span class="process-stat-label">Time</span><span class="process-stat-value">${Math.round((Date.now()-STATE.startTime)/60000)} min</span></div>
+      <div class="process-stat"><span class="process-stat-label">Words</span><span class="process-stat-value">${wordCount(document.getElementById('draft-editor')?.value||'')}</span></div>
+    </div>
+    <div class="results-card"><h4>Tips</h4><ul class="coaching-list">${tipsHtml}</ul></div>
+    <div class="results-actions"><a class="results-primary" href="index.html">Back to Hub</a><button class="results-secondary" onclick="document.getElementById('results-overlay').classList.add('hidden')">Review Work</button></div>
+  </div>`;
+}
+
+// ── WELCOME ──
+function renderWelcome() {
+  const skills = PACK.skills.map(s => `<div class="skill-row"><span class="skill-icon">${s.icon}</span><div><div class="skill-name">${esc(s.name)}</div><div class="skill-desc">${esc(s.description)}</div></div><span class="skill-weight">${Math.round(s.weight*100)}%</span></div>`).join('');
+  document.getElementById('welcome-overlay').innerHTML = `<div class="overlay-inner"><div class="welcome-card">
+    <div style="font-size:11px;color:var(--accent);margin-bottom:4px;">${esc(PACK.pba_category.name)}</div>
+    <h2>${esc(SC.title)}</h2>
+    <p>${esc(SC.briefing.split('\\n')[0])}</p>
+    <div class="card" style="margin:12px 0;"><h4>Skills Assessed</h4>${skills}</div>
+    <p style="font-size:12px;color:var(--text-tertiary);">Read the brief, use AI tools, and write a deliverable. Budget: ${SC.budget_tokens} tokens. ~${SC.estimated_minutes} min.</p>
+    <button class="welcome-start" onclick="beginTask()">Accept Assignment</button>
+  </div></div>`;
+}
+
+function beginTask() {
+  document.getElementById('welcome-overlay').classList.add('hidden');
+  startTimer();
+  logEvidence('task_started');
+}
+
+// ── INIT ──
+(async () => {
+  PACK = await loadPack();
+  SC = PACK.scenario;
+  document.getElementById('scenario-title').textContent = SC.title;
+  document.getElementById('budget-display').textContent = `${SC.budget_tokens}/${SC.budget_tokens}`;
+  renderBrief();
+  renderChat();
+  renderDraft();
+  renderStatus();
+  renderWelcome();
+
+  document.getElementById('chat-input')?.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) runTool(); });
+})();
+</script>
+</body>
+</html>

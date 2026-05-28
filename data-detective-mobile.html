@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Data Detective — Mobile</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a212b;
+  --surface: #242e3d;
+  --surface-alt: #2c3849;
+  --surface-hover: #344256;
+  --text: #f2e9d8;
+  --text-secondary: #b8b0a0;
+  --text-tertiary: #7e7a72;
+  --border: rgba(242,233,216,0.08);
+  --border-strong: rgba(242,233,216,0.15);
+  --accent: #4dd3fe;
+  --accent-light: rgba(77,211,254,0.12);
+  --amber: #f59e0b;
+  --amber-bg: rgba(245,158,11,0.12);
+  --emerald: #468254;
+  --emerald-bg: rgba(70,130,84,0.12);
+  --rose: #f43f5e;
+  --rose-bg: rgba(244,63,94,0.12);
+  --violet: #9e9eff;
+  --violet-bg: rgba(158,158,255,0.12);
+  --radius: 10px;
+  --radius-sm: 6px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100dvh;
+  overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input, select, textarea, button { font-family: inherit; }
+input, select, textarea { font-size: 16px; }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(242,233,216,0.15); border-radius: 2px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ── TOP BAR ───────────────────────────────── */
+.top-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; padding-top: calc(8px + var(--safe-top));
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  flex-shrink: 0; min-height: 44px;
+}
+.top-bar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.top-bar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.back-btn {
+  background: none; border: none; color: var(--text-tertiary);
+  cursor: pointer; font-size: 20px; padding: 6px;
+  border-radius: var(--radius-sm); min-width: 42px; min-height: 42px;
+  display: flex; align-items: center; justify-content: center;
+}
+.back-btn:active { background: var(--surface-alt); }
+.scenario-title {
+  font-size: 14px; font-weight: 600; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.timer {
+  font-size: 12px; font-weight: 600; padding: 4px 10px;
+  border-radius: 4px; background: var(--surface-alt);
+  color: var(--text-secondary); font-variant-numeric: tabular-nums;
+  min-width: 52px; text-align: center;
+}
+.progress-pill {
+  font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 600;
+  background: var(--accent-light); color: var(--accent);
+  border: 1px solid rgba(77,211,254,0.25); white-space: nowrap;
+}
+
+/* ── TAB SWITCHER ──────────────────────────── */
+.tab-bar {
+  display: flex; background: var(--surface);
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.tab-btn {
+  flex: 1; padding: 10px 4px; font-size: 13px; font-weight: 600;
+  border: none; background: transparent; color: var(--text-tertiary);
+  cursor: pointer; text-align: center; position: relative;
+  min-height: 44px; display: flex; align-items: center; justify-content: center;
+  gap: 4px; transition: color 0.15s;
+}
+.tab-btn.active { color: var(--accent); }
+.tab-btn.active::after {
+  content: ''; position: absolute; bottom: 0; left: 12px; right: 12px;
+  height: 2px; background: var(--accent); border-radius: 1px;
+}
+
+/* ── TAB PANELS ────────────────────────────── */
+.tab-panels { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+.tab-panel {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none; transition: opacity 0.15s;
+}
+.tab-panel.active { opacity: 1; pointer-events: auto; }
+
+/* ── DATA TAB ──────────────────────────────── */
+.filter-row {
+  display: flex; gap: 6px; padding: 8px 12px; background: var(--surface);
+  border-bottom: 1px solid var(--border); flex-shrink: 0; flex-wrap: wrap;
+}
+.filter-select {
+  flex: 1; min-width: 90px; font-size: 16px; padding: 8px 10px;
+  border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237e7a72'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 28px;
+}
+.filter-input {
+  flex: 2; min-width: 100px; font-size: 16px; padding: 8px 10px;
+  border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); outline: none;
+}
+.filter-input:focus, .filter-select:focus { border-color: var(--accent); }
+.filter-btn {
+  padding: 8px 14px; border-radius: var(--radius-sm); border: none;
+  background: var(--accent); color: var(--bg); font-weight: 600;
+  font-size: 14px; cursor: pointer; min-height: 42px; min-width: 60px;
+}
+.clear-btn {
+  padding: 8px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--surface-alt);
+  color: var(--text-secondary); font-size: 14px; cursor: pointer;
+  min-height: 42px;
+}
+.row-count-bar {
+  font-size: 11px; color: var(--text-tertiary); padding: 6px 12px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.data-table-wrap { flex: 1; overflow: auto; min-height: 0; -webkit-overflow-scrolling: touch; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 700px; }
+.data-table th {
+  position: sticky; top: 0; background: var(--surface); z-index: 2;
+  text-align: left; font-weight: 600; padding: 10px 10px;
+  border-bottom: 2px solid var(--border-strong); font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-secondary);
+  cursor: pointer; user-select: none; white-space: nowrap;
+}
+.data-table th:active { color: var(--accent); }
+.sort-arrow { margin-left: 4px; font-size: 10px; opacity: 0.5; }
+.data-table th.sorted .sort-arrow { opacity: 1; color: var(--accent); }
+.data-table td {
+  padding: 10px 10px; border-bottom: 1px solid var(--border);
+  color: var(--text-secondary); white-space: nowrap;
+}
+.data-table td.numeric { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ── CSS BAR CHART ─────────────────────────── */
+.chart-section {
+  flex-shrink: 0; border-top: 2px solid var(--border-strong);
+  padding: 12px; background: var(--surface);
+}
+.chart-controls {
+  display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;
+}
+.chart-controls label { font-size: 11px; color: var(--text-tertiary); font-weight: 600; }
+.chart-select {
+  font-size: 16px; padding: 6px 8px; border-radius: 4px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--text);
+  flex: 1; min-width: 80px; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237e7a72'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 8px center;
+  padding-right: 24px;
+}
+.chart-bars { display: flex; flex-direction: column; gap: 6px; }
+.bar-row { display: flex; align-items: center; gap: 8px; }
+.bar-label {
+  font-size: 11px; color: var(--text-secondary); width: 70px;
+  text-align: right; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bar-track {
+  flex: 1; height: 22px; background: var(--surface-alt); border-radius: 4px;
+  overflow: hidden; position: relative;
+}
+.bar-fill {
+  height: 100%; border-radius: 4px; transition: width 0.3s ease;
+  display: flex; align-items: center; justify-content: flex-end;
+  padding-right: 6px; font-size: 10px; font-weight: 600; color: var(--bg);
+  min-width: 0;
+}
+.bar-value-outside {
+  font-size: 10px; color: var(--text-tertiary); width: 48px; flex-shrink: 0;
+  text-align: left; font-variant-numeric: tabular-nums;
+}
+
+/* ── NOTES TAB ─────────────────────────────── */
+.notes-panel { padding: 12px; flex: 1; display: flex; flex-direction: column; }
+.notes-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--text-tertiary); margin-bottom: 8px;
+}
+.notepad-textarea {
+  flex: 1; width: 100%; background: var(--surface-alt); color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px; font-size: 16px; line-height: 1.7; resize: none;
+  outline: none;
+}
+.notepad-textarea::placeholder { color: var(--text-tertiary); }
+.notepad-textarea:focus { border-color: var(--accent); }
+
+/* ── FINDINGS TAB ──────────────────────────── */
+.findings-panel { padding: 12px; flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+
+.question-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; margin-bottom: 12px;
+}
+.question-num {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 6px;
+}
+.question-num.descriptive { color: var(--accent); }
+.question-num.diagnostic { color: var(--amber); }
+.question-num.prescriptive { color: var(--emerald); }
+.question-text { font-size: 14px; line-height: 1.6; margin-bottom: 6px; }
+.question-hint {
+  font-size: 12px; color: var(--text-tertiary); font-style: italic;
+  margin-bottom: 10px; line-height: 1.5;
+}
+.answer-textarea {
+  width: 100%; background: var(--surface-alt); color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 12px; font-size: 16px; line-height: 1.6; resize: none;
+  outline: none; min-height: 80px;
+}
+.answer-textarea:focus { border-color: var(--accent); }
+.answer-status {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 8px;
+}
+.submit-answer-btn {
+  font-size: 14px; padding: 10px 18px; border-radius: var(--radius-sm);
+  border: none; background: var(--accent); color: var(--bg);
+  cursor: pointer; font-weight: 600; min-height: 42px;
+}
+.submit-answer-btn:disabled { background: var(--surface-alt); color: var(--text-tertiary); }
+.answer-submitted { font-size: 12px; color: var(--emerald); font-weight: 600; }
+
+.submit-final-bar {
+  flex-shrink: 0; padding: 12px; padding-bottom: calc(12px + var(--safe-bottom));
+  background: var(--surface); border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.submit-final-info { font-size: 12px; color: var(--text-tertiary); text-align: center; }
+.submit-final-btn {
+  width: 100%; padding: 14px; border-radius: var(--radius);
+  border: none; background: var(--accent); color: var(--bg);
+  font-size: 15px; font-weight: 700; cursor: pointer; min-height: 48px;
+}
+.submit-final-btn:disabled { background: var(--surface-alt); color: var(--text-tertiary); }
+
+/* ── LANDING OVERLAY ───────────────────────── */
+.landing-overlay {
+  position: fixed; inset: 0; background: var(--bg); z-index: 300;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; padding-top: calc(24px + var(--safe-top));
+  padding-bottom: calc(24px + var(--safe-bottom));
+  overflow-y: auto;
+}
+.landing-overlay.hidden { display: none; }
+.landing-inner { max-width: 500px; width: 100%; }
+.landing-tag {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--amber); margin-bottom: 12px;
+}
+.landing-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 26px; font-weight: 400; margin-bottom: 14px; line-height: 1.3;
+}
+.landing-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px; }
+.landing-dims { font-size: 12px; color: var(--text-tertiary); margin-bottom: 24px; line-height: 1.8; }
+.landing-start-btn {
+  width: 100%; padding: 14px; background: var(--accent); color: var(--bg);
+  border: none; border-radius: var(--radius);
+  font-size: 16px; font-weight: 700; cursor: pointer; min-height: 48px;
+}
+.landing-start-btn:active { background: #3bbde5; }
+
+/* ── RESULTS OVERLAY ───────────────────────── */
+.results-overlay {
+  position: fixed; inset: 0; background: var(--bg); z-index: 300;
+  overflow-y: auto; display: none;
+  padding: 20px; padding-top: calc(20px + var(--safe-top));
+  padding-bottom: calc(20px + var(--safe-bottom));
+}
+.results-overlay.open { display: block; }
+.results-container { max-width: 500px; margin: 0 auto; }
+
+.results-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+.results-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); margin-bottom: 4px; }
+.results-scenario-title { font-family: Georgia, serif; font-size: 20px; font-weight: 400; }
+
+.composite-block { text-align: right; flex-shrink: 0; }
+.composite-label { font-size: 11px; color: var(--text-tertiary); }
+.composite-score { font-size: 36px; font-weight: 700; line-height: 1; }
+.tier-label { font-size: 12px; font-weight: 600; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; }
+.stat-box-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-tertiary); }
+.stat-box-value { font-size: 22px; font-weight: 600; margin-top: 2px; }
+
+.result-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+.result-card-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-tertiary); margin-bottom: 10px; }
+
+.skill-bar-row { margin-bottom: 8px; }
+.skill-bar-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+.skill-bar-track { height: 8px; background: var(--surface-alt); border-radius: 4px; overflow: hidden; }
+.skill-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+.bar-high { background: var(--emerald); }
+.bar-mid { background: var(--accent); }
+.bar-low { background: var(--rose); }
+
+.feedback-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; font-size: 13px; }
+.feedback-icon { flex-shrink: 0; margin-top: 2px; }
+.feedback-good { color: var(--emerald); }
+.feedback-bad { color: var(--rose); }
+.feedback-dim { font-weight: 600; color: var(--text); }
+.feedback-note { color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
+
+.si-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; }
+.si-table th, .si-table td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+.si-table th { color: var(--text-tertiary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; font-size: 10px; }
+.si-table td { color: var(--text-secondary); }
+
+.tip-list { list-style: disc; padding-left: 18px; color: var(--text-secondary); font-size: 12px; line-height: 1.8; }
+
+.results-actions { display: flex; gap: 10px; margin-top: 20px; }
+.results-actions button {
+  flex: 1; padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  font-size: 14px; font-weight: 600; cursor: pointer; min-height: 48px;
+}
+.r-btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.r-btn-ghost { background: var(--surface-alt); color: var(--text-secondary); }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  CONSTRUCT PACK                                -->
+<!-- ══════════════════════════════════════════════ -->
+<script>
+const DEFAULT_SCENARIO = 'scenarios/data-detective-data-reasoning.json';
+
+const CONSTRUCT_PACK_INLINE = {
+  construct_id: "data_reasoning",
+  construct_name: "Data Reasoning",
+  construct_description: "The ability to explore, interpret, and draw sound conclusions from data — including recognizing patterns, questioning anomalies, and translating analysis into actionable recommendations.",
+
+  pba_category: {
+    id: 3,
+    name: "Process/Demonstration Assessment",
+    description: "Tasks that assess the process of problem-solving, not just the final answer. The system observes and logs how you investigate."
+  },
+
+  secondary_dimensions: {
+    stakes: "Low (formative / demonstration)",
+    temporal: "Single-session, 12-15 min",
+    collaboration: "Individual",
+    problem_structure: "Ill-structured",
+    authenticity: "Proximal (simulated business data)",
+    scoring: "Hybrid (rule-based + process quality)"
+  },
+
+  dimensions: [
+    { id: "exploration", name: "Exploration", icon: "\u{1F50D}", description: "Do you examine the data broadly before jumping to conclusions?", color: "#4dd3fe", weight: 0.20 },
+    { id: "pattern_recognition", name: "Pattern Recognition", icon: "\u{1F4CA}", description: "Can you identify trends, outliers, and meaningful patterns?", color: "#f59e0b", weight: 0.25 },
+    { id: "hypothesis_testing", name: "Hypothesis Testing", icon: "\u{1F9EA}", description: "Do you test your ideas against the data rather than assuming?", color: "#9e9eff", weight: 0.25 },
+    { id: "interpretation", name: "Interpretation & Recommendation", icon: "\u{1F4A1}", description: "Can you translate findings into clear, evidence-backed recommendations?", color: "#468254", weight: 0.30 }
+  ],
+
+  dataset: {
+    name: "TechStart Inc. — Quarterly Sales Performance",
+    description: "Sales data for a mid-size B2B SaaS company across 4 regions and 4 quarters. Something happened in Q3 — your job is to figure out what and why.",
+    columns: [
+      { id: "region", label: "Region", type: "text" },
+      { id: "quarter", label: "Quarter", type: "text" },
+      { id: "revenue", label: "Revenue ($K)", type: "number" },
+      { id: "deals_closed", label: "Deals Closed", type: "number" },
+      { id: "avg_deal_size", label: "Avg Deal ($K)", type: "number" },
+      { id: "pipeline_value", label: "Pipeline ($K)", type: "number" },
+      { id: "win_rate", label: "Win Rate (%)", type: "number" },
+      { id: "sales_reps", label: "Sales Reps", type: "number" },
+      { id: "marketing_spend", label: "Mktg Spend ($K)", type: "number" },
+      { id: "churn_rate", label: "Churn (%)", type: "number" }
+    ],
+    rows: [
+      { region: "Northeast", quarter: "Q1", revenue: 820, deals_closed: 34, avg_deal_size: 24.1, pipeline_value: 1850, win_rate: 32, sales_reps: 8, marketing_spend: 120, churn_rate: 3.2 },
+      { region: "Northeast", quarter: "Q2", revenue: 910, deals_closed: 37, avg_deal_size: 24.6, pipeline_value: 2010, win_rate: 34, sales_reps: 8, marketing_spend: 135, churn_rate: 3.0 },
+      { region: "Northeast", quarter: "Q3", revenue: 670, deals_closed: 22, avg_deal_size: 30.5, pipeline_value: 1420, win_rate: 28, sales_reps: 6, marketing_spend: 90, churn_rate: 4.8 },
+      { region: "Northeast", quarter: "Q4", revenue: 880, deals_closed: 33, avg_deal_size: 26.7, pipeline_value: 1950, win_rate: 33, sales_reps: 8, marketing_spend: 140, churn_rate: 3.1 },
+      { region: "Southeast", quarter: "Q1", revenue: 540, deals_closed: 28, avg_deal_size: 19.3, pipeline_value: 1200, win_rate: 30, sales_reps: 6, marketing_spend: 85, churn_rate: 4.1 },
+      { region: "Southeast", quarter: "Q2", revenue: 580, deals_closed: 30, avg_deal_size: 19.3, pipeline_value: 1350, win_rate: 31, sales_reps: 6, marketing_spend: 90, churn_rate: 3.8 },
+      { region: "Southeast", quarter: "Q3", revenue: 490, deals_closed: 24, avg_deal_size: 20.4, pipeline_value: 1100, win_rate: 27, sales_reps: 5, marketing_spend: 60, churn_rate: 5.2 },
+      { region: "Southeast", quarter: "Q4", revenue: 610, deals_closed: 31, avg_deal_size: 19.7, pipeline_value: 1400, win_rate: 32, sales_reps: 6, marketing_spend: 95, churn_rate: 3.9 },
+      { region: "West", quarter: "Q1", revenue: 1100, deals_closed: 42, avg_deal_size: 26.2, pipeline_value: 2400, win_rate: 36, sales_reps: 10, marketing_spend: 160, churn_rate: 2.5 },
+      { region: "West", quarter: "Q2", revenue: 1250, deals_closed: 48, avg_deal_size: 26.0, pipeline_value: 2650, win_rate: 38, sales_reps: 10, marketing_spend: 175, churn_rate: 2.3 },
+      { region: "West", quarter: "Q3", revenue: 980, deals_closed: 35, avg_deal_size: 28.0, pipeline_value: 2100, win_rate: 30, sales_reps: 8, marketing_spend: 110, churn_rate: 4.0 },
+      { region: "West", quarter: "Q4", revenue: 1180, deals_closed: 45, avg_deal_size: 26.2, pipeline_value: 2500, win_rate: 37, sales_reps: 10, marketing_spend: 170, churn_rate: 2.4 },
+      { region: "Midwest", quarter: "Q1", revenue: 420, deals_closed: 22, avg_deal_size: 19.1, pipeline_value: 980, win_rate: 29, sales_reps: 5, marketing_spend: 70, churn_rate: 4.5 },
+      { region: "Midwest", quarter: "Q2", revenue: 460, deals_closed: 24, avg_deal_size: 19.2, pipeline_value: 1050, win_rate: 30, sales_reps: 5, marketing_spend: 75, churn_rate: 4.3 },
+      { region: "Midwest", quarter: "Q3", revenue: 450, deals_closed: 23, avg_deal_size: 19.6, pipeline_value: 1000, win_rate: 29, sales_reps: 5, marketing_spend: 65, churn_rate: 4.6 },
+      { region: "Midwest", quarter: "Q4", revenue: 480, deals_closed: 25, avg_deal_size: 19.2, pipeline_value: 1100, win_rate: 31, sales_reps: 5, marketing_spend: 80, churn_rate: 4.2 }
+    ]
+  },
+
+  questions: [
+    {
+      id: "q1",
+      type: "descriptive",
+      label: "Question 1 — Descriptive",
+      text: "Look at the overall revenue data. What’s the general trend across quarters, and which region is performing best? Are there any quarters that stand out?",
+      hint: "Try sorting by revenue or comparing quarters across regions.",
+      scorer: {
+        key_concepts: ["q3 drop", "q3 dip", "q3 decline", "q3 lower", "west", "west region", "highest", "best performing", "strongest", "trend"],
+        length_threshold: 40,
+        max_points: 30
+      }
+    },
+    {
+      id: "q2",
+      type: "diagnostic",
+      label: "Question 2 — Diagnostic",
+      text: "Revenue dropped across all regions in Q3. What do you think caused it? Look at the other columns for clues. Is there a single explanation, or multiple factors?",
+      hint: "Compare Q3 to other quarters on dimensions beyond revenue. Look at sales reps, marketing spend, win rate, and churn.",
+      scorer: {
+        key_concepts: ["sales reps", "fewer reps", "headcount", "reps dropped", "marketing spend", "marketing cut", "reduced marketing", "budget cut", "win rate", "churn", "churn increased", "pipeline", "multiple factors", "combination"],
+        length_threshold: 60,
+        max_points: 40
+      }
+    },
+    {
+      id: "q3",
+      type: "prescriptive",
+      label: "Question 3 — Prescriptive",
+      text: "You’re briefing the VP of Sales. Based on your analysis, what 2-3 actions would you recommend to prevent another Q3-style dip? Back up each recommendation with data from the table.",
+      hint: "Strong recommendations reference specific numbers and explain the mechanism (e.g., ‘restoring rep headcount because NE lost 2 reps and revenue fell 26%’).",
+      scorer: {
+        key_concepts: ["maintain headcount", "keep reps", "staffing", "restore reps", "marketing budget", "maintain marketing", "don't cut", "pipeline", "churn", "retention", "specific", "26%", "data", "evidence", "northeast", "west"],
+        length_threshold: 80,
+        max_points: 30
+      }
+    }
+  ],
+
+  anomalies: [
+    { id: "q3_rep_drop", description: "Sales reps decreased in Q3 across NE (8→6), SE (6→5), and West (10→8) — likely a hiring freeze or layoff.", severity: "primary" },
+    { id: "q3_marketing_cut", description: "Marketing spend was cut 25-35% in Q3 across all regions.", severity: "primary" },
+    { id: "q3_churn_spike", description: "Churn rate spiked in Q3 (up 40-60% across regions), possibly due to reduced support.", severity: "secondary" },
+    { id: "ne_avg_deal_q3", description: "NE avg deal size actually INCREASED in Q3 ($30.5K vs ~$24K) — fewer but larger deals. Not all metrics went down.", severity: "insight" },
+    { id: "midwest_resilience", description: "Midwest was barely affected by Q3 — revenue only dropped ~2%. They had no rep change. Staffing stability may have buffered them.", severity: "insight" }
+  ],
+
+  coaching_tips: [
+    "Always look at multiple columns before drawing conclusions. Revenue alone doesn’t tell you why something happened.",
+    "When you see a dip, ask ‘what else changed at the same time?’ — correlation across dimensions points to root causes.",
+    "The Midwest barely moved in Q3 while others crashed. Comparing the stable case to the unstable cases is a powerful diagnostic strategy.",
+    "Strong recommendations cite specific numbers. ‘Maintain headcount’ is good; ‘NE lost 2 reps and revenue dropped 26%’ is better.",
+    "Don’t assume the first pattern you see is the only one. Q3 had at least three concurrent factors: rep loss, marketing cuts, and churn spikes."
+  ],
+
+  overall_labels: [
+    { min: 0, max: 39, label: "Developing", emoji: "\u{1F331}" },
+    { min: 40, max: 59, label: "Emerging", emoji: "\u{1F4CA}" },
+    { min: 60, max: 79, label: "Proficient", emoji: "\u{1F4AA}" },
+    { min: 80, max: 100, label: "Expert Analyst", emoji: "\u{1F3C6}" }
+  ]
+};
+</script>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- LANDING SCREEN -->
+<div class="landing-overlay" id="screen-landing">
+  <div class="landing-inner">
+    <div class="landing-tag" id="landing-category"></div>
+    <h1 class="landing-title" id="landing-title"></h1>
+    <p class="landing-desc" id="landing-desc"></p>
+    <div class="landing-dims" id="landing-dims"></div>
+    <button class="landing-start-btn" onclick="startWorkspace()">Begin investigation &rarr;</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- WORKSPACE -->
+<div id="screen-workspace" class="hidden" style="height:100dvh;display:flex;flex-direction:column;">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <button class="back-btn" onclick="exitToHub()" aria-label="Back">&larr;</button>
+      <span class="scenario-title" id="ws-title">Data Detective</span>
+    </div>
+    <div class="top-bar-right">
+      <span class="progress-pill" id="ws-progress">0/3</span>
+      <span class="timer" id="ws-timer">0:00</span>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="data" onclick="switchTab('data')">&#x1F4CA; Data</button>
+    <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">&#x1F4DD; Notes</button>
+    <button class="tab-btn" data-tab="findings" onclick="switchTab('findings')">&#x1F4A1; Findings</button>
+  </div>
+
+  <!-- TAB PANELS -->
+  <div class="tab-panels">
+
+    <!-- DATA TAB -->
+    <div class="tab-panel active" id="panel-data">
+      <div class="filter-row">
+        <select class="filter-select" id="filter-col"></select>
+        <input class="filter-input" id="filter-value" placeholder="Filter value...">
+        <button class="filter-btn" onclick="applyFilter()">Filter</button>
+        <button class="clear-btn" onclick="clearFilter()">Clear</button>
+      </div>
+      <div class="row-count-bar" id="row-count-bar">16 rows</div>
+      <div class="data-table-wrap" id="data-table-wrap">
+        <table class="data-table" id="data-table">
+          <thead id="data-thead"></thead>
+          <tbody id="data-tbody"></tbody>
+        </table>
+      </div>
+      <!-- CSS BAR CHART -->
+      <div class="chart-section" id="chart-section">
+        <div class="chart-controls">
+          <label>X:</label>
+          <select class="chart-select" id="chart-x"></select>
+          <label>Y:</label>
+          <select class="chart-select" id="chart-y"></select>
+        </div>
+        <div class="chart-bars" id="chart-bars"></div>
+      </div>
+    </div>
+
+    <!-- NOTES TAB -->
+    <div class="tab-panel" id="panel-notes">
+      <div class="notes-panel">
+        <div class="notes-label">Investigation Notebook</div>
+        <textarea class="notepad-textarea" id="notepad" placeholder="Jot working notes here as you explore the data. What patterns do you notice? What questions come up?"></textarea>
+      </div>
+    </div>
+
+    <!-- FINDINGS TAB -->
+    <div class="tab-panel" id="panel-findings">
+      <div class="findings-panel" id="questions-container">
+        <!-- Filled by JS -->
+      </div>
+      <div class="submit-final-bar">
+        <div class="submit-final-info" id="submit-bar-info">Answer all 3 questions to submit</div>
+        <button class="submit-final-btn" id="submit-final-btn" onclick="submitAll()" disabled>Submit investigation</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- RESULTS OVERLAY -->
+<div class="results-overlay" id="results-overlay">
+  <div class="results-container" id="results-container"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  ENGINE                                        -->
+<!-- ══════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ── PACK LOADER ────────────────────────────────
+async function loadPack() {
+  const params = new URLSearchParams(window.location.search);
+  const url = params.get('scenario') || DEFAULT_SCENARIO;
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(resp.status);
+    return await resp.json();
+  } catch (e) {
+    console.warn('Could not fetch scenario JSON (' + url + '), using inline fallback:', e.message);
+    return CONSTRUCT_PACK_INLINE;
+  }
+}
+
+let PACK = null;
+let DS = null;
+
+const STATE = {
+  evidence: [],
+  startTime: null,
+  sortCol: null,
+  sortAsc: true,
+  filterCol: null,
+  filterVal: '',
+  filteredRows: [],
+  answers: {},
+  answersSubmitted: {},
+  chartX: null,
+  chartY: null,
+  noteSnapshots: 0,
+  timerInterval: null,
+  activeTab: 'data'
+};
+
+// ── EVIDENCE LOGGER ─────────────────────────
+function logEvidence(event, data = {}) {
+  STATE.evidence.push({
+    event, timestamp: new Date().toISOString(),
+    elapsed_ms: STATE.startTime ? Date.now() - STATE.startTime : 0,
+    ...data
+  });
+}
+
+// ── TAB SWITCHING ───────────────────────────
+function switchTab(tabId) {
+  STATE.activeTab = tabId;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tabId));
+  logEvidence('tab_switched', { tab: tabId });
+}
+
+// ── TIMER ───────────────────────────────────
+function startTimer() {
+  const el = document.getElementById('ws-timer');
+  STATE.timerInterval = setInterval(() => {
+    const sec = Math.floor((Date.now() - STATE.startTime) / 1000);
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    el.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  }, 1000);
+}
+
+// ── INIT FROM PACK ──────────────────────────
+function initFromPack() {
+  document.title = 'Data Detective — Mobile';
+  document.getElementById('landing-category').textContent = PACK.pba_category.name;
+  document.getElementById('landing-title').textContent = 'Data Detective';
+  document.getElementById('landing-desc').textContent = DS.description;
+  const dimsHtml = PACK.dimensions.map(d => d.icon + ' <strong>' + esc(d.name) + '</strong> (' + Math.round(d.weight*100) + '%)').join('<br>');
+  document.getElementById('landing-dims').innerHTML = 'Skills assessed:<br>' + dimsHtml;
+  document.getElementById('ws-title').textContent = 'Data Detective';
+
+  // Filter column dropdown
+  const filterCol = document.getElementById('filter-col');
+  DS.columns.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id; opt.textContent = c.label;
+    filterCol.appendChild(opt);
+  });
+
+  // Chart axis dropdowns
+  const chartX = document.getElementById('chart-x');
+  const chartY = document.getElementById('chart-y');
+  DS.columns.forEach(c => {
+    const optX = document.createElement('option'); optX.value = c.id; optX.textContent = c.label;
+    const optY = document.createElement('option'); optY.value = c.id; optY.textContent = c.label;
+    chartX.appendChild(optX);
+    chartY.appendChild(optY);
+  });
+  const textCol = DS.columns.find(c => c.type === 'text');
+  const numCol = DS.columns.find(c => c.type === 'number');
+  if (textCol) chartX.value = textCol.id;
+  if (numCol) chartY.value = numCol.id;
+  STATE.chartX = chartX.value;
+  STATE.chartY = chartY.value;
+
+  chartX.addEventListener('change', () => { STATE.chartX = chartX.value; drawChart(); logEvidence('chart_axis_changed', { axis: 'x', value: chartX.value }); });
+  chartY.addEventListener('change', () => { STATE.chartY = chartY.value; drawChart(); logEvidence('chart_axis_changed', { axis: 'y', value: chartY.value }); });
+
+  renderTable();
+  renderQuestions();
+  drawChart();
+}
+
+// ── DATA TABLE ──────────────────────────────
+function renderTable() {
+  const thead = document.getElementById('data-thead');
+  const tbody = document.getElementById('data-tbody');
+
+  thead.innerHTML = '<tr>' + DS.columns.map(c => {
+    const isSorted = STATE.sortCol === c.id;
+    const arrow = isSorted ? (STATE.sortAsc ? '▲' : '▼') : '⇅';
+    return '<th class="' + (isSorted ? 'sorted' : '') + '" onclick="sortBy(\'' + c.id + '\')">' + esc(c.label) + ' <span class="sort-arrow">' + arrow + '</span></th>';
+  }).join('') + '</tr>';
+
+  const rows = STATE.filteredRows;
+  tbody.innerHTML = rows.map(r => '<tr>' + DS.columns.map(c => {
+    const val = r[c.id];
+    return '<td class="' + (c.type === 'number' ? 'numeric' : '') + '">' + esc(String(val)) + '</td>';
+  }).join('') + '</tr>').join('');
+
+  document.getElementById('row-count-bar').textContent = 'Showing ' + rows.length + ' of ' + DS.rows.length + ' rows';
+}
+
+function sortBy(colId) {
+  if (STATE.sortCol === colId) {
+    STATE.sortAsc = !STATE.sortAsc;
+  } else {
+    STATE.sortCol = colId;
+    STATE.sortAsc = true;
+  }
+
+  const col = DS.columns.find(c => c.id === colId);
+  STATE.filteredRows.sort((a, b) => {
+    let va = a[colId], vb = b[colId];
+    if (col.type === 'number') { va = Number(va); vb = Number(vb); }
+    else { va = String(va).toLowerCase(); vb = String(vb).toLowerCase(); }
+    if (va < vb) return STATE.sortAsc ? -1 : 1;
+    if (va > vb) return STATE.sortAsc ? 1 : -1;
+    return 0;
+  });
+
+  logEvidence('table_sorted', { column: colId, direction: STATE.sortAsc ? 'asc' : 'desc' });
+  renderTable();
+}
+
+function applyFilter() {
+  const col = document.getElementById('filter-col').value;
+  const val = document.getElementById('filter-value').value.trim().toLowerCase();
+  if (!val) { clearFilter(); return; }
+
+  STATE.filterCol = col;
+  STATE.filterVal = val;
+
+  const colDef = DS.columns.find(c => c.id === col);
+  STATE.filteredRows = DS.rows.filter(r => {
+    const cell = String(r[col]).toLowerCase();
+    if (colDef.type === 'number') {
+      return cell.includes(val) || cell === val;
+    }
+    return cell.includes(val);
+  });
+
+  logEvidence('filter_applied', { column: col, value: val, rows_remaining: STATE.filteredRows.length });
+  renderTable();
+  drawChart();
+}
+
+function clearFilter() {
+  STATE.filterCol = null;
+  STATE.filterVal = '';
+  document.getElementById('filter-value').value = '';
+  STATE.filteredRows = [...DS.rows];
+  if (STATE.sortCol) { sortBy(STATE.sortCol); }
+  logEvidence('filter_cleared');
+  renderTable();
+  drawChart();
+}
+
+// ── CSS BAR CHART ───────────────────────────
+function drawChart() {
+  const container = document.getElementById('chart-bars');
+  const xCol = STATE.chartX;
+  const yCol = STATE.chartY;
+  const yColDef = DS.columns.find(c => c.id === yCol);
+
+  if (!yColDef || yColDef.type !== 'number') {
+    container.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);padding:12px;font-size:13px;">Select a numeric column for Y axis</div>';
+    return;
+  }
+
+  const rows = STATE.filteredRows;
+  const groups = {};
+  rows.forEach(r => {
+    const key = String(r[xCol]);
+    if (!groups[key]) groups[key] = { sum: 0, count: 0 };
+    groups[key].sum += Number(r[yCol]) || 0;
+    groups[key].count++;
+  });
+
+  const labels = Object.keys(groups);
+  const values = labels.map(k => groups[k].sum);
+  if (labels.length === 0) { container.innerHTML = ''; return; }
+
+  const maxVal = Math.max(...values) * 1.05 || 1;
+  const colors = ['#4dd3fe', '#9e9eff', '#f59e0b', '#468254', '#f43f5e', '#b8b0a0'];
+
+  container.innerHTML = labels.map((label, i) => {
+    const pct = Math.max(1, (values[i] / maxVal) * 100);
+    const color = colors[i % colors.length];
+    const displayVal = Number.isInteger(values[i]) ? values[i].toLocaleString() : values[i].toFixed(1);
+    return '<div class="bar-row">' +
+      '<span class="bar-label">' + esc(label) + '</span>' +
+      '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + color + ';">' +
+      (pct > 20 ? displayVal : '') +
+      '</div></div>' +
+      '<span class="bar-value-outside">' + (pct <= 20 ? displayVal : '') + '</span>' +
+      '</div>';
+  }).join('');
+
+  logEvidence('chart_drawn', { x_axis: xCol, y_axis: yCol, type: 'bar', data_points: labels.length });
+}
+
+// ── QUESTIONS ───────────────────────────────
+function renderQuestions() {
+  const container = document.getElementById('questions-container');
+  container.innerHTML = PACK.questions.map(q =>
+    '<div class="question-card" id="qcard-' + q.id + '">' +
+      '<div class="question-num ' + q.type + '">' + esc(q.label) + '</div>' +
+      '<div class="question-text">' + esc(q.text) + '</div>' +
+      '<div class="question-hint">' + esc(q.hint) + '</div>' +
+      '<div>' +
+        '<textarea class="answer-textarea" id="answer-' + q.id + '" placeholder="Type your answer..." oninput="onAnswerInput(\'' + q.id + '\')"></textarea>' +
+        '<div class="answer-status">' +
+          '<span id="status-' + q.id + '" class="answer-submitted hidden">✓ Submitted</span>' +
+          '<button class="submit-answer-btn" id="btn-' + q.id + '" onclick="submitAnswer(\'' + q.id + '\')" disabled>Submit answer</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function onAnswerInput(qId) {
+  const text = document.getElementById('answer-' + qId).value.trim();
+  document.getElementById('btn-' + qId).disabled = text.length < 10;
+  STATE.answers[qId] = text;
+}
+
+function submitAnswer(qId) {
+  const text = STATE.answers[qId] || '';
+  STATE.answersSubmitted[qId] = text;
+  document.getElementById('status-' + qId).classList.remove('hidden');
+  document.getElementById('btn-' + qId).disabled = true;
+  document.getElementById('btn-' + qId).textContent = 'Submitted';
+  document.getElementById('answer-' + qId).readOnly = true;
+  document.getElementById('answer-' + qId).style.opacity = '0.7';
+
+  logEvidence('answer_submitted', { question_id: qId, answer_length: text.length });
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = Object.keys(STATE.answersSubmitted).length;
+  const total = PACK.questions.length;
+  document.getElementById('ws-progress').textContent = answered + '/' + total;
+  document.getElementById('submit-final-btn').disabled = answered < total;
+  document.getElementById('submit-bar-info').textContent = answered < total
+    ? 'Answer all ' + total + ' questions to submit'
+    : 'All questions answered — ready to submit!';
+}
+
+// ── NOTEPAD LOGGING ─────────────────────────
+let lastNoteLog = 0;
+document.addEventListener('input', function(e) {
+  if (e.target.id !== 'notepad') return;
+  const now = Date.now();
+  if (now - lastNoteLog > 5000) {
+    lastNoteLog = now;
+    STATE.noteSnapshots++;
+    const notepad = document.getElementById('notepad');
+    logEvidence('note_snapshot', { length: notepad.value.length, word_count: notepad.value.trim().split(/\s+/).filter(Boolean).length });
+  }
+});
+
+// ── SCORING ENGINE ──────────────────────────
+function scoreRun() {
+  const notepad = document.getElementById('notepad');
+  const feedback = [];
+  let totalPoints = 0;
+  let maxPoints = 0;
+  const questionScores = {};
+
+  for (const q of PACK.questions) {
+    const answer = (STATE.answersSubmitted[q.id] || '').toLowerCase();
+    const hits = q.scorer.key_concepts.filter(k => answer.includes(k.toLowerCase())).length;
+    const lengthOk = answer.length >= q.scorer.length_threshold;
+    const conceptRatio = hits / q.scorer.key_concepts.length;
+
+    let score = 0;
+    score += Math.round(conceptRatio * q.scorer.max_points * 0.7);
+    if (lengthOk) score += Math.round(q.scorer.max_points * 0.3);
+    score = Math.min(q.scorer.max_points, score);
+
+    totalPoints += score;
+    maxPoints += q.scorer.max_points;
+    questionScores[q.id] = { score, max: q.scorer.max_points, hits, total_concepts: q.scorer.key_concepts.length };
+
+    const good = score >= q.scorer.max_points * 0.6;
+    feedback.push({
+      dim: q.label,
+      good,
+      note: good
+        ? 'Strong answer — referenced ' + hits + ' key concepts with sufficient detail.'
+        : 'Could be stronger — only ' + hits + ' of ' + q.scorer.key_concepts.length + ' key concepts mentioned. ' + (!lengthOk ? 'Answer could use more detail.' : '')
+    });
+  }
+
+  // Process quality from evidence
+  const sorts = STATE.evidence.filter(e => e.event === 'table_sorted').length;
+  const filters = STATE.evidence.filter(e => e.event === 'filter_applied').length;
+  const charts = STATE.evidence.filter(e => e.event === 'chart_drawn').length;
+  const noteWords = notepad.value.trim().split(/\s+/).filter(Boolean).length;
+
+  let processScore = 0;
+  processScore += Math.min(25, sorts * 5);
+  processScore += Math.min(25, filters * 8);
+  processScore += Math.min(25, charts * 4);
+  processScore += Math.min(25, noteWords >= 20 ? 25 : noteWords >= 5 ? 12 : 0);
+
+  // Dimension scores
+  const explorationScore = Math.min(100, sorts * 12 + filters * 15 + (STATE.filteredRows.length !== DS.rows.length ? 10 : 0));
+  const patternScore = questionScores['q1'] ? Math.round((questionScores['q1'].score / questionScores['q1'].max) * 100) : 0;
+  const hypothesisScore = questionScores['q2'] ? Math.round((questionScores['q2'].score / questionScores['q2'].max) * 100) : 0;
+  const interpScore = questionScores['q3'] ? Math.round((questionScores['q3'].score / questionScores['q3'].max) * 100) : 0;
+
+  const dimScores = {
+    exploration: Math.min(100, explorationScore),
+    pattern_recognition: patternScore,
+    hypothesis_testing: hypothesisScore,
+    interpretation: interpScore
+  };
+
+  const answerQuality = maxPoints > 0 ? Math.round((totalPoints / maxPoints) * 100) : 0;
+  const composite = Math.round(answerQuality * 0.6 + processScore * 0.4);
+
+  const overallLabel = PACK.overall_labels.find(l => composite >= l.min && composite <= l.max) || PACK.overall_labels[0];
+
+  return { questionScores, dimScores, answerQuality, processScore, composite, feedback, overallLabel, sorts, filters, charts, noteWords };
+}
+
+// ── SUBMIT ALL ──────────────────────────────
+function submitAll() {
+  const notepad = document.getElementById('notepad');
+  logEvidence('investigation_submitted', {
+    answers_count: Object.keys(STATE.answersSubmitted).length,
+    note_length: notepad.value.length,
+    elapsed_ms: Date.now() - STATE.startTime,
+    evidence_events: STATE.evidence.length
+  });
+
+  if (STATE.timerInterval) clearInterval(STATE.timerInterval);
+
+  const result = scoreRun();
+  renderResults(result);
+  document.getElementById('results-overlay').classList.add('open');
+}
+
+// ── RENDER RESULTS ──────────────────────────
+function renderResults(r) {
+  const dimBarsHtml = PACK.dimensions.map(d => {
+    const val = r.dimScores[d.id] || 0;
+    const barClass = val >= 70 ? 'bar-high' : val >= 40 ? 'bar-mid' : 'bar-low';
+    return '<div class="skill-bar-row">' +
+      '<div class="skill-bar-header"><span>' + d.icon + ' ' + esc(d.name) + '</span><span>' + val + '</span></div>' +
+      '<div class="skill-bar-track"><div class="skill-bar-fill ' + barClass + '" style="width:' + Math.max(2, val) + '%"></div></div>' +
+    '</div>';
+  }).join('');
+
+  const feedbackHtml = r.feedback.map(f =>
+    '<div class="feedback-item">' +
+      '<span class="feedback-icon ' + (f.good ? 'feedback-good' : 'feedback-bad') + '">' + (f.good ? '✓' : '✗') + '</span>' +
+      '<div><div class="feedback-dim">' + esc(f.dim) + '</div><div class="feedback-note">' + esc(f.note) + '</div></div>' +
+    '</div>'
+  ).join('');
+
+  const tipsHtml = PACK.coaching_tips.map(t => '<li>' + esc(t) + '</li>').join('');
+
+  document.getElementById('results-container').innerHTML =
+    '<div class="results-header">' +
+      '<div>' +
+        '<div class="results-label">Investigation report</div>' +
+        '<div class="results-scenario-title">Data Detective</div>' +
+      '</div>' +
+      '<div class="composite-block">' +
+        '<div class="composite-label">Composite</div>' +
+        '<div class="composite-score">' + r.composite + '</div>' +
+        '<div class="tier-label">' + r.overallLabel.emoji + ' ' + esc(r.overallLabel.label) + '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="stat-grid">' +
+      '<div class="stat-box"><div class="stat-box-label">Answers</div><div class="stat-box-value">' + r.answerQuality + '</div></div>' +
+      '<div class="stat-box"><div class="stat-box-label">Process</div><div class="stat-box-value">' + r.processScore + '</div></div>' +
+      '<div class="stat-box"><div class="stat-box-label">Composite</div><div class="stat-box-value">' + r.composite + '</div></div>' +
+    '</div>' +
+
+    '<div class="result-card">' +
+      '<div class="result-card-title">Dimension scores</div>' +
+      dimBarsHtml +
+    '</div>' +
+
+    '<div class="result-card">' +
+      '<div class="result-card-title">Question feedback</div>' +
+      feedbackHtml +
+    '</div>' +
+
+    '<div class="result-card">' +
+      '<div class="result-card-title">Investigation process</div>' +
+      '<table class="si-table">' +
+        '<tr><td>Columns sorted</td><td>' + r.sorts + '</td></tr>' +
+        '<tr><td>Filters applied</td><td>' + r.filters + '</td></tr>' +
+        '<tr><td>Charts created</td><td>' + r.charts + '</td></tr>' +
+        '<tr><td>Notes (words)</td><td>' + r.noteWords + '</td></tr>' +
+        '<tr><td>Total time</td><td>' + Math.round((Date.now() - STATE.startTime) / 1000 / 60) + ' min</td></tr>' +
+        '<tr><td>Evidence events</td><td>' + STATE.evidence.length + '</td></tr>' +
+      '</table>' +
+    '</div>' +
+
+    '<div class="result-card">' +
+      '<div class="result-card-title">Tips for next time</div>' +
+      '<ul class="tip-list">' + tipsHtml + '</ul>' +
+    '</div>' +
+
+    '<div class="results-actions">' +
+      '<button class="r-btn-primary" onclick="location.reload()">Try again</button>' +
+      '<button class="r-btn-ghost" onclick="location.href=\'index.html\'">Back to showcase</button>' +
+    '</div>';
+}
+
+// ── NAVIGATION ──────────────────────────────
+function startWorkspace() {
+  STATE.startTime = Date.now();
+  logEvidence('investigation_started');
+  document.getElementById('screen-landing').classList.add('hidden');
+  const ws = document.getElementById('screen-workspace');
+  ws.classList.remove('hidden');
+  ws.style.display = 'flex';
+  startTimer();
+  drawChart();
+}
+
+function exitToHub() { window.location.href = 'index.html'; }
+
+// ── UTILITIES ───────────────────────────────
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s || '';
+  return d.innerHTML;
+}
+
+// ── BOOT ────────────────────────────────────
+(async () => {
+  PACK = await loadPack();
+  DS = PACK.dataset;
+  STATE.filteredRows = [...DS.rows];
+  initFromPack();
+})();
+</script>
+
+</body>
+</html>
