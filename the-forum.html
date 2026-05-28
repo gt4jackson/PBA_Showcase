@@ -97,12 +97,12 @@ body {
 .cb-dim-collab { background: var(--emerald-bg); color: var(--emerald); border-color: rgba(70,130,84,0.2); }
 
 /* ── WORKSPACE ───────────────────────────── */
-.workspace { flex: 1; display: flex; overflow: hidden; border-radius: 0 0 10px 10px; max-width: 100vw; }
+.workspace { flex: 1; display: flex; gap: 8px; padding: 6px; overflow: hidden; border-radius: 0 0 10px 10px; max-width: 100vw; }
 
 /* LEFT: Thread */
 .thread-panel {
   flex: 1; min-width: 0; display: flex; flex-direction: column;
-  border-right: 1px solid var(--border);
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
 }
 .thread-header {
   padding: 10px 16px; background: var(--surface);
@@ -211,6 +211,7 @@ body {
 .context-panel {
   width: 300px; min-width: 0; flex-shrink: 0;
   display: flex; flex-direction: column; overflow: hidden;
+  border: 1px solid var(--border); border-radius: 8px;
 }
 .context-tabs {
   display: flex; background: var(--surface);
