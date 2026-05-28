@@ -108,6 +108,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Robo
 
 /* OVERLAYS */
 .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 100; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.splash-back {
+  position: absolute; top: 16px; left: 16px;
+  display: flex; align-items: center; gap: 5px;
+  color: var(--text-tertiary); text-decoration: none; font-size: 13px;
+  padding: 6px 10px; border-radius: 6px; transition: all 0.15s; z-index: 10;
+}
+.splash-back:hover { color: var(--text); background: rgba(255,255,255,0.08); }
 .overlay.hidden { display: none; }
 .overlay-inner { padding: 20px 16px; max-width: 440px; margin: 0 auto; }
 
@@ -608,7 +615,7 @@ function renderResults(r) {
 // ── WELCOME ──
 function renderWelcome() {
   const skills = PACK.skills.map(s => `<div class="skill-row"><span class="skill-icon">${s.icon}</span><div><div class="skill-name">${esc(s.name)}</div><div class="skill-desc">${esc(s.description)}</div></div><span class="skill-weight">${Math.round(s.weight*100)}%</span></div>`).join('');
-  document.getElementById('welcome-overlay').innerHTML = `<div class="overlay-inner"><div class="welcome-card">
+  document.getElementById('welcome-overlay').innerHTML = `<a href="index.html" class="splash-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back</a><div class="overlay-inner"><div class="welcome-card">
     <div style="font-size:11px;color:var(--accent);margin-bottom:4px;">${esc(PACK.pba_category.name)}</div>
     <h2>${esc(SC.title)}</h2>
     <p>${esc(SC.briefing.split('\\n')[0])}</p>

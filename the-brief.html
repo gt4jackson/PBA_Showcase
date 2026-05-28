@@ -933,6 +933,7 @@ body {
 /* ── LANDING SCREEN ──────────────────────────── */
 .landing-screen {
   flex: 1;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -973,6 +974,13 @@ body {
   line-height: 1.8;
 }
 
+.splash-back {
+  position: absolute; top: 16px; left: 16px;
+  display: flex; align-items: center; gap: 6px;
+  color: var(--text-tertiary); text-decoration: none; font-size: 13px;
+  padding: 6px 10px; border-radius: 6px; transition: all 0.15s;
+}
+.splash-back:hover { color: var(--text); background: rgba(255,255,255,0.08); }
 .landing-start-btn {
   padding: 10px 24px;
   background: var(--accent);
@@ -1183,6 +1191,10 @@ const CONSTRUCT_PACK_INLINE = {
 
 <!-- LANDING SCREEN -->
 <div id="screen-landing" class="landing-screen">
+  <a href="index.html" class="splash-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Back
+  </a>
   <div class="landing-inner">
     <div class="landing-tag" id="landing-category">AI-Augmented Task</div>
     <h1 class="landing-title" id="landing-title">The Market Entry Memo</h1>
