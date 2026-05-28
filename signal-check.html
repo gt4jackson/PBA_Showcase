@@ -393,6 +393,88 @@ body {
   .back-link { top: auto; bottom: 8px; left: 8px; background: rgba(0,0,0,0.5); padding: 6px 12px; border-radius: 8px; }
   .construct-banner { display: none; }
 }
+
+/* ── SC WELCOME OVERLAY ─────────────────────── */
+.sc-welcome {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.82);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; opacity: 1; transition: opacity 0.35s;
+}
+.sc-welcome.hidden { opacity: 0; pointer-events: none; }
+.sc-welcome-card {
+  background: var(--surface); border-radius: 20px;
+  padding: 40px 36px 32px; max-width: 420px; width: 90%;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  text-align: center; position: relative;
+}
+.sc-welcome-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #2aa3c8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; font-weight: 700; color: var(--ets-dark);
+  margin-bottom: 4px;
+}
+.sc-welcome-title {
+  font-size: 20px; font-weight: 700; color: var(--ets-cream); line-height: 1.3;
+}
+.sc-welcome-sub {
+  font-size: 14px; color: var(--text-secondary); line-height: 1.6; max-width: 320px;
+}
+.sc-welcome-construct {
+  background: rgba(77,211,254,0.1); border: 1px solid rgba(77,211,254,0.3);
+  border-radius: 8px; padding: 10px 16px; font-size: 13px;
+  color: var(--accent); width: 100%;
+}
+.sc-tut-toggle {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--text-secondary); cursor: pointer;
+  margin-top: 4px;
+}
+.sc-tut-toggle input[type="checkbox"] {
+  width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer;
+}
+.sc-welcome-start {
+  margin-top: 8px; padding: 13px 36px;
+  background: var(--accent); color: var(--ets-dark);
+  border: none; border-radius: 12px; font-size: 15px;
+  font-weight: 700; cursor: pointer; transition: opacity 0.2s;
+  width: 100%;
+}
+.sc-welcome-start:hover { opacity: 0.88; }
+
+/* ── TUTORIAL SYSTEM ────────────────────────── */
+.tut-dim {
+  position: fixed; background: rgba(0,0,0,0.72);
+  z-index: 300; pointer-events: auto; transition: all 0.3s ease;
+}
+.tut-ring {
+  position: fixed; border: 2.5px solid var(--accent);
+  border-radius: 12px; z-index: 301; pointer-events: none;
+  box-shadow: 0 0 0 4px rgba(77,211,254,0.18);
+  transition: all 0.3s ease;
+}
+.tut-card {
+  position: fixed; z-index: 302;
+  background: var(--surface); border: 1px solid rgba(77,211,254,0.35);
+  border-radius: 14px; padding: 16px 18px; max-width: 280px; min-width: 220px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.55);
+  transition: all 0.3s ease;
+}
+.tut-step-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  color: var(--accent); text-transform: uppercase; margin-bottom: 6px;
+}
+.tut-card-title { font-size: 14px; font-weight: 700; color: var(--ets-cream); margin-bottom: 6px; }
+.tut-card-body  { font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 14px; }
+.tut-card-footer { display: flex; align-items: center; justify-content: space-between; }
+.tut-skip { font-size: 11px; color: var(--text-tertiary); cursor: pointer; background: none; border: none; padding: 0; }
+.tut-skip:hover { color: var(--text-secondary); }
+.tut-next {
+  padding: 7px 18px; background: var(--accent); color: var(--ets-dark);
+  border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;
+}
+.tut-next:hover { opacity: 0.88; }
 </style>
 </head>
 <body>
@@ -401,6 +483,21 @@ body {
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
   Back to Showcase
 </a>
+
+<!-- SC WELCOME OVERLAY -->
+<div class="sc-welcome" id="scWelcome">
+  <div class="sc-welcome-card">
+    <div class="sc-welcome-avatar" id="welcomeAvatar">R</div>
+    <div class="sc-welcome-title" id="welcomeTitle">Signal Check</div>
+    <div class="sc-welcome-sub" id="welcomeSub">You'll have a short conversation with an AI persona who will ask you questions to assess your knowledge and reasoning.</div>
+    <div class="sc-welcome-construct" id="welcomeConstruct">Assessing: AI Literacy</div>
+    <label class="sc-tut-toggle">
+      <input type="checkbox" id="scTutEnabled" />
+      Show guided tour first
+    </label>
+    <button class="sc-welcome-start" onclick="startFromWelcome()">Start Chat →</button>
+  </div>
+</div>
 
 <button class="info-toggle" onclick="toggleSideInfo()">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
@@ -473,6 +570,22 @@ body {
   </div>
   <div class="side-info-body" id="sideInfoBody">
     <!-- Populated dynamically from construct pack -->
+  </div>
+</div>
+
+<!-- TUTORIAL OVERLAY -->
+<div class="tut-dim" id="tut-dim-top"    style="display:none"></div>
+<div class="tut-dim" id="tut-dim-bottom" style="display:none"></div>
+<div class="tut-dim" id="tut-dim-left"   style="display:none"></div>
+<div class="tut-dim" id="tut-dim-right"  style="display:none"></div>
+<div class="tut-ring" id="tut-ring"      style="display:none"></div>
+<div class="tut-card" id="tut-card"      style="display:none">
+  <div class="tut-step-label" id="tut-step-label">Step 1 of 4</div>
+  <div class="tut-card-title" id="tut-card-title"></div>
+  <div class="tut-card-body"  id="tut-card-body"></div>
+  <div class="tut-card-footer">
+    <button class="tut-skip" id="tut-skip">Skip tour</button>
+    <button class="tut-next" id="tut-next">Next →</button>
   </div>
 </div>
 
@@ -1046,6 +1159,13 @@ function initFromPack() {
   document.getElementById('bannerConstruct').textContent = PACK.construct_name;
   document.title = `Signal Check: ${PACK.construct_name} — PBA Showcase`;
   populateSideInfo();
+
+  // Populate welcome overlay
+  document.getElementById('welcomeAvatar').textContent = PACK.persona.avatar_letter;
+  document.getElementById('welcomeTitle').textContent = `Meet ${PACK.persona.name}`;
+  document.getElementById('welcomeSub').textContent =
+    `${PACK.persona.name} will ask you a series of questions to assess your ${PACK.construct_name}. Answer thoughtfully — your reasoning matters as much as your answers.`;
+  document.getElementById('welcomeConstruct').textContent = `Assessing: ${PACK.construct_name}`;
 }
 
 // ── SIDE INFO PANEL ──
@@ -1116,6 +1236,137 @@ function toggleSideInfo() {
   document.getElementById('sideOverlay').classList.toggle('open');
 }
 
+// ── TUTORIAL ──
+const TUTORIAL_STEPS = [
+  {
+    selector: '.chat-header',
+    title: 'Meet your assessor',
+    body: 'This is the persona who will guide the conversation. They\'ll introduce themselves and set the context before asking questions.'
+  },
+  {
+    selector: '.chat-body',
+    title: 'The conversation',
+    body: 'Messages appear here as you chat. Read each message carefully — the persona adapts follow-up questions based on your answers.'
+  },
+  {
+    selector: '.input-bar',
+    title: 'Your responses',
+    body: 'Type your reply here and press Enter or the send button. Take your time — thoughtful, complete answers are scored more favorably.'
+  },
+  {
+    selector: '.info-toggle',
+    title: 'Task info',
+    body: 'Tap here any time to see the construct being assessed, the scoring dimensions, and the PBA classification for this task.',
+    cardPosition: 'left'
+  }
+];
+
+let _tutSteps = [], _tutIndex = 0, _tutDone = null;
+
+function tutStart(steps, onDone) {
+  _tutSteps = steps;
+  _tutIndex = 0;
+  _tutDone  = onDone;
+  document.getElementById('tut-next').addEventListener('click', tutNext, { once: false });
+  document.getElementById('tut-skip').addEventListener('click', tutEnd,  { once: false });
+  // Replace listeners cleanly
+  const nextBtn = document.getElementById('tut-next');
+  const skipBtn = document.getElementById('tut-skip');
+  nextBtn.replaceWith(nextBtn.cloneNode(true));
+  skipBtn.replaceWith(skipBtn.cloneNode(true));
+  document.getElementById('tut-next').addEventListener('click', tutNext);
+  document.getElementById('tut-skip').addEventListener('click', tutEnd);
+  tutShow(_tutIndex);
+}
+
+function tutShow(i) {
+  const step   = _tutSteps[i];
+  const target = document.querySelector(step.selector);
+  if (!target) { tutNext(); return; }
+
+  const r    = target.getBoundingClientRect();
+  const PAD  = 8;
+  const top  = r.top  - PAD;
+  const left = r.left - PAD;
+  const w    = r.width  + PAD * 2;
+  const h    = r.height + PAD * 2;
+  const vw   = window.innerWidth;
+  const vh   = window.innerHeight;
+
+  // 4-panel cutout
+  const dims = {
+    'tut-dim-top':    { top: 0,       left: 0,       width: vw,           height: top },
+    'tut-dim-bottom': { top: top + h, left: 0,       width: vw,           height: vh - top - h },
+    'tut-dim-left':   { top: top,     left: 0,       width: left,         height: h },
+    'tut-dim-right':  { top: top,     left: left + w, width: vw - left - w, height: h }
+  };
+  Object.entries(dims).forEach(([id, s]) => {
+    const el = document.getElementById(id);
+    el.style.display = 'block';
+    Object.assign(el.style, { top: s.top + 'px', left: s.left + 'px', width: s.width + 'px', height: s.height + 'px' });
+  });
+
+  // Ring
+  const ring = document.getElementById('tut-ring');
+  ring.style.display = 'block';
+  Object.assign(ring.style, { top: top + 'px', left: left + 'px', width: w + 'px', height: h + 'px' });
+
+  // Card content
+  document.getElementById('tut-step-label').textContent = `Step ${i + 1} of ${_tutSteps.length}`;
+  document.getElementById('tut-card-title').textContent = step.title;
+  document.getElementById('tut-card-body').textContent  = step.body;
+  document.getElementById('tut-next').textContent = (i === _tutSteps.length - 1) ? 'Start Chat →' : 'Next →';
+
+  // Card position
+  const card   = document.getElementById('tut-card');
+  card.style.display = 'block';
+  const CPAD   = 16;
+  const cw     = 280;
+  let cx, cy;
+  const pos    = step.cardPosition || 'auto';
+
+  if (pos === 'left') {
+    cx = Math.max(CPAD, left - cw - 12);
+    cy = Math.min(top, vh - 180);
+  } else if (pos === 'right') {
+    cx = Math.min(left + w + 12, vw - cw - CPAD);
+    cy = Math.min(top, vh - 180);
+  } else {
+    // below if room, else above
+    cy = (top + h + 12 + 170 < vh) ? top + h + 12 : top - 170;
+    cx = Math.max(CPAD, Math.min(left, vw - cw - CPAD));
+  }
+  card.style.top  = cy + 'px';
+  card.style.left = cx + 'px';
+}
+
+function tutNext() {
+  _tutIndex++;
+  if (_tutIndex >= _tutSteps.length) { tutEnd(); return; }
+  tutShow(_tutIndex);
+}
+
+function tutEnd() {
+  ['tut-dim-top','tut-dim-bottom','tut-dim-left','tut-dim-right','tut-ring','tut-card'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  if (_tutDone) { const cb = _tutDone; _tutDone = null; cb(); }
+}
+
+// ── START FROM WELCOME ──
+function startFromWelcome() {
+  const tutEnabled = document.getElementById('scTutEnabled').checked;
+  const overlay    = document.getElementById('scWelcome');
+  overlay.classList.add('hidden');
+  setTimeout(() => { overlay.style.display = 'none'; }, 380);
+
+  if (tutEnabled) {
+    tutStart(TUTORIAL_STEPS, startConversation);
+  } else {
+    startConversation();
+  }
+}
+
 // ── PACK LOADER ──
 async function loadPack() {
   const params = new URLSearchParams(window.location.search);
@@ -1152,7 +1403,8 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.getElementById('sideInfo').classList.remove('open'); document.getElementById('sideOverlay').classList.remove('open'); } });
 
-  setTimeout(startConversation, 700);
+  // Show welcome overlay — user clicks "Start Chat" to begin
+  document.getElementById('scWelcome').style.display = 'flex';
 });
 </script>
 
