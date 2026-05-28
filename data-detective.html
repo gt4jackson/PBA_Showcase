@@ -153,12 +153,20 @@ body {
 
 .data-table td {
   padding: 7px 10px; border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
   color: var(--text-secondary); white-space: nowrap;
 }
+.data-table td:last-child { border-right: none; }
+
+.data-table th {
+  border-right: 1px solid var(--border);
+}
+.data-table th:last-child { border-right: none; }
 
 .data-table tr:hover td { background: var(--surface-alt); }
 
-.data-table td.numeric { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table td.numeric { text-align: center; font-variant-numeric: tabular-nums; }
+.data-table th.numeric { text-align: center; }
 
 .row-count {
   font-size: 11px; color: var(--text-tertiary); padding: 6px 14px;
@@ -819,7 +827,7 @@ function renderTable() {
   thead.innerHTML = '<tr>' + DS.columns.map(c => {
     const isSorted = STATE.sortCol === c.id;
     const arrow = isSorted ? (STATE.sortAsc ? '▲' : '▼') : '⇅';
-    return `<th class="${isSorted ? 'sorted' : ''}" onclick="sortBy('${c.id}')">${esc(c.label)} <span class="sort-arrow">${arrow}</span></th>`;
+    return `<th class="${isSorted ? 'sorted' : ''}${c.type === 'number' ? ' numeric' : ''}" onclick="sortBy('${c.id}')">${esc(c.label)} <span class="sort-arrow">${arrow}</span></th>`;
   }).join('') + '</tr>';
 
   const rows = STATE.filteredRows;

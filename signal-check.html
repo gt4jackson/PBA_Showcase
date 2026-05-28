@@ -847,6 +847,8 @@ const STATE = {
   msgCount: 0,
   queue: [],
   draining: false,
+  history: [],      // conversation history sent to LLM for context
+  inFollowUp: false, // true when LLM issued a follow-up for the current question
 };
 
 // Scores initialized from dimensions in async boot below
@@ -991,43 +993,106 @@ function processNext() {
 function lockInput() { inputField.disabled = true; sendBtn.disabled = true; sendBtn.classList.remove('active'); }
 function unlockInput() { inputField.disabled = false; sendBtn.disabled = false; inputField.focus(); STATE.phase = 'WAITING'; }
 
-function onUserSend() {
+async function onUserSend() {
   const text = inputField.value.trim();
   if (!text || STATE.phase !== 'WAITING') return;
   lockInput();
   renderBubble(text, 'user');
   inputField.value = '';
+  STATE.phase = 'THINKING';
 
   const q = PACK.questions[STATE.qIndex];
 
-  // Score
-  const score = scoreResponse(text, q.scorer);
-  if (q.dimension) {
-    STATE.scores[q.dimension] += score;
+  // Add user message to history before calling LLM
+  STATE.history.push({ role: 'user', content: text });
+
+  // Show typing indicator immediately while we wait for LLM
+  showTypingIndicator();
+  scrollToBottom();
+
+  // ── CALL LLM ──────────────────────────────────────────────────────
+  let llmResult = null;
+  try {
+    const resp = await fetch('/api/score', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        persona: PACK.persona,
+        construct: PACK.construct_name,
+        question: {
+          text: Array.isArray(q.messages) ? q.messages[0] : q.messages,
+          dimension: q.dimension,
+          scorer: q.scorer,
+        },
+        history: STATE.history.slice(-12), // last 12 msgs for context
+        followUpCount: STATE.inFollowUp ? 1 : 0,
+      }),
+    });
+    if (resp.ok) {
+      const data = await resp.json();
+      if (!data.error) llmResult = data;
+    }
+  } catch (e) {
+    console.warn('LLM scoring unavailable, using local fallback:', e.message);
+  }
+  // ──────────────────────────────────────────────────────────────────
+
+  hideTypingIndicator();
+
+  // Score: use LLM score if available, else local keyword scorer
+  const score = llmResult
+    ? Math.max(0, Math.min(2, parseInt(llmResult.score) || 0))
+    : scoreResponse(text, q.scorer);
+
+  // Only accumulate dimension score on the initial answer (not follow-up)
+  if (!STATE.inFollowUp && q.dimension) {
+    STATE.scores[q.dimension] = (STATE.scores[q.dimension] || 0) + score;
   }
 
-  // Log evidence
+  // Log rich evidence
   logEvidence('user_response', {
     question_id: q.id,
     dimension: q.dimension,
     response_text: text,
     response_length: text.length,
-    score: score,
-    response_time_ms: Date.now() - (STATE._lastQuestionTime || Date.now())
+    score,
+    llm_scored: !!llmResult,
+    in_follow_up: STATE.inFollowUp,
+    evidence: llmResult?.evidence ?? null,
+    response_time_ms: Date.now() - (STATE._lastQuestionTime || Date.now()),
   });
 
-  STATE.qIndex++;
-  STATE.phase = 'THINKING';
+  // Reply: use LLM-generated reply, else random acknowledgment
+  const replyText = llmResult?.reply || pick(q.acknowledgments);
+  STATE.history.push({ role: 'assistant', content: replyText });
 
-  enqueuePersonaMessage(pick(q.acknowledgments), 600);
+  // Decide: issue follow-up or advance to next question
+  const followUpText = !STATE.inFollowUp && llmResult?.followUp ? llmResult.followUp : null;
 
-  if (STATE.qIndex >= PACK.questions.length) {
-    enqueue({ type: 'show_results' });
-  } else {
-    STATE._lastQuestionTime = Date.now();
-    enqueuePersonaMessage(pick(PACK.questions[STATE.qIndex].messages), 400);
+  if (followUpText) {
+    // ── FOLLOW-UP PATH ──────────────────────────────────────────────
+    STATE.inFollowUp = true;
+    STATE.history.push({ role: 'assistant', content: followUpText });
+    enqueuePersonaMessage(replyText, 200);
+    enqueuePersonaMessage(followUpText, 350);
     enqueue({ type: 'unlock_input' });
+  } else {
+    // ── ADVANCE PATH ────────────────────────────────────────────────
+    STATE.inFollowUp = false;
+    STATE.qIndex++;
+    enqueuePersonaMessage(replyText, 200);
+
+    if (STATE.qIndex >= PACK.questions.length) {
+      enqueue({ type: 'show_results' });
+    } else {
+      STATE._lastQuestionTime = Date.now();
+      const nextMsg = pick(PACK.questions[STATE.qIndex].messages);
+      STATE.history.push({ role: 'assistant', content: nextMsg });
+      enqueuePersonaMessage(nextMsg, 400);
+      enqueue({ type: 'unlock_input' });
+    }
   }
+
   drainQueue();
 }
 
@@ -1143,11 +1208,20 @@ function showResults() {
 // ── START ──
 function startConversation() {
   STATE.taskStartTime = Date.now();
+  STATE.history = [];
+  STATE.inFollowUp = false;
   logEvidence('task_start', { construct: PACK.construct_id, persona: PACK.persona.name });
   addTimestamp();
-  enqueuePersonaMessage(pick(PACK.intro_messages), 800);
+
+  // Capture actual message text so we can include it in LLM history
+  const introMsg = pick(PACK.intro_messages);
+  const firstQMsg = pick(PACK.questions[0].messages);
+  STATE.history.push({ role: 'assistant', content: introMsg });
+  STATE.history.push({ role: 'assistant', content: firstQMsg });
+
+  enqueuePersonaMessage(introMsg, 800);
   STATE._lastQuestionTime = Date.now();
-  enqueuePersonaMessage(pick(PACK.questions[0].messages), 600);
+  enqueuePersonaMessage(firstQMsg, 600);
   enqueue({ type: 'unlock_input' });
   drainQueue();
 }
