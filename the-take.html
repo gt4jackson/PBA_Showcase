@@ -40,6 +40,7 @@ body {
   color: var(--text);
   height: 100vh;
   overflow: hidden;
+  padding: 8px;
   display: flex;
   flex-direction: column;
 }
@@ -52,7 +53,7 @@ body {
 .top-bar {
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 16px; background: var(--surface);
-  border-bottom: 1px solid var(--border); flex-shrink: 0;
+  border-bottom: 1px solid var(--border); border-radius: 10px 10px 0 0; flex-shrink: 0;
 }
 .top-bar-left { display: flex; align-items: center; gap: 12px; }
 .top-bar-right { display: flex; align-items: center; gap: 10px; }
@@ -108,7 +109,7 @@ body {
 
 /* ── MAIN LAYOUT: 2-PANEL ─────────────────── */
 .workspace {
-  flex: 1; display: flex; overflow: hidden;
+  flex: 1; display: flex; overflow: hidden; border-radius: 0 0 10px 10px;
 }
 
 /* LEFT: Sources panel */
