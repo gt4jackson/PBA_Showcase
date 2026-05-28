@@ -1,0 +1,733 @@
+{
+  "construct_id": "financial_literacy",
+  "construct_name": "Financial Literacy",
+  "construct_description": "The ability to understand, manage, and make informed decisions about personal finances — including budgeting, saving, investing, debt, credit, and financial risk.",
+  "pba_category": 4,
+  "pba_category_name": "Simulation-Based",
+  "pba_subtype": "Conversation-Based Assessment (CBA)",
+  "secondary_dimensions": {
+    "stakes": "Low",
+    "temporal": "On-Demand",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-Structured",
+    "authenticity": "Proximal",
+    "scoring": "Hybrid (rule-based + optional LLM)"
+  },
+  "dimensions": [
+    {
+      "id": "budgeting",
+      "name": "Budgeting",
+      "icon": "💰",
+      "description": "Understanding income, expenses, and spending plans",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#f093fb"
+    },
+    {
+      "id": "saving_investing",
+      "name": "Saving & Investing",
+      "icon": "📈",
+      "description": "Emergency funds, compound interest, diversification, and retirement planning",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#4facfe"
+    },
+    {
+      "id": "debt_credit",
+      "name": "Debt & Credit",
+      "icon": "💳",
+      "description": "Credit scores, interest rates, good vs. bad debt, and repayment strategies",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#43e97b"
+    },
+    {
+      "id": "risk_protection",
+      "name": "Risk & Protection",
+      "icon": "🛡️",
+      "description": "Insurance, financial emergencies, and identity theft awareness",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#fa709a"
+    }
+  ],
+  "persona": {
+    "name": "Jordan",
+    "avatar_letter": "J",
+    "role": "Your money-savvy friend",
+    "tone": "Practical, encouraging, no judgment — like texting a financially-aware friend"
+  },
+  "intro_messages": [
+    "hey okay so I've been on a whole personal finance kick lately and I have SO many questions 💸 just answer like you'd text me back, no quiz vibes fr",
+    "alright real talk — I want to chat about money stuff with you and see where you're at. no judgment, just honest convos about finances 💰",
+    "okay I'm doing this thing where I check in with people about money basics and you're next lol. just text back like normal, no pressure 🤙"
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "dimension": "budgeting",
+      "messages": [
+        "okay starting simple — do you actually have a budget? like do you know where your money goes every month or are we in 'vibes-based spending' territory 😅",
+        "real talk: are you tracking your spending at all? like do you know how much you spend on food/rent/fun each month?",
+        "honest question — do you have any kind of spending plan or budget going? even a rough one in your head counts lol"
+      ],
+      "acknowledgments": [
+        "okay okay, noted! budgeting is honestly one of those things people either swear by or completely avoid",
+        "got it! yeah the whole tracking thing is like... a lot until it's not, you know?",
+        "fair enough! it's wild how few people actually know where their money goes month to month"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "budget",
+          "track",
+          "spreadsheet",
+          "app",
+          "mint",
+          "ynab",
+          "every dollar",
+          "categories",
+          "fixed",
+          "variable",
+          "50/30/20",
+          "envelope",
+          "zero-based",
+          "income",
+          "expenses",
+          "plan",
+          "allocat",
+          "rent",
+          "utilities",
+          "groceries"
+        ],
+        "mid": [
+          "kind of",
+          "sort of",
+          "roughly",
+          "approximate",
+          "mental note",
+          "aware",
+          "monitor",
+          "check",
+          "aware of"
+        ],
+        "low": [
+          "no budget",
+          "don't budget",
+          "no idea",
+          "spend freely",
+          "just spend",
+          "nope",
+          "not really",
+          "vibes"
+        ],
+        "high_threshold": 1,
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 2,
+      "dimension": "budgeting",
+      "messages": [
+        "okay scenario: you get a $500 surprise expense — car repair, vet bill, whatever. how does that actually hit your finances? do you have a plan for that? 😬",
+        "have you ever had an unexpected expense blow up your whole month? like how do you handle financial surprises when they hit?",
+        "real talk: if something cost $500 out of nowhere tomorrow — how would you cover it? card, savings, panic? 💀"
+      ],
+      "acknowledgments": [
+        "honestly that scenario keeps so many people up at night, you're not alone",
+        "yeah unexpected expenses are the thing that stress tests every budget fr",
+        "ugh the $500 surprise expense is basically the personal finance pop quiz everyone dreads"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "emergency fund",
+          "savings",
+          "cushion",
+          "set aside",
+          "sinking fund",
+          "buffer",
+          "savings account",
+          "cash",
+          "saved",
+          "reserves",
+          "prepare",
+          "planned for",
+          "dedicated account",
+          "rainy day"
+        ],
+        "mid": [
+          "credit card",
+          "card",
+          "borrow",
+          "loan",
+          "parents",
+          "payment plan",
+          "figure it out",
+          "somehow manage"
+        ],
+        "low": [
+          "no savings",
+          "panic",
+          "stressed",
+          "can't cover",
+          "don't know",
+          "no idea",
+          "no plan",
+          "screwed"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 3,
+      "dimension": "budgeting",
+      "messages": [
+        "have you ever heard of the 50/30/20 rule? curious if you know what it is and whether you think it actually works in real life 🤔",
+        "so there's this budgeting rule — 50/30/20. have you come across it? what do you know about it?",
+        "okay money question: do you know about any budgeting frameworks or rules of thumb? like the 50/30/20 thing or anything similar?"
+      ],
+      "acknowledgments": [
+        "yeah it's one of those rules that sounds simple but honestly requires a bit of thought to apply",
+        "right, these rules of thumb are useful starting points even if real life gets messier",
+        "yeah the 50/30/20 is kind of the classic — works for some people, less so for others depending on cost of living"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "50/30/20",
+          "50 30 20",
+          "needs",
+          "wants",
+          "savings",
+          "fifty",
+          "thirty",
+          "twenty",
+          "percent",
+          "50%",
+          "30%",
+          "20%",
+          "necessities",
+          "discretionary",
+          "rule of thumb",
+          "framework",
+          "guideline"
+        ],
+        "mid": [
+          "heard of it",
+          "sort of",
+          "kind of know",
+          "budget rule",
+          "split",
+          "percentage",
+          "divide",
+          "categories",
+          "allocation"
+        ],
+        "low": [
+          "never heard",
+          "no idea",
+          "don't know",
+          "what is that",
+          "nope",
+          "not familiar"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 4,
+      "dimension": "saving_investing",
+      "messages": [
+        "okay investing talk — are you doing anything to grow your money long term? stocks, 401k, index funds, anything? or is that on the 'someday' list 😅",
+        "real question: have you started investing at all? even a little? like do you have a 401k or anything like that going?",
+        "where are you on the investing thing? total beginner, dabbling, or actually have something set up? no judgment either way 📈"
+      ],
+      "acknowledgments": [
+        "okay!! investing is genuinely one of those things where starting early matters SO much",
+        "got it — the investing world can feel intimidating but it's more accessible than people think",
+        "appreciate the honesty! a lot of people your age are in very different places with this"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "401k",
+          "401(k)",
+          "roth",
+          "ira",
+          "index fund",
+          "etf",
+          "stocks",
+          "bonds",
+          "brokerage",
+          "vanguard",
+          "fidelity",
+          "schwab",
+          "invest",
+          "portfolio",
+          "compound",
+          "market",
+          "s&p",
+          "diversif",
+          "mutual fund",
+          "retirement"
+        ],
+        "mid": [
+          "a little",
+          "some",
+          "thinking about",
+          "want to",
+          "plan to",
+          "employer match",
+          "work benefit",
+          "savings account"
+        ],
+        "low": [
+          "nothing",
+          "not yet",
+          "someday",
+          "no",
+          "don't invest",
+          "never",
+          "haven't started",
+          "too risky"
+        ],
+        "high_threshold": 1,
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 5,
+      "dimension": "saving_investing",
+      "messages": [
+        "okay do you know what compound interest actually is? like could you explain it to someone in plain english? because it's kind of the cheat code of personal finance 👀",
+        "question: compound interest — does that term mean anything to you? like do you get why it's such a big deal?",
+        "real talk: do you understand how compound interest works? like the actual math behind why starting early is such a huge deal? 🧮"
+      ],
+      "acknowledgments": [
+        "right?? it's honestly one of those concepts that hits different once you actually see the numbers",
+        "yeah compound interest is like the quiet superpower of personal finance that people sleep on",
+        "exactly — the 'time in market' vs 'timing the market' thing all starts with understanding compound interest"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "compound",
+          "interest on interest",
+          "snowball",
+          "grow over time",
+          "exponential",
+          "reinvest",
+          "earnings on earnings",
+          "time",
+          "early",
+          "years",
+          "principal",
+          "balance grows",
+          "percent per year",
+          "doubles",
+          "rule of 72",
+          "long term"
+        ],
+        "mid": [
+          "interest",
+          "grows",
+          "builds up",
+          "over time",
+          "more money",
+          "keeps adding",
+          "accumulate"
+        ],
+        "low": [
+          "no idea",
+          "not sure",
+          "don't know",
+          "kind of",
+          "vaguely"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 6,
+      "dimension": "saving_investing",
+      "messages": [
+        "okay scenario: your friend says 'just put everything in one stock, it's definitely going up' — what do you think about that strategy? 😅",
+        "someone tells you to put all your savings into a single hot stock. what's your gut reaction? good idea, bad idea, depends?",
+        "hot take check: is putting all your investment money into one thing a good idea? like what's the case for or against it? 🎯"
+      ],
+      "acknowledgments": [
+        "yeah the 'all eggs in one basket' thing is classic for a reason",
+        "right, it's the kind of advice that sometimes works and sometimes... does not lol",
+        "the diversification conversation is one every investor eventually has to have with themselves"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "diversif",
+          "don't put all",
+          "spread",
+          "risk",
+          "risky",
+          "all eggs",
+          "basket",
+          "volatile",
+          "could lose",
+          "not diversified",
+          "bad idea",
+          "dangerous",
+          "single stock risk",
+          "portfolio",
+          "balanced",
+          "hedge",
+          "index fund",
+          "concentration risk"
+        ],
+        "mid": [
+          "depends",
+          "risky",
+          "maybe not",
+          "not sure",
+          "could backfire",
+          "careful",
+          "think twice"
+        ],
+        "low": [
+          "great idea",
+          "do it",
+          "sure",
+          "sounds good",
+          "why not",
+          "go for it",
+          "good strategy"
+        ],
+        "low_max_length": 40
+      }
+    },
+    {
+      "id": 7,
+      "dimension": "debt_credit",
+      "messages": [
+        "okay credit score time — do you actually know what goes into your credit score? like what makes it go up or down? 💳",
+        "real talk: do you know what factors affect your credit score? like do you know how it's calculated roughly?",
+        "credit score check — do you know what a FICO score is and what moves the needle on it up or down? 📊"
+      ],
+      "acknowledgments": [
+        "yeah credit scores are one of those things that affect so much but barely anyone actually explains properly",
+        "right — it's kind of wild that this number has so much power but schools almost never teach it",
+        "exactly, knowing what actually moves your credit score is genuinely useful life knowledge"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "payment history",
+          "on time",
+          "utilization",
+          "credit utilization",
+          "length of credit",
+          "credit mix",
+          "new credit",
+          "hard inquiry",
+          "FICO",
+          "credit bureau",
+          "equifax",
+          "experian",
+          "transunion",
+          "300",
+          "850",
+          "missed payment",
+          "debt-to-credit",
+          "30%",
+          "account age"
+        ],
+        "mid": [
+          "pay on time",
+          "don't miss payments",
+          "don't max out",
+          "keep balances low",
+          "credit history",
+          "affects score",
+          "builds credit"
+        ],
+        "low": [
+          "no idea",
+          "don't know",
+          "not sure",
+          "never checked",
+          "no clue",
+          "don't have one"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 8,
+      "dimension": "debt_credit",
+      "messages": [
+        "okay so you get a credit card offer — 0% APR for 12 months, then 24.99% after. walk me through how you think about that deal 🤔",
+        "is all debt created equal in your mind? like is there a difference between a mortgage and carrying a credit card balance?",
+        "real talk: do you think there's such a thing as 'good debt' vs 'bad debt'? what's your read on that? 💭"
+      ],
+      "acknowledgments": [
+        "yeah the good debt / bad debt framing is actually pretty useful once you internalize it",
+        "right — APR and interest rates are honestly one of the most important things to understand about borrowing",
+        "the 'all debt is bad' vs 'debt is a tool' debate is a real one and your take on it matters"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "APR",
+          "interest rate",
+          "good debt",
+          "bad debt",
+          "mortgage",
+          "student loan",
+          "asset",
+          "appreciat",
+          "depreciat",
+          "pay off",
+          "balance",
+          "carry a balance",
+          "high interest",
+          "low interest",
+          "compounding interest",
+          "0%",
+          "promotional",
+          "teaser rate",
+          "transfer",
+          "minimum payment"
+        ],
+        "mid": [
+          "depends",
+          "not the same",
+          "different types",
+          "risky",
+          "watch out",
+          "be careful",
+          "read the fine print",
+          "after the promo"
+        ],
+        "low": [
+          "all debt is bad",
+          "never use credit",
+          "avoid all debt",
+          "just don't get debt",
+          "sounds great",
+          "free money"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 9,
+      "dimension": "debt_credit",
+      "messages": [
+        "okay debt payoff strategy — have you heard of avalanche vs snowball methods? what do you know about how to actually attack debt? 🏔️",
+        "hypothetical: you have 3 credit cards with different interest rates and balances. how do you decide which one to pay off first?",
+        "if someone had $10k in debt spread across a few different accounts, what's the smartest approach to paying it down? what would you tell them? 💸"
+      ],
+      "acknowledgments": [
+        "yeah having a strategy matters way more than just 'paying more' — the order really does affect outcomes",
+        "right, the avalanche vs snowball debate is actually a real thing and there are arguments for both",
+        "these debt payoff decisions can literally save thousands of dollars in interest so it's worth knowing"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "avalanche",
+          "snowball",
+          "highest interest",
+          "lowest balance",
+          "pay off highest rate",
+          "minimum payments",
+          "extra payment",
+          "interest first",
+          "psychological",
+          "momentum",
+          "highest APR",
+          "prioritize",
+          "debt free",
+          "payoff order",
+          "consolidat"
+        ],
+        "mid": [
+          "pay the most expensive first",
+          "highest interest",
+          "smallest first",
+          "focus on one",
+          "tackle one at a time",
+          "pay more than minimum",
+          "extra toward one"
+        ],
+        "low": [
+          "pay equally",
+          "split it",
+          "doesn't matter",
+          "minimum on all",
+          "no strategy",
+          "not sure"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 10,
+      "dimension": "risk_protection",
+      "messages": [
+        "okay insurance — do you actually know what coverage you have? like could you name your deductibles or what your health insurance covers? 🛡️",
+        "real talk: do you understand your insurance situation? health, renters, car — do you know what you're paying for and what it actually covers?",
+        "insurance check-in: do you feel like you understand the coverage you have? like what would actually happen if something went wrong tomorrow?"
+      ],
+      "acknowledgments": [
+        "yeah insurance is one of those things that seems boring until you actually need it and then it's everything",
+        "right — most people pay for insurance without really knowing what it covers, which is kind of wild",
+        "honestly understanding your own coverage is underrated as a life skill fr"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "deductible",
+          "premium",
+          "copay",
+          "coverage",
+          "health insurance",
+          "renters insurance",
+          "car insurance",
+          "liability",
+          "out-of-pocket",
+          "network",
+          "in-network",
+          "out-of-network",
+          "claims",
+          "policy",
+          "max out of pocket",
+          "term life",
+          "disability",
+          "HSA",
+          "FSA"
+        ],
+        "mid": [
+          "have insurance",
+          "pay monthly",
+          "covered",
+          "know roughly",
+          "pretty sure",
+          "I think it covers",
+          "basic idea"
+        ],
+        "low": [
+          "no idea",
+          "don't know",
+          "no insurance",
+          "haven't checked",
+          "never looked",
+          "too confusing"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 11,
+      "dimension": "risk_protection",
+      "messages": [
+        "okay identity theft — has it ever happened to you or someone you know? and do you do anything to protect yourself from it? 🔐",
+        "real talk: are you doing anything to protect your financial identity? like monitoring credit, freezing reports, anything like that?",
+        "scenario: you get an email from 'your bank' saying your account is suspended — click here to verify. what do you do? and do you have general identity protection habits? 👀"
+      ],
+      "acknowledgments": [
+        "yeah identity theft is genuinely one of the more underrated financial risks — it can mess up your credit for years",
+        "right — the proactive stuff like credit freezes is something so few people do but it's so effective",
+        "exactly, phishing and identity theft are basically the number one financial crime and awareness goes a long way"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "credit freeze",
+          "fraud alert",
+          "credit monitoring",
+          "don't click",
+          "phishing",
+          "verify",
+          "call the bank",
+          "two-factor",
+          "2fa",
+          "strong password",
+          "password manager",
+          "check statements",
+          "annual credit report",
+          "identity theft",
+          "suspicious",
+          "scam",
+          "report",
+          "Equifax",
+          "Experian",
+          "TransUnion"
+        ],
+        "mid": [
+          "be careful",
+          "don't share",
+          "watch out",
+          "check regularly",
+          "monitor",
+          "look suspicious",
+          "go to website directly"
+        ],
+        "low": [
+          "click the link",
+          "probably fine",
+          "nothing",
+          "don't worry about it",
+          "hasn't happened to me",
+          "not a concern"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 12,
+      "dimension": null,
+      "messages": [
+        "okay LAST ONE I promise 💸 — real talk, 1 to 10, how financially literate do you think you are? like genuinely, no inflating the grade",
+        "final question and be honest — where would you rate yourself on money knowledge? 1 (what's a budget) to 10 (I'm basically a CFP)",
+        "alright last one: if you had to give yourself a grade on financial literacy right now, what would it be and why? 🎓"
+      ],
+      "acknowledgments": [
+        "lol okay okay. give me a sec to crunch the numbers here...",
+        "noted!! alright let me tally up what we talked about...",
+        "interesting self-assessment 💰 okay let me see what the data says..."
+      ],
+      "scorer": null
+    }
+  ],
+  "overall_labels": [
+    {
+      "min": 90,
+      "text": "okay you're basically a personal finance advisor at this point 📊 seriously impressive"
+    },
+    {
+      "min": 75,
+      "text": "genuinely solid — you really understand your money 💪 above average for sure"
+    },
+    {
+      "min": 60,
+      "text": "good foundation! you've got the core concepts down, some areas to sharpen 📈"
+    },
+    {
+      "min": 45,
+      "text": "decent instincts, a few knowledge gaps — totally fixable with some targeted learning 💡"
+    },
+    {
+      "min": 30,
+      "text": "money-curious but still building the basics — you're not alone, and now's a great time to level up 😅"
+    },
+    {
+      "min": 0,
+      "text": "okay we've got some work to do 💸 but the fact you're here is literally step one, no judgment"
+    }
+  ],
+  "feedback_templates": {
+    "high": "Strong grasp here — you clearly understand the fundamentals and can apply them in real scenarios.",
+    "mid": "Good instincts! Filling in a few specific gaps here would really round out your financial knowledge.",
+    "low": "This is a growth area — totally normal, money stuff isn't taught well. Some targeted reading goes a long way."
+  }
+}

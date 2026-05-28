@@ -1,0 +1,192 @@
+{
+  "construct_id": "ai_tool_adoption",
+  "construct_name": "AI Tool Adoption Decision-Making",
+  "construct_description": "The ability to evaluate AI tool proposals critically, weigh implementation risks against benefits, and drive a team toward a sound adoption decision.",
+
+  "collaboration_construct": {
+    "id": "collaboration",
+    "name": "Collaboration Quality",
+    "description": "How effectively the participant engages with teammates — building on ideas, challenging constructively, and synthesizing toward consensus.",
+    "dimensions": [
+      { "id": "engagement", "name": "Engagement", "icon": "💬", "description": "Actively participates and responds to teammates", "max_score": 25 },
+      { "id": "building", "name": "Building", "icon": "🧱", "description": "References, quotes, and extends others' ideas", "max_score": 25 },
+      { "id": "challenging", "name": "Challenging", "icon": "⚡", "description": "Pushes back constructively with reasoning", "max_score": 25 },
+      { "id": "synthesizing", "name": "Synthesizing", "icon": "🔗", "description": "Combines viewpoints and moves toward a decision", "max_score": 25 }
+    ]
+  },
+
+  "domain_dimensions": [
+    { "id": "ai_evaluation", "name": "AI Evaluation", "icon": "⚖️", "description": "Critically assesses AI tool claims, limitations, and fit for organizational context", "max_score": 25 },
+    { "id": "risk_benefit", "name": "Risk-Benefit Analysis", "icon": "🛡️", "description": "Identifies and weighs security, privacy, and implementation risks against productivity gains", "max_score": 25 },
+    { "id": "evidence_use", "name": "Evidence Use", "icon": "📊", "description": "References data and constraints — cost figures, productivity studies, audit status — in arguments", "max_score": 25 },
+    { "id": "decision_quality", "name": "Decision Quality", "icon": "🎯", "description": "Final recommendation is well-justified, feasible, and addresses key stakeholder concerns", "max_score": 25 }
+  ],
+
+  "scenario": {
+    "title": "The AI Writing Assistant Decision",
+    "channel_name": "ai-tools-evaluation",
+    "prompt": "Your team must decide whether to adopt 'Compose AI Pro' as a company-wide writing assistant. The tool costs $85/user/year (team of 200). You need a recommendation for the CTO by end of day.",
+    "user_role": { "name": "You", "title": "AI Products Lead", "color": "#f59e0b" },
+
+    "teammates": [
+      { "id": "sam", "name": "Sam", "title": "IT Security Lead", "color": "#f43f5e", "avatar": "🔒", "trait": "Skeptical about data privacy — tends to overweight risk, but catches issues others miss" },
+      { "id": "anika", "name": "Anika", "title": "Marketing Director", "color": "#f59e0b", "avatar": "📣", "trait": "Enthusiastic early adopter — sometimes undersells risks, but knows the end-user experience firsthand" },
+      { "id": "dev", "name": "Dev", "title": "Finance Manager", "color": "#9e9eff", "avatar": "💼", "trait": "ROI-focused — needs hard numbers before committing, but good at finding pragmatic middle ground" }
+    ],
+
+    "decision_options": [
+      { "id": "adopt_full", "name": "Full Rollout — All 200 Users", "cost_k": 17, "desc": "$17K/year. Maximum productivity gain across the org. Maximum data exposure — all teams, all document types." },
+      { "id": "adopt_pilot", "name": "Pilot — 40 Users (Marketing + Product)", "cost_k": 3.4, "desc": "$3.4K/year. Lower risk, bounded exposure. Slower to scale. Generates real usage data before wider commitment." },
+      { "id": "adopt_restricted", "name": "Adopt with Data Restrictions (No Confidential Docs)", "cost_k": 17, "desc": "$17K/year. Full user access but enforced policy against inputting confidential documents. Reduces risk without reducing seat count — but policy compliance is hard to guarantee." },
+      { "id": "reject", "name": "Reject — Revisit in 12 Months", "cost_k": 0, "desc": "$0. Avoids all current risk. Allows security audit to complete and market to mature. Risk: competitors may gain productivity advantage during the gap." }
+    ],
+
+    "reference_data_html": "<h4>Compose AI Pro — Tool Overview</h4><table><tr><th>Feature</th><th>Compose AI Pro</th><th>Competitor A (WriteSmart)</th><th>Build In-House</th></tr><tr><td>Price/user/year</td><td>$85</td><td>$110</td><td>~$400 est.</td></tr><tr><td>Integration (Slack, Docs, Email)</td><td>Yes</td><td>Partial</td><td>Custom</td></tr><tr><td>Data privacy tier</td><td>Business Associate level</td><td>Business Associate level</td><td>Full control</td></tr><tr><td>Offline / on-prem option</td><td>No</td><td>No</td><td>Yes</td></tr><tr><td>Security audit status</td><td>Pending (not completed)</td><td>SOC 2 Type II certified</td><td>N/A</td></tr><tr><td>Vendor founded</td><td>2022</td><td>2019</td><td>N/A</td></tr></table><h4>Productivity Evidence</h4><p>An independent study (Forester Research, 2025) found that teams using AI writing assistants similar to Compose AI Pro reported a <strong>22% reduction in time spent on written deliverables</strong> — including emails, reports, and proposals. At an average fully-loaded cost of $95K/employee, 22% time savings on 15% of work hours = approximately <strong>$3,135 value/user/year</strong> if the time is reinvested productively.</p><h4>Key Risks</h4><ul><li>Security audit is <strong>pending and not yet completed</strong> — no independent verification of data handling practices</li><li>Compose AI Pro's data processing occurs on <strong>US-based servers only</strong> — potential GDPR/data residency issue for EU clients or employees</li><li>Informal marketing team trial: 8 users, ~6 weeks — no IT oversight, no data policy agreement signed</li><li>Vendor is 3 years old with no SOC 2 certification yet</li></ul><h4>Cost Summary (200 users)</h4><table><tr><th>Option</th><th>Year 1 Cost</th><th>Notes</th></tr><tr><td>Full rollout</td><td>$17,000</td><td>All 200 users</td></tr><tr><td>Pilot (40 users)</td><td>$3,400</td><td>Marketing + Product teams</td></tr><tr><td>Restricted adoption</td><td>$17,000</td><td>Full seats, usage policy required</td></tr><tr><td>Reject / defer</td><td>$0</td><td>Revisit after audit completes</td></tr></table>",
+
+    "agenda": [
+      { "id": "a1", "label": "Round 1", "title": "Share Perspectives", "desc": "Each teammate shares their initial read on the tool and the stakes." },
+      { "id": "a2", "label": "Round 2", "title": "Debate", "desc": "Surface the real tensions. Push back on weak arguments." },
+      { "id": "a3", "label": "Round 3", "title": "Converge", "desc": "Find the path forward. Someone has to write the recommendation." }
+    ],
+
+    "message_schedule": [
+      {
+        "id": "m1",
+        "from": "sam",
+        "round": 1,
+        "delay": 0,
+        "text": "I'll be direct: I'm not comfortable recommending this tool to the CTO right now. The security audit is incomplete — we have zero independent verification of how Compose AI Pro handles the data people type into it. And their infrastructure is US-only, which is a problem if any of our EU clients' data ends up in a prompt. My recommendation is reject or wait until the audit closes."
+      },
+      {
+        "id": "m2",
+        "from": "anika",
+        "round": 1,
+        "delay": 4000,
+        "text": "I hear Sam, but I want to share what I'm actually seeing on the ground. My team has been using this informally for six weeks — drafting briefs, client emails, proposals — and the productivity difference is real. The 22% time savings number from the Forester study tracks with what I'm observing. At $85/user we're looking at maybe $17K all-in. That's nothing if the ROI holds. I'd push for full rollout."
+      },
+      {
+        "id": "m3",
+        "from": "dev",
+        "round": 1,
+        "delay": 8000,
+        "text": "Anika, I want to believe the 22% number, but I need to see the methodology before I'd put it in a CTO deck. That said — $17K is genuinely small beer for a 200-person team if it holds up. The math works. What makes me pause is that the audit isn't done, and I'm the one who'd have to explain a data breach cost to the CFO. Can we find an option that moves forward without betting the whole house?"
+      },
+      {
+        "id": "m4",
+        "from": "sam",
+        "round": 2,
+        "delay": 3000,
+        "text": "Anika — I want to flag something your informal trial didn't test. If anyone on your team typed in a client name, a contract detail, or a pricing figure, that data went through Compose AI's servers under an agreement nobody signed. We don't know their retention policy. And if we have EU-based clients or employees, we may already have a GDPR exposure issue from that trial. This isn't theoretical."
+      },
+      {
+        "id": "m5",
+        "from": "anika",
+        "round": 2,
+        "delay": 7000,
+        "text": "I take that seriously, Sam — I genuinely didn't think through the EU angle. But I'd push back on one thing: six weeks, eight users, zero incidents. We didn't see anything alarming. I know that's not a security audit, but it does tell me the tool isn't egregiously leaky in normal use. I still think full rollout is right, but I'd accept a structured pilot if IT is in the loop from day one."
+      },
+      {
+        "id": "m6",
+        "from": "dev",
+        "round": 2,
+        "delay": 11000,
+        "text": "Here's what I keep coming back to: reject means zero productivity gain and we revisit in 12 months — by which point competitors may have lapped us. Full rollout means we're moving fast with an unaudited vendor. The pilot feels like the minimum viable decision. We get real data, we cap our exposure, and we're not standing still. $3.4K is basically a rounding error in the budget. Why isn't pilot the obvious answer here?"
+      },
+      {
+        "id": "m7",
+        "from": "sam",
+        "round": 3,
+        "delay": 3000,
+        "text": "I can live with a pilot — but only if IT is formally in the loop before a single additional user is added, we get a signed data processing agreement from Compose AI, and we define clear criteria for what 'passing' looks like before we expand. I don't want the pilot to be a fait accompli that gets rubber-stamped into full rollout because Anika's team loves it. The audit question still needs an answer."
+      },
+      {
+        "id": "m8",
+        "from": "anika",
+        "round": 3,
+        "delay": 6000,
+        "text": "Agreed on the conditions — those are reasonable. I'd add one ask: let's set a clear timeline. If the audit comes back clean and pilot data is positive, I want a Q2 target for full rollout. Otherwise this sits in committee forever. A pilot with no expansion path is just rejection in slow motion."
+      },
+      {
+        "id": "m9",
+        "from": "dev",
+        "round": 3,
+        "delay": 10000,
+        "text": "Okay — so we're converging on: structured pilot, 40 users, IT oversight, signed DPA, defined success criteria, Q2 review for expansion. Someone needs to write that up as a concrete proposal with numbers. What's the recommendation we're actually bringing to the CTO?"
+      }
+    ],
+
+    "trigger_messages": [
+      {
+        "trigger": "user_mentions_security",
+        "keywords": ["security", "privacy", "audit", "gdpr", "data", "breach", "servers", "residency"],
+        "from": "sam",
+        "text": "Exactly — and that's the piece I don't think we've fully priced in. A data breach or a GDPR violation doesn't just cost money. It costs client trust. I'd rather be slow here than explain to the CTO why we moved fast on an unaudited vendor.",
+        "once": true
+      },
+      {
+        "trigger": "user_mentions_productivity",
+        "keywords": ["productivity", "roi", "22%", "time savings", "efficiency", "value", "return"],
+        "from": "dev",
+        "text": "Before I'd put that number in a recommendation, I want to know: is the Forester study from companies in our industry? What was the sample size? '22% time savings' is doing a lot of work in this decision and I'd want to footnote its limitations in the CTO deck.",
+        "once": true
+      },
+      {
+        "trigger": "user_mentions_pilot",
+        "keywords": ["pilot", "40 users", "trial", "limited rollout", "test", "small group"],
+        "from": "dev",
+        "text": "That's the pragmatic middle ground. We get real internal data, we cap exposure, and we give IT time to evaluate the vendor properly. I can build a business case around $3.4K much more easily than I can defend $17K on an unaudited tool.",
+        "once": true
+      },
+      {
+        "trigger": "user_pushback",
+        "keywords": ["disagree", "but", "however", "not sure about", "problem with", "issue with", "concern", "push back", "wait"],
+        "from": "sam",
+        "text": "Fair — I may be overcalibrated toward risk on this one. I'd be more comfortable if you can show me what safeguards address the specific concerns I've raised. What's the actual mitigation for the audit gap and the EU data residency issue?",
+        "once": true
+      },
+      {
+        "trigger": "user_synthesizes",
+        "keywords": ["combine", "both", "compromise", "middle ground", "what if", "balance", "proposal", "recommend", "let's go with", "my recommendation"],
+        "from": "anika",
+        "text": "Okay, I think we're getting somewhere. If you can put that into a clear recommendation — option, rationale, conditions, timeline — I think we have something worth bringing to the CTO.",
+        "once": true
+      }
+    ]
+  },
+
+  "rubric": {
+    "domain": {
+      "ai_evaluation_keywords": ["audit", "unaudited", "soc 2", "vendor", "data processing", "model", "training data", "retention", "privacy tier", "business associate", "forester", "methodology", "22%", "claim", "evidence", "independent"],
+      "risk_benefit_keywords": ["risk", "breach", "gdpr", "eu", "residency", "exposure", "mitigation", "benefit", "productivity", "roi", "tradeoff", "balance", "weigh", "versus", "cost"],
+      "evidence_keywords": ["17k", "17,000", "3.4k", "3,400", "85", "22%", "forester", "audit", "pending", "soc 2", "200 users", "40 users", "q2", "timeline", "data", "numbers"],
+      "decision_valid_options": [
+        { "id": "adopt_pilot", "label": "Pilot — most defensible given audit gap and EU concerns" },
+        { "id": "adopt_restricted", "label": "Restricted adoption — viable if data policy is enforceable" },
+        { "id": "reject", "label": "Reject — defensible if security concerns are primary" },
+        { "id": "adopt_full", "label": "Full rollout — only defensible if audit concerns are fully addressed" }
+      ]
+    },
+    "collaboration": {
+      "min_replies": 4,
+      "build_keywords": ["agree", "good point", "building on", "adding to", "yes and", "exactly", "you're right", "like.*said", "as.*mentioned", "sam.*right", "anika.*right", "dev.*right"],
+      "challenge_keywords": ["disagree", "but", "however", "not sure", "concern", "risk", "what about", "overlooking", "missing", "problem", "issue", "counter", "push back"],
+      "synthesis_keywords": ["combine", "both", "compromise", "middle ground", "what if we", "proposal", "recommend", "suggest", "let's go with", "my recommendation", "converge", "pilot"]
+    }
+  },
+
+  "overall_labels": [
+    { "min": 90, "max": 100, "label": "Gold — Distinguished", "tier": "gold" },
+    { "min": 75, "max": 89, "label": "Silver — Proficient", "tier": "silver" },
+    { "min": 60, "max": 74, "label": "Bronze — Developing", "tier": "bronze" },
+    { "min": 0, "max": 59, "label": "Emerging", "tier": "developing" }
+  ],
+
+  "coaching_tips": [
+    "Strong AI evaluators don't just ask 'does it work?' — they ask 'under what conditions does the evidence hold, and does our context match?'",
+    "The security audit gap isn't a minor detail. An unaudited vendor handling confidential business documents is a real risk — acknowledge it even if you recommend moving forward.",
+    "The 22% productivity figure is from an independent study, not the vendor — that matters. But check: is it from comparable companies? Does the methodology match your use case?",
+    "Sam tends to overweight risk and Anika tends to underweight it — your job is to synthesize, not just agree with whoever sounds most persuasive.",
+    "The pilot option threads the needle between 'reject' (no progress) and 'full rollout' (maximum exposure). Strong decision-makers identify why that middle path is defensible.",
+    "A recommendation without conditions is a weak recommendation. If you suggest the pilot, specify: who's in it, what IT oversight looks like, what 'success' means, and what the timeline to full rollout is."
+  ]
+}

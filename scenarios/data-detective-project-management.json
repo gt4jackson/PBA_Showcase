@@ -1,0 +1,412 @@
+{
+  "construct_id": "project_metrics_analysis",
+  "construct_name": "Project Metrics Analysis",
+  "construct_description": "The ability to explore, interpret, and draw sound conclusions from project delivery data — including identifying performance degradation, diagnosing root causes across metrics, and translating findings into operational recommendations.",
+  "pba_category": {
+    "id": 3,
+    "name": "Process/Demonstration Assessment",
+    "description": "Tasks that assess the process of problem-solving, not just the final answer. The system observes and logs how you investigate."
+  },
+  "secondary_dimensions": {
+    "stakes": "Low (formative / demonstration)",
+    "temporal": "Single-session, 12-15 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated consulting firm data)",
+    "scoring": "Hybrid (rule-based + process quality)"
+  },
+  "dimensions": [
+    {
+      "id": "exploration",
+      "name": "Exploration",
+      "icon": "🔍",
+      "description": "Do you examine the data broadly before jumping to conclusions?",
+      "color": "#4dd3fe",
+      "weight": 0.2
+    },
+    {
+      "id": "pattern_recognition",
+      "name": "Pattern Recognition",
+      "icon": "📊",
+      "description": "Can you identify trends, outliers, and meaningful patterns?",
+      "color": "#f59e0b",
+      "weight": 0.25
+    },
+    {
+      "id": "hypothesis_testing",
+      "name": "Hypothesis Testing",
+      "icon": "🧪",
+      "description": "Do you test your ideas against the data rather than assuming?",
+      "color": "#9e9eff",
+      "weight": 0.25
+    },
+    {
+      "id": "interpretation",
+      "name": "Interpretation & Recommendation",
+      "icon": "💡",
+      "description": "Can you translate findings into clear, evidence-backed recommendations?",
+      "color": "#468254",
+      "weight": 0.3
+    }
+  ],
+  "dataset": {
+    "name": "Apex Consulting — Q1–Q4 Project Delivery Performance",
+    "description": "Project delivery data across 4 practice areas. Something went wrong in Q3 with on-time delivery — your job is to find it.",
+    "columns": [
+      {
+        "id": "practice_area",
+        "label": "Practice Area",
+        "type": "text"
+      },
+      {
+        "id": "quarter",
+        "label": "Quarter",
+        "type": "text"
+      },
+      {
+        "id": "projects_completed",
+        "label": "Projects Completed",
+        "type": "number"
+      },
+      {
+        "id": "on_time_pct",
+        "label": "On-Time Delivery (%)",
+        "type": "number"
+      },
+      {
+        "id": "budget_variance_pct",
+        "label": "Budget Variance (%)",
+        "type": "number"
+      },
+      {
+        "id": "client_satisfaction",
+        "label": "Client Satisfaction (1–10)",
+        "type": "number"
+      },
+      {
+        "id": "utilization_pct",
+        "label": "Utilization (%)",
+        "type": "number"
+      }
+    ],
+    "rows": [
+      {
+        "practice_area": "Digital Transformation",
+        "quarter": "Q1",
+        "projects_completed": 18,
+        "on_time_pct": 84,
+        "budget_variance_pct": 7,
+        "client_satisfaction": 7.8,
+        "utilization_pct": 82
+      },
+      {
+        "practice_area": "Digital Transformation",
+        "quarter": "Q2",
+        "projects_completed": 21,
+        "on_time_pct": 86,
+        "budget_variance_pct": 8,
+        "client_satisfaction": 8.0,
+        "utilization_pct": 85
+      },
+      {
+        "practice_area": "Digital Transformation",
+        "quarter": "Q3",
+        "projects_completed": 26,
+        "on_time_pct": 52,
+        "budget_variance_pct": 34,
+        "client_satisfaction": 5.9,
+        "utilization_pct": 97
+      },
+      {
+        "practice_area": "Digital Transformation",
+        "quarter": "Q4",
+        "projects_completed": 22,
+        "on_time_pct": 76,
+        "budget_variance_pct": 14,
+        "client_satisfaction": 7.1,
+        "utilization_pct": 88
+      },
+      {
+        "practice_area": "Strategy & Operations",
+        "quarter": "Q1",
+        "projects_completed": 14,
+        "on_time_pct": 88,
+        "budget_variance_pct": 4,
+        "client_satisfaction": 8.3,
+        "utilization_pct": 79
+      },
+      {
+        "practice_area": "Strategy & Operations",
+        "quarter": "Q2",
+        "projects_completed": 15,
+        "on_time_pct": 87,
+        "budget_variance_pct": 5,
+        "client_satisfaction": 8.4,
+        "utilization_pct": 81
+      },
+      {
+        "practice_area": "Strategy & Operations",
+        "quarter": "Q3",
+        "projects_completed": 13,
+        "on_time_pct": 85,
+        "budget_variance_pct": 6,
+        "client_satisfaction": 8.2,
+        "utilization_pct": 80
+      },
+      {
+        "practice_area": "Strategy & Operations",
+        "quarter": "Q4",
+        "projects_completed": 16,
+        "on_time_pct": 90,
+        "budget_variance_pct": 4,
+        "client_satisfaction": 8.6,
+        "utilization_pct": 82
+      },
+      {
+        "practice_area": "Financial Advisory",
+        "quarter": "Q1",
+        "projects_completed": 11,
+        "on_time_pct": 91,
+        "budget_variance_pct": 3,
+        "client_satisfaction": 8.7,
+        "utilization_pct": 76
+      },
+      {
+        "practice_area": "Financial Advisory",
+        "quarter": "Q2",
+        "projects_completed": 12,
+        "on_time_pct": 89,
+        "budget_variance_pct": 4,
+        "client_satisfaction": 8.5,
+        "utilization_pct": 78
+      },
+      {
+        "practice_area": "Financial Advisory",
+        "quarter": "Q3",
+        "projects_completed": 10,
+        "on_time_pct": 88,
+        "budget_variance_pct": 5,
+        "client_satisfaction": 8.4,
+        "utilization_pct": 77
+      },
+      {
+        "practice_area": "Financial Advisory",
+        "quarter": "Q4",
+        "projects_completed": 13,
+        "on_time_pct": 92,
+        "budget_variance_pct": 3,
+        "client_satisfaction": 8.8,
+        "utilization_pct": 75
+      },
+      {
+        "practice_area": "Technology Infrastructure",
+        "quarter": "Q1",
+        "projects_completed": 9,
+        "on_time_pct": 80,
+        "budget_variance_pct": 10,
+        "client_satisfaction": 7.5,
+        "utilization_pct": 84
+      },
+      {
+        "practice_area": "Technology Infrastructure",
+        "quarter": "Q2",
+        "projects_completed": 10,
+        "on_time_pct": 82,
+        "budget_variance_pct": 9,
+        "client_satisfaction": 7.6,
+        "utilization_pct": 86
+      },
+      {
+        "practice_area": "Technology Infrastructure",
+        "quarter": "Q3",
+        "projects_completed": 11,
+        "on_time_pct": 79,
+        "budget_variance_pct": 12,
+        "client_satisfaction": 7.3,
+        "utilization_pct": 89
+      },
+      {
+        "practice_area": "Technology Infrastructure",
+        "quarter": "Q4",
+        "projects_completed": 10,
+        "on_time_pct": 83,
+        "budget_variance_pct": 9,
+        "client_satisfaction": 7.7,
+        "utilization_pct": 85
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "descriptive",
+      "label": "Question 1 — Exploration",
+      "text": "What do you notice when you look across all four practice areas and quarters? Which practice area generally performs best on on-time delivery and client satisfaction? Are there any quarters that look different from the others?",
+      "hint": "Try comparing on_time_pct and client_satisfaction across all rows. Look for any practice area or quarter that breaks the general pattern.",
+      "scorer": {
+        "key_concepts": [
+          "financial advisory",
+          "on-time",
+          "best",
+          "client satisfaction",
+          "q3",
+          "digital transformation",
+          "pattern",
+          "compare",
+          "stands out",
+          "different"
+        ],
+        "length_threshold": 40,
+        "max_points": 30
+      }
+    },
+    {
+      "id": "q2",
+      "type": "diagnostic",
+      "label": "Question 2 — Pattern Recognition",
+      "text": "Where is the performance problem, and how big is it? Identify the specific practice area and quarter, describe what changed, and check whether other columns moved at the same time.",
+      "hint": "Look at Q3 across all practice areas. When you find the anomaly, check all columns for that row: on_time_pct, budget_variance_pct, client_satisfaction, and utilization_pct.",
+      "scorer": {
+        "key_concepts": [
+          "digital transformation",
+          "q3",
+          "52",
+          "on-time",
+          "34",
+          "budget variance",
+          "5.9",
+          "satisfaction",
+          "97",
+          "utilization",
+          "multiple",
+          "all metrics",
+          "concurrent",
+          "same time"
+        ],
+        "length_threshold": 60,
+        "max_points": 40
+      }
+    },
+    {
+      "id": "q3",
+      "type": "prescriptive",
+      "label": "Question 3 — Hypothesis Testing",
+      "text": "What might explain the Q3 Digital Transformation collapse? What does the data support, and what additional information would you want before drawing firm conclusions?",
+      "hint": "Consider what a 97% utilization rate suggests — the team was over-capacity. Could too many projects have been taken on at once? Might key staff have departed? What's not in this data that would help confirm your hypothesis?",
+      "scorer": {
+        "key_concepts": [
+          "utilization",
+          "97",
+          "over capacity",
+          "too many projects",
+          "26 projects",
+          "staffing",
+          "scope",
+          "resource",
+          "missing",
+          "headcount",
+          "turnover",
+          "hypothesis",
+          "cause",
+          "external"
+        ],
+        "length_threshold": 70,
+        "max_points": 40
+      }
+    },
+    {
+      "id": "q4",
+      "type": "prescriptive",
+      "label": "Question 4 — Interpretation & Recommendation",
+      "text": "You're presenting to the COO. Based on your analysis, what 2–3 concrete actions would you recommend to prevent another Q3-style breakdown? Reference specific data points to support each recommendation.",
+      "hint": "Strong recommendations explain the mechanism. For example: 'Digital Transformation took on 26 projects in Q3 vs. 18–21 in prior quarters, while utilization hit 97% — I recommend implementing a project intake cap tied to utilization targets.'",
+      "scorer": {
+        "key_concepts": [
+          "utilization cap",
+          "intake",
+          "capacity",
+          "52",
+          "34",
+          "97",
+          "digital transformation",
+          "projects",
+          "26",
+          "staffing",
+          "budget",
+          "specific",
+          "data",
+          "evidence",
+          "recommend",
+          "coo"
+        ],
+        "length_threshold": 80,
+        "max_points": 30
+      }
+    }
+  ],
+  "anomalies": [
+    {
+      "id": "dt_q3_ontime_collapse",
+      "description": "Digital Transformation on-time delivery fell from ~85% in Q1/Q2 to 52% in Q3 — a 34-point drop while all other practice areas held steady.",
+      "severity": "primary"
+    },
+    {
+      "id": "dt_q3_budget_overrun",
+      "description": "Digital Transformation budget variance jumped from 7–8% to 34% in Q3, indicating severe cost overruns concurrent with the delivery failure.",
+      "severity": "primary"
+    },
+    {
+      "id": "dt_q3_utilization_spike",
+      "description": "Digital Transformation utilization hit 97% in Q3 — the highest of any practice area in any quarter — suggesting the team was over-capacity.",
+      "severity": "secondary"
+    },
+    {
+      "id": "dt_q3_project_volume",
+      "description": "Digital Transformation completed 26 projects in Q3, up from 18–21 in prior quarters — the volume surge correlates with all performance degradation.",
+      "severity": "secondary"
+    },
+    {
+      "id": "dt_q4_partial_recovery",
+      "description": "Digital Transformation partially recovered in Q4 (on-time 76%, budget variance 14%) but has not returned to Q1/Q2 performance levels.",
+      "severity": "insight"
+    },
+    {
+      "id": "financial_advisory_stability",
+      "description": "Financial Advisory maintained 88–92% on-time delivery and 3–5% budget variance throughout the year — a useful benchmark for what stable operations look like.",
+      "severity": "insight"
+    }
+  ],
+  "coaching_tips": [
+    "When one practice area collapses while others hold steady, the problem is local — not market-wide or firm-wide.",
+    "Always look at all columns together. Digital Transformation Q3 shows on-time down, budget over, satisfaction down, AND utilization up — that convergence points to a single root cause: over-capacity.",
+    "Compare the anomalous quarter's volume to other quarters. 26 projects vs. 18–21 is a meaningful surge that wouldn't show up if you only looked at on-time delivery.",
+    "Strong recommendations cite specific numbers. 'Reduce workload' is good; 'Digital Transformation took on 26 projects in Q3 vs. a prior average of 19 while hitting 97% utilization' is better.",
+    "Ask what's missing. This table doesn't show staff turnover, contract complexity, or whether new project types were taken on in Q3 — any of which could deepen the diagnosis."
+  ],
+  "overall_labels": [
+    {
+      "min": 0,
+      "max": 39,
+      "label": "Developing",
+      "emoji": "🌱"
+    },
+    {
+      "min": 40,
+      "max": 59,
+      "label": "Emerging",
+      "emoji": "📊"
+    },
+    {
+      "min": 60,
+      "max": 79,
+      "label": "Proficient",
+      "emoji": "💪"
+    },
+    {
+      "min": 80,
+      "max": 100,
+      "label": "Expert Analyst",
+      "emoji": "🏆"
+    }
+  ]
+}

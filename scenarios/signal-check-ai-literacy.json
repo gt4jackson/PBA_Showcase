@@ -1,7 +1,7 @@
 {
   "construct_id": "ai_literacy",
-  "construct_name": "AI Literacy",
-  "construct_description": "The ability to understand, critically evaluate, and effectively use artificial intelligence tools and concepts in personal and professional contexts.",
+  "construct_name": "AI Literacy (OpenAI ECO Framework)",
+  "construct_description": "Professional AI literacy aligned to the OpenAI AI Literacy Framework (ECO 2026), covering AI foundations, responsible use, prompting and interaction skills, and workflow design — the competencies assessed in the OpenAI certification.",
   "pba_category": 4,
   "pba_category_name": "Simulation-Based",
   "pba_subtype": "Conversation-Based Assessment (CBA)",
@@ -15,38 +15,38 @@
   },
   "dimensions": [
     {
-      "id": "familiarity",
-      "name": "Familiarity",
+      "id": "foundations",
+      "name": "AI Foundations",
       "icon": "🧠",
-      "description": "Knowledge of AI tools, concepts, and how they work",
+      "description": "LLM mechanics, non-determinism, knowledge cutoff, and prompting fundamentals (T-C-E)",
       "max_questions": 3,
       "max_points_per": 2,
       "color": "#f093fb"
     },
     {
-      "id": "ethics",
-      "name": "Ethical Reasoning",
+      "id": "responsible_ai",
+      "name": "Responsible AI",
       "icon": "⚖️",
-      "description": "Data privacy awareness, bias recognition, and responsible AI use",
+      "description": "Data privacy in prompts, human-in-the-loop oversight, hallucination detection, and transparency",
       "max_questions": 3,
       "max_points_per": 2,
       "color": "#4facfe"
     },
     {
-      "id": "applications",
-      "name": "Applications",
-      "icon": "🛠️",
-      "description": "Practical knowledge of AI use cases across domains",
-      "max_questions": 2,
+      "id": "interactions",
+      "name": "Interactions & Prompting",
+      "icon": "💬",
+      "description": "Collaboration mindset (outputs as drafts), iterative refinement, context management, and multimodal use",
+      "max_questions": 3,
       "max_points_per": 2,
       "color": "#43e97b"
     },
     {
-      "id": "future",
-      "name": "Future Thinking",
-      "icon": "🚀",
-      "description": "Forward-thinking awareness of where AI is heading and how to keep up",
-      "max_questions": 3,
+      "id": "workflow",
+      "name": "Workflow & Extending",
+      "icon": "🔧",
+      "description": "Task decomposition, evaluation and QA (CLEAR criteria), using files/search/connectors, packaging AI workflows",
+      "max_questions": 2,
       "max_points_per": 2,
       "color": "#fa709a"
     }
@@ -65,68 +65,11 @@
   "questions": [
     {
       "id": 1,
-      "dimension": "familiarity",
+      "dimension": "foundations",
       "messages": [
-        "ok first off no judgment BUT — do you actually use any AI tools? like chatgpt, copilot, midjourney... or are you still out here using AskJeeves 💀",
-        "starting easy — what AI tools are you actually using rn? or are we at zero 😭",
-        "real question: are you on the AI tools train yet? chatgpt, gemini, anything? or is this new territory lol"
-      ],
-      "acknowledgments": [
-        "omg okay okay, noted 👀",
-        "interesting interesting... filing that away",
-        "lol okay that's a whole situation"
-      ],
-      "scorer": {
-        "type": "keyword",
-        "high": [
-          "chatgpt",
-          "gpt",
-          "copilot",
-          "midjourney",
-          "gemini",
-          "claude",
-          "dall-e",
-          "stable diffusion",
-          "bard",
-          "perplexity",
-          "notion ai",
-          "grammarly",
-          "sora",
-          "runway",
-          "bing ai",
-          "adobe firefly",
-          "github copilot",
-          "cursor",
-          "whisper"
-        ],
-        "mid": [
-          "ai tool",
-          "use ai",
-          "artificial intelligence",
-          "chatbot",
-          "assistant",
-          "language model"
-        ],
-        "low": [
-          "never",
-          "nope",
-          "don't use",
-          "nah",
-          "not really",
-          "not much",
-          "no i"
-        ],
-        "high_threshold": 1,
-        "length_mid": 15
-      }
-    },
-    {
-      "id": 2,
-      "dimension": "familiarity",
-      "messages": [
-        "genuine question tho — do you have ANY idea how this stuff actually works under the hood? like what's happening when you type to chatgpt 🤔",
-        "okay nerd corner for a sec — do you know how LLMs actually work? like under the hood. no shame either way lol",
-        "be honest: could you explain to someone how AI chatbots actually work? like the very rough idea of what's going on 🧠"
+        "okay genuine question — do you actually know how chatgpt decides what to say? like what's happening under the hood when you hit send 🤔",
+        "real talk: could you explain to someone how LLMs actually work? like the rough idea of what's going on when it generates text 🧠",
+        "be honest: do you know what's actually happening when an AI responds to you? like mechanically, what is it doing"
       ],
       "acknowledgments": [
         "right?? i went down that rabbit hole once and did NOT come back the same",
@@ -136,24 +79,26 @@
       "scorer": {
         "type": "keyword",
         "high": [
+          "next token",
+          "next word",
+          "predict",
+          "probability",
+          "tokens",
+          "transformer",
+          "training data",
+          "trained on",
           "machine learning",
           "neural network",
           "llm",
           "large language model",
-          "training data",
-          "trained on",
-          "transformer",
-          "tokens",
-          "predict",
           "parameters",
           "weights",
           "pattern",
           "statistics",
-          "algorithm",
           "deep learning",
           "reinforcement",
-          "next word",
-          "probability"
+          "rlhf",
+          "statistical"
         ],
         "mid": [
           "data",
@@ -163,7 +108,9 @@
           "information",
           "text",
           "processes",
-          "reads"
+          "reads",
+          "guesses",
+          "generates"
         ],
         "low": [
           "no idea",
@@ -178,180 +125,240 @@
       }
     },
     {
-      "id": 3,
-      "dimension": "familiarity",
+      "id": 2,
+      "dimension": "foundations",
       "messages": [
-        "has it ever totally made something up and said it with full confidence though?? because i have a story 😭💀",
-        "do you think AI is ever just... wrong? like confidently, embarrassingly wrong?",
-        "have you ever caught AI just straight up lying to you with zero remorse 💀 like it invented a fact"
+        "have you ever asked AI the exact same question twice and gotten totally different answers? like what's up with that 👀",
+        "okay this might sound weird but — do you think AI is deterministic? like does the same input always give the same output?",
+        "random but: if you sent the exact same prompt to chatgpt five times, would you get the same response? why or why not 🤔"
       ],
       "acknowledgments": [
-        "RIGHT?? the audacity. the unbothered confidence.",
-        "lmaoo yeah it does that like it's not even a big deal",
-        "the confidence is what gets me every time. zero hesitation."
+        "right?? it's not like a calculator, it's wild how variable it can be",
+        "yeah once you notice it you can't un-notice it — every response is kind of a roll of the dice",
+        "exactly! it's probabilistic not deterministic and that matters a lot for how you use it"
       ],
       "scorer": {
         "type": "keyword",
         "high": [
-          "hallucin",
-          "made up",
-          "made something up",
-          "wrong",
-          "incorrect",
-          "false",
-          "fake",
-          "fabricat",
-          "confident",
-          "bias",
-          "outdated",
-          "lies",
-          "lied",
-          "error",
-          "mistake",
-          "inaccurate",
-          "invented",
-          "not true"
+          "different",
+          "varies",
+          "not the same",
+          "probabilistic",
+          "random",
+          "non-deterministic",
+          "temperature",
+          "randomness",
+          "stochastic",
+          "sampling",
+          "each time",
+          "every time",
+          "inconsistent",
+          "changes",
+          "vary"
         ],
         "mid": [
           "sometimes",
-          "yeah",
-          "yep",
-          "yes",
-          "it does",
-          "can be",
+          "usually",
+          "mostly",
+          "kind of",
+          "i think",
           "not always",
+          "can change",
           "depends",
-          "occasionally"
+          "similar but"
         ],
         "low": [
-          "always right",
-          "never wrong",
-          "perfect",
-          "always correct",
-          "never makes mistakes"
+          "same",
+          "always the same",
+          "identical",
+          "consistent",
+          "exact same",
+          "doesn't change"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 3,
+      "dimension": "foundations",
+      "messages": [
+        "what happens when you ask chatgpt about something that happened last week? does it just... know? 😅",
+        "okay if i asked AI about breaking news from yesterday, what would it do? does it have access to current info?",
+        "genuine q — does AI have like a knowledge cutoff? like is there stuff it just... doesn't know about because it's too recent"
+      ],
+      "acknowledgments": [
+        "yeah the training cutoff thing trips a lot of people up, it's not google!",
+        "right — it's frozen in time basically unless it has a search tool plugged in",
+        "exactly, and this is actually why prompting matters so much — you sometimes have to give it context it doesn't have"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "cutoff",
+          "training cutoff",
+          "knowledge cutoff",
+          "doesn't know",
+          "not up to date",
+          "outdated",
+          "trained until",
+          "training data",
+          "not recent",
+          "doesn't have access",
+          "no internet",
+          "static",
+          "frozen",
+          "can't access",
+          "web search",
+          "browsing",
+          "real-time"
+        ],
+        "mid": [
+          "old data",
+          "might not know",
+          "depends",
+          "maybe not",
+          "not always",
+          "not sure",
+          "limited"
+        ],
+        "low": [
+          "knows everything",
+          "always knows",
+          "has all info",
+          "up to date",
+          "real time",
+          "knows current"
         ],
         "length_mid": 20
       }
     },
     {
       "id": 4,
-      "dimension": "applications",
+      "dimension": "responsible_ai",
       "messages": [
-        "okay but what's your BEST AI use case. like the one that made you go 'ohhhh okay this is actually useful' ✨",
-        "what's something you've actually used AI for that genuinely saved you time or made life easier?",
-        "give me your personal AI highlight reel — what's the most useful thing you've done with it 🏆"
+        "okay be honest — have you ever pasted something into chatgpt that maybe you shouldn't have? like sensitive stuff 😬",
+        "real talk: do you think about what you're actually handing over when you type something into an AI tool? like data-wise?",
+        "random but important — do you have any rules for yourself about what you won't put into AI prompts? like company info, personal stuff?"
       ],
       "acknowledgments": [
-        "omg okay that's kind of impressive ngl",
-        "okay yeah that's actually a solid use case, i respect it",
-        "that's a good one honestly. okay okay."
+        "i know right, it's giving 'terms and conditions i definitely read' 😭",
+        "yeah once you start thinking about it it's hard to stop thinking about it",
+        "the data stuff is SO underrated as a concern honestly"
       ],
       "scorer": {
         "type": "keyword",
         "high": [
-          "code",
-          "debug",
-          "write",
-          "draft",
-          "email",
-          "summarize",
-          "research",
-          "translate",
-          "edit",
-          "brainstorm",
-          "generate",
-          "create",
-          "analyze",
-          "automate",
-          "design",
-          "image",
-          "script",
-          "essay",
-          "report",
-          "presentation",
-          "formula",
-          "sql",
-          "test",
-          "plan",
-          "outline",
-          "explain"
+          "privacy",
+          "confidential",
+          "sensitive",
+          "personal",
+          "pii",
+          "personal information",
+          "company data",
+          "shouldn't",
+          "don't put",
+          "avoid",
+          "careful",
+          "data retention",
+          "stored",
+          "training",
+          "terms",
+          "server",
+          "logged",
+          "anonymize",
+          "anonymization",
+          "exclude",
+          "work stuff",
+          "regret",
+          "shouldn't have",
+          "minimize"
         ],
-        "mid": [],
+        "mid": [
+          "somewhere",
+          "i guess",
+          "not sure but",
+          "probably",
+          "wonder",
+          "maybe",
+          "think about",
+          "kind of careful"
+        ],
         "low": [
-          "everything",
-          "stuff",
-          "many things",
-          "various",
-          "multiple things"
+          "doesn't matter",
+          "who cares",
+          "nothing",
+          "idk",
+          "don't think about",
+          "no rules"
         ],
-        "high_requires_length": 20,
-        "length_mid": 30
+        "low_max_length": 25
       }
     },
     {
       "id": 5,
-      "dimension": "applications",
+      "dimension": "responsible_ai",
       "messages": [
-        "wait so beyond the chatbot stuff — do you know about like image AI, voice cloning, code tools, any of that? what's on your radar 👁️",
-        "how deep does your AI knowledge go? like do you know about stuff beyond just chatgpt — image gen, video AI, code tools?",
-        "okay pop quiz: name some types of AI that AREN'T just text chatbots. what else is out there that you know about 🌍"
+        "do you actually check whether AI-generated stuff is accurate before you use it? like what's your verification process 👀",
+        "has AI ever made something up and presented it like a total fact? what did you do when you caught it?",
+        "real question: how much do you trust AI output by default? do you fact-check it or just roll with it 😬"
       ],
       "acknowledgments": [
-        "okay yeah it's gotten WILD out there fr",
-        "right?? it's like a whole ecosystem now and it moves SO fast",
-        "honestly the breadth of it is kind of insane when you lay it all out"
+        "RIGHT?? the audacity. the unbothered confidence.",
+        "lmaoo yeah it does that like it's not even a big deal",
+        "the confidence is what gets me every time — zero hesitation, totally wrong"
       ],
       "scorer": {
-        "type": "keyword_count",
-        "keywords": [
-          "image",
-          "midjourney",
-          "dall-e",
-          "stable diffusion",
-          "firefly",
-          "flux",
-          "voice",
-          "audio",
-          "music",
-          "suno",
-          "elevenlabs",
-          "cloning",
-          "video",
-          "sora",
-          "runway",
-          "pika",
-          "heygen",
-          "code",
-          "copilot",
-          "cursor",
-          "devin",
-          "tabnine",
-          "search",
-          "perplexity",
-          "data",
-          "analytics",
-          "robotics",
-          "robot",
-          "medical",
-          "healthcare",
-          "translation",
-          "avatar"
+        "type": "keyword",
+        "high": [
+          "verify",
+          "check",
+          "fact-check",
+          "fact check",
+          "cross-reference",
+          "source",
+          "confirm",
+          "hallucin",
+          "made up",
+          "fabricat",
+          "wrong",
+          "incorrect",
+          "false",
+          "not true",
+          "double-check",
+          "google it",
+          "always review",
+          "before using",
+          "don't trust blindly",
+          "validate"
         ],
-        "threshold_high": 2,
-        "threshold_mid": 1,
-        "neg": [
-          "not really"
+        "mid": [
+          "sometimes check",
+          "usually",
+          "mostly",
+          "depends",
+          "try to",
+          "when it matters",
+          "important stuff"
         ],
-        "neg_length": 20
+        "low": [
+          "always right",
+          "never wrong",
+          "just use it",
+          "trust it",
+          "don't check",
+          "don't verify",
+          "never caught"
+        ],
+        "length_mid": 20
       }
     },
     {
       "id": 6,
-      "dimension": "ethics",
+      "dimension": "responsible_ai",
       "messages": [
-        "ok scenario. your boss slides into your DMs like 'hey use AI to write everyone's performance reviews, don't tell the team' — what do you do with that 💀",
-        "hypothetical: your manager asks you to secretly use AI to make hiring decisions. no one would know. what do you do?",
-        "scenario time: company asks you to use AI to screen job applicants but not disclose it to candidates. thoughts? 👀"
+        "ok scenario: your boss says 'use AI to write everyone's performance reviews, don't tell the team' — what do you do 💀",
+        "hypothetical: your company wants to use AI for a high-stakes decision but not tell the people affected. thoughts?",
+        "scenario time: you're asked to use AI for something important but keep it secret from the people impacted. do you push back? 👀"
       ],
       "acknowledgments": [
         "oof yeah that's the kind of thing that keeps HR up at night",
@@ -361,26 +368,29 @@
       "scorer": {
         "type": "keyword",
         "high": [
+          "transparency",
           "disclose",
           "tell them",
-          "transparency",
+          "human-in-the-loop",
+          "human oversight",
+          "oversight",
+          "push back",
+          "refuse",
+          "shouldn't",
           "not okay",
           "ethical",
           "consent",
           "should know",
-          "push back",
-          "refuse",
-          "can't do that",
-          "wouldn't",
-          "shouldn't",
           "inform",
           "let people know",
           "wrong",
-          "problem",
           "concern",
           "bias",
           "unfair",
-          "legal"
+          "legal",
+          "accountable",
+          "can't do that",
+          "wouldn't"
         ],
         "mid": [
           "depends",
@@ -407,300 +417,304 @@
     },
     {
       "id": 7,
-      "dimension": "ethics",
+      "dimension": "interactions",
       "messages": [
-        "do you ever think about what happens to everything you TYPE into these tools? like... where does it go. be honest 👀",
-        "random but important — are you careful about what info you share with AI tools? like do you think about the data side of it?",
-        "okay real talk — have you ever pasted something into chatgpt and then gone 'wait should i have done that' 😬"
+        "be honest — do you just take the first answer AI gives you, or do you actually go back and forth to get what you need?",
+        "do you ever like... refine what you asked? push back on the output, tweak the prompt, iterate? or is it one-and-done 😅",
+        "when AI gives you something that's not quite right, what do you do? just accept it or go back in and push for better?"
       ],
       "acknowledgments": [
-        "i know right, it's giving 'terms and conditions i definitely read' 😭",
-        "yeah once you start thinking about it it's hard to stop thinking about it",
-        "the data stuff is SO underrated as a concern honestly"
+        "okay yeah that's actually the move — treating it like a back-and-forth not a vending machine",
+        "right, the refinement loop is honestly where the real skill is",
+        "that's the thing most people miss — it's conversational, not transactional"
       ],
       "scorer": {
         "type": "keyword",
         "high": [
-          "training",
-          "stored",
-          "privacy",
-          "sensitive",
-          "personal",
-          "careful",
-          "confidential",
-          "data",
-          "retention",
-          "don't put",
-          "terms",
-          "server",
-          "logged",
-          "sold",
-          "used for",
-          "collected",
-          "share",
-          "shouldn't have",
-          "regret",
-          "work stuff",
-          "company"
+          "iterate",
+          "refine",
+          "go back",
+          "follow up",
+          "follow-up",
+          "revise",
+          "tweak",
+          "adjust",
+          "push back",
+          "ask again",
+          "clarify",
+          "not what i wanted",
+          "try again",
+          "rephrase",
+          "back and forth",
+          "draft",
+          "drafts",
+          "first draft",
+          "starting point",
+          "reviewer",
+          "review it"
         ],
         "mid": [
-          "somewhere",
-          "i guess",
-          "not sure but",
-          "goes somewhere",
-          "probably",
-          "wonder",
-          "maybe"
-        ],
-        "low": [
-          "doesn't matter",
-          "who cares",
-          "no idea",
-          "nothing",
-          "idk",
-          "don't think about"
-        ],
-        "low_max_length": 25
-      }
-    },
-    {
-      "id": 8,
-      "dimension": "ethics",
-      "messages": [
-        "hot take time — do you think AI has any biases baked into it? like is it neutral or is it kinda... not 🤨",
-        "do you think AI can be racist, sexist, or otherwise biased? or is it just a neutral tool?",
-        "genuine q: if AI is trained on internet data... do you think that causes any problems in terms of bias or representation? 🤔"
-      ],
-      "acknowledgments": [
-        "yeah fr it's not like it fell from the sky fully formed",
-        "exactly — garbage in garbage out as they say, kind of",
-        "right?? it's a whole thing and a lot of people don't think about it"
-      ],
-      "scorer": {
-        "type": "keyword",
-        "high": [
-          "bias",
-          "biased",
-          "unfair",
-          "discriminat",
-          "training data",
-          "reflect",
-          "skewed",
-          "prejudice",
-          "stereotype",
-          "not neutral",
-          "systemic",
-          "social",
-          "political",
-          "western",
-          "cultural",
-          "represent",
-          "racist",
-          "sexist",
-          "internet data",
-          "garbage"
-        ],
-        "mid": [
-          "maybe",
-          "probably",
-          "could be",
-          "i think so",
-          "yeah",
-          "yes",
-          "might be",
-          "possibly",
-          "some",
-          "probably does"
-        ],
-        "low": [
-          "neutral",
-          "no bias",
-          "unbiased",
-          "objective",
-          "it's not biased",
-          "nope",
-          "not biased"
-        ],
-        "low_max_length": 30
-      }
-    },
-    {
-      "id": 9,
-      "dimension": "future",
-      "messages": [
-        "real talk real talk — job replacement. is that a real fear for you or do you think it's kind of overblown sci-fi drama 🤔",
-        "how worried are you about AI taking jobs? like yours specifically or in general?",
-        "be honest — do you think your job (or jobs like yours) will look the same in 10 years given how fast AI is moving?"
-      ],
-      "acknowledgments": [
-        "yeah it's genuinely complicated and i feel like everyone has A Take™ on it",
-        "right it's like... the answer is different for every person and every job",
-        "yeah there's no easy answer there, it's one of those things"
-      ],
-      "scorer": {
-        "type": "keyword",
-        "high": [
-          "some jobs",
-          "certain jobs",
-          "adapt",
-          "reskill",
-          "augment",
-          "complement",
-          "already",
+          "sometimes",
+          "when it's wrong",
+          "if i have time",
           "depends",
-          "both sides",
-          "nuance",
-          "some roles",
-          "new jobs",
-          "transition",
-          "evolv",
-          "not all",
-          "replace some",
-          "worried but",
-          "different",
-          "change",
-          "transform"
-        ],
-        "mid": [
-          "terrified",
-          "definitely replace",
-          "taking over",
-          "doomed",
-          "everyone will lose",
-          "completely replace"
+          "usually",
+          "often",
+          "mostly"
         ],
         "low": [
-          "no way",
-          "won't happen",
-          "not real",
-          "nobody",
-          "unlikely",
-          "exaggerated",
-          "overblown",
-          "not a concern"
+          "first answer",
+          "just take it",
+          "one and done",
+          "whatever it gives",
+          "accept it",
+          "don't bother",
+          "use it as is"
         ],
-        "mid_max_length": 40,
-        "low_max_length": 30,
-        "length_high": 50,
         "length_mid": 25
       }
     },
     {
-      "id": 10,
-      "dimension": "future",
+      "id": 8,
+      "dimension": "interactions",
       "messages": [
-        "are you doing ANYTHING to keep up with all this? podcasts, newsletters, random youtube holes at 2am... anything 😭",
-        "okay are you actively trying to learn more about AI or just kind of... letting it wash over you and hoping for the best lol",
-        "do you feel like you're keeping pace with how fast AI is moving? what are you doing to stay up on it if anything"
+        "when you prompt AI, do you give it context about who you are and what you need, or do you just dive in with the ask?",
+        "do you have like... a system for how you write prompts? or is it pretty much vibes? 😅",
+        "real talk: do you tell AI who your audience is, what format you need, any constraints? or just 'write me a thing'"
       ],
       "acknowledgments": [
-        "honestly same, i have 47 unread AI newsletters i keep meaning to get to",
-        "the firehose of AI news is genuinely a lot, i respect anyone who keeps up",
-        "yeah it's basically a part time job to stay current at this point"
+        "okay yeah context is everything — it changes the whole output",
+        "right, the more specific you are up front the less back-and-forth you need",
+        "task-context-expectation is literally the unlock that most people never figure out lol"
       ],
       "scorer": {
         "type": "keyword",
         "high": [
-          "coursera",
-          "udemy",
-          "youtube",
-          "newsletter",
-          "substack",
-          "twitter",
-          "linkedin",
-          "podcast",
-          "arxiv",
-          "course",
-          "class",
-          "follow",
-          "read",
-          "watch",
-          "article",
-          "blog",
-          "book",
-          "learn",
-          "study",
-          "research",
-          "reddit",
-          "discord",
-          "hugging face",
-          "x.com"
+          "context",
+          "role",
+          "persona",
+          "audience",
+          "format",
+          "constraint",
+          "tone",
+          "background",
+          "instructions",
+          "task",
+          "expectation",
+          "specific",
+          "detailed prompt",
+          "system prompt",
+          "custom instructions",
+          "t-c-e",
+          "tce",
+          "who i am",
+          "who it's for",
+          "what i need"
         ],
         "mid": [
-          "trying",
-          "should",
-          "want to",
-          "i should",
-          "plan to",
-          "working on",
-          "kind of",
+          "sometimes",
+          "depends",
+          "when i remember",
           "a little",
-          "not much but"
+          "kind of",
+          "trying to",
+          "more context",
+          "more detail"
         ],
         "low": [
-          "nah",
-          "not really",
-          "nothing",
-          "don't bother",
-          "nope",
-          "never",
-          "not at all",
-          "no i don't"
+          "just ask",
+          "no system",
+          "straight up",
+          "dive in",
+          "no context",
+          "just type",
+          "whatever",
+          "vibes"
         ],
-        "low_max_length": 30
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 9,
+      "dimension": "interactions",
+      "messages": [
+        "have you ever used AI with images or photos? like described an image, uploaded one, that kind of thing 👁️",
+        "what about voice — have you actually used AI through talking instead of typing? or is it all text for you?",
+        "okay how multimodal are you — are you using AI with images, voice, documents, or is it purely chat for you 🎙️"
+      ],
+      "acknowledgments": [
+        "okay yeah it's gotten WILD out there fr — it's not just chatbots anymore",
+        "right?? it's like a whole ecosystem now and it moves SO fast",
+        "honestly the breadth of it is kind of insane when you lay it all out"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "image",
+          "photo",
+          "picture",
+          "upload",
+          "vision",
+          "see",
+          "look at",
+          "describe",
+          "voice",
+          "speak",
+          "talk to",
+          "audio",
+          "multimodal",
+          "document",
+          "pdf",
+          "file",
+          "screenshot",
+          "camera",
+          "dall-e",
+          "midjourney",
+          "generate image"
+        ],
+        "mid": [
+          "tried it",
+          "once",
+          "a few times",
+          "sometimes",
+          "kind of",
+          "a little bit"
+        ],
+        "low": [
+          "just text",
+          "only text",
+          "never",
+          "no",
+          "nope",
+          "haven't tried",
+          "don't use"
+        ],
+        "high_threshold": 1,
+        "length_mid": 15
+      }
+    },
+    {
+      "id": 10,
+      "dimension": "workflow",
+      "messages": [
+        "have you ever broken a big project into pieces and used AI for each step? like a structured workflow vs just one big ask?",
+        "do you use AI for any kind of data analysis — spreadsheets, reports, documents — or is it mainly writing stuff for you?",
+        "do you have any kind of actual workflow for how you use AI, or is it pretty much just vibes whenever you feel like it 😅"
+      ],
+      "acknowledgments": [
+        "okay yeah decomposing it is honestly the move — way better outputs when you're intentional about it",
+        "right, using AI for data and files is like a whole other level of useful",
+        "the workflow thing is what separates the power users from the 'i use it for emails' crowd lol"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "workflow",
+          "process",
+          "steps",
+          "decompose",
+          "break down",
+          "phase",
+          "sequence",
+          "pipeline",
+          "spreadsheet",
+          "data analysis",
+          "analyze",
+          "report",
+          "file",
+          "upload",
+          "systematic",
+          "structured",
+          "template",
+          "checklist",
+          "routine",
+          "always do",
+          "every time",
+          "connector",
+          "integration",
+          "automate"
+        ],
+        "mid": [
+          "sometimes",
+          "for big projects",
+          "when i remember",
+          "trying to",
+          "kind of",
+          "a little structured",
+          "depends on the task"
+        ],
+        "low": [
+          "vibes",
+          "randomly",
+          "whenever",
+          "no process",
+          "no workflow",
+          "just use it",
+          "ad hoc",
+          "no system"
+        ],
+        "high_requires_length": 20,
+        "length_mid": 30
       }
     },
     {
       "id": 11,
-      "dimension": "future",
+      "dimension": "workflow",
       "messages": [
-        "okay big brain time — where do you think AI is actually going in the next decade. like genuinely. be a prophet rn 🔮",
-        "if you had to make one prediction about AI in the next 10 years, what would it be? go off.",
-        "honest take: exciting future, scary future, or somewhere in between for AI? what's your read on where this is heading 🌐"
+        "when you get AI output, do you have any way of evaluating whether it's actually good? like criteria you check against?",
+        "how do you know when an AI output is done and usable vs needs more work? what's your quality bar?",
+        "okay real question: do you ever think about whether AI output is complete, accurate, appropriate for the audience, relevant to the goal? or just vibe-check it 👀"
       ],
       "acknowledgments": [
-        "okay that's a take. i'm writing this down.",
-        "honestly that's not far off from what a lot of people think",
-        "yeah it really could go so many ways and that's kind of the whole problem lol"
+        "okay yes — having actual criteria makes such a difference vs just 'feels right'",
+        "right, the evaluation step is honestly where a lot of people just skip and regret it later",
+        "clear criteria over gut feelings every time — that's the professional move"
       ],
       "scorer": {
         "type": "keyword",
         "high": [
-          "agi",
-          "general intelligence",
-          "exponential",
-          "capability",
-          "risk",
-          "alignment",
-          "safety",
-          "powerful",
-          "disruptive",
-          "transform",
-          "revolution",
-          "singularity",
-          "improve",
-          "advance",
-          "automat",
-          "integrat",
-          "everywhere",
-          "embedded",
-          "scary",
-          "exciting",
-          "concern",
-          "dangerous",
-          "depend"
+          "clear",
+          "complete",
+          "accurate",
+          "relevant",
+          "appropriate",
+          "audience",
+          "criteria",
+          "checklist",
+          "evaluate",
+          "review",
+          "quality",
+          "standard",
+          "logical",
+          "evidence",
+          "fact-check",
+          "verify",
+          "acceptance criteria",
+          "peer review",
+          "revision",
+          "loop",
+          "CLEAR"
         ],
         "mid": [
-          "bigger",
-          "more powerful",
-          "grow",
-          "get better",
-          "more stuff",
-          "idk",
-          "not sure"
+          "kind of",
+          "usually",
+          "check if",
+          "make sure",
+          "see if",
+          "depends",
+          "sometimes",
+          "mostly"
         ],
-        "high_requires_length": 30,
-        "length_high": 50,
+        "low": [
+          "vibes",
+          "just feel",
+          "looks good",
+          "no criteria",
+          "don't really",
+          "whatever",
+          "if it sounds right"
+        ],
+        "high_requires_length": 20,
         "length_mid": 25
       }
     },
@@ -723,32 +737,32 @@
   "overall_labels": [
     {
       "min": 90,
-      "text": "okay you're basically an AI researcher at this point 🔬"
+      "text": "AI power user — you're operating at a certified professional level 🔬"
     },
     {
       "min": 75,
-      "text": "genuinely impressive — you really get this stuff 🎉"
+      "text": "solid foundation and then some — you really get this stuff 🎉"
     },
     {
       "min": 60,
-      "text": "solid foundation, above average for sure 💪"
+      "text": "building awareness turning into real skill — above average for sure 💪"
     },
     {
       "min": 45,
-      "text": "getting there! good instincts, some gaps to fill 📈"
+      "text": "good instincts, some gaps to fill — you're on your way 📈"
     },
     {
       "min": 30,
-      "text": "AI curious but still on the learning curve... it's fine 😅"
+      "text": "AI curious but still on the learning curve... totally fixable 😅"
     },
     {
       "min": 0,
-      "text": "okay bestie we need to talk 💀 but also truly no judgment"
+      "text": "okay bestie we need to talk 💀 but also truly no judgment — everyone starts somewhere"
     }
   ],
   "feedback_templates": {
-    "high": "You showed strong understanding here — keep building on this foundation.",
-    "mid": "Good instincts! A bit more hands-on experience would sharpen this area.",
-    "low": "This is a growth area — no shame, everyone starts somewhere. Check out some intro resources."
+    "high": "Strong grasp of this domain — you're operating at a certified professional level here.",
+    "mid": "Good instincts! A bit more hands-on practice with this area would sharpen your skills.",
+    "low": "This is a growth area — no shame. The OpenAI ECO framework covers this in depth and it's very learnable."
   }
 }

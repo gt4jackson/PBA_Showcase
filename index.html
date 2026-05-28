@@ -587,6 +587,57 @@ body {
 
 .mobile-mode .mobile-badge { display: inline; }
 
+/* ── CONSTRUCT SELECTOR ─────────────────────── */
+.construct-select-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.construct-select {
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 30px 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.construct-select:hover { border-color: var(--accent); }
+.construct-select:focus { outline: none; border-color: var(--accent); }
+.construct-select option { background: var(--surface); }
+.construct-select-arrow {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-tertiary);
+}
+.controls-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-strong);
+  margin: 0 16px;
+}
+.construct-na-note {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-style: italic;
+  display: none;
+  margin-top: 4px;
+}
+.task-card.construct-na {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.task-card.construct-na .task-card-action { display: none; }
+.task-card.construct-na .construct-na-note { display: block; }
+
 /* ── RESPONSIVE ────────────────────────────── */
 @media (max-width: 600px) {
   .hero h1 { font-size: 24px; }
@@ -622,8 +673,20 @@ body {
     <p>Interactive demonstrations of performance-based assessment across multiple task categories. Each task assesses a real construct and collects rich behavioral evidence.</p>
   </div>
 
-  <!-- MODE TOGGLE -->
+  <!-- CONTROLS BAR: construct selector + mode toggle in one row -->
   <div class="mode-toggle-bar">
+    <div class="construct-select-wrap">
+      <select class="construct-select" id="constructSelect" onchange="setConstruct(this.value)">
+        <option value="all">All Constructs</option>
+        <option value="ai-literacy">🤖 AI Literacy</option>
+        <option value="financial-literacy">💰 Financial Literacy</option>
+        <option value="project-management">📋 Project Management</option>
+      </select>
+      <svg class="construct-select-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+
+    <div class="controls-divider"></div>
+
     <span class="mode-toggle-label active" id="labelDesktop" onclick="setMode('desktop')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px;"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Desktop
     </span>
@@ -639,7 +702,7 @@ body {
   <div class="tasks-grid">
 
     <!-- Signal Check -->
-    <div class="task-card" data-desktop="signal-check.html" data-mobile="signal-check.html">
+    <div class="task-card" id="card-signal-check" data-task-id="signal-check" data-desktop="signal-check.html" data-mobile="signal-check.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat4), #a78bfa);"></div>
       <div class="task-card-badge" style="background: rgba(158,158,255,0.15); color: var(--cat4);">Cat 4 — Simulation</div>
       <h3>Signal Check <span class="mobile-badge" style="display:none!important">Already mobile-ready</span></h3>
@@ -648,10 +711,10 @@ body {
         <div class="task-card-construct-label">Construct assessed</div>
         <div class="task-card-construct-name">AI Literacy</div>
         <div class="task-card-dims">
-          <span class="dim-tag">Familiarity</span>
-          <span class="dim-tag">Ethics</span>
-          <span class="dim-tag">Applications</span>
-          <span class="dim-tag">Future Thinking</span>
+          <span class="dim-tag">AI Foundations</span>
+          <span class="dim-tag">Responsible AI</span>
+          <span class="dim-tag">Interactions</span>
+          <span class="dim-tag">Workflow</span>
         </div>
       </div>
       <div class="task-card-footer">
@@ -659,15 +722,16 @@ body {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           ~10 min
         </span>
-        <a class="task-card-action" href="signal-check.html">
+        <a class="task-card-action" id="action-signal-check" href="signal-check.html">
           Start task
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
+        <span class="construct-na-note">Not applicable for this construct</span>
       </div>
     </div>
 
     <!-- The Brief -->
-    <div class="task-card" data-desktop="the-brief.html" data-mobile="the-brief-mobile.html">
+    <div class="task-card" id="card-the-brief" data-task-id="the-brief" data-desktop="the-brief.html" data-mobile="the-brief-mobile.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat7), #34d399);"></div>
       <div class="task-card-badge" style="background: rgba(70,130,84,0.15); color: var(--cat7);">Cat 7 — AI-Augmented</div>
       <h3>The Brief <span class="mobile-badge">Simplified</span></h3>
@@ -687,15 +751,16 @@ body {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           ~18 min
         </span>
-        <a class="task-card-action" href="the-brief.html">
+        <a class="task-card-action" id="action-the-brief" href="the-brief.html">
           Start task
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
+        <span class="construct-na-note">Not applicable for this construct</span>
       </div>
     </div>
 
     <!-- Data Detective -->
-    <div class="task-card" data-desktop="data-detective.html" data-mobile="data-detective-mobile.html">
+    <div class="task-card" id="card-data-detective" data-task-id="data-detective" data-desktop="data-detective.html" data-mobile="data-detective-mobile.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat3), #fb923c);"></div>
       <div class="task-card-badge" style="background: rgba(245,158,11,0.15); color: var(--cat3);">Cat 3 — Process</div>
       <h3>Data Detective <span class="mobile-badge">Simplified</span></h3>
@@ -715,15 +780,16 @@ body {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           ~12 min
         </span>
-        <a class="task-card-action" href="data-detective.html">
+        <a class="task-card-action" id="action-data-detective" href="data-detective.html">
           Start task
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
+        <span class="construct-na-note">Not applicable for this construct</span>
       </div>
     </div>
 
     <!-- The Take -->
-    <div class="task-card" data-desktop="the-take.html" data-mobile="the-take-mobile.html">
+    <div class="task-card" id="card-the-take" data-task-id="the-take" data-desktop="the-take.html" data-mobile="the-take-mobile.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat1), #60a5fa);"></div>
       <div class="task-card-badge" style="background: rgba(77,211,254,0.15); color: var(--cat1);">Cat 1 — Constructed Response</div>
       <h3>The Take <span class="mobile-badge">Simplified</span></h3>
@@ -743,15 +809,16 @@ body {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           ~15 min
         </span>
-        <a class="task-card-action" href="the-take.html">
+        <a class="task-card-action" id="action-the-take" href="the-take.html">
           Start task
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
+        <span class="construct-na-note">Not applicable for this construct</span>
       </div>
     </div>
 
     <!-- The Forum -->
-    <div class="task-card" data-desktop="the-forum.html" data-mobile="the-forum-mobile.html">
+    <div class="task-card" id="card-the-forum" data-task-id="the-forum" data-desktop="the-forum.html" data-mobile="the-forum-mobile.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, #e879f9, #c084fc);"></div>
       <div class="task-card-badge" style="background: rgba(232,121,249,0.15); color: #e879f9;">Cat 6 — Collaborative</div>
       <h3>The Forum <span class="mobile-badge">Simplified</span></h3>
@@ -771,10 +838,11 @@ body {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           ~12 min
         </span>
-        <a class="task-card-action" href="the-forum.html">
+        <a class="task-card-action" id="action-the-forum" href="the-forum.html">
           Start task
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
+        <span class="construct-na-note">Not applicable for this construct</span>
       </div>
     </div>
 
@@ -1164,6 +1232,105 @@ document.querySelectorAll('.info-tab').forEach(tab => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeInfo();
 });
+
+// ── Construct Selector ──
+// Maps each construct → each task → { scenario, construct, dims } or null (grey out)
+const TASK_CONSTRUCT_MAP = {
+  'all': {
+    'signal-check':   { scenario: null, construct: 'AI Literacy (OpenAI ECO)', dims: ['AI Foundations','Responsible AI','Interactions','Workflow'] },
+    'the-brief':      { scenario: null, construct: 'Critical Thinking + AI Fluency', dims: ['Prompt Engineering','Critical Evaluation','Task Decomposition','Tool Selection'] },
+    'data-detective': { scenario: null, construct: 'Data Reasoning', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
+    'the-take':       { scenario: null, construct: 'Argumentation + Evidence Evaluation', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
+    'the-forum':      { scenario: null, construct: 'Project Prioritization + Collaboration', dims: ['Trade-off Analysis','Evidence Use','Engagement','Synthesizing'] }
+  },
+  'ai-literacy': {
+    'signal-check':   { scenario: 'scenarios/signal-check-ai-literacy.json', construct: 'AI Literacy', dims: ['AI Foundations','Responsible AI','Prompting & Interaction','Workflow & Application'] },
+    'the-brief':      { scenario: 'scenarios/the-brief-critical-thinking.json', construct: 'AI Fluency', dims: ['Prompt Engineering','Critical Evaluation','Task Decomposition','Tool Selection'] },
+    'data-detective': null,
+    'the-take':       { scenario: 'scenarios/the-take-argumentation.json', construct: 'Argumentation on AI Policy', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
+    'the-forum':      { scenario: 'scenarios/the-forum-ai-literacy.json', construct: 'AI Tool Adoption', dims: ['AI Evaluation','Risk-Benefit','Evidence Use','Decision Quality'] }
+  },
+  'financial-literacy': {
+    'signal-check':   { scenario: 'scenarios/signal-check-financial-literacy.json', construct: 'Financial Literacy', dims: ['Budgeting','Saving & Investing','Debt & Credit','Risk & Protection'] },
+    'the-brief':      { scenario: 'scenarios/the-brief-financial-literacy.json', construct: 'Financial Analysis', dims: ['Financial Analysis','Risk Assessment','Critical Evaluation','Communication'] },
+    'data-detective': { scenario: 'scenarios/data-detective-financial-literacy.json', construct: 'Financial Data Reasoning', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
+    'the-take':       { scenario: 'scenarios/the-take-financial-literacy.json', construct: 'Financial Policy Argumentation', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
+    'the-forum':      null
+  },
+  'project-management': {
+    'signal-check':   { scenario: 'scenarios/signal-check-project-management.json', construct: 'Project Management', dims: ['Planning','Risk Management','Stakeholder Comms','Execution & Control'] },
+    'the-brief':      { scenario: 'scenarios/the-brief-project-management.json', construct: 'Project Recovery', dims: ['Diagnosis','Planning','Stakeholder Mgmt','Risk Mitigation'] },
+    'data-detective': { scenario: 'scenarios/data-detective-project-management.json', construct: 'Project Metrics Analysis', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
+    'the-take':       null,
+    'the-forum':      { scenario: 'scenarios/the-forum-project-prioritization.json', construct: 'Project Prioritization', dims: ['Trade-off Analysis','Evidence Use','Engagement','Synthesizing'] }
+  }
+};
+
+// Base task URLs (shell files, no scenario param)
+const TASK_BASE_URLS = {
+  'signal-check':   { desktop: 'signal-check.html',   mobile: 'signal-check.html' },
+  'the-brief':      { desktop: 'the-brief.html',       mobile: 'the-brief-mobile.html' },
+  'data-detective': { desktop: 'data-detective.html',  mobile: 'data-detective-mobile.html' },
+  'the-take':       { desktop: 'the-take.html',        mobile: 'the-take-mobile.html' },
+  'the-forum':      { desktop: 'the-forum.html',       mobile: 'the-forum-mobile.html' }
+};
+
+let currentConstruct = 'all';
+
+function setConstruct(val) {
+  currentConstruct = val;
+  const map = TASK_CONSTRUCT_MAP[val] || TASK_CONSTRUCT_MAP['all'];
+
+  Object.keys(map).forEach(taskId => {
+    const card   = document.getElementById('card-' + taskId);
+    const action = document.getElementById('action-' + taskId);
+    const config = map[taskId];
+
+    if (!card) return;
+
+    if (!config) {
+      // Grey out
+      card.classList.add('construct-na');
+      card.classList.remove('disabled');
+    } else {
+      card.classList.remove('construct-na');
+
+      // Update construct name + dims in the card
+      const nameEl = card.querySelector('.task-card-construct-name');
+      const dimsEl = card.querySelector('.task-card-dims');
+      if (nameEl) nameEl.textContent = config.construct;
+      if (dimsEl) {
+        dimsEl.innerHTML = config.dims.map(d => `<span class="dim-tag">${d}</span>`).join('');
+      }
+
+      // Build URL with scenario param if needed
+      const base = TASK_BASE_URLS[taskId];
+      const modeUrl = base[currentMode] || base.desktop;
+      const url = config.scenario ? `${modeUrl}?scenario=${config.scenario}` : modeUrl;
+      if (action) action.href = url;
+      card.dataset.desktop = config.scenario ? `${base.desktop}?scenario=${config.scenario}` : base.desktop;
+      card.dataset.mobile  = config.scenario ? `${base.mobile}?scenario=${config.scenario}`  : base.mobile;
+    }
+  });
+
+  localStorage.setItem('pba-hub-construct', val);
+}
+
+// Re-apply construct when mode changes (URLs need to stay in sync)
+const _origSetMode = setMode;
+setMode = function(mode) {
+  _origSetMode(mode);
+  // Re-run construct to re-build URLs with current mode
+  const sel = document.getElementById('constructSelect');
+  if (sel) setConstruct(sel.value);
+};
+
+// Restore saved construct
+const savedConstruct = localStorage.getItem('pba-hub-construct');
+if (savedConstruct && TASK_CONSTRUCT_MAP[savedConstruct]) {
+  document.getElementById('constructSelect').value = savedConstruct;
+  setConstruct(savedConstruct);
+}
 </script>
 
 </body>

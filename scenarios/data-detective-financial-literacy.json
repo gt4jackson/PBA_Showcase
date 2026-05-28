@@ -1,0 +1,407 @@
+{
+  "construct_id": "financial_data_reasoning",
+  "construct_name": "Financial Data Reasoning",
+  "construct_description": "The ability to explore, interpret, and draw sound conclusions from financial data — including recognizing anomalies in loan performance, questioning root causes, and translating analysis into actionable risk recommendations.",
+  "pba_category": {
+    "id": 3,
+    "name": "Process/Demonstration Assessment",
+    "description": "Tasks that assess the process of problem-solving, not just the final answer. The system observes and logs how you investigate."
+  },
+  "secondary_dimensions": {
+    "stakes": "Low (formative / demonstration)",
+    "temporal": "Single-session, 12-15 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated bank portfolio data)",
+    "scoring": "Hybrid (rule-based + process quality)"
+  },
+  "dimensions": [
+    {
+      "id": "exploration",
+      "name": "Exploration",
+      "icon": "🔍",
+      "description": "Do you examine the data broadly before jumping to conclusions?",
+      "color": "#4dd3fe",
+      "weight": 0.2
+    },
+    {
+      "id": "pattern_recognition",
+      "name": "Pattern Recognition",
+      "icon": "📊",
+      "description": "Can you identify trends, outliers, and meaningful patterns?",
+      "color": "#f59e0b",
+      "weight": 0.25
+    },
+    {
+      "id": "hypothesis_testing",
+      "name": "Hypothesis Testing",
+      "icon": "🧪",
+      "description": "Do you test your ideas against the data rather than assuming?",
+      "color": "#9e9eff",
+      "weight": 0.25
+    },
+    {
+      "id": "interpretation",
+      "name": "Interpretation & Recommendation",
+      "icon": "💡",
+      "description": "Can you translate findings into clear, evidence-backed recommendations?",
+      "color": "#468254",
+      "weight": 0.3
+    }
+  ],
+  "dataset": {
+    "name": "Westbrook Bank — Personal Loan Portfolio Q1–Q4",
+    "description": "Loan performance data across 4 customer segments and 4 quarters. Default rates spiked in Q3 — figure out which segment, why, and what to recommend.",
+    "columns": [
+      {
+        "id": "segment",
+        "label": "Segment",
+        "type": "text"
+      },
+      {
+        "id": "quarter",
+        "label": "Quarter",
+        "type": "text"
+      },
+      {
+        "id": "loans_issued",
+        "label": "Loans Issued",
+        "type": "number"
+      },
+      {
+        "id": "total_value_k",
+        "label": "Total Value ($K)",
+        "type": "number"
+      },
+      {
+        "id": "default_rate_pct",
+        "label": "Default Rate (%)",
+        "type": "number"
+      },
+      {
+        "id": "avg_credit_score",
+        "label": "Avg Credit Score",
+        "type": "number"
+      },
+      {
+        "id": "avg_income_k",
+        "label": "Avg Income ($K)",
+        "type": "number"
+      }
+    ],
+    "rows": [
+      {
+        "segment": "Young Adults",
+        "quarter": "Q1",
+        "loans_issued": 310,
+        "total_value_k": 4650,
+        "default_rate_pct": 4.1,
+        "avg_credit_score": 672,
+        "avg_income_k": 41
+      },
+      {
+        "segment": "Young Adults",
+        "quarter": "Q2",
+        "loans_issued": 334,
+        "total_value_k": 5010,
+        "default_rate_pct": 4.4,
+        "avg_credit_score": 668,
+        "avg_income_k": 42
+      },
+      {
+        "segment": "Young Adults",
+        "quarter": "Q3",
+        "loans_issued": 402,
+        "total_value_k": 6830,
+        "default_rate_pct": 11.2,
+        "avg_credit_score": 631,
+        "avg_income_k": 39
+      },
+      {
+        "segment": "Young Adults",
+        "quarter": "Q4",
+        "loans_issued": 358,
+        "total_value_k": 5380,
+        "default_rate_pct": 5.3,
+        "avg_credit_score": 651,
+        "avg_income_k": 41
+      },
+      {
+        "segment": "Prime Borrowers",
+        "quarter": "Q1",
+        "loans_issued": 520,
+        "total_value_k": 18200,
+        "default_rate_pct": 1.2,
+        "avg_credit_score": 748,
+        "avg_income_k": 94
+      },
+      {
+        "segment": "Prime Borrowers",
+        "quarter": "Q2",
+        "loans_issued": 545,
+        "total_value_k": 19100,
+        "default_rate_pct": 1.1,
+        "avg_credit_score": 751,
+        "avg_income_k": 96
+      },
+      {
+        "segment": "Prime Borrowers",
+        "quarter": "Q3",
+        "loans_issued": 538,
+        "total_value_k": 18850,
+        "default_rate_pct": 1.4,
+        "avg_credit_score": 749,
+        "avg_income_k": 95
+      },
+      {
+        "segment": "Prime Borrowers",
+        "quarter": "Q4",
+        "loans_issued": 561,
+        "total_value_k": 19650,
+        "default_rate_pct": 1.3,
+        "avg_credit_score": 752,
+        "avg_income_k": 97
+      },
+      {
+        "segment": "Small Business",
+        "quarter": "Q1",
+        "loans_issued": 185,
+        "total_value_k": 9250,
+        "default_rate_pct": 3.8,
+        "avg_credit_score": 698,
+        "avg_income_k": 78
+      },
+      {
+        "segment": "Small Business",
+        "quarter": "Q2",
+        "loans_issued": 192,
+        "total_value_k": 9600,
+        "default_rate_pct": 3.6,
+        "avg_credit_score": 701,
+        "avg_income_k": 80
+      },
+      {
+        "segment": "Small Business",
+        "quarter": "Q3",
+        "loans_issued": 178,
+        "total_value_k": 8900,
+        "default_rate_pct": 4.2,
+        "avg_credit_score": 694,
+        "avg_income_k": 77
+      },
+      {
+        "segment": "Small Business",
+        "quarter": "Q4",
+        "loans_issued": 201,
+        "total_value_k": 10050,
+        "default_rate_pct": 3.7,
+        "avg_credit_score": 703,
+        "avg_income_k": 81
+      },
+      {
+        "segment": "Senior Customers",
+        "quarter": "Q1",
+        "loans_issued": 142,
+        "total_value_k": 5680,
+        "default_rate_pct": 1.8,
+        "avg_credit_score": 731,
+        "avg_income_k": 62
+      },
+      {
+        "segment": "Senior Customers",
+        "quarter": "Q2",
+        "loans_issued": 138,
+        "total_value_k": 5520,
+        "default_rate_pct": 1.9,
+        "avg_credit_score": 729,
+        "avg_income_k": 61
+      },
+      {
+        "segment": "Senior Customers",
+        "quarter": "Q3",
+        "loans_issued": 145,
+        "total_value_k": 5800,
+        "default_rate_pct": 2.1,
+        "avg_credit_score": 727,
+        "avg_income_k": 60
+      },
+      {
+        "segment": "Senior Customers",
+        "quarter": "Q4",
+        "loans_issued": 151,
+        "total_value_k": 6040,
+        "default_rate_pct": 1.7,
+        "avg_credit_score": 733,
+        "avg_income_k": 63
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "descriptive",
+      "label": "Question 1 — Exploration",
+      "text": "Look across all four segments and four quarters. What's the general range of default rates in this portfolio? Which segment tends to have the highest rates, and which has the lowest?",
+      "hint": "Try comparing segments side by side across quarters. Look at both the default rate and the credit score columns together.",
+      "scorer": {
+        "key_concepts": [
+          "young adults",
+          "highest",
+          "prime borrowers",
+          "lowest",
+          "default rate",
+          "range",
+          "credit score",
+          "segment",
+          "compare",
+          "trend"
+        ],
+        "length_threshold": 40,
+        "max_points": 30
+      }
+    },
+    {
+      "id": "q2",
+      "type": "diagnostic",
+      "label": "Question 2 — Pattern Recognition",
+      "text": "Something unusual happened in Q3. Which segment experienced it, how large was the change, and does anything else in the data change at the same time?",
+      "hint": "Look at Q3 values compared to Q1 and Q2 for every segment. When you find the spike, check whether avg_credit_score or avg_income_k moved in the same direction.",
+      "scorer": {
+        "key_concepts": [
+          "young adults",
+          "q3",
+          "spike",
+          "11",
+          "default rate",
+          "credit score",
+          "dropped",
+          "fell",
+          "631",
+          "income",
+          "correlated",
+          "same time",
+          "anomaly",
+          "outlier"
+        ],
+        "length_threshold": 60,
+        "max_points": 40
+      }
+    },
+    {
+      "id": "q3",
+      "type": "prescriptive",
+      "label": "Question 3 — Hypothesis Testing",
+      "text": "Why do you think the Q3 default rate spiked for that segment? What does the data support — and what would you need to know that isn't in this table?",
+      "hint": "Look at the credit score drop and volume increase together. Could the bank have loosened underwriting standards? Might external economic conditions have hit this group harder? What's missing from the data?",
+      "scorer": {
+        "key_concepts": [
+          "credit score",
+          "underwriting",
+          "loosened",
+          "standards",
+          "volume",
+          "more loans",
+          "income",
+          "economic",
+          "seasonal",
+          "missing",
+          "unemployment",
+          "external",
+          "hypothesis",
+          "cause",
+          "correlation"
+        ],
+        "length_threshold": 70,
+        "max_points": 40
+      }
+    },
+    {
+      "id": "q4",
+      "type": "prescriptive",
+      "label": "Question 4 — Interpretation & Recommendation",
+      "text": "You're presenting to the bank's risk committee. Based on your analysis, what 2–3 concrete actions would you recommend? Reference specific numbers from the data to support each recommendation.",
+      "hint": "Strong recommendations cite specific data points. For example: 'The Young Adults segment default rate tripled from 4.1% to 11.2% in Q3, while avg credit score fell 37 points — this suggests tightening minimum credit score thresholds for this segment.'",
+      "scorer": {
+        "key_concepts": [
+          "credit score threshold",
+          "underwriting",
+          "tighten",
+          "monitor",
+          "young adults",
+          "11",
+          "4.1",
+          "631",
+          "risk committee",
+          "income",
+          "specific",
+          "data",
+          "evidence",
+          "recommend",
+          "action"
+        ],
+        "length_threshold": 80,
+        "max_points": 30
+      }
+    }
+  ],
+  "anomalies": [
+    {
+      "id": "young_adults_q3_default",
+      "description": "Young Adults default rate jumped from ~4% in Q1/Q2 to 11.2% in Q3 — nearly a 3x increase — while other segments held steady.",
+      "severity": "primary"
+    },
+    {
+      "id": "young_adults_q3_credit_drop",
+      "description": "Young Adults avg credit score fell from ~670 to 631 in Q3, suggesting the bank approved riskier borrowers that quarter.",
+      "severity": "primary"
+    },
+    {
+      "id": "young_adults_q3_volume_surge",
+      "description": "Loan volume for Young Adults surged in Q3 (402 vs ~320 in Q1/Q2), consistent with loosened approval criteria.",
+      "severity": "secondary"
+    },
+    {
+      "id": "q4_partial_recovery",
+      "description": "Default rates and credit scores partially recovered in Q4 for Young Adults — but not fully back to Q1/Q2 levels, suggesting ongoing risk.",
+      "severity": "insight"
+    },
+    {
+      "id": "prime_borrowers_stability",
+      "description": "Prime Borrowers default rate barely moved across all four quarters (1.1%–1.4%), highlighting how stable this segment is by comparison.",
+      "severity": "insight"
+    }
+  ],
+  "coaching_tips": [
+    "Don't just look at one column — default rates tell you something went wrong, but credit score and income tell you why.",
+    "When one segment spikes while others hold steady, that's a diagnostic signal: the problem is segment-specific, not market-wide.",
+    "Volume matters: if loans_issued went up AND default rates went up, you may be looking at a supply-side problem (approving riskier borrowers).",
+    "Strong recommendations cite specific numbers. 'Tighten credit score thresholds' is good; 'Young Adults avg credit score fell from 668 to 631 in Q3 while default rate tripled' is better.",
+    "Always ask what's missing from the data. Employment rates, marketing campaigns, or policy changes could explain Q3 without appearing in this table."
+  ],
+  "overall_labels": [
+    {
+      "min": 0,
+      "max": 39,
+      "label": "Developing",
+      "emoji": "🌱"
+    },
+    {
+      "min": 40,
+      "max": 59,
+      "label": "Emerging",
+      "emoji": "📊"
+    },
+    {
+      "min": 60,
+      "max": 79,
+      "label": "Proficient",
+      "emoji": "💪"
+    },
+    {
+      "min": 80,
+      "max": 100,
+      "label": "Expert Analyst",
+      "emoji": "🏆"
+    }
+  ]
+}

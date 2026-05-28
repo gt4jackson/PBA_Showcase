@@ -1,0 +1,253 @@
+{
+  "construct_id": "financial_policy_argumentation",
+  "construct_name": "Financial Policy Argumentation",
+  "construct_description": "The ability to formulate clear claims on contested financial policy questions, select and evaluate evidence from multiple sources, address counterarguments, and communicate a well-reasoned position in writing.",
+  "dimensions": [
+    {
+      "id": "claim_clarity",
+      "name": "Claim Clarity",
+      "icon": "🎯",
+      "description": "States a clear, specific position that directly addresses the prompt",
+      "max_score": 20
+    },
+    {
+      "id": "evidence_use",
+      "name": "Evidence Use",
+      "icon": "📊",
+      "description": "Selects relevant evidence from provided sources and integrates it effectively",
+      "max_score": 25
+    },
+    {
+      "id": "source_evaluation",
+      "name": "Source Evaluation",
+      "icon": "🔍",
+      "description": "Distinguishes stronger from weaker sources and addresses credibility",
+      "max_score": 20
+    },
+    {
+      "id": "counterargument",
+      "name": "Counterargument",
+      "icon": "⚖️",
+      "description": "Acknowledges opposing viewpoints and responds substantively",
+      "max_score": 20
+    },
+    {
+      "id": "writing_quality",
+      "name": "Writing Quality",
+      "icon": "✍️",
+      "description": "Organized, clear, professional tone appropriate for the audience",
+      "max_score": 15
+    }
+  ],
+  "scenario": {
+    "title": "The Student Loan Forgiveness Decision",
+    "audience": "U.S. Senate Finance Committee",
+    "prompt": "The Senate Finance Committee is weighing a proposal to cancel up to $20,000 in federal student loan debt for borrowers earning under $75,000/year. As a policy analyst, write a position memo recommending whether to approve, modify, or reject the proposal. Support your position with evidence from the provided sources.",
+    "word_range": [300, 500],
+    "sources": [
+      {
+        "id": "src_research",
+        "tab_label": "Academic Research",
+        "type": "Academic Research",
+        "reliability": "high",
+        "title": "Long-Term Effects of Student Debt on Household Financial Decisions",
+        "author": "Bhatia, Okonkwo & Sandoval",
+        "publication": "Journal of Consumer Finance, 2024",
+        "content_html": "<p>This meta-analysis synthesized findings from 38 longitudinal studies of student debt holders (N = 84,200 borrowers) tracked over a 10–20 year period following graduation.</p>\n        <p><strong>Key findings:</strong></p>\n        <ul>\n          <li>Borrowers carrying more than $20,000 in federal student debt were <strong>31% less likely to purchase a home within 10 years</strong> of graduation compared to debt-free peers, even after controlling for income and credit score.</li>\n          <li>Retirement savings at age 40 were, on average, <strong>$18,400 lower</strong> for borrowers in the highest debt quartile compared to debt-free graduates with equivalent incomes.</li>\n          <li>Entrepreneurship rates were 22% lower among high-debt borrowers — consistent with research suggesting debt aversion suppresses risk-taking.</li>\n          <li>Effects were most pronounced for borrowers who attended for-profit institutions and those whose degrees did not lead to credential-matching employment.</li>\n          <li>Income-driven repayment plans moderated — but did not eliminate — these effects.</li>\n        </ul>\n        <p><strong>Limitations:</strong> Studies relied on self-reported data in some cohorts. Causal identification is difficult; selection effects (who takes on debt) may influence outcomes. Most studies predated pandemic-era forbearance policies.</p>"
+      },
+      {
+        "id": "src_news",
+        "tab_label": "News Article",
+        "type": "News Report",
+        "reliability": "mixed",
+        "title": "Student Loan Forgiveness: Who Really Benefits?",
+        "author": "Marcus Delgado",
+        "publication": "The National Ledger, March 2026",
+        "content_html": "<p>The Congressional Budget Office estimates that a $20,000 forgiveness cap for borrowers under $75,000 in annual income would cost approximately <strong>$400 billion over 10 years</strong> — a figure that has become the center of political debate since the proposal was announced.</p>\n        <p>Proponents argue the policy would provide immediate economic stimulus. \"When people aren't spending a third of their paycheck on loan payments, they buy homes, start businesses, and contribute to local economies,\" said Sen. Alicia Romero (D-NV), a co-sponsor of the bill.</p>\n        <p>Critics counter that the distribution of benefits skews upward. An analysis by the Urban Fiscal Institute found that <strong>40% of total forgiveness dollars would flow to borrowers in the top income quintile</strong> — largely because high earners tend to hold graduate and professional school debt that exceeds the $20,000 cap.</p>\n        <p>Notably, the same Urban Fiscal Institute analysis found that the $20,000 income-capped proposal would fully eliminate debt for <strong>71% of Pell Grant recipients</strong> — a finding the article's headline, \"Who Really Benefits? Mostly the Wealthy,\" does not reflect.</p>\n        <p>The Federal Reserve has flagged inflationary concerns, noting that sudden liquidity injections at scale can push consumer spending above productive capacity. However, the Fed's own working paper acknowledges that the stimulus effect of loan forgiveness is far smaller than equivalent direct cash transfers, because borrowers may not immediately change spending behavior.</p>"
+      },
+      {
+        "id": "src_stakeholder",
+        "tab_label": "Stakeholder Letter",
+        "type": "Stakeholder Correspondence",
+        "reliability": "low",
+        "title": "Open Letter from the American Student Debt Relief Coalition",
+        "author": "American Student Debt Relief Coalition",
+        "publication": "Submitted to Senate Finance Committee, April 2026",
+        "content_html": "<p>Dear Members of the Senate Finance Committee,</p>\n        <p>We write on behalf of millions of borrowers for whom student debt is not an abstraction — it is a daily weight that shapes every decision, from whether to see a doctor to whether to have children.</p>\n        <p><strong>The human cost is real:</strong></p>\n        <ul>\n          <li>A survey of 2,200 borrowers conducted by our coalition found that <strong>67% report significant anxiety or depression</strong> tied directly to their student loan burden.</li>\n          <li>Coalition members have shared testimonials describing delayed marriages, foregone medical care, and career choices driven entirely by debt repayment pressure rather than personal or professional calling.</li>\n          <li>Student debt is a generational injustice — tuition costs have risen 180% in inflation-adjusted terms since 1980, while wages for college graduates have risen only 19%.</li>\n        </ul>\n        <p>We urge the Committee to approve the proposal without modification. Partial relief is not justice. Every dollar of debt cancelled is a life partially restored.</p>\n        <p>Respectfully,<br/>The American Student Debt Relief Coalition<br/>(representing 340,000 members)</p>"
+      },
+      {
+        "id": "src_economic",
+        "tab_label": "Economic Analysis",
+        "type": "Economic Analysis",
+        "reliability": "high",
+        "title": "Macroeconomic Effects of Large-Scale Federal Debt Cancellation",
+        "author": "Division of Research & Statistics",
+        "publication": "Federal Reserve Board Working Paper No. 2025-47",
+        "content_html": "<p>This working paper models the macroeconomic effects of four debt cancellation scenarios using the Fed's Dynamic Stochastic General Equilibrium (DSGE) framework.</p>\n        <p><strong>Key findings on the $20,000 income-capped proposal:</strong></p>\n        <ul>\n          <li><strong>Inflation impact:</strong> The proposal is estimated to add <strong>0.2–0.4 percentage points to core PCE inflation</strong> in the year of cancellation, with effects dissipating within 18–24 months. This is below the threshold the model classifies as macroeconomically destabilizing.</li>\n          <li><strong>Fiscal multiplier:</strong> The forgiveness multiplier is estimated at <strong>0.3–0.5</strong> — substantially lower than direct cash transfers (multiplier: 1.2–1.8) because borrowers spread changed spending behavior over time rather than immediately increasing consumption.</li>\n          <li><strong>Distributional effects:</strong> Income-capping the benefit at $75,000 concentrates relief among lower and middle quintiles but does not eliminate regressive elements, since graduate degree holders — who earn more on average — carry more debt.</li>\n          <li><strong>Moral hazard:</strong> One-time cancellation may alter future borrowing expectations. The model estimates a <strong>6–9% increase in student loan uptake</strong> in the decade following a cancellation event, partially offsetting fiscal savings from reduced defaults.</li>\n        </ul>\n        <p><strong>Conclusion:</strong> The proposal's macroeconomic risks are moderate and manageable. The dominant policy questions are distributional and fiscal, not macroeconomic stability.</p>"
+      }
+    ]
+  },
+  "rubric": {
+    "claim_clarity": {
+      "keywords": [
+        "recommend",
+        "approve",
+        "reject",
+        "modify",
+        "position",
+        "propose",
+        "conditional",
+        "targeted",
+        "with modifications"
+      ],
+      "strong_indicators": [
+        "approve with modifications",
+        "targeted forgiveness",
+        "reject the proposal",
+        "recommend approval",
+        "conditional on",
+        "phased implementation"
+      ],
+      "weak_indicators": [
+        "maybe",
+        "it depends",
+        "hard to say",
+        "both sides have merit",
+        "complex issue"
+      ]
+    },
+    "evidence_use": {
+      "source_refs": [
+        "meta-analysis",
+        "31%",
+        "18,400",
+        "22%",
+        "400 billion",
+        "40%",
+        "71%",
+        "pell grant",
+        "0.2",
+        "0.4",
+        "multiplier",
+        "0.3",
+        "0.5",
+        "mental health",
+        "anxiety",
+        "depression",
+        "180%",
+        "19%"
+      ],
+      "min_sources_referenced": 3,
+      "integration_keywords": [
+        "according to",
+        "the research shows",
+        "data indicates",
+        "the federal reserve",
+        "the analysis found",
+        "the working paper",
+        "the evidence suggests",
+        "the meta-analysis"
+      ]
+    },
+    "source_evaluation": {
+      "credibility_keywords": [
+        "peer-reviewed",
+        "federal reserve",
+        "working paper",
+        "longitudinal",
+        "coalition",
+        "advocacy",
+        "self-reported",
+        "selection bias",
+        "anecdotal",
+        "news",
+        "contradicts",
+        "headline",
+        "self-contradictory",
+        "independent",
+        "cbo",
+        "urban fiscal"
+      ],
+      "strongest_sources": [
+        "src_research",
+        "src_economic"
+      ],
+      "weakest_sources": [
+        "src_stakeholder"
+      ],
+      "self_contradiction_note": "The news article's headline ('Who Really Benefits? Mostly the Wealthy') contradicts a finding buried in its own text: 71% of Pell Grant recipients would have their debt fully eliminated under the proposal — a majority low-income benefit."
+    },
+    "counterargument": {
+      "keywords": [
+        "however",
+        "on the other hand",
+        "critics",
+        "opponents",
+        "some argue",
+        "while",
+        "although",
+        "despite",
+        "concede",
+        "acknowledge",
+        "counter"
+      ],
+      "counter_concepts": [
+        "regressive",
+        "wealthy",
+        "graduate debt",
+        "moral hazard",
+        "inflation",
+        "fiscal cost",
+        "400 billion",
+        "distribution",
+        "top quintile",
+        "college premium",
+        "earned"
+      ]
+    },
+    "writing_quality": {
+      "min_words": 300,
+      "max_words": 500,
+      "section_completeness": [
+        "position",
+        "evidence",
+        "counterargument",
+        "recommendation"
+      ]
+    }
+  },
+  "overall_labels": [
+    {
+      "min": 90,
+      "max": 100,
+      "label": "Gold — Distinguished",
+      "tier": "gold"
+    },
+    {
+      "min": 75,
+      "max": 89,
+      "label": "Silver — Proficient",
+      "tier": "silver"
+    },
+    {
+      "min": 60,
+      "max": 74,
+      "label": "Bronze — Developing",
+      "tier": "bronze"
+    },
+    {
+      "min": 0,
+      "max": 59,
+      "label": "Emerging",
+      "tier": "developing"
+    }
+  ],
+  "coaching_tips": [
+    "Strong memos state a clear position — approve, modify, or reject — in the opening sentence. Don't leave the Senate Finance Committee guessing.",
+    "Reference at least 3 sources and explain why you trust some more than others. The Federal Reserve working paper and academic meta-analysis carry more weight than the advocacy letter.",
+    "Look for the self-contradiction in the news article: the headline says the wealthy benefit most, but the article itself reports that 71% of Pell Grant recipients would be fully relieved. Strong analysts catch this.",
+    "The advocacy coalition letter uses emotional appeals and a self-reported survey — not independent research. Acknowledge its value as stakeholder input while noting its methodological limits.",
+    "The best counterarguments don't just list objections — they respond to them. If you recommend approval, address the distributional skew. If you reject, address the documented household burden.",
+    "The Federal Reserve's own conclusion is that macroeconomic risk is 'moderate and manageable' — which means inflation is not as strong a counterargument as some assume."
+  ]
+}

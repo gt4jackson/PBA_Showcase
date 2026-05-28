@@ -1,0 +1,321 @@
+{
+  "construct_id": "financial_analysis",
+  "construct_name": "Financial Analysis & Investment Judgment",
+  "construct_description": "The ability to read financial statements, evaluate a business opportunity, identify inconsistencies in data, assess risk, and produce a clear, evidence-based investment recommendation.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "Medium (formative / demonstration)",
+    "temporal": "Single-session, 20 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated workplace)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "financial_analysis",
+      "name": "Financial Analysis",
+      "icon": "🔢",
+      "description": "Interpreting financial statements, spotting inconsistencies, and drawing valid conclusions from numeric data.",
+      "color": "#3b82f6",
+      "weight": 0.35
+    },
+    {
+      "id": "risk_assessment",
+      "name": "Risk Assessment",
+      "icon": "🛡️",
+      "description": "Identifying, categorizing, and weighing material risks that could affect the investment thesis.",
+      "color": "#f43f5e",
+      "weight": 0.25
+    },
+    {
+      "id": "critical_evaluation",
+      "name": "Critical Evaluation",
+      "icon": "🔍",
+      "description": "Catching data errors, inconsistencies, and AI hallucinations before relying on them in analysis.",
+      "color": "#10b981",
+      "weight": 0.25
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "icon": "✍️",
+      "description": "Presenting a concise, well-structured recommendation that a senior audience can act on.",
+      "color": "#f59e0b",
+      "weight": 0.15
+    }
+  ],
+  "scenario": {
+    "id": "acquisition_brief",
+    "title": "The Acquisition Brief",
+    "client": "Meridian Capital Partners",
+    "estimated_minutes": 20,
+    "budget_tokens": 120,
+    "briefing": "Meridian Capital Partners is a mid-market private equity firm evaluating the acquisition of Crestline Fitness, a regional gym chain with 22 locations across the Pacific Northwest.\n\nYou've been asked to review the preliminary financials, benchmark against industry comps, and write a one-page Investment Brief with a clear recommendation: Proceed, Do Not Proceed, or Proceed with Conditions.\n\nYour files are in the workspace. The AI Workbench is available to help — but use it carefully. At least one figure in the materials doesn't add up, and the AI tools have known limitations.",
+    "inbox": [
+      {
+        "id": "email_1",
+        "from": "Diana Marsh <d.marsh@meridiancapital.example>",
+        "subject": "Crestline Fitness — need your brief by 3pm",
+        "body": "Good morning,\n\nWelcome to the deal team. We're in early diligence on Crestline Fitness and I need a crisp one-pager for the IC meeting this afternoon.\n\nThe ask is straightforward: look at the financials, check them against industry comps, flag any risks, and give me a clear recommendation — Proceed, Do Not Proceed, or Proceed with Conditions.\n\nDo not bury the lead. The IC has zero patience for hedge-everything memos. Pick a position and defend it.\n\nFiles are in your workspace. The AI Workbench can help you run numbers and pull context.\n\nBack to me by 3pm.\n\n— Diana Marsh\nManaging Director, Meridian Capital Partners"
+      },
+      {
+        "id": "email_2",
+        "from": "Kevin Tran <k.tran@meridiancapital.example>",
+        "subject": "RE: Crestline — heads up on the revenue figure",
+        "body": "Hey — just flagging something before you dive in.\n\nI was doing a quick sanity check on the Crestline financials and the revenue growth rate in the executive summary paragraph (the narrative section at the top) doesn't match what you actually get when you calculate it from the revenue table. One of them is probably a copy-paste error from an older version of the deck.\n\nDidn't want to escalate without being sure, but thought you should know before you write anything up.\n\nGood luck today.\n\n— Kevin\nAnalyst, Meridian Capital Partners"
+      },
+      {
+        "id": "email_3",
+        "from": "Priya Okonkwo <p.okonkwo@meridiancapital.example>",
+        "subject": "You got this!",
+        "body": "Hey, heard you're on the Crestline brief — congrats on the first live deal!\n\nDiana can be intense but she's fair. Just make sure your numbers are airtight and you have a real recommendation. She hates waffling.\n\nGrab me after for a debrief if you want.\n\n— Priya"
+      }
+    ],
+    "files": [
+      {
+        "id": "file_financials",
+        "name": "crestline_fitness_financials.html",
+        "type": "data",
+        "reliability": "contains_error",
+        "content_html": "<div class='file-content'><h2>Crestline Fitness — Preliminary Financial Summary</h2><p class='file-meta'>Prepared by: Crestline CFO Office | For Meridian Capital Partners Diligence | Confidential</p><h3>Executive Overview</h3><p>Crestline Fitness operates 22 gym locations across Oregon, Washington, and Idaho. Over the past three fiscal years the business has grown revenue at a compound annual rate of <strong>18% per year</strong>, driven by new location openings and a successful premium membership tier launched in FY2022.</p><p>EBITDA margins have expanded from 14% in FY2021 to 19% in FY2023, reflecting improved labor efficiency and renegotiated supplier contracts.</p><h3>Income Statement Summary ($000s)</h3><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Metric</th><th>FY2021</th><th>FY2022</th><th>FY2023</th></tr></thead><tbody><tr><td>Total Revenue</td><td>$18,400</td><td>$20,700</td><td>$23,100</td></tr><tr><td>Cost of Revenue</td><td>$7,900</td><td>$8,600</td><td>$9,300</td></tr><tr><td>Gross Profit</td><td>$10,500</td><td>$12,100</td><td>$13,800</td></tr><tr><td>Operating Expenses (SG&amp;A)</td><td>$5,800</td><td>$6,400</td><td>$7,300</td></tr><tr><td>EBITDA</td><td>$2,576</td><td>$3,521</td><td>$4,389</td></tr><tr><td>EBITDA Margin</td><td>14.0%</td><td>17.0%</td><td>19.0%</td></tr><tr><td>Net Income</td><td>$820</td><td>$1,140</td><td>$1,580</td></tr></tbody></table><p class='planted-error-note' style='font-size:0.85em;color:#666'><em>Note: Revenue figures are unaudited. Final audit report pending.</em></p><h3>Balance Sheet Highlights ($000s, FY2023)</h3><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody><tr><td>Total Assets</td><td>$31,200</td></tr><tr><td>Total Debt (Long-Term)</td><td>$14,800</td></tr><tr><td>Equity</td><td>$16,400</td></tr><tr><td>Debt / EBITDA</td><td>3.4x</td></tr></tbody></table><h3>Valuation Ask</h3><p>Crestline is seeking a valuation of <strong>$52,000,000</strong> (approximately 11.8x FY2023 EBITDA).</p></div>"
+      },
+      {
+        "id": "file_comps",
+        "name": "fitness_industry_comps.html",
+        "type": "reference",
+        "reliability": "reliable",
+        "content_html": "<div class='file-content'><h2>Fitness Industry — Comparable Transaction &amp; Public Company Benchmarks</h2><p class='file-meta'>Source: Meridian Capital Internal Research | Updated Q1 2024</p><h3>Public Company Multiples (EV/EBITDA)</h3><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Company</th><th>EV/EBITDA</th><th>Revenue Growth (3yr CAGR)</th><th>EBITDA Margin</th><th>Debt/EBITDA</th></tr></thead><tbody><tr><td>Planet Fitness (PLNT)</td><td>22.1x</td><td>12.4%</td><td>28.1%</td><td>2.1x</td></tr><tr><td>Life Time Group (LTH)</td><td>11.4x</td><td>9.8%</td><td>17.3%</td><td>4.6x</td></tr><tr><td>Xponential Fitness (XPOF)</td><td>14.7x</td><td>21.2%</td><td>14.8%</td><td>3.1x</td></tr></tbody></table><h3>Recent Private M&amp;A Transactions (Regional Gym Chains, 10-30 Locations)</h3><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Target (Anonymized)</th><th>Year</th><th>EV/EBITDA Paid</th><th>Revenue Growth</th><th>Notes</th></tr></thead><tbody><tr><td>Pacific Fit Holdings</td><td>2023</td><td>9.2x</td><td>8.1%</td><td>Mature markets, limited upside</td></tr><tr><td>CoreStrength NW</td><td>2022</td><td>10.8x</td><td>14.3%</td><td>Strong unit economics, similar footprint</td></tr><tr><td>Apex Athletic Clubs</td><td>2023</td><td>8.5x</td><td>6.2%</td><td>Post-COVID recovery play</td></tr><tr><td>UrbanFit Regional</td><td>2024</td><td>12.1x</td><td>19.7%</td><td>Premium positioning, loyal base</td></tr></tbody></table><h3>Key Benchmarks for Regional Gym Chains</h3><ul><li><strong>Typical EBITDA margin range:</strong> 14–22% (Crestline at 19% is solid)</li><li><strong>Healthy Debt/EBITDA:</strong> Under 3.5x (Crestline at 3.4x is within range, but tight)</li><li><strong>Fair acquisition multiple for high-growth regional chain:</strong> 9x–12x EBITDA</li><li><strong>Red flag threshold:</strong> Paying over 12x EBITDA for a sub-$30M revenue business without a clear path to scale</li></ul></div>"
+      },
+      {
+        "id": "file_diligence",
+        "name": "due_diligence_checklist.html",
+        "type": "reference",
+        "reliability": "reliable",
+        "content_html": "<div class='file-content'><h2>Meridian Capital — PE Due Diligence Checklist (Abridged)</h2><p class='file-meta'>Standard Operating Procedure | Deal Team Use Only</p><h3>Financial Due Diligence</h3><ul><li>☐ Verify revenue figures against bank statements or audited financials</li><li>☐ Confirm EBITDA calculation (add-backs, one-time items)</li><li>☐ Validate debt schedule and covenant compliance</li><li>☐ Review customer concentration (no single customer &gt;10% of revenue)</li><li>☐ Check revenue growth rate claimed in narrative against actuals in data table</li></ul><h3>Operational Due Diligence</h3><ul><li>☐ Assess member churn rate and retention trends</li><li>☐ Review lease terms for each location (remaining tenure, renewal options)</li><li>☐ Validate headcount and labor cost trajectory</li><li>☐ Confirm technology stack and CRM quality</li></ul><h3>Market &amp; Competitive Due Diligence</h3><ul><li>☐ Assess market saturation in target geographies</li><li>☐ Review competitive threats (new entrants, big-box expansion)</li><li>☐</li><li>☐ Confirm regulatory compliance (fitness licensing, ADA)</li></ul><h3>Risk Flags — Immediate Escalation Required</h3><ul><li>Any discrepancy between narrative claims and underlying data tables</li><li>Unaudited financials with no audit timeline provided</li><li>Debt/EBITDA above 4.0x without a clear deleveraging plan</li><li>Valuation multiple above 12x EBITDA for a regional operator</li></ul></div>"
+      }
+    ],
+    "ai_tools": [
+      {
+        "id": "financial_calculator",
+        "name": "Financial Calculator",
+        "description": "Runs exact financial calculations: CAGR, EBITDA multiples, margin math, IRR estimates. Reliable for arithmetic — feed it the right inputs.",
+        "cost": 2,
+        "icon": "🧮"
+      },
+      {
+        "id": "industry_research",
+        "name": "Industry Research Assistant",
+        "description": "Pulls market context, competitive landscape data, and industry trends. Useful for background — but known to occasionally hallucinate specific statistics. Verify key numbers.",
+        "cost": 8,
+        "icon": "📊"
+      },
+      {
+        "id": "doc_summarizer",
+        "name": "Document Summarizer",
+        "description": "Extracts and summarizes key points from reference documents. Good for quick orientation — but it will summarize whatever is in the document, errors included. It does not fact-check.",
+        "cost": 4,
+        "icon": "📄"
+      }
+    ],
+    "scripted_responses": [
+      {
+        "tool_id": "financial_calculator",
+        "keywords": ["CAGR", "revenue growth", "18%", "crestline"],
+        "response": "Calculating CAGR from the revenue table:\nFY2021: $18,400K → FY2023: $23,100K over 2 years\nCAGR = (23,100 / 18,400)^(1/2) - 1 = (1.2554)^0.5 - 1 = 1.1204 - 1 = 12.0%\n\nThe executive summary states 18% CAGR. The actual CAGR from the table is 12.0%. These do not match.",
+        "is_hallucination": false,
+        "trap_id": "revenue_growth_error"
+      },
+      {
+        "tool_id": "financial_calculator",
+        "keywords": ["EBITDA multiple", "valuation", "52 million", "multiple"],
+        "response": "Valuation multiple check:\nAsking price: $52,000K\nFY2023 EBITDA: $4,389K\nImplied EV/EBITDA = 52,000 / 4,389 = 11.85x\n\nComps range for high-growth regional chains: 9x–12x EBITDA.\nAt 11.85x, the ask is at the top of the fair range — not a screaming buy, not obviously overpriced.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "financial_calculator",
+        "keywords": ["debt", "leverage", "3.4x", "EBITDA"],
+        "response": "Debt / EBITDA verification:\nTotal Debt: $14,800K\nFY2023 EBITDA: $4,389K\nDebt/EBITDA = 14,800 / 4,389 = 3.37x ≈ 3.4x (matches the stated figure)\n\nBenchmark: healthy regional operator is under 3.5x. Crestline is within range but has limited cushion.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "industry_research",
+        "keywords": ["fitness industry", "gym market", "trends"],
+        "response": "The US fitness industry rebounded strongly post-COVID and is projected to reach $35B by 2025. Regional gym chains with 10–30 locations are a sweet spot for PE: large enough to have professional operations, small enough to have M&A upside through roll-up. Key headwinds: Peloton-style at-home fitness has plateaued; the return-to-gym trend has been durable. Key risk: rising real estate and labor costs compressing margins in 2024-2025.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "industry_research",
+        "keywords": ["Pacific Northwest", "gym", "market saturation"],
+        "response": "The Pacific Northwest fitness market (Portland, Seattle, Boise metro areas) has seen a 34% increase in gym locations since 2020, according to our proprietary dataset. Market saturation is a growing concern, particularly in the Seattle metro where density exceeds national averages by 2.7x.",
+        "is_hallucination": true,
+        "trap_id": "saturation_hallucination",
+        "hallucination_note": "The 34% and 2.7x figures are fabricated. No such proprietary dataset exists."
+      },
+      {
+        "tool_id": "industry_research",
+        "keywords": ["EBITDA margin", "gym benchmark"],
+        "response": "Typical EBITDA margins for regional gym chains range from 14–22%, with premium-positioned operators hitting the higher end. An EBITDA margin of 19% (like Crestline's FY2023 figure) is above average for a 22-location operator — a positive signal.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "doc_summarizer",
+        "keywords": ["summarize", "financials", "crestline"],
+        "response": "Summary of Crestline Financials:\n• Revenue grew from $18.4M (FY2021) to $23.1M (FY2023) — narrative claims 18% CAGR\n• EBITDA expanded from 14% to 19% margin over the same period\n• FY2023 EBITDA: $4.39M; Net Income: $1.58M\n• Long-term debt of $14.8M yields a 3.4x Debt/EBITDA ratio\n• Asking valuation: $52M (~11.8x EBITDA)\n• Note: Financials are unaudited\n\n[Summarizer note: This tool reproduces what is in the document. The 18% CAGR figure comes from the narrative text — I have not verified it against the table data.]",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "doc_summarizer",
+        "keywords": ["due diligence", "checklist"],
+        "response": "Key items from the Due Diligence Checklist:\n• Verify revenue figures against audited financials (note: Crestline's are currently unaudited)\n• Confirm EBITDA add-backs and one-time items\n• Validate debt schedule and covenant compliance\n• Check narrative revenue growth claims against table actuals (flagged as a standard step)\n• Immediate escalation required for: discrepancies between narrative and data, unaudited financials, valuation over 12x EBITDA",
+        "is_hallucination": false
+      }
+    ],
+    "traps": [
+      {
+        "id": "revenue_growth_error",
+        "type": "data_error",
+        "description": "The narrative claims 18% revenue CAGR, but the table yields a 12.0% CAGR. The error is planted in the narrative summary.",
+        "penalty_if_missed": 30,
+        "bonus_if_caught": 20
+      },
+      {
+        "id": "saturation_hallucination",
+        "type": "hallucination",
+        "description": "The Industry Research AI fabricates specific market saturation statistics (34% increase, 2.7x density) with no real basis.",
+        "penalty_if_missed": 20,
+        "bonus_if_caught": 15
+      },
+      {
+        "id": "unaudited_financials",
+        "type": "weak_evidence",
+        "description": "The financials are explicitly unaudited. A careful analyst notes this as a risk and a condition for proceeding.",
+        "penalty_if_missed": 10,
+        "bonus_if_caught": 10
+      }
+    ],
+    "deliverable": {
+      "id": "investment_brief",
+      "name": "One-Page Investment Brief",
+      "instructions": "Write a one-page Investment Brief for the IC meeting. Include: (1) Executive Summary with a clear recommendation (Proceed / Do Not Proceed / Proceed with Conditions), (2) Key Financials — the numbers that matter most, (3) Risk Assessment — top 3 risks, (4) Your Recommendation with supporting rationale. Keep it under 450 words. Be specific. No waffling.",
+      "sections": [
+        "Executive Summary",
+        "Key Financials",
+        "Risk Assessment",
+        "Recommendation"
+      ],
+      "max_words": 450,
+      "min_words": 175
+    },
+    "rubric": [
+      {
+        "id": "catches_revenue_error",
+        "name": "Catches the revenue growth inconsistency",
+        "skill_id": "financial_analysis",
+        "weight": 0.25,
+        "description": "Does the brief identify that the stated 18% CAGR does not match the ~12% actual CAGR derived from the table?",
+        "trap_id": "revenue_growth_error",
+        "keywords_positive": ["12%", "12.0%", "inconsistency", "discrepancy", "doesn't match", "does not match", "narrative", "overstated", "error", "mismatch", "stated growth", "actual growth"]
+      },
+      {
+        "id": "uses_correct_financials",
+        "name": "Uses accurate financial figures",
+        "skill_id": "financial_analysis",
+        "weight": 0.20,
+        "description": "Does the brief cite correct numbers: EBITDA of ~$4.4M, Debt/EBITDA of 3.4x, valuation at ~11.8x EBITDA?",
+        "keywords_positive": ["4,389", "4.4", "11.8x", "11.85x", "3.4x", "EBITDA", "$52M", "52 million", "multiple", "leverage"]
+      },
+      {
+        "id": "risk_assessment_quality",
+        "name": "Identifies material risks",
+        "skill_id": "risk_assessment",
+        "weight": 0.20,
+        "description": "Does the brief name at least 2 real risks (e.g., unaudited financials, leverage level, market saturation, premium valuation, missing audit)?",
+        "keywords_positive": ["unaudited", "audit", "leverage", "debt", "3.4x", "saturation", "valuation", "premium", "risk", "concern", "flag", "condition"]
+      },
+      {
+        "id": "rejects_ai_hallucination",
+        "name": "Does not repeat the AI saturation hallucination",
+        "skill_id": "critical_evaluation",
+        "weight": 0.15,
+        "description": "Does the brief avoid citing the fabricated 34% / 2.7x saturation statistics from the Industry Research AI?",
+        "trap_id": "saturation_hallucination",
+        "keywords_negative": ["34%", "2.7x", "proprietary dataset", "34 percent"]
+      },
+      {
+        "id": "clear_recommendation",
+        "name": "States a clear, actionable recommendation",
+        "skill_id": "communication",
+        "weight": 0.10,
+        "description": "Does the brief pick a position and defend it, rather than hedging without conclusion?",
+        "keywords_positive": ["proceed", "do not proceed", "recommend", "conditional", "conditions", "subject to", "we recommend", "advise against", "move forward"]
+      },
+      {
+        "id": "structure_quality",
+        "name": "Structure and professional quality",
+        "skill_id": "communication",
+        "weight": 0.10,
+        "description": "Is the brief well-organized, within length, and written at an appropriate level for an IC audience?"
+      }
+    ],
+    "coaching_tips": [
+      "Always verify narrative summary figures against the underlying data tables — copy-paste errors are extremely common in financial documents.",
+      "AI research tools can generate plausible-sounding statistics with no real source. If a number matters, trace it to a primary source.",
+      "An unaudited financial statement is a meaningful risk flag. Note it — and make audit completion a condition if you recommend proceeding.",
+      "At 11.8x EBITDA, the valuation is at the top of the comparable range. A strong case for proceeding requires a clear growth thesis, not just historical performance.",
+      "Debt/EBITDA of 3.4x is within normal bounds but leaves limited room for underperformance. Model the downside scenario before committing."
+    ]
+  },
+  "overall_labels": [
+    {
+      "min": 0,
+      "max": 59,
+      "label": "Developing",
+      "emoji": "🌱"
+    },
+    {
+      "min": 60,
+      "max": 74,
+      "label": "Bronze — Competent",
+      "emoji": "🥉"
+    },
+    {
+      "min": 75,
+      "max": 89,
+      "label": "Silver — Proficient",
+      "emoji": "🥈"
+    },
+    {
+      "min": 90,
+      "max": 100,
+      "label": "Gold — Expert",
+      "emoji": "🥇"
+    }
+  ],
+  "feedback_templates": {
+    "financial_analysis": {
+      "high": "Strong financial analysis. You correctly calculated the actual revenue CAGR from the table data and identified the discrepancy with the narrative claim — a critical catch that would matter in a real diligence process. Your use of quantitative benchmarks (EBITDA multiple, leverage ratio) was precise and grounded in the comparables.",
+      "mid": "Solid financial analysis overall. You cited most of the key figures correctly. To reach the next level, double-check every narrative summary claim against the underlying table data — in this case, the stated 18% CAGR does not match the 12% you get from the revenue table.",
+      "low": "The financial analysis needs development. A strong investment brief for a PE IC audience requires precise numbers: the actual EBITDA multiple implied by the ask, the true revenue CAGR from the data (not the narrative), and the leverage ratio. Practice tracing every numerical claim back to its source."
+    },
+    "risk_assessment": {
+      "high": "Excellent risk identification. You flagged the unaudited financials, the tight leverage position, and the premium valuation multiple — all legitimate concerns that an IC would want addressed. Your risk section would equip a decision-maker to set appropriate conditions.",
+      "mid": "Good risk awareness. You identified some material risks. For a complete picture, also consider the unaudited financials (a standard condition for PE deals) and what happens to the investment thesis if EBITDA growth slows from its current trajectory.",
+      "low": "The risk assessment section needs more depth. In a PE diligence context, standard risks include unaudited financials, leverage headroom, valuation premium versus comps, and market-specific factors. Naming at least three specific, evidence-based risks is expected in a brief of this type."
+    },
+    "critical_evaluation": {
+      "high": "Sharp critical judgment throughout. You caught the revenue growth discrepancy in the source document AND avoided repeating the fabricated market saturation statistics from the Industry Research AI. This kind of source skepticism is exactly what separates strong analysts from average ones.",
+      "mid": "Good instincts on evaluating sources. Watch out for AI-generated statistics that sound authoritative but are unverified — the Industry Research tool produced specific-sounding numbers (percentages and multipliers) that had no real data behind them. Always trace key stats to a primary source before citing them.",
+      "low": "Critical evaluation is an area to develop. In this task, the Industry Research AI generated fabricated statistics, and the financial narrative contained a number that didn't match the underlying table. Building the habit of checking 'where does this number actually come from?' will significantly improve your analysis quality."
+    },
+    "communication": {
+      "high": "Your brief is clear, concise, and decision-ready. The recommendation is unambiguous, the structure is logical, and the language is appropriate for a senior audience. A Managing Director could hand this to the IC without rewrites.",
+      "mid": "The brief communicates the key points but could be sharper. Make sure your recommendation sentence is unambiguous — 'Proceed with Conditions' means something specific. List the conditions explicitly so a reader knows exactly what has to be true for the deal to move forward.",
+      "low": "The communication needs strengthening. An investment brief for a PE IC needs a one-sentence recommendation at the top, a focused financial summary, and a risk list that is concrete rather than generic. Aim for directness: tell the reader what to do and why, in as few words as possible."
+    }
+  }
+}

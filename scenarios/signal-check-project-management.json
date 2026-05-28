@@ -1,0 +1,739 @@
+{
+  "construct_id": "project_management",
+  "construct_name": "Project Management Fundamentals",
+  "construct_description": "The ability to plan, execute, monitor, and close projects effectively — including scope definition, scheduling, risk management, stakeholder communication, and performance control.",
+  "pba_category": 4,
+  "pba_category_name": "Simulation-Based",
+  "pba_subtype": "Conversation-Based Assessment (CBA)",
+  "secondary_dimensions": {
+    "stakes": "Low",
+    "temporal": "On-Demand",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-Structured",
+    "authenticity": "Proximal",
+    "scoring": "Hybrid (rule-based + optional LLM)"
+  },
+  "dimensions": [
+    {
+      "id": "planning",
+      "name": "Planning",
+      "icon": "📋",
+      "description": "Scope definition, WBS, scheduling, milestones, and resource planning",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#f093fb"
+    },
+    {
+      "id": "risk_management",
+      "name": "Risk Management",
+      "icon": "⚠️",
+      "description": "Risk identification, assessment, mitigation strategies, and contingency planning",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#4facfe"
+    },
+    {
+      "id": "stakeholder_comm",
+      "name": "Stakeholder Communication",
+      "icon": "💬",
+      "description": "Communication plans, stakeholder mapping, and expectation management",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#43e97b"
+    },
+    {
+      "id": "execution_control",
+      "name": "Execution & Control",
+      "icon": "🎯",
+      "description": "Change management, issue tracking, performance measurement, and earned value",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#fa709a"
+    }
+  ],
+  "persona": {
+    "name": "Morgan",
+    "avatar_letter": "M",
+    "role": "Your PM mentor friend",
+    "tone": "Direct, organized, practical — like a seasoned PM who's seen everything"
+  },
+  "intro_messages": [
+    "Hey! I've been wanting to pick your brain about project management — mind if I throw a few scenarios at you? Just respond how you'd actually handle things, no textbook answers needed.",
+    "Alright, I want to chat PM with you for a bit. Some of these will be real-world scenarios, some concept checks. Just respond like you would in an actual work conversation.",
+    "Quick check-in on your PM instincts — I'll throw some situations at you and want to hear how you'd think through them. No pressure, just a conversation."
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "dimension": "planning",
+      "messages": [
+        "You're handed a project with a vague ask: 'build us a new reporting dashboard.' What do you do first before you write a single line of a project plan?",
+        "New project, week one — the sponsor says 'we need a customer portal by Q3.' Walk me through your first moves. What are you figuring out before anything else?",
+        "A project just landed on your plate and the brief is pretty thin. What does your first week look like in terms of getting organized? What questions are you asking?"
+      ],
+      "acknowledgments": [
+        "Good instincts — the early scoping work really does set the tone for everything that follows.",
+        "Exactly right — a lot of projects get into trouble because people skip this phase and dive straight into execution.",
+        "That's the right thinking. Getting clarity upfront is worth way more than moving fast on the wrong thing."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "scope",
+          "requirements",
+          "stakeholder",
+          "define",
+          "charter",
+          "kickoff",
+          "objectives",
+          "deliverables",
+          "WBS",
+          "work breakdown",
+          "constraints",
+          "assumptions",
+          "success criteria",
+          "acceptance criteria",
+          "sponsor",
+          "clarify",
+          "questions",
+          "discovery",
+          "feasibility",
+          "project brief"
+        ],
+        "mid": [
+          "understand the goal",
+          "talk to people",
+          "ask questions",
+          "figure out what's needed",
+          "get clarity",
+          "understand requirements",
+          "define what success looks like"
+        ],
+        "low": [
+          "start building",
+          "just start",
+          "dive in",
+          "begin immediately",
+          "start coding",
+          "jump right in"
+        ],
+        "high_threshold": 1,
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 2,
+      "dimension": "planning",
+      "messages": [
+        "Do you know what a Work Breakdown Structure is and why it matters? Like could you explain it to a new project coordinator?",
+        "WBS — can you tell me what that is and when you'd actually use one on a real project?",
+        "Scope creep is the silent project killer. How do you prevent it during the planning phase? What tools or practices help?"
+      ],
+      "acknowledgments": [
+        "Yep — the WBS is one of those foundational tools that looks simple but does a lot of heavy lifting.",
+        "Right — breaking work down into manageable pieces is where a lot of project clarity actually comes from.",
+        "Exactly. Scope creep prevention really starts in planning, not execution."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "work breakdown structure",
+          "WBS",
+          "decompose",
+          "decomposition",
+          "work packages",
+          "tasks",
+          "subtasks",
+          "scope creep",
+          "change control",
+          "baseline",
+          "scope statement",
+          "deliverable",
+          "milestone",
+          "phases",
+          "hierarchical",
+          "100% rule",
+          "project scope statement"
+        ],
+        "mid": [
+          "break it down",
+          "list the tasks",
+          "organize the work",
+          "smaller pieces",
+          "task list",
+          "phases of work",
+          "structure the project"
+        ],
+        "low": [
+          "not sure",
+          "don't know what that is",
+          "never used one",
+          "no idea",
+          "haven't done that"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 3,
+      "dimension": "planning",
+      "messages": [
+        "You've got 6 tasks that all need to happen but some depend on others. How do you figure out the project schedule and spot the critical path?",
+        "Walk me through how you'd build a realistic project timeline. What factors are you considering beyond just task durations?",
+        "Your project has a hard deadline that feels tight. How do you approach scheduling to figure out if it's actually achievable?"
+      ],
+      "acknowledgments": [
+        "Good — scheduling is one part math and one part negotiation, and knowing the critical path is essential.",
+        "Exactly right — a timeline that doesn't account for dependencies and resource constraints isn't really a plan.",
+        "That's the right way to approach it. Working backward from a deadline and identifying the critical path is key."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "critical path",
+          "CPM",
+          "dependencies",
+          "task dependency",
+          "Gantt",
+          "schedule",
+          "float",
+          "slack",
+          "milestone",
+          "sequence",
+          "predecessor",
+          "successor",
+          "resource",
+          "duration",
+          "lag",
+          "lead",
+          "network diagram",
+          "PERT",
+          "finish-to-start",
+          "parallel"
+        ],
+        "mid": [
+          "what depends on what",
+          "order the tasks",
+          "can't do X until Y",
+          "longest path",
+          "bottleneck",
+          "resource availability",
+          "buffer",
+          "pad the timeline"
+        ],
+        "low": [
+          "just estimate",
+          "guess",
+          "not sure",
+          "make a list",
+          "no dependencies",
+          "figure it out as you go"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 4,
+      "dimension": "risk_management",
+      "messages": [
+        "How do you approach risk on a project? Walk me through how you'd identify and document risks at the start of a new project.",
+        "Your project has a key vendor who's only 70% reliable. How do you factor that into your risk planning?",
+        "What does a solid risk management process actually look like in practice? Not the theory — what do you actually do?"
+      ],
+      "acknowledgments": [
+        "Solid approach — proactive risk identification is what separates projects that survive surprises from ones that get derailed by them.",
+        "Right — that kind of dependency risk needs to be on the register with a real mitigation plan, not just acknowledged.",
+        "Good — risk management that actually works is usually pretty systematic and happens early and often."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "risk register",
+          "risk log",
+          "identify risks",
+          "probability",
+          "impact",
+          "likelihood",
+          "risk matrix",
+          "risk score",
+          "mitigate",
+          "mitigation",
+          "contingency",
+          "risk owner",
+          "residual risk",
+          "risk response",
+          "avoid",
+          "transfer",
+          "accept",
+          "monitor",
+          "trigger",
+          "risk assessment"
+        ],
+        "mid": [
+          "list the risks",
+          "think about what could go wrong",
+          "plan for problems",
+          "backup plan",
+          "if this happens then",
+          "document risks",
+          "track risks"
+        ],
+        "low": [
+          "hope for the best",
+          "deal with it when it happens",
+          "cross that bridge",
+          "don't think about it",
+          "not much",
+          "no formal process"
+        ],
+        "high_threshold": 1,
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 5,
+      "dimension": "risk_management",
+      "messages": [
+        "Two weeks before launch, a key team member quits. This was identified as a risk. Walk me through how you'd handle it.",
+        "Your project is on track until a critical third-party API changes with no warning and breaks your integration. What's your response?",
+        "An issue just became a full-blown crisis on your project — something you sort of saw coming. How do you respond and what do you do differently going forward?"
+      ],
+      "acknowledgments": [
+        "Good — responding to a materialized risk is different from managing a new issue, and having the contingency plan ready matters.",
+        "Exactly — this is where risk planning pays off. Having a documented response plan versus scrambling is night and day.",
+        "Right. The 'we saw it coming' moment is painful but also the best learning opportunity for your risk process."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "contingency plan",
+          "backup",
+          "escalate",
+          "escalation",
+          "knowledge transfer",
+          "resource reallocation",
+          "workaround",
+          "issue log",
+          "impact assessment",
+          "communicate",
+          "stakeholders",
+          "timeline adjustment",
+          "lessons learned",
+          "post-mortem",
+          "risk response",
+          "activate",
+          "triage",
+          "remediation"
+        ],
+        "mid": [
+          "tell the team",
+          "reassign",
+          "find a replacement",
+          "adjust the plan",
+          "update the schedule",
+          "inform stakeholders",
+          "figure out workaround"
+        ],
+        "low": [
+          "panic",
+          "not sure",
+          "hope it works out",
+          "no plan",
+          "wing it",
+          "just deal with it"
+        ],
+        "length_mid": 30
+      }
+    },
+    {
+      "id": 6,
+      "dimension": "risk_management",
+      "messages": [
+        "What's the difference between a risk and an issue in PM terms? And how do you track each of them?",
+        "Someone on your team says 'I don't want to document risks — it makes the project look bad to stakeholders.' How do you respond?",
+        "Do you use a risk matrix? Walk me through how you'd score and prioritize risks on a project."
+      ],
+      "acknowledgments": [
+        "Exactly — that distinction matters more than people think, especially for how you respond and communicate.",
+        "Right answer — transparent risk management builds more trust with stakeholders than pretending problems don't exist.",
+        "Good — the probability x impact scoring approach is the industry standard for a reason."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "risk vs issue",
+          "potential",
+          "future event",
+          "already happened",
+          "current problem",
+          "risk register",
+          "issue log",
+          "probability",
+          "impact",
+          "risk matrix",
+          "score",
+          "prioritize",
+          "high medium low",
+          "red yellow green",
+          "RAG status",
+          "track separately",
+          "risk owner",
+          "issue owner",
+          "transparency",
+          "escalation threshold"
+        ],
+        "mid": [
+          "risk is something that might happen",
+          "issue is something that already happened",
+          "track both",
+          "document everything",
+          "be transparent",
+          "prioritize by severity",
+          "rank them"
+        ],
+        "low": [
+          "same thing",
+          "doesn't matter",
+          "they're basically the same",
+          "don't track",
+          "hide from stakeholders",
+          "not sure"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 7,
+      "dimension": "stakeholder_comm",
+      "messages": [
+        "You've got a project with 15+ stakeholders — some technical, some exec, some end users. How do you manage communications so everyone gets what they need?",
+        "A senior stakeholder is getting too involved in day-to-day decisions and it's slowing the team down. How do you handle that?",
+        "Walk me through how you'd build a communication plan for a medium-complexity project. What goes in it?"
+      ],
+      "acknowledgments": [
+        "Good — a tailored communication approach by audience is one of those PM basics that makes a huge practical difference.",
+        "Exactly right — managing stakeholder involvement levels is a real PM skill, and having that conversation diplomatically is key.",
+        "Solid — a communication plan that actually gets used is specific enough to tell people when, what, and how they'll be informed."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "stakeholder map",
+          "stakeholder register",
+          "communication plan",
+          "RACI",
+          "audience",
+          "cadence",
+          "status report",
+          "executive summary",
+          "tailored",
+          "frequency",
+          "channel",
+          "email",
+          "meeting",
+          "dashboard",
+          "escalation path",
+          "influence",
+          "interest",
+          "power",
+          "engagement level",
+          "feedback loop"
+        ],
+        "mid": [
+          "different updates for different people",
+          "regular check-ins",
+          "keep them informed",
+          "set expectations",
+          "manage expectations",
+          "weekly updates",
+          "status updates"
+        ],
+        "low": [
+          "just email everyone",
+          "same update for all",
+          "tell them when done",
+          "not sure",
+          "minimal communication",
+          "as needed"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 8,
+      "dimension": "stakeholder_comm",
+      "messages": [
+        "Your project is two weeks behind schedule and you need to tell the sponsor. How do you approach that conversation?",
+        "A stakeholder is convinced the project should do something that's out of scope. They're senior. How do you handle it?",
+        "You're about to give a project status update to the executive team and things aren't going great. How do you prepare and what do you say?"
+      ],
+      "acknowledgments": [
+        "Right — delivering bad news proactively and with a plan is much better than waiting or softening the message too much.",
+        "Exactly — scope protection with senior stakeholders is tricky, but the change control process is your friend here.",
+        "Good approach — execs generally want the summary, the impact, and what you're doing about it. They don't need the detail."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "proactive",
+          "don't wait",
+          "be transparent",
+          "impact",
+          "plan",
+          "recovery plan",
+          "options",
+          "recommendation",
+          "change control",
+          "scope change",
+          "formal request",
+          "document",
+          "executive summary",
+          "headline",
+          "risk",
+          "mitigation",
+          "next steps",
+          "action items",
+          "honest",
+          "escalate"
+        ],
+        "mid": [
+          "tell them early",
+          "come with solutions",
+          "don't sugarcoat",
+          "be direct",
+          "bring a plan",
+          "have answers ready",
+          "explain the impact"
+        ],
+        "low": [
+          "hide it",
+          "delay",
+          "don't tell them yet",
+          "sugarcoat",
+          "just say yes",
+          "agree with everything",
+          "avoid the conversation"
+        ],
+        "low_max_length": 50
+      }
+    },
+    {
+      "id": 9,
+      "dimension": "stakeholder_comm",
+      "messages": [
+        "Two key stakeholders have conflicting priorities for your project — the CMO wants feature A first, the CTO wants feature B. You can't do both. What do you do?",
+        "A stakeholder tells you they hate the direction of the project at the 60% mark. How do you manage that situation?",
+        "What does good stakeholder expectation management look like throughout a project — not just at kickoff?"
+      ],
+      "acknowledgments": [
+        "Good — stakeholder conflicts don't resolve themselves and the PM is usually the one who has to facilitate the alignment.",
+        "Exactly — a late stakeholder concern is way better than finding out post-launch. The key is validating the concern and figuring out the real ask.",
+        "Right — expectation management is ongoing, not a one-time conversation. Regular alignment checkpoints are the real answer."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "escalate",
+          "decision maker",
+          "prioritization",
+          "facilitate",
+          "alignment meeting",
+          "trade-offs",
+          "sponsor",
+          "arbitrate",
+          "document the decision",
+          "involve leadership",
+          "scope",
+          "change request",
+          "regular check-ins",
+          "review sessions",
+          "milestones",
+          "demos",
+          "feedback",
+          "retrospective",
+          "course correct"
+        ],
+        "mid": [
+          "get them in a room",
+          "bring both parties together",
+          "need a decision",
+          "can't please everyone",
+          "prioritize together",
+          "check in regularly",
+          "don't wait until the end"
+        ],
+        "low": [
+          "just pick one",
+          "ignore one",
+          "decide for them",
+          "avoid the conflict",
+          "let them figure it out",
+          "not sure"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 10,
+      "dimension": "execution_control",
+      "messages": [
+        "Mid-project, someone asks to add a significant new feature that wasn't in the original scope. How do you handle that request?",
+        "Scope creep is happening on your project — small additions keep getting approved informally. How do you get it back under control?",
+        "What does a solid change management process look like on a real project? Walk me through the steps."
+      ],
+      "acknowledgments": [
+        "Exactly — even reasonable requests need to go through change control. Ad-hoc scope additions are how timelines and budgets blow up.",
+        "Right — informal approvals are where scope creep lives. Formalizing the process is the only way to stop it.",
+        "Good — change management isn't about saying no, it's about making the cost and impact visible before the decision is made."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "change control",
+          "change request",
+          "change log",
+          "impact assessment",
+          "scope creep",
+          "scope baseline",
+          "formally",
+          "approval process",
+          "document the change",
+          "trade-off",
+          "cost",
+          "schedule impact",
+          "resource impact",
+          "sponsor approval",
+          "CCB",
+          "change control board",
+          "version control",
+          "baseline"
+        ],
+        "mid": [
+          "document it",
+          "get approval",
+          "assess the impact",
+          "go through the process",
+          "not informal",
+          "can't just add it",
+          "needs to be approved"
+        ],
+        "low": [
+          "just add it",
+          "say yes",
+          "no process",
+          "figure it out",
+          "ad hoc",
+          "informal",
+          "just do it"
+        ],
+        "high_threshold": 1,
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 11,
+      "dimension": "execution_control",
+      "messages": [
+        "How do you track whether a project is actually on track? What metrics or methods do you use to measure performance?",
+        "Have you ever heard of Earned Value Management? What is it and why would you use it?",
+        "Your project is burning budget faster than planned but deliverables are on schedule. Is that a problem? How do you analyze it?"
+      ],
+      "acknowledgments": [
+        "Good — tracking both schedule and cost performance together is much more powerful than looking at either in isolation.",
+        "Exactly — EVM gives you a much clearer picture than 'budget spent vs planned' because it factors in what you actually accomplished.",
+        "Right — that's a real red flag. Ahead on deliverables but over on budget means you may have front-loaded the work or have a cost variance that will compound."
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "earned value",
+          "EVM",
+          "EV",
+          "planned value",
+          "PV",
+          "actual cost",
+          "AC",
+          "schedule variance",
+          "SV",
+          "cost variance",
+          "CV",
+          "SPI",
+          "CPI",
+          "schedule performance index",
+          "cost performance index",
+          "burn rate",
+          "KPI",
+          "baseline",
+          "variance",
+          "dashboard",
+          "metrics",
+          "milestone tracking"
+        ],
+        "mid": [
+          "track against plan",
+          "compare budget to actual",
+          "schedule vs actual",
+          "status updates",
+          "look at the budget",
+          "check milestones",
+          "monitor progress"
+        ],
+        "low": [
+          "not sure",
+          "just check in",
+          "gut feel",
+          "ask the team",
+          "no formal tracking",
+          "see how it feels"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 12,
+      "dimension": null,
+      "messages": [
+        "Last one, and be honest — where would you rate your PM skills right now? 1 (just heard of Gantt charts) to 10 (PMP-certified and proud). Where do you actually land?",
+        "Final question: if you had to self-assess your project management knowledge honestly, what would you say? What do you feel solid on and where are the gaps?",
+        "Alright, wrap-up: how would you grade yourself on PM fundamentals right now? Be specific if you can — what's your strongest area and where do you know you need work?"
+      ],
+      "acknowledgments": [
+        "Got it — let me run through what we covered and see what the picture looks like...",
+        "Noted. Okay, give me a moment to pull this together...",
+        "Good self-awareness. Let me see how that lines up with what we discussed..."
+      ],
+      "scorer": null
+    }
+  ],
+  "overall_labels": [
+    {
+      "min": 90,
+      "text": "Seriously strong PM fundamentals — you think like a seasoned project manager 🏆"
+    },
+    {
+      "min": 75,
+      "text": "Solid across the board — you've got the core frameworks and know how to apply them 📋"
+    },
+    {
+      "min": 60,
+      "text": "Good foundation — strong instincts with a few areas worth sharpening 💪"
+    },
+    {
+      "min": 45,
+      "text": "Decent grasp of the basics, some key gaps — targeted practice would pay off here 📈"
+    },
+    {
+      "min": 30,
+      "text": "You're familiar with project work but the formal PM framework is still developing — solid starting point 🔧"
+    },
+    {
+      "min": 0,
+      "text": "Early days on PM knowledge — good news is these fundamentals are very learnable with the right resources 📚"
+    }
+  ],
+  "feedback_templates": {
+    "high": "Strong command here — you clearly understand both the theory and how it applies in real project situations.",
+    "mid": "Good instincts. Tightening up the formal frameworks in this area would make your approach even more consistent.",
+    "low": "This is a growth area — consider digging into PMBOK basics or a Project+ prep resource to fill in the foundation."
+  }
+}

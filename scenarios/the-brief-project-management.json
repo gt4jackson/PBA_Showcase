@@ -1,0 +1,311 @@
+{
+  "construct_id": "project_recovery",
+  "construct_name": "Project Recovery & Delivery Management",
+  "construct_description": "The ability to diagnose a failing project, identify root causes, build a credible recovery roadmap, and manage stakeholder communication under pressure.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "Medium (formative / demonstration)",
+    "temporal": "Single-session, 20 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated workplace)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "diagnosis",
+      "name": "Diagnosis",
+      "icon": "🔍",
+      "description": "Accurately identifying root causes of project failure beyond surface symptoms.",
+      "color": "#3b82f6",
+      "weight": 0.30
+    },
+    {
+      "id": "planning",
+      "name": "Planning",
+      "icon": "📋",
+      "description": "Building a realistic, evidence-based recovery roadmap with credible milestones and timelines.",
+      "color": "#10b981",
+      "weight": 0.30
+    },
+    {
+      "id": "stakeholder_mgmt",
+      "name": "Stakeholder Management",
+      "icon": "💬",
+      "description": "Acknowledging stakeholder concerns, managing expectations, and restoring confidence with honest communication.",
+      "color": "#f59e0b",
+      "weight": 0.25
+    },
+    {
+      "id": "risk_mitigation",
+      "name": "Risk Mitigation",
+      "icon": "⚠️",
+      "description": "Identifying risks that could derail the recovery and proposing concrete mitigations.",
+      "color": "#f43f5e",
+      "weight": 0.15
+    }
+  ],
+  "scenario": {
+    "id": "troubled_project_recovery",
+    "title": "The Troubled Project",
+    "client": "Internal — Apex Professional Services (VP of Delivery)",
+    "estimated_minutes": 20,
+    "budget_tokens": 120,
+    "briefing": "You've been brought in as recovery lead on Project Lighthouse — a software implementation for Hartwell Manufacturing, a mid-size industrial client. The project is 3 months behind schedule and 40% over budget. The original PM stepped back two weeks ago. The client is threatening to escalate to legal.\n\nYour VP needs a Recovery Plan memo on her desk within the hour. You'll need to review the project status report, the stakeholder register, and the original charter to understand what went wrong — then propose a realistic path forward.\n\nThe AI Workbench is available, but use it carefully: the Schedule Optimizer has a known calculation issue that surfaces in certain capacity-constrained scenarios.",
+    "inbox": [
+      {
+        "id": "email_1",
+        "from": "Sandra Osei <s.osei@apexprofessional.example>",
+        "subject": "Project Lighthouse — I need that recovery plan NOW",
+        "body": "I'm putting you on Lighthouse effective immediately.\n\nHere's where we stand: 3 months behind, 40% over budget, and I just got off a very bad call with Rick Alvarez at Hartwell. He used the word 'lawyers.' I need a credible recovery plan on my desk before I get on another call with him at 4pm.\n\nThe files are in your workspace. The original PM left notes. Read them carefully but don't take everything at face value.\n\nI need four things from you:\n1. What actually went wrong (real root causes, not excuses)\n2. A realistic path to delivery — specific milestones, not vague reassurances\n3. How we communicate this to Hartwell\n4. What could still go wrong and how we stop it\n\nBe honest. Hartwell can handle bad news better than surprises.\n\n— Sandra Osei\nVP of Delivery, Apex Professional Services"
+      },
+      {
+        "id": "email_2",
+        "from": "Derek Paulson <d.paulson@apexprofessional.example>",
+        "subject": "My notes on Lighthouse — please read before you start",
+        "body": "I know how this looks. I want to be clear that I handed this project off in the best possible state given the circumstances.\n\nThe delays are primarily on Hartwell's side. They were 6 weeks late providing their legacy data extract, their IT team missed 4 integration testing sessions, and their business users keep changing the requirements. Every change request we logged is documented in the charter addendum.\n\nMy team executed well. The scope creep is real and it's not our fault. If Apex had enforced the change control process properly, we wouldn't be here.\n\nHappy to provide more context if needed.\n\n— Derek Paulson\nSr. Project Manager (transitioning off Lighthouse)"
+      },
+      {
+        "id": "email_3",
+        "from": "Rick Alvarez <r.alvarez@hartwell-mfg.example>",
+        "subject": "Lighthouse — frankly, we're losing patience",
+        "body": "I'll be direct.\n\nWe signed a contract for a 9-month implementation. We are now in month 12 with no end in sight. We have three production lines running on workarounds because the new system isn't live. Each week of delay costs us an estimated $85,000 in efficiency losses.\n\nYour team has given us four revised go-live dates. We've missed every one. My board is asking questions I can't answer.\n\nI need a written plan that tells me exactly when this will be done, exactly what is left, and exactly what happens if you miss this date too. I also need to understand why we are being asked to absorb costs for what appear to be your firm's delivery failures.\n\nI expect a response with real answers by end of business today.\n\n— Rick Alvarez\nVP of Operations, Hartwell Manufacturing"
+      }
+    ],
+    "files": [
+      {
+        "id": "file_status",
+        "name": "lighthouse_project_status.html",
+        "type": "data",
+        "reliability": "reliable",
+        "content_html": "<div class='file-content'><h2>Project Lighthouse — Status Report</h2><p class='file-meta'>Prepared by: Derek Paulson, Sr. PM | Date: Week 52 of Project | Status: RED</p><h3>Project Snapshot</h3><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Metric</th><th>Baseline (Contract)</th><th>Current</th><th>Variance</th></tr></thead><tbody><tr><td>Planned Go-Live</td><td>Month 9 (Week 36)</td><td>Week 52 (now)</td><td>+16 weeks (4 months)</td></tr><tr><td>Total Budget</td><td>$480,000</td><td>$672,000 spent to date</td><td>+$192,000 (+40%)</td></tr><tr><td>Work Remaining (estimated)</td><td>—</td><td>~14 weeks of work</td><td>—</td></tr><tr><td>Team Capacity (active)</td><td>4.0 FTE</td><td>2.5 FTE (2 staff on other projects)</td><td>-1.5 FTE</td></tr></tbody></table><h3>Work Remaining by Workstream</h3><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Workstream</th><th>Estimated Weeks Remaining</th><th>Blockers</th></tr></thead><tbody><tr><td>Data Migration (legacy cleanup)</td><td>5 weeks</td><td>Hartwell data quality issues outstanding</td></tr><tr><td>Integration Testing (ERP ↔ MES)</td><td>4 weeks</td><td>Requires Hartwell IT participation (3 sessions/week)</td></tr><tr><td>User Acceptance Testing (UAT)</td><td>3 weeks</td><td>Requires 12 business users; scheduling TBD</td></tr><tr><td>Training &amp; Go-Live Prep</td><td>2 weeks</td><td>None identified</td></tr></tbody></table><p><strong>Total work remaining:</strong> 14 weeks (workstreams are partially sequential; not all can run in parallel)</p><h3>Change Requests Logged</h3><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>#</th><th>Description</th><th>Weeks Added</th><th>Approved by Client?</th></tr></thead><tbody><tr><td>CR-01</td><td>Added custom reporting module (Hartwell request)</td><td>3 weeks</td><td>Yes — signed</td></tr><tr><td>CR-02</td><td>Expanded integration scope to include legacy MES system</td><td>4 weeks</td><td>Yes — signed</td></tr><tr><td>CR-03</td><td>Revised data migration approach (complexity underestimated)</td><td>2 weeks</td><td>Disputed — not signed by client</td></tr><tr><td>CR-04</td><td>Additional UAT cycles added after failed UAT round 1</td><td>2 weeks</td><td>No — Apex absorbed</td></tr></tbody></table><p><em>Note: CR-03 and CR-04 add 4 weeks attributable to Apex delivery failures, not client requests.</em></p></div>"
+      },
+      {
+        "id": "file_stakeholders",
+        "name": "stakeholder_register.html",
+        "type": "reference",
+        "reliability": "reliable",
+        "content_html": "<div class='file-content'><h2>Project Lighthouse — Stakeholder Register</h2><p class='file-meta'>Last Updated: Week 50 | Prepared by: Derek Paulson</p><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Stakeholder</th><th>Organization</th><th>Role</th><th>Sentiment</th><th>Key Concern</th><th>Last Engagement</th></tr></thead><tbody><tr><td>Rick Alvarez</td><td>Hartwell Mfg</td><td>VP Operations (Exec Sponsor)</td><td>🔴 Hostile</td><td>No reliable go-live date; board pressure; cost of delays ($85K/week)</td><td>Week 50 — escalation call</td></tr><tr><td>Janet Chow</td><td>Hartwell Mfg</td><td>IT Director</td><td>🟡 Skeptical</td><td>Integration complexity underestimated; her team is stretched thin</td><td>Week 51 — email exchange</td></tr><tr><td>Marcus Webb</td><td>Hartwell Mfg</td><td>Operations Lead (UAT champion)</td><td>🟡 Cautious</td><td>UAT scope keeps changing; user availability hard to schedule</td><td>Week 49 — status meeting</td></tr><tr><td>Sandra Osei</td><td>Apex</td><td>VP of Delivery (internal sponsor)</td><td>🔴 Under pressure</td><td>Client relationship at risk; firm reputation; potential legal exposure</td><td>Today</td></tr><tr><td>Derek Paulson</td><td>Apex</td><td>Sr. PM (transitioning off)</td><td>🟠 Defensive</td><td>Protecting his reputation; blaming client for delays</td><td>Yesterday</td></tr><tr><td>Aisha Nwosu</td><td>Apex</td><td>Tech Lead</td><td>🟢 Engaged</td><td>Wants clear scope freeze so the team can execute without further changes</td><td>Week 51 — technical review</td></tr></tbody></table><h3>Relationship Risk Notes</h3><ul><li>Rick Alvarez has mentioned legal twice in the past two weeks. He is not bluffing — Hartwell legal has been copied on recent emails.</li><li>Janet Chow is the key to unblocking integration testing. She needs a realistic schedule and advance notice — her team cannot do ad-hoc sprint scheduling.</li><li>Aisha Nwosu (tech lead) is the most credible person on the Apex side. She should be visible to Hartwell stakeholders in the recovery plan.</li><li>Derek's narrative (client is to blame) is partially true but overstated. CR-03 and CR-04 represent real Apex delivery failures that Derek has minimized in his notes.</li></ul></div>"
+      },
+      {
+        "id": "file_charter",
+        "name": "charter_vs_current_scope.html",
+        "type": "data",
+        "reliability": "reliable",
+        "content_html": "<div class='file-content'><h2>Project Lighthouse — Charter vs. Current Scope Comparison</h2><p class='file-meta'>Original Charter: Signed Month 0 | Current Scope: Week 52 compiled by Derek Paulson</p><h3>Original Charter Scope (Contracted)</h3><ul><li>ERP system implementation (Apex platform, standard configuration)</li><li>Data migration from 2 legacy systems (estimated 500K records)</li><li>Standard integration: ERP ↔ Hartwell WMS (warehouse management)</li><li>2 rounds of UAT with up to 8 business users</li><li>2-day end-user training program</li><li>Project timeline: 9 months | Budget: $480,000 | Team: 4 FTE</li></ul><h3>Current Scope (Week 52)</h3><ul><li>ERP system implementation with <strong>custom reporting module</strong> (CR-01: +3 weeks, +$28,000)</li><li>Data migration from <strong>3 legacy systems</strong> (MES added mid-project; actual records: 1.1M — 2.2x original estimate)</li><li>Integrations: ERP ↔ WMS <strong>+ ERP ↔ legacy MES system</strong> (CR-02: +4 weeks, +$38,000)</li><li><strong>3 rounds of UAT</strong> with up to <strong>12 business users</strong> (round 1 failed; CR-04 absorbed by Apex)</li><li>3-day training program (expanded due to system complexity)</li><li>Revised budget ceiling: <strong>$672,000</strong> (includes CR-01, CR-02; excludes CR-03 disputed)</li></ul><h3>Scope Creep Summary</h3><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Source of Change</th><th>Weeks Added</th><th>Cost Added</th><th>Responsibility</th></tr></thead><tbody><tr><td>Client-initiated (CR-01, CR-02)</td><td>7 weeks</td><td>+$66,000</td><td>Hartwell (signed CRs)</td></tr><tr><td>Apex delivery failure (CR-03, CR-04)</td><td>4 weeks</td><td>+$38,000 (estimated)</td><td>Apex</td></tr><tr><td>Shared / disputed (data volume underestimate)</td><td>~3 weeks</td><td>+$18,000</td><td>Shared</td></tr><tr><td><strong>Total overage</strong></td><td><strong>~14 weeks</strong></td><td><strong>+$122,000+</strong></td><td>Mixed</td></tr></tbody></table><p><em>Note: The original baseline did not include a formal risk buffer. Standard practice at Apex is 15% schedule contingency; this project had 0%.</em></p></div>"
+      }
+    ],
+    "ai_tools": [
+      {
+        "id": "schedule_optimizer",
+        "name": "Schedule Optimizer",
+        "description": "Calculates optimized project timelines based on work remaining, dependencies, and team capacity. Useful for generating milestone dates — but double-check its arithmetic when capacity inputs are fractional FTEs.",
+        "cost": 5,
+        "icon": "📅"
+      },
+      {
+        "id": "risk_analyzer",
+        "name": "Risk Analyzer",
+        "description": "Identifies common project risks based on the situation you describe and scores their likelihood and impact. Useful for structuring your risk section — occasionally miscalculates composite risk scores.",
+        "cost": 6,
+        "icon": "⚠️"
+      },
+      {
+        "id": "comms_drafter",
+        "name": "Communication Drafter",
+        "description": "Drafts stakeholder communications in various tones (formal, reassuring, direct). Good for producing first drafts — adjust tone and specifics before using.",
+        "cost": 4,
+        "icon": "📝"
+      }
+    ],
+    "scripted_responses": [
+      {
+        "tool_id": "schedule_optimizer",
+        "keywords": ["14 weeks", "2.5 FTE", "schedule", "timeline", "when done"],
+        "response": "Schedule Optimization Result:\n\nInputs:\n• Work remaining: 14 weeks of effort\n• Active team capacity: 2.5 FTE\n• Parallel execution possible on: Integration Testing + Data Migration (partial overlap)\n\nOptimized timeline: 8 weeks to go-live\n\nMilestone breakdown:\n• Milestone 1 (Weeks 1–3): Data migration complete\n• Milestone 2 (Weeks 3–6): Integration testing complete\n• Milestone 3 (Weeks 6–8): UAT + training + go-live\n\n[Note: This calculation assumes all 14 weeks of effort can be compressed by parallel execution and 2.5 FTE throughput.]",
+        "is_hallucination": false,
+        "trap_id": "schedule_math_error",
+        "trap_note": "The 8-week figure is incorrect. At 2.5 FTE, 14 weeks of work takes 14/2.5 = 5.6 weeks of calendar time IF fully parallel — but the workstreams are explicitly noted as 'partially sequential' in the status report. A realistic minimum is 10–12 weeks with sequential dependencies. The optimizer ignored the sequencing constraint."
+      },
+      {
+        "tool_id": "schedule_optimizer",
+        "keywords": ["capacity", "FTE", "full team", "4 FTE"],
+        "response": "If full 4.0 FTE capacity is restored:\n• 14 weeks of effort / 4.0 FTE = 3.5 weeks (theoretical minimum, fully parallel)\n• With sequencing constraints: realistic estimate 7–8 weeks\n\nNote: Restoring capacity requires pulling staff from other active projects, which would require VP approval and may create downstream impacts.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "risk_analyzer",
+        "keywords": ["risks", "recovery", "lighthouse", "project"],
+        "response": "Top Recovery Risks Identified:\n\n1. SCOPE CREEP RECURRENCE (High likelihood / High impact)\n   No formal scope freeze in place. Without a signed scope lock, new change requests will derail the recovery timeline.\n\n2. CLIENT DISENGAGEMENT (Medium likelihood / High impact)\n   If Hartwell IT and business users do not show up for integration testing and UAT sessions, timeline will slip further. Requires formal availability commitments from Hartwell.\n\n3. TEAM CAPACITY SHORTFALL (High likelihood / High impact)\n   Current 2.5 FTE is insufficient. Recovery timeline depends on restoring 4.0 FTE or explicitly extending the schedule.\n\n4. LEGAL ESCALATION (Low-Medium likelihood / Very High impact)\n   Hartwell has signaled legal action. A credible written recovery plan with a firm commitment date reduces this risk significantly.\n\n5. KNOWLEDGE LOSS FROM PM TRANSITION (Medium likelihood / Medium impact)\n   Institutional knowledge held by Derek Paulson must be transferred before he fully disengages.\n\nComposite recovery risk score: 78/100 (High Risk)",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "risk_analyzer",
+        "keywords": ["scope", "change control", "CR"],
+        "response": "Change control risk analysis:\n• Projects without a formal scope freeze during recovery have a 67% higher likelihood of additional timeline slippage (industry benchmark).\n• Recommended: issue a formal scope freeze memo to the client before publishing the recovery plan. Any new change requests should be deferred to Phase 2 post-go-live.",
+        "is_hallucination": true,
+        "trap_id": "risk_stat_hallucination",
+        "hallucination_note": "The '67% higher likelihood' statistic is fabricated. No such industry benchmark exists. The underlying recommendation (scope freeze) is sound, but the specific statistic is not real."
+      },
+      {
+        "tool_id": "comms_drafter",
+        "keywords": ["Hartwell", "client", "draft", "email", "communication"],
+        "response": "Draft Client Communication — Rick Alvarez / Hartwell Manufacturing\n\nSubject: Project Lighthouse — Recovery Plan and Revised Commitment\n\nDear Rick,\n\nThank you for your directness — it's warranted and we take full responsibility for the current state of this project.\n\nWe have completed a thorough assessment of what went wrong and are sharing a formal Recovery Plan with this message. Key points:\n\n[INSERT: Root causes — split between shared, client, and Apex responsibility]\n[INSERT: Revised go-live date with specific milestone dates]\n[INSERT: What we are committing to, and what we need from Hartwell to make it happen]\n[INSERT: Consequence of any further scope additions]\n\nWe understand that trust needs to be rebuilt through action, not words. We are committed to the dates in this plan and will provide weekly written status updates until go-live.\n\nI would welcome a call at your convenience to walk through this in detail.\n\n[Your name]\nRecovery Lead, Project Lighthouse",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "comms_drafter",
+        "keywords": ["Sandra", "VP", "internal", "update"],
+        "response": "Draft Internal Update — Sandra Osei\n\nSandra,\n\nHere is my initial assessment after reviewing all project materials:\n\nRoot Causes (three-part split):\n• Client-driven scope increases (CR-01, CR-02) added 7 weeks — these are documented and signed\n• Apex delivery failures (CR-03, CR-04) added 4 weeks — we own these\n• Shared scope/estimation failures added ~3 weeks\n\nRecovery Path: [INSERT recovery roadmap from your plan]\n\nImmediate actions needed from you:\n1. Approval to restore team to 4.0 FTE\n2. Authorization to issue a formal scope freeze to Hartwell\n3. Alignment on what financial concessions (if any) we are willing to offer Hartwell for the Apex-attributable delays\n\nI'll have the full recovery plan ready before your 4pm call.\n\n[Your name]",
+        "is_hallucination": false
+      }
+    ],
+    "traps": [
+      {
+        "id": "schedule_math_error",
+        "type": "data_error",
+        "description": "The Schedule Optimizer produces an 8-week recovery timeline that ignores the sequential dependencies between workstreams. At 2.5 FTE with partial sequencing, a realistic estimate is 10–12 weeks.",
+        "penalty_if_missed": 30,
+        "bonus_if_caught": 20
+      },
+      {
+        "id": "risk_stat_hallucination",
+        "type": "hallucination",
+        "description": "The Risk Analyzer cites a fabricated '67% higher likelihood' industry statistic for projects without scope freeze. The recommendation is valid; the number is not.",
+        "penalty_if_missed": 15,
+        "bonus_if_caught": 10
+      },
+      {
+        "id": "derek_bias",
+        "type": "weak_evidence",
+        "description": "The outgoing PM's notes blame the client for nearly all delays. The charter comparison shows Apex owns 4 of the 14 delay weeks (CR-03 and CR-04). A strong recovery plan acknowledges both sides of the responsibility.",
+        "penalty_if_missed": 15,
+        "bonus_if_caught": 10
+      }
+    ],
+    "deliverable": {
+      "id": "recovery_plan",
+      "name": "Project Recovery Plan Memo",
+      "instructions": "Write a Recovery Plan memo for Sandra (VP of Delivery) that will also be shared with the Hartwell client. Include: (1) Situation Assessment — what happened and why, honestly, (2) Root Cause Analysis — specific causes, not vague excuses, (3) Recovery Roadmap — 3 milestones with realistic dates and resource requirements, (4) Stakeholder Communication Plan — how you will manage Hartwell through the recovery. Keep it under 500 words. Be honest about what Apex got wrong.",
+      "sections": [
+        "Situation Assessment",
+        "Root Cause Analysis",
+        "Recovery Roadmap",
+        "Stakeholder Communication Plan"
+      ],
+      "max_words": 500,
+      "min_words": 200
+    },
+    "rubric": [
+      {
+        "id": "identifies_root_causes",
+        "name": "Identifies real root causes",
+        "skill_id": "diagnosis",
+        "weight": 0.25,
+        "description": "Does the memo identify causes beyond 'client delays' — specifically scope creep, Apex delivery failures (CR-03, CR-04), no schedule buffer, and underestimated complexity?",
+        "keywords_positive": ["scope creep", "CR-03", "CR-04", "underestimated", "scope freeze", "change control", "no contingency", "no buffer", "Apex", "delivery failure", "data volume", "UAT failure", "failed UAT"]
+      },
+      {
+        "id": "balanced_responsibility",
+        "name": "Acknowledges Apex's share of responsibility",
+        "skill_id": "diagnosis",
+        "weight": 0.15,
+        "description": "Does the memo avoid Derek's one-sided framing and acknowledge that Apex is responsible for at least some of the delay?",
+        "keywords_positive": ["our fault", "Apex responsibility", "we underestimated", "our delivery", "we own", "Apex contributed", "attributable to Apex", "CR-03", "CR-04", "4 weeks", "failed round"]
+      },
+      {
+        "id": "catches_schedule_error",
+        "name": "Catches or adjusts the Schedule Optimizer error",
+        "skill_id": "planning",
+        "weight": 0.25,
+        "description": "Does the memo avoid citing the erroneous 8-week schedule, or explicitly note that the actual timeline is 10–12 weeks given sequencing constraints and current capacity?",
+        "trap_id": "schedule_math_error",
+        "keywords_positive": ["10 weeks", "11 weeks", "12 weeks", "sequential", "sequencing", "dependencies", "2.5 FTE", "capacity constraint", "not fully parallel", "restore capacity"],
+        "keywords_negative": ["8 weeks", "8-week", "go live in 8"]
+      },
+      {
+        "id": "realistic_roadmap",
+        "name": "Proposes realistic milestones",
+        "skill_id": "planning",
+        "weight": 0.15,
+        "description": "Does the recovery roadmap have 3 specific milestones with names, realistic sequencing, and acknowledgment of resource constraints?",
+        "keywords_positive": ["milestone 1", "milestone 2", "milestone 3", "data migration", "integration testing", "UAT", "go-live", "4 FTE", "restore", "capacity"]
+      },
+      {
+        "id": "stakeholder_plan_quality",
+        "name": "Stakeholder communication plan is specific",
+        "skill_id": "stakeholder_mgmt",
+        "weight": 0.10,
+        "description": "Does the memo include a specific plan for managing Hartwell — weekly updates, dedicated escalation contact, what you're asking from their team?",
+        "keywords_positive": ["weekly", "Hartwell", "Rick Alvarez", "Janet Chow", "written updates", "status report", "commitment", "availability", "what we need from you", "Hartwell IT", "UAT participants"]
+      },
+      {
+        "id": "risk_mitigation_quality",
+        "name": "Identifies forward risks and mitigations",
+        "skill_id": "risk_mitigation",
+        "weight": 0.10,
+        "description": "Does the memo name at least 2 risks that could derail recovery and propose concrete mitigations (e.g., scope freeze, capacity restoration, formal client commitments)?",
+        "keywords_positive": ["scope freeze", "change request", "freeze", "risk", "mitigation", "contingency", "formal commitment", "if missed", "escalation path", "capacity"]
+      }
+    ],
+    "coaching_tips": [
+      "A good recovery plan acknowledges fault honestly — it does not assign all blame to one party when the data clearly shows shared responsibility.",
+      "When an AI tool gives you a specific number (like a timeline), always check it against the constraints in the source documents. Did it account for sequential dependencies and real team capacity?",
+      "Stakeholder communication in a crisis requires specificity. 'We will keep you updated' is not a plan. 'Weekly written status reports every Monday by 9am to Rick Alvarez and Janet Chow' is a plan.",
+      "A scope freeze is often the most important recovery action you can take. Without it, every new request will erode the new timeline.",
+      "Outgoing PMs often write self-protective handoff notes. Read them critically — their account of what happened may be accurate, overstated, or missing key context. Cross-reference against the data."
+    ]
+  },
+  "overall_labels": [
+    {
+      "min": 0,
+      "max": 59,
+      "label": "Developing",
+      "emoji": "🌱"
+    },
+    {
+      "min": 60,
+      "max": 74,
+      "label": "Bronze — Competent",
+      "emoji": "🥉"
+    },
+    {
+      "min": 75,
+      "max": 89,
+      "label": "Silver — Proficient",
+      "emoji": "🥈"
+    },
+    {
+      "min": 90,
+      "max": 100,
+      "label": "Gold — Expert",
+      "emoji": "🥇"
+    }
+  ],
+  "feedback_templates": {
+    "diagnosis": {
+      "high": "Excellent diagnosis. You identified all three layers of root cause: client-driven scope increases (CR-01, CR-02), Apex delivery failures (CR-03, CR-04), and the absence of any schedule contingency buffer. This honest, multi-factor analysis is exactly what builds credibility with an executive audience — and it's what the client needs to believe the recovery is real.",
+      "mid": "Good diagnosis overall. You identified the major contributors to the delay. For full credit, make sure your root cause analysis explicitly includes the Apex-attributable weeks (CR-03 and CR-04) rather than implying all delays came from the client side. The data clearly shows Apex owns about 4 of the 14 delay weeks.",
+      "low": "The root cause analysis needs more depth. A recovery plan that attributes all delays to client behavior — without examining Apex's own delivery failures — is unlikely to be credible to a sophisticated client like Hartwell. Review the charter comparison and change log: CR-03 and CR-04 represent real Apex failures. Owning them explicitly is a strength, not a weakness."
+    },
+    "planning": {
+      "high": "Strong recovery roadmap. You correctly identified that the Schedule Optimizer's 8-week estimate was too aggressive given the sequential workstream dependencies and reduced team capacity. Your 10–12 week realistic estimate, paired with specific milestones and a clear capacity ask, gives this plan real credibility.",
+      "mid": "Good planning structure. Review the Schedule Optimizer output carefully — its 8-week estimate assumed fully parallel execution, but the status report notes that workstreams are partially sequential. A more defensible timeline acknowledges this constraint explicitly, even if it means adding weeks to the commitment.",
+      "low": "The recovery roadmap needs to be more grounded in the project's actual constraints. The Schedule Optimizer generated an optimistic timeline that assumes workstreams can run fully in parallel and ignores the sequential dependencies described in the status report. Always test a tool's assumptions against the source data before putting a timeline commitment in front of a client."
+    },
+    "stakeholder_mgmt": {
+      "high": "Excellent stakeholder plan. You identified the key contacts (Rick Alvarez for executive alignment, Janet Chow for the critical IT dependency), proposed specific communication cadences, and articulated clearly what you are asking from Hartwell's team — not just what you are committing to. That reciprocity is often missing in recovery plans.",
+      "mid": "Good stakeholder awareness. Your communication plan covers the basics. To strengthen it, be more specific: name the individuals who will receive updates, define the cadence (e.g., weekly written status reports), and explicitly state what you need from Hartwell (IT availability, UAT scheduling) as formal commitments, not just requests.",
+      "low": "The stakeholder section needs more specificity. Hartwell has multiple stakeholders with different concerns: Rick Alvarez needs executive-level confidence, Janet Chow needs predictable scheduling for her IT team, and Marcus Webb needs UAT logistics. A strong communication plan differentiates between these needs and proposes concrete actions — not just intentions."
+    },
+    "risk_mitigation": {
+      "high": "Strong risk section. You identified the most material recovery risks (scope creep recurrence, capacity constraints, potential legal escalation) and proposed concrete mitigations rather than just naming risks without solutions. The scope freeze recommendation in particular is the single most important protective action.",
+      "mid": "Good risk identification. Make sure each risk has a paired mitigation. For example, if you named scope creep as a risk, the mitigation is a formal scope freeze memo — a specific deliverable, not just 'better change control.' The more concrete your mitigations, the more credible the recovery plan.",
+      "low": "The risk mitigation section needs development. Listing risks without mitigations is not actionable. For each risk you name, answer the question: 'What specific action will prevent or reduce this risk?' At minimum, a project recovery plan should address: scope creep recurrence, team capacity shortfall, and the risk of client disengagement before the next milestone."
+    }
+  }
+}
