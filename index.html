@@ -212,6 +212,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
+  margin-top: 2px;
   margin-bottom: 12px;
 }
 .task-card-badge {
@@ -651,6 +652,56 @@ body {
 .task-card.construct-na .task-card-action { display: none; }
 .task-card.construct-na .construct-na-note { display: block; }
 
+/* ── TYPE FILTER CHIPS ─────────────────────── */
+.type-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.type-filter-label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  margin-right: 2px;
+  white-space: nowrap;
+}
+.type-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-secondary);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.type-chip:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.type-chip.active {
+  background: rgba(77,211,254,0.1);
+  border-color: rgba(77,211,254,0.35);
+  color: var(--accent);
+}
+.chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.task-card.type-hidden {
+  display: none;
+}
+
 /* ── RESPONSIVE ────────────────────────────── */
 @media (max-width: 600px) {
   .hero h1 { font-size: 24px; }
@@ -713,16 +764,38 @@ body {
     </span>
   </div>
 
+
+  <!-- CATEGORY FILTER CHIPS -->
+  <div class="type-filter-row" id="typeFilterRow">
+    <span class="type-filter-label">Task type:</span>
+    <button class="type-chip active" data-type="all" onclick="setTypeFilter('all', this)">All</button>
+    <button class="type-chip" data-type="1" onclick="setTypeFilter('1', this)">
+      <span class="chip-dot" style="background:var(--cat1)"></span>Cat 1 — Written
+    </button>
+    <button class="type-chip" data-type="3" onclick="setTypeFilter('3', this)">
+      <span class="chip-dot" style="background:var(--cat3)"></span>Cat 3 — Process
+    </button>
+    <button class="type-chip" data-type="4" onclick="setTypeFilter('4', this)">
+      <span class="chip-dot" style="background:var(--cat4)"></span>Cat 4 — Simulation
+    </button>
+    <button class="type-chip" data-type="6" onclick="setTypeFilter('6', this)">
+      <span class="chip-dot" style="background:var(--cat6)"></span>Cat 6 — Collaborative
+    </button>
+    <button class="type-chip" data-type="7" onclick="setTypeFilter('7', this)">
+      <span class="chip-dot" style="background:var(--cat7)"></span>Cat 7 — AI-Augmented
+    </button>
+  </div>
+
   <!-- TASK CARDS -->
   <div class="tasks-grid">
 
     <!-- Signal Check -->
-    <div class="task-card" id="card-signal-check" data-task-id="signal-check" data-desktop="signal-check.html" data-mobile="signal-check.html">
+    <div class="task-card" id="card-signal-check" data-primary-cat="4" data-task-id="signal-check" data-desktop="signal-check.html" data-mobile="signal-check.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat4), #a78bfa);"></div>
-      <div class="task-card-badges">
+      <h3>Signal Check <span class="mobile-badge" style="display:none!important">Already mobile-ready</span></h3><div class="task-card-badges">
         <span class="task-card-badge cat-badge-4">Cat 4 — Simulation</span>
       </div>
-      <h3>Signal Check <span class="mobile-badge" style="display:none!important">Already mobile-ready</span></h3>
+      
       <p class="task-card-desc">Have a casual conversation with an AI persona who adapts questions based on your responses. No right or wrong answers — just real talk.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Construct assessed</div>
@@ -748,13 +821,13 @@ body {
     </div>
 
     <!-- The Brief -->
-    <div class="task-card" id="card-the-brief" data-task-id="the-brief" data-desktop="the-brief.html" data-mobile="the-brief-mobile.html">
+    <div class="task-card" id="card-the-brief" data-primary-cat="7" data-task-id="the-brief" data-desktop="the-brief.html" data-mobile="the-brief-mobile.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat7), var(--cat1));"></div>
-      <div class="task-card-badges">
+      <h3>The Brief <span class="mobile-badge">Simplified</span></h3><div class="task-card-badges">
         <span class="task-card-badge cat-badge-7">Cat 7 — AI-Augmented</span>
         <span class="task-card-badge cat-badge-1">Cat 1 — Constructed Response</span>
       </div>
-      <h3>The Brief <span class="mobile-badge">Simplified</span></h3>
+      
       <p class="task-card-desc">Step into a consulting workspace with AI tools, reference files, and a client who needs a deliverable by end of day. Watch out for planted errors.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Construct assessed</div>
@@ -780,13 +853,13 @@ body {
     </div>
 
     <!-- Data Detective -->
-    <div class="task-card" id="card-data-detective" data-task-id="data-detective" data-desktop="data-detective.html" data-mobile="data-detective-mobile.html">
+    <div class="task-card" id="card-data-detective" data-primary-cat="3" data-task-id="data-detective" data-desktop="data-detective.html" data-mobile="data-detective-mobile.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat3), var(--cat1));"></div>
-      <div class="task-card-badges">
+      <h3>Data Detective <span class="mobile-badge">Simplified</span></h3><div class="task-card-badges">
         <span class="task-card-badge cat-badge-3">Cat 3 — Process</span>
         <span class="task-card-badge cat-badge-1">Cat 1 — Constructed Response</span>
       </div>
-      <h3>Data Detective <span class="mobile-badge">Simplified</span></h3>
+      
       <p class="task-card-desc">Investigate a business dataset using filters, charts, and your own notes. The system watches how you explore — not just what you conclude.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Construct assessed</div>
@@ -812,12 +885,12 @@ body {
     </div>
 
     <!-- The Take -->
-    <div class="task-card" id="card-the-take" data-task-id="the-take" data-desktop="the-take.html" data-mobile="the-take-mobile.html">
+    <div class="task-card" id="card-the-take" data-primary-cat="1" data-task-id="the-take" data-desktop="the-take.html" data-mobile="the-take-mobile.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat1), #38bdf8);"></div>
-      <div class="task-card-badges">
+      <h3>The Take <span class="mobile-badge">Simplified</span></h3><div class="task-card-badges">
         <span class="task-card-badge cat-badge-1">Cat 1 — Constructed Response</span>
       </div>
-      <h3>The Take <span class="mobile-badge">Simplified</span></h3>
+      
       <p class="task-card-desc">Read conflicting source documents and write a position memo. Your reading behavior, source evaluation, and argumentation are all part of the evidence.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Construct assessed</div>
@@ -843,13 +916,13 @@ body {
     </div>
 
     <!-- The Forum -->
-    <div class="task-card" id="card-the-forum" data-task-id="the-forum" data-desktop="the-forum.html" data-mobile="the-forum-mobile.html">
+    <div class="task-card" id="card-the-forum" data-primary-cat="6" data-task-id="the-forum" data-desktop="the-forum.html" data-mobile="the-forum-mobile.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat6), #c084fc);"></div>
-      <div class="task-card-badges">
+      <h3>The Forum <span class="mobile-badge">Simplified</span></h3><div class="task-card-badges">
         <span class="task-card-badge cat-badge-6">Cat 6 — Collaborative</span>
         <span class="task-card-badge cat-badge-3">Cat 3 — Process</span>
       </div>
-      <h3>The Forum <span class="mobile-badge">Simplified</span></h3>
+      
       <p class="task-card-desc">Join a team discussion with scripted teammates who have competing priorities. Engage, challenge, synthesize — and drive the group to a decision.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Constructs assessed</div>
@@ -874,12 +947,12 @@ body {
       </div>
     </div>
 
-    <div class="task-card" id="card-rx-check" data-task-id="rx-check" data-desktop="rx-check.html" data-mobile="rx-check.html">
+    <div class="task-card" id="card-rx-check" data-primary-cat="4" data-task-id="rx-check" data-desktop="rx-check.html" data-mobile="rx-check.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat4), #a78bfa);"></div>
-      <div class="task-card-badges">
+      <h3>Rx Check</h3><div class="task-card-badges">
         <span class="task-card-badge cat-badge-4">Cat 4 — Simulation</span>
       </div>
-      <h3>Rx Check</h3>
+      
       <p class="task-card-desc">Work through a prescription queue against a live patient profile — catch allergy conflicts, drug interactions, and duplicate therapy before anything reaches the patient.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Construct assessed</div>
@@ -904,12 +977,12 @@ body {
       </div>
     </div>
 
-    <div class="task-card" id="card-triage-sim" data-task-id="triage-sim" data-desktop="triage-sim.html" data-mobile="triage-sim.html">
+    <div class="task-card" id="card-triage-sim" data-primary-cat="4" data-task-id="triage-sim" data-desktop="triage-sim.html" data-mobile="triage-sim.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat4), #a78bfa);"></div>
-      <div class="task-card-badges">
+      <h3>Triage Sim</h3><div class="task-card-badges">
         <span class="task-card-badge cat-badge-4">Cat 4 — Simulation</span>
       </div>
-      <h3>Triage Sim</h3>
+      
       <p class="task-card-desc">Race against the clock to triage multiple patients at a mass casualty incident using the START protocol, then transmit your radio report to incoming units.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Construct assessed</div>
@@ -934,12 +1007,12 @@ body {
       </div>
     </div>
 
-    <div class="task-card" id="card-rx-verify" data-task-id="rx-verify" data-desktop="rx-verify.html" data-mobile="rx-verify.html">
+    <div class="task-card" id="card-rx-verify" data-primary-cat="4" data-task-id="rx-verify" data-desktop="rx-verify.html" data-mobile="rx-verify.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat4), #a78bfa);"></div>
-      <div class="task-card-badges">
+      <h3>Rx Verify</h3><div class="task-card-badges">
         <span class="task-card-badge cat-badge-4">Cat 4 — Simulation</span>
       </div>
-      <h3>Rx Verify</h3>
+      
       <p class="task-card-desc">Work through real-looking prescriptions field by field — check for missing elements, invalid DEA numbers, ambiguous directions, and know when to fill, clarify, or reject.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Construct assessed</div>
@@ -964,13 +1037,13 @@ body {
       </div>
     </div>
 
-    <div class="task-card" id="card-soap-note" data-task-id="soap-note" data-desktop="soap-note.html" data-mobile="soap-note.html">
+    <div class="task-card" id="card-soap-note" data-primary-cat="4" data-task-id="soap-note" data-desktop="soap-note.html" data-mobile="soap-note.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat4), var(--cat1));"></div>
-      <div class="task-card-badges">
+      <h3>Verbal Handoff</h3><div class="task-card-badges">
         <span class="task-card-badge cat-badge-4">Cat 4 — Simulation</span>
         <span class="task-card-badge cat-badge-1">Cat 1 — Constructed Response</span>
       </div>
-      <h3>Verbal Handoff</h3>
+      
       <p class="task-card-desc">Review a live scenario, then deliver a structured verbal briefing. Speak naturally — the task listens, transcribes, and scores your coverage of required elements.</p>
       <div class="task-card-construct">
         <div class="task-card-construct-label">Construct assessed</div>
@@ -1387,6 +1460,27 @@ document.querySelectorAll('.info-tab').forEach(tab => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeInfo();
 });
+
+// ── Task Type Filter ──
+let currentTypeFilter = 'all';
+
+function setTypeFilter(type, btn) {
+  currentTypeFilter = type;
+
+  // Update chip active state
+  document.querySelectorAll('.type-chip').forEach(c => c.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  // Show/hide cards based on primary category
+  document.querySelectorAll('.task-card').forEach(card => {
+    if (type === 'all') {
+      card.classList.remove('type-hidden');
+    } else {
+      const cardCat = card.dataset.primaryCat;
+      card.classList.toggle('type-hidden', cardCat !== type);
+    }
+  });
+}
 
 // ── Construct Selector ──
 // Maps each construct → each task → { scenario, construct, dims } or null (grey out)
