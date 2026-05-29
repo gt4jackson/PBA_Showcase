@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triage Sim — PBA Showcase</title>
+<style>
+:root {
+  --bg: #1a212b;
+  --surface: #242e3d;
+  --surface2: #2d3a4f;
+  --accent: #4dd3fe;
+  --text: #f2e9d8;
+  --muted: rgba(242,233,216,0.45);
+  --border: rgba(242,233,216,0.08);
+  --border-strong: rgba(242,233,216,0.15);
+
+  --immediate: #ef4444;
+  --immediate-bg: rgba(239,68,68,0.12);
+  --delayed: #f59e0b;
+  --delayed-bg: rgba(245,158,11,0.12);
+  --minor: #22c55e;
+  --minor-bg: rgba(34,197,94,0.12);
+  --expectant: #6b7280;
+  --expectant-bg: rgba(107,114,128,0.12);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.header-back {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.header-back:hover { color: var(--text); }
+.header-title { font-weight: 700; font-size: 15px; color: var(--text); }
+.header-construct { font-size: 11px; color: var(--muted); margin-left: 2px; }
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.timer-display {
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(77,211,254,0.08);
+  border: 1px solid rgba(77,211,254,0.2);
+  border-radius: 8px;
+  padding: 5px 12px;
+  min-width: 70px;
+  text-align: center;
+  transition: color 0.3s, background 0.3s;
+}
+.timer-display.urgent { color: var(--immediate); background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); }
+.phase-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(77,211,254,0.1);
+  color: var(--accent);
+  border: 1px solid rgba(77,211,254,0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Progress bar ── */
+.progress-bar {
+  height: 3px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s;
+}
+
+/* ── Main layout ── */
+.workspace {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  overflow: hidden;
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.panel-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+}
+.panel-body::-webkit-scrollbar { width: 4px; }
+.panel-body::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+/* ── Intro screen ── */
+#intro-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  gap: 24px;
+}
+.dispatch-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 28px;
+  max-width: 600px;
+  width: 100%;
+}
+.dispatch-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--immediate);
+  margin-bottom: 8px;
+}
+.dispatch-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.dispatch-meta {
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 4px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.dispatch-meta span { display: flex; align-items: center; gap: 4px; }
+.start-btn {
+  padding: 13px 40px;
+  background: var(--immediate);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: 0.02em;
+}
+.start-btn:hover { background: #dc2626; transform: translateY(-1px); }
+
+.legend-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 600px;
+}
+.legend-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.legend-chip.immediate { background: var(--immediate-bg); color: var(--immediate); border: 1px solid rgba(239,68,68,0.2); }
+.legend-chip.delayed   { background: var(--delayed-bg);   color: var(--delayed);   border: 1px solid rgba(245,158,11,0.2); }
+.legend-chip.minor     { background: var(--minor-bg);     color: var(--minor);     border: 1px solid rgba(34,197,94,0.2); }
+.legend-chip.expectant { background: var(--expectant-bg); color: var(--expectant); border: 1px solid rgba(107,114,128,0.3); }
+
+/* ── Scene panel ── */
+#scene-panel { width: 260px; flex-shrink: 0; }
+.scene-info-block {
+  background: rgba(239,68,68,0.06);
+  border: 1px solid rgba(239,68,68,0.15);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.scene-info-block strong { color: var(--immediate); display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.resources-block {
+  background: rgba(77,211,254,0.05);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.resources-block strong { color: var(--accent); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 4px; }
+.triage-progress {
+  margin-top: 14px;
+  padding: 12px;
+  background: var(--surface2);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.triage-progress-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 8px; }
+.triage-cat-count {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+}
+.triage-cat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.triage-cat-row .cat-label { display: flex; align-items: center; gap: 6px; }
+.triage-cat-row .cat-count {
+  font-weight: 700;
+  font-size: 15px;
+  min-width: 18px;
+  text-align: right;
+}
+.triage-cat-row.immediate .cat-count { color: var(--immediate); }
+.triage-cat-row.delayed   .cat-count { color: var(--delayed); }
+.triage-cat-row.minor     .cat-count { color: var(--minor); }
+.triage-cat-row.expectant .cat-count { color: var(--expectant); }
+
+.complete-btn {
+  margin-top: 14px;
+  width: 100%;
+  padding: 10px;
+  background: rgba(77,211,254,0.1);
+  border: 1px solid rgba(77,211,254,0.3);
+  border-radius: 8px;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  opacity: 0.4;
+  pointer-events: none;
+}
+.complete-btn.ready {
+  opacity: 1;
+  pointer-events: auto;
+  background: var(--accent);
+  color: #1a212b;
+  border-color: transparent;
+}
+.complete-btn.ready:hover { background: #6cdeff; }
+
+/* ── Patient cards ── */
+#patients-panel { flex: 1; }
+.patient-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.patient-card.assigned-immediate { border-color: var(--immediate); }
+.patient-card.assigned-delayed   { border-color: var(--delayed); }
+.patient-card.assigned-minor     { border-color: var(--minor); }
+.patient-card.assigned-expectant { border-color: var(--expectant); }
+.patient-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.patient-label {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--accent);
+}
+.patient-position {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.patient-presentation {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.vitals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 12px;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 6px;
+}
+.vital-row { font-size: 11px; line-height: 1.5; }
+.vital-row .vk { color: var(--muted); }
+.vital-row .vv { color: var(--text); font-weight: 600; }
+.category-btns {
+  display: flex;
+  gap: 5px;
+}
+.cat-btn {
+  flex: 1;
+  padding: 6px 4px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: all 0.15s;
+  text-align: center;
+}
+.cat-btn.immediate { background: var(--immediate-bg); color: var(--immediate); border-color: rgba(239,68,68,0.2); }
+.cat-btn.immediate:hover, .cat-btn.immediate.selected { background: var(--immediate); color: #fff; border-color: var(--immediate); }
+.cat-btn.delayed   { background: var(--delayed-bg);   color: var(--delayed);   border-color: rgba(245,158,11,0.2); }
+.cat-btn.delayed:hover, .cat-btn.delayed.selected   { background: var(--delayed);   color: #1a212b; border-color: var(--delayed); }
+.cat-btn.minor     { background: var(--minor-bg);     color: var(--minor);     border-color: rgba(34,197,94,0.2); }
+.cat-btn.minor:hover, .cat-btn.minor.selected     { background: var(--minor);     color: #1a212b; border-color: var(--minor); }
+.cat-btn.expectant { background: var(--expectant-bg); color: var(--expectant); border-color: rgba(107,114,128,0.2); }
+.cat-btn.expectant:hover, .cat-btn.expectant.selected { background: var(--expectant); color: #fff; border-color: var(--expectant); }
+
+/* ── Report phase ── */
+#report-panel {
+  flex: 1;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.report-prompt-box {
+  background: rgba(77,211,254,0.05);
+  border: 1px solid rgba(77,211,254,0.15);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.report-prompt-box strong { color: var(--accent); display: block; margin-bottom: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+#radio-textarea {
+  width: 100%;
+  min-height: 140px;
+  padding: 12px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+}
+#radio-textarea:focus { border-color: rgba(77,211,254,0.4); }
+#radio-textarea::placeholder { color: var(--muted); font-family: inherit; }
+.radio-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.word-count { font-size: 11px; color: var(--muted); }
+.submit-btn {
+  padding: 10px 28px;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: #1a212b;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.submit-btn:hover { background: #6cdeff; }
+.submit-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* ── Results ── */
+#results-screen {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: none;
+  flex-direction: column;
+  gap: 18px;
+  align-items: center;
+}
+#results-screen.visible { display: flex; }
+.results-inner { max-width: 700px; width: 100%; }
+
+.score-hero {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  margin-bottom: 18px;
+}
+.score-hero .score-num {
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.score-hero .score-label { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+.score-hero .score-verdict { font-size: 15px; color: var(--text); font-weight: 600; }
+
+.results-section { margin-bottom: 18px; }
+.results-section h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.patient-result {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.result-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.result-detail { flex: 1; }
+.result-detail .rd-label { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+.result-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 5px; }
+.result-chip {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.result-chip.immediate { background: var(--immediate-bg); color: var(--immediate); }
+.result-chip.delayed   { background: var(--delayed-bg);   color: var(--delayed); }
+.result-chip.minor     { background: var(--minor-bg);     color: var(--minor); }
+.result-chip.expectant { background: var(--expectant-bg); color: var(--expectant); }
+.result-chip.neutral   { background: rgba(77,211,254,0.1); color: var(--accent); }
+.result-teaching { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+.score-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.score-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+}
+.score-card .sc-val { font-size: 24px; font-weight: 700; color: var(--accent); }
+.score-card .sc-label { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+.restart-btn {
+  padding: 11px 32px;
+  background: rgba(77,211,254,0.1);
+  border: 1px solid rgba(77,211,254,0.25);
+  border-radius: 8px;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin: 0 auto;
+  display: block;
+}
+.restart-btn:hover { background: rgba(77,211,254,0.18); }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header" id="main-header" style="display:none">
+  <a href="/" class="header-back">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Hub
+  </a>
+  <div>
+    <div class="header-title" id="header-title">Triage Sim</div>
+    <div class="header-construct" id="header-construct"></div>
+  </div>
+  <div class="header-right">
+    <div class="phase-badge" id="phase-badge">Brief</div>
+    <div class="timer-display" id="timer-display" style="display:none">0:00</div>
+  </div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<!-- Intro screen (pre-load) -->
+<div id="loading-screen" style="flex:1;display:flex;align-items:center;justify-content:center;">
+  <div style="color:var(--muted);font-size:14px;">Loading scenario…</div>
+</div>
+
+<!-- Intro / Dispatch Brief -->
+<div id="intro-screen" style="display:none; flex:1; flex-direction:column; align-items:center; justify-content:center; padding:32px; gap:24px; overflow-y:auto;">
+  <div style="max-width:600px;width:100%;text-align:center;margin-bottom:4px;">
+    <div style="font-size:28px;margin-bottom:8px;">🚑</div>
+    <h2 id="intro-construct-name" style="font-size:20px;font-weight:700;margin-bottom:6px;color:var(--text)"></h2>
+    <p id="intro-construct-desc" style="font-size:13px;color:var(--muted);line-height:1.6;max-width:480px;margin:0 auto 16px;"></p>
+  </div>
+  <div class="dispatch-card">
+    <div class="dispatch-label">📻 Dispatch — Incoming Call</div>
+    <div class="dispatch-text" id="dispatch-text"></div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:6px;padding:12px;margin-bottom:14px;font-size:12px;line-height:1.7;color:var(--text);" id="briefing-text"></div>
+    <div class="dispatch-meta" id="dispatch-meta"></div>
+  </div>
+  <div class="legend-row">
+    <div class="legend-chip immediate">🔴 Immediate — life threat</div>
+    <div class="legend-chip delayed">🟡 Delayed — serious, stable</div>
+    <div class="legend-chip minor">🟢 Minor — walking wounded</div>
+    <div class="legend-chip expectant">⬛ Expectant — unsalvageable</div>
+  </div>
+  <div style="font-size:12px;color:var(--muted);text-align:center;max-width:460px;">
+    Triage all patients using the <strong style="color:var(--text)">START protocol</strong> as fast as you can — time matters in MCI. Then transmit your radio report to incoming units.
+  </div>
+  <button class="start-btn" id="start-btn">Respond to Scene →</button>
+</div>
+
+<!-- Triage workspace -->
+<div class="workspace" id="triage-workspace" style="display:none">
+
+  <!-- Scene info panel -->
+  <div class="panel" id="scene-panel" style="width:250px;flex-shrink:0">
+    <div class="panel-header">Scene Info</div>
+    <div class="panel-body">
+      <div class="scene-info-block" id="scene-info-block"></div>
+      <div class="resources-block" id="resources-block"></div>
+      <div class="triage-progress">
+        <div class="triage-progress-label">Triage Status</div>
+        <div class="triage-cat-count">
+          <div class="triage-cat-row immediate">
+            <span class="cat-label"><span style="color:var(--immediate)">●</span> Immediate</span>
+            <span class="cat-count" id="cnt-immediate">0</span>
+          </div>
+          <div class="triage-cat-row delayed">
+            <span class="cat-label"><span style="color:var(--delayed)">●</span> Delayed</span>
+            <span class="cat-count" id="cnt-delayed">0</span>
+          </div>
+          <div class="triage-cat-row minor">
+            <span class="cat-label"><span style="color:var(--minor)">●</span> Minor</span>
+            <span class="cat-count" id="cnt-minor">0</span>
+          </div>
+          <div class="triage-cat-row expectant">
+            <span class="cat-label"><span style="color:var(--expectant)">●</span> Expectant</span>
+            <span class="cat-count" id="cnt-expectant">0</span>
+          </div>
+        </div>
+      </div>
+      <button class="complete-btn" id="complete-btn" onclick="completeTriagePhase()">
+        Proceed to Radio Report →
+      </button>
+    </div>
+  </div>
+
+  <!-- Patient cards panel -->
+  <div class="panel" style="flex:1">
+    <div class="panel-header">
+      <span>Patients</span>
+      <span id="patients-progress" style="color:var(--muted)">0 / 0 triaged</span>
+    </div>
+    <div class="panel-body" id="patients-body"></div>
+  </div>
+
+</div>
+
+<!-- Report phase -->
+<div class="workspace" id="report-workspace" style="display:none">
+  <div class="panel" style="width:220px;flex-shrink:0">
+    <div class="panel-header">Your Triage</div>
+    <div class="panel-body" id="triage-summary-panel"></div>
+  </div>
+  <div class="panel" style="flex:1">
+    <div class="panel-header">Radio Report to Command</div>
+    <div class="panel-body">
+      <div class="report-prompt-box">
+        <strong>Transmit to incoming units</strong>
+        <span id="report-prompt-text"></span>
+      </div>
+      <textarea id="radio-textarea" placeholder="Unit [your unit], on scene at [location]. We have [X] patients: [triage counts]. Requesting [resources]. [Critical patient details]. Over." rows="7"></textarea>
+      <div class="radio-footer">
+        <span class="word-count" id="word-count">0 words</span>
+        <button class="submit-btn" id="submit-btn" onclick="submitReport()" disabled>Submit Report</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Results -->
+<div id="results-screen">
+  <div class="results-inner">
+    <div class="score-hero">
+      <div class="score-num" id="final-score">—</div>
+      <div class="score-label">Overall Score</div>
+      <div class="score-verdict" id="score-verdict"></div>
+    </div>
+    <div class="score-row">
+      <div class="score-card"><div class="sc-val" id="sc-triage">—</div><div class="sc-label">Triage Accuracy</div></div>
+      <div class="score-card"><div class="sc-val" id="sc-time">—</div><div class="sc-label">Scene Time</div></div>
+      <div class="score-card"><div class="sc-val" id="sc-report">—</div><div class="sc-label">Radio Report</div></div>
+    </div>
+
+    <div class="results-section">
+      <h3>Triage Review — Patient by Patient</h3>
+      <div id="patient-results"></div>
+    </div>
+
+    <div class="results-section">
+      <h3>Your Radio Report</h3>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'Courier New',monospace;font-size:12px;line-height:1.7;color:var(--text);" id="report-display"></div>
+    </div>
+
+    <button class="restart-btn" onclick="location.reload()">Try Again ↺</button>
+  </div>
+</div>
+
+<script>
+/* ── State ── */
+const STATE = {
+  scenario: null,
+  phase: 'loading',   // loading → intro → triage → report → results
+  assignments: {},    // patientId → categoryId
+  startTime: null,
+  elapsed: 0,
+  timerInterval: null,
+};
+
+/* ── Load scenario ── */
+async function loadScenario() {
+  const params = new URLSearchParams(window.location.search);
+  const src = params.get('scenario') || 'scenarios/triage-sim-emt.json';
+  try {
+    const res = await fetch(src);
+    if (!res.ok) throw new Error('Not found');
+    STATE.scenario = await res.json();
+    initIntro();
+  } catch (e) {
+    document.getElementById('loading-screen').innerHTML =
+      `<div style="color:var(--immediate);text-align:center">Failed to load scenario.<br><small>${e.message}</small></div>`;
+  }
+}
+
+function initIntro() {
+  const s = STATE.scenario;
+  document.title = `Triage Sim — ${s.construct_name}`;
+  document.getElementById('header-title').textContent = 'Triage Sim';
+  document.getElementById('header-construct').textContent = s.construct_name;
+  document.getElementById('intro-construct-name').textContent = s.construct_name;
+  document.getElementById('intro-construct-desc').textContent = s.construct_description;
+  document.getElementById('dispatch-text').textContent = s.scene.dispatch;
+  document.getElementById('briefing-text').textContent = s.scene.briefing;
+  const meta = document.getElementById('dispatch-meta');
+  const r = s.scene.resources_available;
+  meta.innerHTML = `
+    <span>👥 ${s.patients.length} patients</span>
+    <span>🚑 ${r.ems_units} unit${r.ems_units > 1 ? 's' : ''} on scene</span>
+    <span>⏱️ ${r.arriving_units}</span>`;
+
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('intro-screen').style.display = 'flex';
+  document.getElementById('main-header').style.display = 'flex';
+  setProgress(0.05);
+  STATE.phase = 'intro';
+}
+
+/* ── Start triage ── */
+document.getElementById('start-btn').onclick = function() {
+  startTriagePhase();
+};
+
+function startTriagePhase() {
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('triage-workspace').style.display = 'flex';
+  document.getElementById('timer-display').style.display = '';
+  document.getElementById('phase-badge').textContent = 'Triage';
+  setProgress(0.2);
+
+  // Scene panel
+  const s = STATE.scenario;
+  document.getElementById('scene-info-block').innerHTML =
+    `<strong>Scene</strong>${s.scene.briefing}`;
+  const r = s.scene.resources_available;
+  document.getElementById('resources-block').innerHTML =
+    `<strong>Resources Available</strong>
+    ${r.ems_personnel} personnel on scene<br>
+    ${r.arriving_units}`;
+
+  // Build patient cards
+  const body = document.getElementById('patients-body');
+  body.innerHTML = '';
+  s.patients.forEach(p => {
+    body.appendChild(buildPatientCard(p));
+  });
+  updateTriageProgress();
+
+  // Start timer
+  STATE.startTime = Date.now();
+  STATE.timerInterval = setInterval(updateTimer, 500);
+  STATE.phase = 'triage';
+}
+
+function buildPatientCard(p) {
+  const card = document.createElement('div');
+  card.className = 'patient-card';
+  card.id = `card-${p.id}`;
+
+  const v = p.vitals;
+  card.innerHTML = `
+    <div class="patient-card-header">
+      <span class="patient-label">${p.label}</span>
+      <span style="font-size:11px;color:var(--muted)">${p.position}</span>
+    </div>
+    <div class="patient-presentation">${p.presentation}</div>
+    <div class="vitals-grid">
+      <div class="vital-row"><span class="vk">Resp: </span><span class="vv">${v.respirations}</span></div>
+      <div class="vital-row"><span class="vk">Radial pulse: </span><span class="vv">${v.radial_pulse}</span></div>
+      <div class="vital-row"><span class="vk">Mental status: </span><span class="vv">${v.mental_status}</span></div>
+      <div class="vital-row"><span class="vk">Cap refill: </span><span class="vv">${v.capillary_refill || '—'}</span></div>
+      ${v.other ? `<div class="vital-row" style="grid-column:1/-1"><span class="vk">Notes: </span><span class="vv">${v.other}</span></div>` : ''}
+    </div>
+    <div class="category-btns">
+      <button class="cat-btn immediate" data-patient="${p.id}" data-cat="immediate">🔴 Immediate</button>
+      <button class="cat-btn delayed"   data-patient="${p.id}" data-cat="delayed">🟡 Delayed</button>
+      <button class="cat-btn minor"     data-patient="${p.id}" data-cat="minor">🟢 Minor</button>
+      <button class="cat-btn expectant" data-patient="${p.id}" data-cat="expectant">⬛ Expectant</button>
+    </div>`;
+
+  card.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => assignCategory(p.id, btn.dataset.cat));
+  });
+  return card;
+}
+
+function assignCategory(patientId, catId) {
+  STATE.assignments[patientId] = catId;
+  const card = document.getElementById(`card-${patientId}`);
+  card.className = 'patient-card assigned-' + catId;
+  card.querySelectorAll('.cat-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.cat === catId);
+  });
+  updateTriageProgress();
+}
+
+function updateTriageProgress() {
+  const s = STATE.scenario;
+  const total = s.patients.length;
+  const assigned = Object.keys(STATE.assignments).length;
+  const cats = { immediate: 0, delayed: 0, minor: 0, expectant: 0 };
+  Object.values(STATE.assignments).forEach(c => { if (cats[c] !== undefined) cats[c]++; });
+  ['immediate','delayed','minor','expectant'].forEach(c => {
+    document.getElementById('cnt-' + c).textContent = cats[c];
+  });
+  document.getElementById('patients-progress').textContent = `${assigned} / ${total} triaged`;
+  setProgress(0.2 + (assigned / total) * 0.35);
+  const btn = document.getElementById('complete-btn');
+  if (assigned === total) {
+    btn.classList.add('ready');
+  } else {
+    btn.classList.remove('ready');
+  }
+}
+
+function updateTimer() {
+  const elapsed = Math.floor((Date.now() - STATE.startTime) / 1000);
+  STATE.elapsed = elapsed;
+  const m = Math.floor(elapsed / 60);
+  const s = elapsed % 60;
+  const display = document.getElementById('timer-display');
+  display.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  const limit = STATE.scenario.scene.time_limit_seconds || 120;
+  display.classList.toggle('urgent', elapsed > limit * 0.75);
+}
+
+/* ── Report phase ── */
+function completeTriagePhase() {
+  clearInterval(STATE.timerInterval);
+  document.getElementById('triage-workspace').style.display = 'none';
+  document.getElementById('report-workspace').style.display = 'flex';
+  document.getElementById('phase-badge').textContent = 'Radio Report';
+  setProgress(0.65);
+
+  // Triage summary
+  const s = STATE.scenario;
+  const summPanel = document.getElementById('triage-summary-panel');
+  summPanel.innerHTML = '';
+  s.patients.forEach(p => {
+    const cat = STATE.assignments[p.id];
+    const catMeta = s.triage_system.categories.find(c => c.id === cat);
+    summPanel.innerHTML += `
+      <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+        <span style="color:${catMeta?.color || 'var(--muted)'}">●</span>
+        <span style="flex:1">${p.label}</span>
+        <span style="font-size:10px;font-weight:700;color:${catMeta?.color || 'var(--muted)'}">${catMeta?.label || cat.toUpperCase()}</span>
+      </div>`;
+  });
+
+  document.getElementById('report-prompt-text').textContent = ' ' + s.radio_report.prompt;
+
+  // Wire textarea
+  const ta = document.getElementById('radio-textarea');
+  ta.addEventListener('input', () => {
+    const words = ta.value.trim().split(/\s+/).filter(Boolean).length;
+    document.getElementById('word-count').textContent = `${words} words`;
+    document.getElementById('submit-btn').disabled = words < 10;
+  });
+}
+
+/* ── Scoring & results ── */
+function submitReport() {
+  document.getElementById('report-workspace').style.display = 'none';
+  const results = document.getElementById('results-screen');
+  results.classList.add('visible');
+  document.getElementById('phase-badge').textContent = 'Results';
+  setProgress(1);
+
+  const s = STATE.scenario;
+  const sc = s.scoring;
+
+  // Triage accuracy
+  let triagePoints = 0;
+  s.patients.forEach(p => {
+    const assigned = STATE.assignments[p.id];
+    const correct = p.correct_category;
+    if (assigned === correct) {
+      triagePoints += sc.triage_accuracy.points_per_correct;
+    } else if (sc.triage_accuracy.partial_credit) {
+      const rule = sc.triage_accuracy.partial_rules.find(r => r.from === correct && r.to === assigned);
+      triagePoints += rule ? rule.points : 0;
+    }
+  });
+  const triagePct = Math.round((triagePoints / sc.triage_accuracy.max_points) * 100);
+
+  // Time score
+  const timeThreshold = sc.time_bonus.thresholds.find(t => STATE.elapsed <= t.seconds_max);
+  const timePoints = timeThreshold ? timeThreshold.points : 0;
+  const timePct = Math.round((timePoints / sc.time_bonus.max_points) * 100);
+
+  // Report score (keyword-based)
+  const report = document.getElementById('radio-textarea').value.toLowerCase();
+  const kw = s.radio_report.scoring_keywords;
+  const countMatches = (arr) => arr.filter(k => report.includes(k.toLowerCase())).length;
+  const patientHits = Math.min(countMatches(kw.patient_counts), kw.patient_counts.length);
+  const resourceHits = countMatches(kw.resource_request) > 0 ? 1 : 0;
+  const criticalHits = Math.min(countMatches(kw.critical_info), kw.critical_info.length);
+
+  const wordCount = report.trim().split(/\s+/).filter(Boolean).length;
+  const brevityScore = wordCount >= 40 && wordCount <= 120 ? 5 : wordCount < 40 ? 2 : 3;
+
+  const rDims = sc.radio_report.dimensions;
+  const reportPoints = Math.round(
+    (patientHits / kw.patient_counts.length)   * rDims[0].max +
+    resourceHits                                * rDims[1].max +
+    (criticalHits / kw.critical_info.length)    * rDims[2].max +
+    brevityScore
+  );
+  const reportPct = Math.round((reportPoints / sc.radio_report.max_points) * 100);
+
+  // Overall
+  const totalPoints = triagePoints + timePoints + reportPoints;
+  const maxPoints = sc.triage_accuracy.max_points + sc.time_bonus.max_points + sc.radio_report.max_points;
+  const overallPct = Math.round((totalPoints / maxPoints) * 100);
+
+  // Verdict
+  const verdict = s.performance_labels.find(l => overallPct >= l.min)?.text || '';
+
+  // Display
+  document.getElementById('final-score').textContent = overallPct + '%';
+  document.getElementById('score-verdict').textContent = verdict;
+  document.getElementById('sc-triage').textContent = triagePct + '%';
+  const m = Math.floor(STATE.elapsed / 60), sec = STATE.elapsed % 60;
+  document.getElementById('sc-time').textContent = `${m}:${sec.toString().padStart(2,'0')}`;
+  document.getElementById('sc-report').textContent = reportPct + '%';
+
+  // Patient-by-patient results
+  const container = document.getElementById('patient-results');
+  s.patients.forEach(p => {
+    const assigned = STATE.assignments[p.id];
+    const correct = p.correct_category;
+    const isCorrect = assigned === correct;
+    const assignedMeta = s.triage_system.categories.find(c => c.id === assigned);
+    const correctMeta  = s.triage_system.categories.find(c => c.id === correct);
+    container.innerHTML += `
+      <div class="patient-result">
+        <span class="result-icon">${isCorrect ? '✅' : '❌'}</span>
+        <div class="result-detail">
+          <div class="rd-label">${p.label} — ${p.position.split('—')[0].trim()}</div>
+          <div class="result-chips">
+            <span class="result-chip neutral">You: </span>
+            <span class="result-chip ${assigned}">${assignedMeta?.label || assigned.toUpperCase()}</span>
+            ${!isCorrect ? `<span class="result-chip neutral">Correct: </span><span class="result-chip ${correct}">${correctMeta?.label || correct.toUpperCase()}</span>` : ''}
+          </div>
+          <div class="result-teaching">${p.teaching_point}</div>
+        </div>
+      </div>`;
+  });
+
+  document.getElementById('report-display').textContent = document.getElementById('radio-textarea').value;
+}
+
+/* ── Utilities ── */
+function setProgress(fraction) {
+  document.getElementById('progress-fill').style.width = (fraction * 100) + '%';
+}
+
+// Boot
+loadScenario();
+</script>
+<script src="feedback.js"></script>
+</body>
+</html>

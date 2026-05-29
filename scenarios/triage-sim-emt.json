@@ -1,0 +1,160 @@
+{
+  "construct_id": "emt_triage",
+  "construct_name": "Mass Casualty Triage (START Protocol)",
+  "construct_description": "The ability to rapidly assess multiple patients in a mass casualty incident, apply the START triage algorithm, assign correct priority categories, and communicate a concise radio report to incoming units — a core NREMT competency for EMTs and Paramedics responding to multi-patient scenes.",
+  "pba_category": {
+    "id": 4,
+    "name": "Simulation-Based Assessment",
+    "description": "A simulated MCI scene requiring real-time triage decisions under time pressure."
+  },
+  "triage_system": {
+    "name": "START",
+    "full_name": "Simple Triage and Rapid Treatment",
+    "categories": [
+      { "id": "immediate",  "label": "IMMEDIATE",  "color": "#ef4444", "tag_color": "#dc2626", "description": "Life-threatening — needs care within minutes", "icon": "🔴" },
+      { "id": "delayed",    "label": "DELAYED",    "color": "#f59e0b", "tag_color": "#d97706", "description": "Serious but stable — can wait for care",       "icon": "🟡" },
+      { "id": "minor",      "label": "MINOR",      "color": "#22c55e", "tag_color": "#16a34a", "description": "Walking wounded — minor injuries",              "icon": "🟢" },
+      { "id": "expectant",  "label": "EXPECTANT",  "color": "#6b7280", "tag_color": "#4b5563", "description": "Unlikely to survive with available resources",  "icon": "⬛" }
+    ]
+  },
+  "scene": {
+    "dispatch": "Multiple vehicle accident on Route 9 near the Millbrook overpass. Caller reports 5–6 patients. Unknown mechanism. Fire en route. Two ALS units, one BLS unit responding. You are first on scene.",
+    "briefing": "You arrive at the scene: a T-bone collision involving an SUV and a minivan. The SUV struck the minivan at the driver's side door. Moderate to severe vehicle damage. No fire. You are the only unit on scene. Three additional units are 4–6 minutes out. You have 90 seconds to triage all patients before calling a scene report to incoming units.",
+    "resources_available": {
+      "ems_units": 2,
+      "ems_personnel": 4,
+      "arriving_units": "3 additional units, 4–6 min ETA"
+    },
+    "time_limit_seconds": 120
+  },
+  "patients": [
+    {
+      "id": "p1",
+      "label": "Patient 1",
+      "position": "SUV — driver's seat, unrestrained",
+      "presentation": "Male, approx. 40s. Found slumped over wheel. Moaning when you approach. Obvious deformity to left femur. Significant bleeding from leg wound.",
+      "vitals": {
+        "respirations": "22/min",
+        "radial_pulse": "Present, weak",
+        "mental_status": "Follows simple commands (moves hand on command)",
+        "capillary_refill": "> 2 seconds",
+        "other": "No airway obstruction. Active hemorrhage from mid-thigh."
+      },
+      "correct_category": "immediate",
+      "rationale": "Respirations within range (≤30), radial pulse present, follows commands — but active arterial hemorrhage and delayed cap refill indicate hemorrhagic shock developing. Immediate: life-threatening hemorrhage.",
+      "teaching_point": "Delayed cap refill and weak radial pulse with active bleeding = developing shock. Control the hemorrhage — this patient is IMMEDIATE."
+    },
+    {
+      "id": "p2",
+      "label": "Patient 2",
+      "position": "Minivan — front passenger, restrained",
+      "presentation": "Female, approx. 30s. Alert, crying, holding right arm. Walking toward you when you arrive.",
+      "vitals": {
+        "respirations": "18/min",
+        "radial_pulse": "Present, strong",
+        "mental_status": "Oriented, appropriate",
+        "capillary_refill": "< 2 seconds",
+        "other": "Visible deformity to right forearm. No other obvious injuries."
+      },
+      "correct_category": "minor",
+      "rationale": "Ambulatory. Respirations, pulse, and mental status all within normal parameters. Isolated extremity injury. By START: walking wounded = MINOR.",
+      "teaching_point": "If they're walking to you, they're MINOR — triage them last. This lets you focus on patients who need you now."
+    },
+    {
+      "id": "p3",
+      "label": "Patient 3",
+      "position": "Minivan — driver's seat, restrained",
+      "presentation": "Female, approx. 50s. Unresponsive. Head slumped to side. No audible breathing when you approach.",
+      "vitals": {
+        "respirations": "None on initial assessment",
+        "radial_pulse": "Absent",
+        "mental_status": "Unresponsive — no response to voice or sternal rub",
+        "capillary_refill": "> 4 seconds",
+        "other": "Repositioned airway — still no spontaneous respirations after head-tilt chin-lift attempt."
+      },
+      "correct_category": "expectant",
+      "rationale": "No respirations after airway repositioning. No radial pulse. Unresponsive. In a mass casualty incident under START protocol, a patient who does not breathe after airway repositioning is tagged EXPECTANT — resources cannot be committed to CPR when other savable patients need care.",
+      "teaching_point": "This is one of the hardest calls in EMS. In an MCI, START protocol dictates EXPECTANT if no respirations after repositioning — even without obvious death. One-on-one resuscitation cannot be prioritized over multiple salvageable patients."
+    },
+    {
+      "id": "p4",
+      "label": "Patient 4",
+      "position": "Roadway — ejected from SUV, found 15 ft from vehicle",
+      "presentation": "Male, approx. 20s. Supine on roadway. Breathing rapidly. Loud gurgling sound on exhalation. Arms not following commands but legs moving spontaneously.",
+      "vitals": {
+        "respirations": "36/min, labored",
+        "radial_pulse": "Present",
+        "mental_status": "Does not follow commands, but moves extremities spontaneously",
+        "capillary_refill": "2 seconds",
+        "other": "Gurgling on exhalation suggests partial airway issue. Possible head injury. Ejection mechanism."
+      },
+      "correct_category": "immediate",
+      "rationale": "Respirations > 30/min AND does not follow commands = IMMEDIATE under START. Gurgling and ejection mechanism indicate likely serious head/airway injury. Two criteria met for immediate.",
+      "teaching_point": "Either RR > 30 OR failure to follow commands = IMMEDIATE. This patient has both. The ejection mechanism and gurgling are concerning but the START criteria are already met."
+    },
+    {
+      "id": "p5",
+      "label": "Patient 5",
+      "position": "Minivan — rear passenger seat, restrained",
+      "presentation": "Female, approx. 70s. Seated in vehicle, awake. Complaining of chest pain and difficulty breathing. Anxious but cooperative.",
+      "vitals": {
+        "respirations": "26/min",
+        "radial_pulse": "Present, irregular",
+        "mental_status": "Alert and oriented, follows commands",
+        "capillary_refill": "2 seconds",
+        "other": "Irregular pulse may indicate cardiac arrhythmia. Chest pain complaint. No obvious external trauma."
+      },
+      "correct_category": "delayed",
+      "rationale": "Respirations within range (≤30), radial pulse present (even if irregular), follows commands. START criteria place her as DELAYED. The cardiac symptoms and age are concerning — she needs ALS — but she is not in immediate life threat by START criteria.",
+      "teaching_point": "DELAYED doesn't mean 'not serious' — it means she can wait minutes for care while IMMEDIATE patients are stabilized. She needs ALS evaluation and should be first in the DELAYED queue."
+    }
+  ],
+  "radio_report": {
+    "prompt": "Transmit your scene report to incoming units. Include: number and category of patients, resources you need, and any critical scene information.",
+    "word_range": [40, 120],
+    "example": "Command, Unit 4. We have a two-vehicle MCI, Route 9 at Millbrook. Five patients: two IMMEDIATE, one DELAYED, one MINOR, one EXPECTANT. Requesting two additional ALS units. No fire, scene is safe. First IMMEDIATE is ejected male with airway compromise and RR over 30 — needs immediate attention on arrival. Second IMMEDIATE has femur fracture with active arterial bleed. DELAYED is elderly female with chest pain and irregular pulse. MINOR is ambulatory. Over.",
+    "scoring_keywords": {
+      "patient_counts": ["two immediate", "2 immediate", "one delayed", "1 delayed", "one minor", "1 minor", "one expectant", "1 expectant"],
+      "resource_request": ["ais", "als", "additional unit", "request", "need", "send"],
+      "critical_info": ["airway", "bleed", "hemorrhage", "ejected", "cardiac", "chest"]
+    }
+  },
+  "scoring": {
+    "triage_accuracy": {
+      "max_points": 50,
+      "points_per_correct": 10,
+      "partial_credit": true,
+      "partial_rules": [
+        { "from": "immediate", "to": "delayed", "points": 5, "reason": "Underestimated urgency — dangerous in MCI" },
+        { "from": "delayed",   "to": "immediate", "points": 7, "reason": "Overestimated urgency — wastes resources but patient safer" },
+        { "from": "expectant", "to": "immediate", "points": 3, "reason": "Commits scarce resources to non-survivable patient" },
+        { "from": "minor",     "to": "delayed",   "points": 7, "reason": "Slight over-triage — acceptable" }
+      ]
+    },
+    "time_bonus": {
+      "max_points": 10,
+      "thresholds": [
+        { "seconds_max": 60,  "points": 10 },
+        { "seconds_max": 90,  "points": 7  },
+        { "seconds_max": 120, "points": 4  },
+        { "seconds_max": 999, "points": 0  }
+      ]
+    },
+    "radio_report": {
+      "max_points": 40,
+      "dimensions": [
+        { "id": "patient_summary",  "label": "Patient count & categories",  "max": 15 },
+        { "id": "resource_request", "label": "Resource request",            "max": 10 },
+        { "id": "critical_info",    "label": "Critical patient details",    "max": 10 },
+        { "id": "brevity",          "label": "Concise and radio-ready",     "max": 5  }
+      ]
+    }
+  },
+  "performance_labels": [
+    { "min": 90, "text": "Textbook START triage — NREMT-ready performance 🚑" },
+    { "min": 75, "text": "Strong triage decision-making with minor gaps 💪" },
+    { "min": 60, "text": "Solid foundation — review the EXPECTANT criteria and radio format 📋" },
+    { "min": 40, "text": "Key gaps in START protocol — particularly on the boundary cases 📈" },
+    { "min": 0,  "text": "MCI triage requires focused review — critical criteria missed ⚠️" }
+  ]
+}
