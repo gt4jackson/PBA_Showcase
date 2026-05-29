@@ -26,6 +26,7 @@
   --cat1: #4dd3fe;
   --cat3: #f59e0b;
   --cat4: #9e9eff;
+  --cat6: #e879f9;
   --cat7: #468254;
   --radius: 16px;
   --radius-sm: 10px;
@@ -206,6 +207,13 @@ body {
   height: 3px;
 }
 
+/* Category badge container — supports multiple badges per card */
+.task-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 12px;
+}
 .task-card-badge {
   display: inline-flex;
   align-items: center;
@@ -216,9 +224,14 @@ body {
   text-transform: uppercase;
   padding: 4px 10px;
   border-radius: 6px;
-  margin-bottom: 12px;
   width: fit-content;
 }
+/* Per-category canonical colors */
+.cat-badge-1 { background: rgba(77,211,254,0.15);  color: var(--cat1); }
+.cat-badge-3 { background: rgba(245,158,11,0.15);  color: var(--cat3); }
+.cat-badge-4 { background: rgba(158,158,255,0.15); color: var(--cat4); }
+.cat-badge-6 { background: rgba(232,121,249,0.15); color: var(--cat6); }
+.cat-badge-7 { background: rgba(70,130,84,0.15);   color: var(--cat7); }
 
 .task-card h3 {
   font-family: 'Speckless', Georgia, 'Times New Roman', serif;
@@ -704,7 +717,9 @@ body {
     <!-- Signal Check -->
     <div class="task-card" id="card-signal-check" data-task-id="signal-check" data-desktop="signal-check.html" data-mobile="signal-check.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat4), #a78bfa);"></div>
-      <div class="task-card-badge" style="background: rgba(158,158,255,0.15); color: var(--cat4);">Cat 4 — Simulation</div>
+      <div class="task-card-badges">
+        <span class="task-card-badge cat-badge-4">Cat 4 — Simulation</span>
+      </div>
       <h3>Signal Check <span class="mobile-badge" style="display:none!important">Already mobile-ready</span></h3>
       <p class="task-card-desc">Have a casual conversation with an AI persona who adapts questions based on your responses. No right or wrong answers — just real talk.</p>
       <div class="task-card-construct">
@@ -732,8 +747,11 @@ body {
 
     <!-- The Brief -->
     <div class="task-card" id="card-the-brief" data-task-id="the-brief" data-desktop="the-brief.html" data-mobile="the-brief-mobile.html">
-      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat7), #34d399);"></div>
-      <div class="task-card-badge" style="background: rgba(70,130,84,0.15); color: var(--cat7);">Cat 7 — AI-Augmented</div>
+      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat7), var(--cat1));"></div>
+      <div class="task-card-badges">
+        <span class="task-card-badge cat-badge-7">Cat 7 — AI-Augmented</span>
+        <span class="task-card-badge cat-badge-1">Cat 1 — Constructed Response</span>
+      </div>
       <h3>The Brief <span class="mobile-badge">Simplified</span></h3>
       <p class="task-card-desc">Step into a consulting workspace with AI tools, reference files, and a client who needs a deliverable by end of day. Watch out for planted errors.</p>
       <div class="task-card-construct">
@@ -761,8 +779,11 @@ body {
 
     <!-- Data Detective -->
     <div class="task-card" id="card-data-detective" data-task-id="data-detective" data-desktop="data-detective.html" data-mobile="data-detective-mobile.html">
-      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat3), #fb923c);"></div>
-      <div class="task-card-badge" style="background: rgba(245,158,11,0.15); color: var(--cat3);">Cat 3 — Process</div>
+      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat3), var(--cat1));"></div>
+      <div class="task-card-badges">
+        <span class="task-card-badge cat-badge-3">Cat 3 — Process</span>
+        <span class="task-card-badge cat-badge-1">Cat 1 — Constructed Response</span>
+      </div>
       <h3>Data Detective <span class="mobile-badge">Simplified</span></h3>
       <p class="task-card-desc">Investigate a business dataset using filters, charts, and your own notes. The system watches how you explore — not just what you conclude.</p>
       <div class="task-card-construct">
@@ -790,8 +811,10 @@ body {
 
     <!-- The Take -->
     <div class="task-card" id="card-the-take" data-task-id="the-take" data-desktop="the-take.html" data-mobile="the-take-mobile.html">
-      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat1), #60a5fa);"></div>
-      <div class="task-card-badge" style="background: rgba(77,211,254,0.15); color: var(--cat1);">Cat 1 — Constructed Response</div>
+      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat1), #38bdf8);"></div>
+      <div class="task-card-badges">
+        <span class="task-card-badge cat-badge-1">Cat 1 — Constructed Response</span>
+      </div>
       <h3>The Take <span class="mobile-badge">Simplified</span></h3>
       <p class="task-card-desc">Read conflicting source documents and write a position memo. Your reading behavior, source evaluation, and argumentation are all part of the evidence.</p>
       <div class="task-card-construct">
@@ -819,8 +842,11 @@ body {
 
     <!-- The Forum -->
     <div class="task-card" id="card-the-forum" data-task-id="the-forum" data-desktop="the-forum.html" data-mobile="the-forum-mobile.html">
-      <div class="task-card-accent" style="background: linear-gradient(90deg, #e879f9, #c084fc);"></div>
-      <div class="task-card-badge" style="background: rgba(232,121,249,0.15); color: #e879f9;">Cat 6 — Collaborative</div>
+      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat6), #c084fc);"></div>
+      <div class="task-card-badges">
+        <span class="task-card-badge cat-badge-6">Cat 6 — Collaborative</span>
+        <span class="task-card-badge cat-badge-3">Cat 3 — Process</span>
+      </div>
       <h3>The Forum <span class="mobile-badge">Simplified</span></h3>
       <p class="task-card-desc">Join a team discussion with scripted teammates who have competing priorities. Engage, challenge, synthesize — and drive the group to a decision.</p>
       <div class="task-card-construct">
@@ -847,8 +873,10 @@ body {
     </div>
 
     <div class="task-card" id="card-triage-sim" data-task-id="triage-sim" data-desktop="triage-sim.html" data-mobile="triage-sim.html">
-      <div class="task-card-accent" style="background: linear-gradient(90deg, #ef4444, #f97316);"></div>
-      <div class="task-card-badge" style="background: rgba(239,68,68,0.15); color: #ef4444;">Cat 4 — Simulation</div>
+      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat4), #a78bfa);"></div>
+      <div class="task-card-badges">
+        <span class="task-card-badge cat-badge-4">Cat 4 — Simulation</span>
+      </div>
       <h3>Triage Sim</h3>
       <p class="task-card-desc">Race against the clock to triage multiple patients at a mass casualty incident using the START protocol, then transmit your radio report to incoming units.</p>
       <div class="task-card-construct">
