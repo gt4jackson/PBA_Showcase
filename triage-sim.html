@@ -14,15 +14,6 @@
   --muted: rgba(242,233,216,0.45);
   --border: rgba(242,233,216,0.08);
   --border-strong: rgba(242,233,216,0.15);
-
-  --immediate: #ef4444;
-  --immediate-bg: rgba(239,68,68,0.12);
-  --delayed: #f59e0b;
-  --delayed-bg: rgba(245,158,11,0.12);
-  --minor: #22c55e;
-  --minor-bg: rgba(34,197,94,0.12);
-  --expectant: #6b7280;
-  --expectant-bg: rgba(107,114,128,0.12);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -71,7 +62,7 @@ body {
   text-align: center;
   transition: color 0.3s, background 0.3s;
 }
-.timer-display.urgent { color: var(--immediate); background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); }
+/* .timer-display.urgent is injected dynamically by injectCategoryCSS */
 .phase-badge {
   font-size: 11px;
   font-weight: 600;
@@ -156,7 +147,7 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--immediate);
+  /* color set dynamically */
   margin-bottom: 8px;
 }
 .dispatch-text {
@@ -178,7 +169,6 @@ body {
 .dispatch-meta span { display: flex; align-items: center; gap: 4px; }
 .start-btn {
   padding: 13px 40px;
-  background: var(--immediate);
   border: none;
   border-radius: 10px;
   color: #fff;
@@ -186,10 +176,11 @@ body {
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
+  transition: filter 0.15s, transform 0.1s;
   letter-spacing: 0.02em;
+  /* background set dynamically */
 }
-.start-btn:hover { background: #dc2626; transform: translateY(-1px); }
+.start-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
 .legend-row {
   display: flex;
@@ -206,11 +197,8 @@ body {
   border-radius: 20px;
   font-size: 11px;
   font-weight: 600;
+  /* colors injected dynamically via .legend-chip.cat-{id} */
 }
-.legend-chip.immediate { background: var(--immediate-bg); color: var(--immediate); border: 1px solid rgba(239,68,68,0.2); }
-.legend-chip.delayed   { background: var(--delayed-bg);   color: var(--delayed);   border: 1px solid rgba(245,158,11,0.2); }
-.legend-chip.minor     { background: var(--minor-bg);     color: var(--minor);     border: 1px solid rgba(34,197,94,0.2); }
-.legend-chip.expectant { background: var(--expectant-bg); color: var(--expectant); border: 1px solid rgba(107,114,128,0.3); }
 
 /* ── Scene panel ── */
 #scene-panel { width: 260px; flex-shrink: 0; }
@@ -224,7 +212,7 @@ body {
   line-height: 1.6;
   color: var(--text);
 }
-.scene-info-block strong { color: var(--immediate); display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.scene-info-block strong { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
 .resources-block {
   background: rgba(77,211,254,0.05);
   border: 1px solid var(--border);
@@ -259,11 +247,8 @@ body {
   font-size: 15px;
   min-width: 18px;
   text-align: right;
+  /* color set via inline style */
 }
-.triage-cat-row.immediate .cat-count { color: var(--immediate); }
-.triage-cat-row.delayed   .cat-count { color: var(--delayed); }
-.triage-cat-row.minor     .cat-count { color: var(--minor); }
-.triage-cat-row.expectant .cat-count { color: var(--expectant); }
 
 .complete-btn {
   margin-top: 14px;
@@ -300,10 +285,7 @@ body {
   margin-bottom: 10px;
   transition: border-color 0.2s;
 }
-.patient-card.assigned-immediate { border-color: var(--immediate); }
-.patient-card.assigned-delayed   { border-color: var(--delayed); }
-.patient-card.assigned-minor     { border-color: var(--minor); }
-.patient-card.assigned-expectant { border-color: var(--expectant); }
+/* .patient-card.assigned-cat-{id} rules injected dynamically */
 .patient-card-header {
   display: flex;
   align-items: center;
@@ -355,15 +337,8 @@ body {
   letter-spacing: 0.04em;
   transition: all 0.15s;
   text-align: center;
+  /* per-category colors injected via .cat-btn.cat-{id} */
 }
-.cat-btn.immediate { background: var(--immediate-bg); color: var(--immediate); border-color: rgba(239,68,68,0.2); }
-.cat-btn.immediate:hover, .cat-btn.immediate.selected { background: var(--immediate); color: #fff; border-color: var(--immediate); }
-.cat-btn.delayed   { background: var(--delayed-bg);   color: var(--delayed);   border-color: rgba(245,158,11,0.2); }
-.cat-btn.delayed:hover, .cat-btn.delayed.selected   { background: var(--delayed);   color: #1a212b; border-color: var(--delayed); }
-.cat-btn.minor     { background: var(--minor-bg);     color: var(--minor);     border-color: rgba(34,197,94,0.2); }
-.cat-btn.minor:hover, .cat-btn.minor.selected     { background: var(--minor);     color: #1a212b; border-color: var(--minor); }
-.cat-btn.expectant { background: var(--expectant-bg); color: var(--expectant); border-color: rgba(107,114,128,0.2); }
-.cat-btn.expectant:hover, .cat-btn.expectant.selected { background: var(--expectant); color: #fff; border-color: var(--expectant); }
 
 /* ── Report phase ── */
 #report-panel {
@@ -480,12 +455,9 @@ body {
   border-radius: 20px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  /* per-category colors injected via .result-chip.cat-{id} */
 }
-.result-chip.immediate { background: var(--immediate-bg); color: var(--immediate); }
-.result-chip.delayed   { background: var(--delayed-bg);   color: var(--delayed); }
-.result-chip.minor     { background: var(--minor-bg);     color: var(--minor); }
-.result-chip.expectant { background: var(--expectant-bg); color: var(--expectant); }
-.result-chip.neutral   { background: rgba(77,211,254,0.1); color: var(--accent); }
+.result-chip.neutral { background: rgba(77,211,254,0.1); color: var(--accent); }
 .result-teaching { font-size: 11px; color: var(--muted); line-height: 1.5; }
 
 .score-row {
@@ -548,24 +520,19 @@ body {
 <!-- Intro / Dispatch Brief -->
 <div id="intro-screen" style="display:none; flex:1; flex-direction:column; align-items:center; justify-content:center; padding:32px; gap:24px; overflow-y:auto;">
   <div style="max-width:600px;width:100%;text-align:center;margin-bottom:4px;">
-    <div style="font-size:28px;margin-bottom:8px;">🚑</div>
+    <div id="scene-icon" style="font-size:28px;margin-bottom:8px;">🚑</div>
     <h2 id="intro-construct-name" style="font-size:20px;font-weight:700;margin-bottom:6px;color:var(--text)"></h2>
     <p id="intro-construct-desc" style="font-size:13px;color:var(--muted);line-height:1.6;max-width:480px;margin:0 auto 16px;"></p>
   </div>
   <div class="dispatch-card">
-    <div class="dispatch-label">📻 Dispatch — Incoming Call</div>
+    <div class="dispatch-label" id="dispatch-label">📻 Dispatch — Incoming Call</div>
     <div class="dispatch-text" id="dispatch-text"></div>
     <div style="background:rgba(255,255,255,0.04);border-radius:6px;padding:12px;margin-bottom:14px;font-size:12px;line-height:1.7;color:var(--text);" id="briefing-text"></div>
     <div class="dispatch-meta" id="dispatch-meta"></div>
   </div>
-  <div class="legend-row">
-    <div class="legend-chip immediate">🔴 Immediate — life threat</div>
-    <div class="legend-chip delayed">🟡 Delayed — serious, stable</div>
-    <div class="legend-chip minor">🟢 Minor — walking wounded</div>
-    <div class="legend-chip expectant">⬛ Expectant — unsalvageable</div>
-  </div>
+  <div class="legend-row" id="legend-row"></div>
   <div style="font-size:12px;color:var(--muted);text-align:center;max-width:460px;">
-    Triage all patients using the <strong style="color:var(--text)">START protocol</strong> as fast as you can — time matters in MCI. Then transmit your radio report to incoming units.
+    Triage all patients using the <strong style="color:var(--text)" id="protocol-name">START protocol</strong> as fast as you can — time matters. Then transmit your report to incoming units.
   </div>
   <button class="start-btn" id="start-btn">Respond to Scene →</button>
 </div>
@@ -581,27 +548,10 @@ body {
       <div class="resources-block" id="resources-block"></div>
       <div class="triage-progress">
         <div class="triage-progress-label">Triage Status</div>
-        <div class="triage-cat-count">
-          <div class="triage-cat-row immediate">
-            <span class="cat-label"><span style="color:var(--immediate)">●</span> Immediate</span>
-            <span class="cat-count" id="cnt-immediate">0</span>
-          </div>
-          <div class="triage-cat-row delayed">
-            <span class="cat-label"><span style="color:var(--delayed)">●</span> Delayed</span>
-            <span class="cat-count" id="cnt-delayed">0</span>
-          </div>
-          <div class="triage-cat-row minor">
-            <span class="cat-label"><span style="color:var(--minor)">●</span> Minor</span>
-            <span class="cat-count" id="cnt-minor">0</span>
-          </div>
-          <div class="triage-cat-row expectant">
-            <span class="cat-label"><span style="color:var(--expectant)">●</span> Expectant</span>
-            <span class="cat-count" id="cnt-expectant">0</span>
-          </div>
-        </div>
+        <div class="triage-cat-count" id="triage-cat-count"></div>
       </div>
       <button class="complete-btn" id="complete-btn" onclick="completeTriagePhase()">
-        Proceed to Radio Report →
+        Proceed to Report →
       </button>
     </div>
   </div>
@@ -609,7 +559,7 @@ body {
   <!-- Patient cards panel -->
   <div class="panel" style="flex:1">
     <div class="panel-header">
-      <span>Patients</span>
+      <span id="items-panel-label">Patients</span>
       <span id="patients-progress" style="color:var(--muted)">0 / 0 triaged</span>
     </div>
     <div class="panel-body" id="patients-body"></div>
@@ -624,7 +574,7 @@ body {
     <div class="panel-body" id="triage-summary-panel"></div>
   </div>
   <div class="panel" style="flex:1">
-    <div class="panel-header">Radio Report to Command</div>
+    <div class="panel-header" id="report-phase-header">Report to Command</div>
     <div class="panel-body">
       <div class="report-prompt-box">
         <strong>Transmit to incoming units</strong>
@@ -678,6 +628,68 @@ const STATE = {
   timerInterval: null,
 };
 
+/* ── Dynamic CSS injection ── */
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  const bigint = parseInt(h, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return { r, g, b };
+}
+
+function injectCategoryCSS(categories) {
+  if (!categories || !categories.length) return;
+  const firstCat = categories[0];
+  const { r: fr, g: fg, b: fb } = hexToRgb(firstCat.color);
+
+  let css = `
+/* Injected category styles */
+.timer-display.urgent {
+  color: ${firstCat.color};
+  background: rgba(${fr},${fg},${fb},0.1);
+  border-color: rgba(${fr},${fg},${fb},0.3);
+}
+`;
+
+  categories.forEach(cat => {
+    const { r, g, b } = hexToRgb(cat.color);
+    const id = cat.id;
+    const color = cat.color;
+    const textOn = cat.text_on_color || '#ffffff';
+    css += `
+.cat-btn.cat-${id} {
+  background: rgba(${r},${g},${b},0.12);
+  color: ${color};
+  border-color: rgba(${r},${g},${b},0.25);
+}
+.cat-btn.cat-${id}:hover,
+.cat-btn.cat-${id}.selected {
+  background: ${color};
+  color: ${textOn};
+  border-color: ${color};
+}
+.patient-card.assigned-cat-${id} {
+  border-color: ${color};
+}
+.result-chip.cat-${id} {
+  background: rgba(${r},${g},${b},0.12);
+  color: ${color};
+}
+.legend-chip.cat-${id} {
+  background: rgba(${r},${g},${b},0.12);
+  color: ${color};
+  border: 1px solid rgba(${r},${g},${b},0.25);
+}
+`;
+  });
+
+  const styleEl = document.createElement('style');
+  styleEl.id = 'dynamic-category-css';
+  styleEl.textContent = css;
+  document.head.appendChild(styleEl);
+}
+
 /* ── Load scenario ── */
 async function loadScenario() {
   const params = new URLSearchParams(window.location.search);
@@ -686,28 +698,69 @@ async function loadScenario() {
     const res = await fetch(src);
     if (!res.ok) throw new Error('Not found');
     STATE.scenario = await res.json();
+    const cats = STATE.scenario.triage_system && STATE.scenario.triage_system.categories;
+    if (cats) injectCategoryCSS(cats);
     initIntro();
   } catch (e) {
     document.getElementById('loading-screen').innerHTML =
-      `<div style="color:var(--immediate);text-align:center">Failed to load scenario.<br><small>${e.message}</small></div>`;
+      `<div style="color:#ef4444;text-align:center">Failed to load scenario.<br><small>${e.message}</small></div>`;
   }
 }
 
 function initIntro() {
   const s = STATE.scenario;
+  const cats = (s.triage_system && s.triage_system.categories) || [];
+  const firstColor = cats.length ? cats[0].color : '#ef4444';
+  const sysName = (s.triage_system && s.triage_system.name) || 'START protocol';
+  const sceneIcon = (s.scene && s.scene.icon) || '🚑';
+  const actionLabel = (s.scene && s.scene.action_label) || 'Respond to Scene →';
+  const itemsLabel = (s.scene && s.scene.items_label) || 'Patients';
+
   document.title = `Triage Sim — ${s.construct_name}`;
   document.getElementById('header-title').textContent = 'Triage Sim';
   document.getElementById('header-construct').textContent = s.construct_name;
   document.getElementById('intro-construct-name').textContent = s.construct_name;
   document.getElementById('intro-construct-desc').textContent = s.construct_description;
+  document.getElementById('scene-icon').textContent = sceneIcon;
+  document.getElementById('start-btn').textContent = actionLabel;
+  document.getElementById('start-btn').style.background = firstColor;
+  document.getElementById('dispatch-label').style.color = firstColor;
+  document.getElementById('protocol-name').textContent = sysName;
+  document.getElementById('items-panel-label').textContent = itemsLabel;
+
+  const reportLabel = (s.scene && s.scene.report_label) || 'Report to Command';
+  document.getElementById('report-phase-header').textContent = reportLabel;
+
+  const completeBtnText = (s.scene && s.scene.complete_label) || 'Proceed to Report →';
+  document.getElementById('complete-btn').textContent = completeBtnText;
+
   document.getElementById('dispatch-text').textContent = s.scene.dispatch;
   document.getElementById('briefing-text').textContent = s.scene.briefing;
+
   const meta = document.getElementById('dispatch-meta');
   const r = s.scene.resources_available;
-  meta.innerHTML = `
-    <span>👥 ${s.patients.length} patients</span>
-    <span>🚑 ${r.ems_units} unit${r.ems_units > 1 ? 's' : ''} on scene</span>
-    <span>⏱️ ${r.arriving_units}</span>`;
+  const unitsKey = r.ems_units !== undefined ? 'ems_units' : null;
+  const personnelKey = r.ems_personnel !== undefined ? 'ems_personnel'
+    : r.team_size !== undefined ? 'team_size' : null;
+  const arrivingText = r.arriving_units || r.note || '';
+  const contextText = r.context || '';
+
+  let metaHTML = `<span>👥 ${s.patients.length} ${itemsLabel.toLowerCase()}</span>`;
+  if (unitsKey) metaHTML += `<span>🚑 ${r[unitsKey]} unit${r[unitsKey] > 1 ? 's' : ''} on scene</span>`;
+  if (personnelKey) metaHTML += `<span>👤 ${r[personnelKey]}</span>`;
+  if (contextText) metaHTML += `<span>📋 ${contextText}</span>`;
+  if (arrivingText) metaHTML += `<span>⏱️ ${arrivingText}</span>`;
+  meta.innerHTML = metaHTML;
+
+  // Legend row — dynamic
+  const legendRow = document.getElementById('legend-row');
+  legendRow.innerHTML = '';
+  cats.forEach(cat => {
+    const chip = document.createElement('div');
+    chip.className = `legend-chip cat-${cat.id}`;
+    chip.textContent = `${cat.icon || ''} ${cat.label}${cat.description ? ' — ' + cat.description : ''}`.trim();
+    legendRow.appendChild(chip);
+  });
 
   document.getElementById('loading-screen').style.display = 'none';
   document.getElementById('intro-screen').style.display = 'flex';
@@ -728,15 +781,42 @@ function startTriagePhase() {
   document.getElementById('phase-badge').textContent = 'Triage';
   setProgress(0.2);
 
-  // Scene panel
   const s = STATE.scenario;
-  document.getElementById('scene-info-block').innerHTML =
-    `<strong>Scene</strong>${s.scene.briefing}`;
-  const r = s.scene.resources_available;
+  const cats = (s.triage_system && s.triage_system.categories) || [];
+  const firstColor = cats.length ? cats[0].color : '#ef4444';
+
+  // Scene panel info block — color from first category
+  const { r: fr, g: fg, b: fb } = cats.length ? hexToRgb(firstColor) : { r: 239, g: 68, b: 68 };
+  const sceneBlock = document.getElementById('scene-info-block');
+  sceneBlock.style.background = `rgba(${fr},${fg},${fb},0.06)`;
+  sceneBlock.style.borderColor = `rgba(${fr},${fg},${fb},0.15)`;
+  sceneBlock.innerHTML = `<strong style="color:${firstColor}">Scene</strong>${s.scene.briefing}`;
+
+  const res = s.scene.resources_available;
+  const personnelKey = res.ems_personnel !== undefined ? 'ems_personnel'
+    : res.team_size !== undefined ? 'team_size' : null;
+  const arrivingText = res.arriving_units || res.note || '';
+  let resourcesHTML = '';
+  if (personnelKey) resourcesHTML += `${res[personnelKey]} on scene<br>`;
+  if (arrivingText) resourcesHTML += arrivingText;
   document.getElementById('resources-block').innerHTML =
-    `<strong>Resources Available</strong>
-    ${r.ems_personnel} personnel on scene<br>
-    ${r.arriving_units}`;
+    `<strong>Resources Available</strong>${resourcesHTML}`;
+
+  // Build triage count rows dynamically
+  const countContainer = document.getElementById('triage-cat-count');
+  countContainer.innerHTML = '';
+  cats.forEach(cat => {
+    const row = document.createElement('div');
+    row.className = 'triage-cat-row';
+    row.id = `row-cat-${cat.id}`;
+    row.innerHTML = `
+      <span class="cat-label">
+        <span style="color:${cat.color}">●</span>
+        ${cat.label}
+      </span>
+      <span class="cat-count" id="cnt-${cat.id}" style="color:${cat.color}">0</span>`;
+    countContainer.appendChild(row);
+  });
 
   // Build patient cards
   const body = document.getElementById('patients-body');
@@ -753,30 +833,34 @@ function startTriagePhase() {
 }
 
 function buildPatientCard(p) {
+  const s = STATE.scenario;
+  const cats = (s.triage_system && s.triage_system.categories) || [];
+
   const card = document.createElement('div');
   card.className = 'patient-card';
   card.id = `card-${p.id}`;
 
   const v = p.vitals;
+  const vitalsRows = Object.entries(v).map(([key, val]) => {
+    const label = key.replace(/_/g, ' ');
+    const isWide = key === 'other' || key === 'notes' || key === 'context';
+    return `<div class="vital-row"${isWide ? ' style="grid-column:1/-1"' : ''}>
+      <span class="vk">${label}: </span><span class="vv">${val}</span>
+    </div>`;
+  }).join('');
+
+  const catBtns = cats.map(cat =>
+    `<button class="cat-btn cat-${cat.id}" data-patient="${p.id}" data-cat="${cat.id}">${cat.icon || ''} ${cat.label}</button>`
+  ).join('');
+
   card.innerHTML = `
     <div class="patient-card-header">
       <span class="patient-label">${p.label}</span>
       <span style="font-size:11px;color:var(--muted)">${p.position}</span>
     </div>
     <div class="patient-presentation">${p.presentation}</div>
-    <div class="vitals-grid">
-      <div class="vital-row"><span class="vk">Resp: </span><span class="vv">${v.respirations}</span></div>
-      <div class="vital-row"><span class="vk">Radial pulse: </span><span class="vv">${v.radial_pulse}</span></div>
-      <div class="vital-row"><span class="vk">Mental status: </span><span class="vv">${v.mental_status}</span></div>
-      <div class="vital-row"><span class="vk">Cap refill: </span><span class="vv">${v.capillary_refill || '—'}</span></div>
-      ${v.other ? `<div class="vital-row" style="grid-column:1/-1"><span class="vk">Notes: </span><span class="vv">${v.other}</span></div>` : ''}
-    </div>
-    <div class="category-btns">
-      <button class="cat-btn immediate" data-patient="${p.id}" data-cat="immediate">🔴 Immediate</button>
-      <button class="cat-btn delayed"   data-patient="${p.id}" data-cat="delayed">🟡 Delayed</button>
-      <button class="cat-btn minor"     data-patient="${p.id}" data-cat="minor">🟢 Minor</button>
-      <button class="cat-btn expectant" data-patient="${p.id}" data-cat="expectant">⬛ Expectant</button>
-    </div>`;
+    <div class="vitals-grid">${vitalsRows}</div>
+    <div class="category-btns">${catBtns}</div>`;
 
   card.querySelectorAll('.cat-btn').forEach(btn => {
     btn.addEventListener('click', () => assignCategory(p.id, btn.dataset.cat));
@@ -787,7 +871,9 @@ function buildPatientCard(p) {
 function assignCategory(patientId, catId) {
   STATE.assignments[patientId] = catId;
   const card = document.getElementById(`card-${patientId}`);
-  card.className = 'patient-card assigned-' + catId;
+  // Remove any previous assigned-cat-* class
+  card.className = card.className.replace(/\bassigned-cat-\S+/g, '').trim();
+  card.classList.add('assigned-cat-' + catId);
   card.querySelectorAll('.cat-btn').forEach(b => {
     b.classList.toggle('selected', b.dataset.cat === catId);
   });
@@ -796,13 +882,21 @@ function assignCategory(patientId, catId) {
 
 function updateTriageProgress() {
   const s = STATE.scenario;
+  const cats = (s.triage_system && s.triage_system.categories) || [];
   const total = s.patients.length;
   const assigned = Object.keys(STATE.assignments).length;
-  const cats = { immediate: 0, delayed: 0, minor: 0, expectant: 0 };
-  Object.values(STATE.assignments).forEach(c => { if (cats[c] !== undefined) cats[c]++; });
-  ['immediate','delayed','minor','expectant'].forEach(c => {
-    document.getElementById('cnt-' + c).textContent = cats[c];
+
+  // Count per category
+  const counts = {};
+  cats.forEach(cat => { counts[cat.id] = 0; });
+  Object.values(STATE.assignments).forEach(c => {
+    if (counts[c] !== undefined) counts[c]++;
   });
+  cats.forEach(cat => {
+    const el = document.getElementById('cnt-' + cat.id);
+    if (el) el.textContent = counts[cat.id];
+  });
+
   document.getElementById('patients-progress').textContent = `${assigned} / ${total} triaged`;
   setProgress(0.2 + (assigned / total) * 0.35);
   const btn = document.getElementById('complete-btn');
@@ -829,21 +923,23 @@ function completeTriagePhase() {
   clearInterval(STATE.timerInterval);
   document.getElementById('triage-workspace').style.display = 'none';
   document.getElementById('report-workspace').style.display = 'flex';
-  document.getElementById('phase-badge').textContent = 'Radio Report';
+  document.getElementById('phase-badge').textContent = 'Report';
   setProgress(0.65);
 
-  // Triage summary
   const s = STATE.scenario;
+  const cats = (s.triage_system && s.triage_system.categories) || [];
+
+  // Triage summary
   const summPanel = document.getElementById('triage-summary-panel');
   summPanel.innerHTML = '';
   s.patients.forEach(p => {
     const cat = STATE.assignments[p.id];
-    const catMeta = s.triage_system.categories.find(c => c.id === cat);
+    const catMeta = cats.find(c => c.id === cat);
     summPanel.innerHTML += `
       <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
-        <span style="color:${catMeta?.color || 'var(--muted)'}">●</span>
+        <span style="color:${catMeta ? catMeta.color : 'var(--muted)'}">●</span>
         <span style="flex:1">${p.label}</span>
-        <span style="font-size:10px;font-weight:700;color:${catMeta?.color || 'var(--muted)'}">${catMeta?.label || cat.toUpperCase()}</span>
+        <span style="font-size:10px;font-weight:700;color:${catMeta ? catMeta.color : 'var(--muted)'}">${catMeta ? catMeta.label : (cat || '').toUpperCase()}</span>
       </div>`;
   });
 
@@ -868,6 +964,7 @@ function submitReport() {
 
   const s = STATE.scenario;
   const sc = s.scoring;
+  const cats = (s.triage_system && s.triage_system.categories) || [];
 
   // Triage accuracy
   let triagePoints = 0;
@@ -930,8 +1027,10 @@ function submitReport() {
     const assigned = STATE.assignments[p.id];
     const correct = p.correct_category;
     const isCorrect = assigned === correct;
-    const assignedMeta = s.triage_system.categories.find(c => c.id === assigned);
-    const correctMeta  = s.triage_system.categories.find(c => c.id === correct);
+    const assignedMeta = cats.find(c => c.id === assigned);
+    const correctMeta  = cats.find(c => c.id === correct);
+    const assignedLabel = assignedMeta ? assignedMeta.label : (assigned || '').toUpperCase();
+    const correctLabel  = correctMeta  ? correctMeta.label  : (correct || '').toUpperCase();
     container.innerHTML += `
       <div class="patient-result">
         <span class="result-icon">${isCorrect ? '✅' : '❌'}</span>
@@ -939,8 +1038,8 @@ function submitReport() {
           <div class="rd-label">${p.label} — ${p.position.split('—')[0].trim()}</div>
           <div class="result-chips">
             <span class="result-chip neutral">You: </span>
-            <span class="result-chip ${assigned}">${assignedMeta?.label || assigned.toUpperCase()}</span>
-            ${!isCorrect ? `<span class="result-chip neutral">Correct: </span><span class="result-chip ${correct}">${correctMeta?.label || correct.toUpperCase()}</span>` : ''}
+            <span class="result-chip cat-${assigned}">${assignedLabel}</span>
+            ${!isCorrect ? `<span class="result-chip neutral">Correct: </span><span class="result-chip cat-${correct}">${correctLabel}</span>` : ''}
           </div>
           <div class="result-teaching">${p.teaching_point}</div>
         </div>

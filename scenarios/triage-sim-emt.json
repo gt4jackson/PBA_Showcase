@@ -11,15 +11,20 @@
     "name": "START",
     "full_name": "Simple Triage and Rapid Treatment",
     "categories": [
-      { "id": "immediate",  "label": "IMMEDIATE",  "color": "#ef4444", "tag_color": "#dc2626", "description": "Life-threatening — needs care within minutes", "icon": "🔴" },
-      { "id": "delayed",    "label": "DELAYED",    "color": "#f59e0b", "tag_color": "#d97706", "description": "Serious but stable — can wait for care",       "icon": "🟡" },
-      { "id": "minor",      "label": "MINOR",      "color": "#22c55e", "tag_color": "#16a34a", "description": "Walking wounded — minor injuries",              "icon": "🟢" },
-      { "id": "expectant",  "label": "EXPECTANT",  "color": "#6b7280", "tag_color": "#4b5563", "description": "Unlikely to survive with available resources",  "icon": "⬛" }
+      { "id": "immediate",  "label": "IMMEDIATE",  "color": "#ef4444", "text_on_color": "#ffffff", "description": "Life-threatening — needs care within minutes", "icon": "🔴" },
+      { "id": "delayed",    "label": "DELAYED",    "color": "#f59e0b", "text_on_color": "#1a212b", "description": "Serious but stable — can wait for care",       "icon": "🟡" },
+      { "id": "minor",      "label": "MINOR",      "color": "#22c55e", "text_on_color": "#1a212b", "description": "Walking wounded — minor injuries",              "icon": "🟢" },
+      { "id": "expectant",  "label": "EXPECTANT",  "color": "#6b7280", "text_on_color": "#ffffff", "description": "Unlikely to survive with available resources",  "icon": "⬛" }
     ]
   },
   "scene": {
+    "icon": "🚑",
     "dispatch": "Multiple vehicle accident on Route 9 near the Millbrook overpass. Caller reports 5–6 patients. Unknown mechanism. Fire en route. Two ALS units, one BLS unit responding. You are first on scene.",
     "briefing": "You arrive at the scene: a T-bone collision involving an SUV and a minivan. The SUV struck the minivan at the driver's side door. Moderate to severe vehicle damage. No fire. You are the only unit on scene. Three additional units are 4–6 minutes out. You have 90 seconds to triage all patients before calling a scene report to incoming units.",
+    "action_label": "Respond to Scene →",
+    "items_label": "Patients",
+    "report_label": "Radio Report to Command",
+    "complete_label": "Proceed to Radio Report →",
     "resources_available": {
       "ems_units": 2,
       "ems_personnel": 4,

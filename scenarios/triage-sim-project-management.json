@@ -1,0 +1,167 @@
+{
+  "construct_id": "pm_incident_triage",
+  "construct_name": "Incident Triage & Prioritization",
+  "construct_description": "The ability to rapidly assess a backlog of simultaneous incidents, apply a consistent severity framework, assign correct priority tiers, and communicate a clear escalation summary — a core competency for project managers, product leads, and engineering managers navigating high-pressure situations.",
+  "pba_category": {
+    "id": 4,
+    "name": "Simulation-Based Assessment",
+    "description": "A simulated incident queue requiring real-time prioritization decisions under time pressure."
+  },
+  "triage_system": {
+    "name": "Incident Severity",
+    "full_name": "P0–P3 Incident Severity Framework",
+    "categories": [
+      { "id": "p0", "label": "P0 — CRITICAL", "color": "#ef4444", "text_on_color": "#ffffff", "description": "Service down or data loss — page leadership now",     "icon": "🔴" },
+      { "id": "p1", "label": "P1 — HIGH",     "color": "#f59e0b", "text_on_color": "#1a212b", "description": "Significant impact — same-day fix required",            "icon": "🟠" },
+      { "id": "p2", "label": "P2 — MEDIUM",   "color": "#4dd3fe", "text_on_color": "#1a212b", "description": "Notable issue — plan for current sprint",               "icon": "🔵" },
+      { "id": "p3", "label": "P3 — LOW",      "color": "#6b7280", "text_on_color": "#ffffff", "description": "Cosmetic or edge case — add to backlog",                "icon": "⚫" }
+    ]
+  },
+  "scene": {
+    "icon": "📟",
+    "dispatch": "It's 9:14 AM on launch day for your company's new customer portal. Your on-call phone is lighting up. Five incidents have been reported in the last eight minutes. Engineering leads are standing by and need your triage call before they spin up war rooms.",
+    "briefing": "You're the PM on rotation. Five incidents just landed simultaneously. You have limited engineering bandwidth — two senior engineers free, three junior. Leadership is watching. Your job: categorize each incident by severity (P0–P3), then write a concise escalation summary for the VP of Engineering.",
+    "action_label": "Start Triage →",
+    "items_label": "Incidents",
+    "report_label": "Escalation Summary to VP Engineering",
+    "complete_label": "Proceed to Escalation Summary →",
+    "resources_available": {
+      "team_size": "2 senior engineers, 3 junior engineers available",
+      "context": "Launch day — customer-facing portal live since 8:00 AM",
+      "note": "VP Engineering expects your summary in < 5 min"
+    },
+    "time_limit_seconds": 150
+  },
+  "patients": [
+    {
+      "id": "i1",
+      "label": "Incident #4471",
+      "position": "Reported by: Ops monitoring alert",
+      "presentation": "Payment processing endpoint returning HTTP 500 errors for 100% of checkout attempts. Started at 9:06 AM. No successful transactions in last 8 minutes.",
+      "vitals": {
+        "Error rate":        "100% (500 errors)",
+        "Users affected":    "All users attempting checkout",
+        "Revenue impact":    "$0 processed since 9:06 AM",
+        "Duration":          "~8 minutes and growing",
+        "Last deploy":       "Portal release v2.1, deployed 8:02 AM"
+      },
+      "correct_category": "p0",
+      "rationale": "Complete checkout failure with direct revenue impact and 100% error rate on a critical path = P0. This is the definition of service down.",
+      "teaching_point": "Any complete failure of a revenue-critical path is P0 regardless of cause. Eight minutes of zero transactions on launch day demands immediate engineering war room escalation."
+    },
+    {
+      "id": "i2",
+      "label": "Incident #4472",
+      "position": "Reported by: QA lead via Slack",
+      "presentation": "Dashboard charts showing incorrect YTD totals for users who migrated data from the legacy system. Affects approximately 340 of 12,000 migrated accounts. Current-year data is correct; legacy import figures are off.",
+      "vitals": {
+        "Users affected":    "~340 migrated accounts (2.8% of total)",
+        "Data accuracy":     "Historical YTD figures incorrect; live data correct",
+        "Functional impact": "No workflows blocked — display issue only",
+        "Workaround":        "None currently available to users",
+        "Known since":       "Reported 9:09 AM"
+      },
+      "correct_category": "p2",
+      "rationale": "No workflows blocked, only historical display data affected, limited scope (2.8%). Significant enough to fix this sprint but not same-day critical. P2.",
+      "teaching_point": "Scope + functional impact together determine severity. A data display issue affecting 2.8% of users with no workflow blockage is P2 — important but not an emergency. Don't let 'data' alone trigger P0 escalation."
+    },
+    {
+      "id": "i3",
+      "label": "Incident #4473",
+      "position": "Reported by: Customer support (3 tickets)",
+      "presentation": "Three customers report they cannot log in using SSO (single sign-on) via their enterprise identity provider. Standard username/password login works. SSO affects enterprise accounts only.",
+      "vitals": {
+        "Users affected":    "Enterprise SSO users — est. 80–120 accounts",
+        "Login workaround":  "Username/password login functional",
+        "Account type":      "Enterprise tier only (high-value customers)",
+        "Error message":     "\"Authentication provider returned an error\"",
+        "Related to launch": "SSO config was migrated as part of v2.1"
+      },
+      "correct_category": "p1",
+      "rationale": "Enterprise customers cannot use their standard login method. A workaround exists but requiring enterprise customers to change their login behavior on launch day is unacceptable. High-value customers + auth failure + launch day = P1.",
+      "teaching_point": "Workarounds exist, but forcing enterprise customers to change behavior on day one damages trust and violates SLA expectations. Customer tier matters in severity assessment — P1, not P2."
+    },
+    {
+      "id": "i4",
+      "label": "Incident #4474",
+      "position": "Reported by: Internal user (marketing team)",
+      "presentation": "The 'Export to CSV' button on the reports page produces a file where column headers are mis-labeled. Data values are correct — only the header row text is wrong. Discovered during internal demo prep.",
+      "vitals": {
+        "Users affected":    "Anyone using CSV export (usage volume unknown)",
+        "Data accuracy":     "Values correct — headers only are wrong",
+        "Functional impact": "Export works; downstream confusion likely if users rely on headers",
+        "Discovery":         "Internal team — not yet reported by customers",
+        "Severity signal":   "No customer complaints yet"
+      },
+      "correct_category": "p3",
+      "rationale": "Data is correct, no workflows blocked, no customer impact reported yet, cosmetic/labeling issue. Classic P3 — notable enough to track and fix but backlog-appropriate.",
+      "teaching_point": "Mislabeled headers with correct underlying data is P3 — a quality issue, not an incident. Don't let 'data' language inflate severity when actual user impact is minimal and no workflows are broken."
+    },
+    {
+      "id": "i5",
+      "label": "Incident #4475",
+      "position": "Reported by: Automated performance monitor",
+      "presentation": "API response times for the main dashboard load have increased from a baseline of 280ms to an average of 1,850ms over the last 20 minutes. No errors returned. Some users may perceive the portal as slow. No timeouts observed yet.",
+      "vitals": {
+        "Response time":     "1,850ms avg (baseline: 280ms — 6.6× slower)",
+        "Error rate":        "0% — no errors",
+        "Timeout rate":      "0% — no timeouts observed",
+        "Users affected":    "All dashboard users (degraded experience)",
+        "Trend":             "Increasing — started around 8:55 AM"
+      },
+      "correct_category": "p1",
+      "rationale": "6.6× performance degradation across all dashboard users on launch day, with a worsening trend, is P1. No errors yet — but if this continues, timeouts and user abandonment are the next step. Same-day response required.",
+      "teaching_point": "Performance degradation without errors is still P1 when the magnitude is severe and trending worse on a high-visibility day. '0 errors' doesn't mean 'low severity' — the trend and scale matter. This needs same-day engineering attention."
+    }
+  ],
+  "radio_report": {
+    "prompt": "Write a concise escalation summary for the VP of Engineering. Include: severity breakdown, what you're addressing first and why, and any resource allocation decisions.",
+    "word_range": [50, 150],
+    "example": "VP summary: Five incidents active. One P0 — checkout payment endpoint completely down since 9:06, all transactions failing, spinning up war room with both senior engineers now. Two P1s — enterprise SSO broken (workaround available, junior eng investigating) and dashboard performance degraded 6x across all users (monitoring closely). One P2 — migrated account data display issue, scheduling for this sprint. One P3 — CSV header labels, adding to backlog. P0 is the only blocker. Expect first update in 15 min.",
+    "scoring_keywords": {
+      "patient_counts": ["p0", "p1", "p2", "p3", "critical", "one p0", "two p1", "one p2", "one p3"],
+      "resource_request": ["engineer", "war room", "assign", "escalate", "team", "senior", "junior", "spin up"],
+      "critical_info": ["payment", "checkout", "sso", "performance", "degraded", "revenue", "launch"]
+    }
+  },
+  "scoring": {
+    "triage_accuracy": {
+      "max_points": 50,
+      "points_per_correct": 10,
+      "partial_credit": true,
+      "partial_rules": [
+        { "from": "p0", "to": "p1", "points": 5,  "reason": "Underestimated — P0 requires immediate war room" },
+        { "from": "p1", "to": "p0", "points": 7,  "reason": "Overestimated — wastes senior bandwidth" },
+        { "from": "p1", "to": "p2", "points": 5,  "reason": "Underestimated — P1 needs same-day response" },
+        { "from": "p2", "to": "p1", "points": 7,  "reason": "Slight over-triage — acceptable" },
+        { "from": "p3", "to": "p2", "points": 7,  "reason": "Slight over-triage — acceptable" },
+        { "from": "p2", "to": "p3", "points": 5,  "reason": "Underestimated — sprint-level issue missed" }
+      ]
+    },
+    "time_bonus": {
+      "max_points": 10,
+      "thresholds": [
+        { "seconds_max": 60,  "points": 10 },
+        { "seconds_max": 90,  "points": 7  },
+        { "seconds_max": 120, "points": 4  },
+        { "seconds_max": 999, "points": 0  }
+      ]
+    },
+    "radio_report": {
+      "max_points": 40,
+      "dimensions": [
+        { "id": "patient_summary",  "label": "Severity breakdown communicated", "max": 15 },
+        { "id": "resource_request", "label": "Resource allocation decision",     "max": 10 },
+        { "id": "critical_info",    "label": "P0 clearly identified first",      "max": 10 },
+        { "id": "brevity",          "label": "Concise and executive-ready",      "max": 5  }
+      ]
+    }
+  },
+  "performance_labels": [
+    { "min": 90, "text": "Excellent incident judgment — you'd survive launch day 🚀" },
+    { "min": 75, "text": "Strong prioritization with minor gaps — solid PM instincts 💪" },
+    { "min": 60, "text": "Good foundation — review P0 vs P1 boundary cases 📋" },
+    { "min": 40, "text": "Key gaps in severity assessment — particularly the P0 identification ⚠️" },
+    { "min": 0,  "text": "Incident severity framework needs a focused review — don't worry, that's what drills are for 📈" }
+  ]
+}

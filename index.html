@@ -694,6 +694,8 @@ body {
         <option value="ai-literacy">🤖 AI Literacy</option>
         <option value="financial-literacy">💰 Financial Literacy</option>
         <option value="project-management">📋 Project Management</option>
+        <option value="emt">🚑 EMT / Paramedic</option>
+        <option value="pharmacy-tech">💊 Pharmacy Tech</option>
       </select>
       <svg class="construct-select-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
     </div>
@@ -1303,28 +1305,48 @@ const TASK_CONSTRUCT_MAP = {
     'the-brief':      { scenario: null, construct: 'Critical Thinking + AI Fluency', dims: ['Prompt Engineering','Critical Evaluation','Task Decomposition','Tool Selection'] },
     'data-detective': { scenario: null, construct: 'Data Reasoning', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
     'the-take':       { scenario: null, construct: 'Argumentation + Evidence Evaluation', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
-    'the-forum':      { scenario: null, construct: 'Project Prioritization + Collaboration', dims: ['Trade-off Analysis','Evidence Use','Engagement','Synthesizing'] }
+    'the-forum':      { scenario: null, construct: 'Project Prioritization + Collaboration', dims: ['Trade-off Analysis','Evidence Use','Engagement','Synthesizing'] },
+    'triage-sim':     { scenario: null, construct: 'MCI Triage (NREMT)', dims: ['START Protocol','Clinical Prioritization','Time Pressure','Radio Communication'] }
   },
   'ai-literacy': {
     'signal-check':   { scenario: 'scenarios/signal-check-ai-literacy.json', construct: 'AI Literacy', dims: ['AI Foundations','Responsible AI','Prompting & Interaction','Workflow & Application'] },
     'the-brief':      { scenario: 'scenarios/the-brief-critical-thinking.json', construct: 'AI Fluency', dims: ['Prompt Engineering','Critical Evaluation','Task Decomposition','Tool Selection'] },
     'data-detective': null,
     'the-take':       { scenario: 'scenarios/the-take-argumentation.json', construct: 'Argumentation on AI Policy', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
-    'the-forum':      { scenario: 'scenarios/the-forum-ai-literacy.json', construct: 'AI Tool Adoption', dims: ['AI Evaluation','Risk-Benefit','Evidence Use','Decision Quality'] }
+    'the-forum':      { scenario: 'scenarios/the-forum-ai-literacy.json', construct: 'AI Tool Adoption', dims: ['AI Evaluation','Risk-Benefit','Evidence Use','Decision Quality'] },
+    'triage-sim':     null
   },
   'financial-literacy': {
     'signal-check':   { scenario: 'scenarios/signal-check-financial-literacy.json', construct: 'Financial Literacy', dims: ['Budgeting','Saving & Investing','Debt & Credit','Risk & Protection'] },
     'the-brief':      { scenario: 'scenarios/the-brief-financial-literacy.json', construct: 'Financial Analysis', dims: ['Financial Analysis','Risk Assessment','Critical Evaluation','Communication'] },
     'data-detective': { scenario: 'scenarios/data-detective-financial-literacy.json', construct: 'Financial Data Reasoning', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
     'the-take':       { scenario: 'scenarios/the-take-financial-literacy.json', construct: 'Financial Policy Argumentation', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
-    'the-forum':      null
+    'the-forum':      null,
+    'triage-sim':     null
   },
   'project-management': {
     'signal-check':   { scenario: 'scenarios/signal-check-project-management.json', construct: 'Project Management', dims: ['Planning','Risk Management','Stakeholder Comms','Execution & Control'] },
     'the-brief':      { scenario: 'scenarios/the-brief-project-management.json', construct: 'Project Recovery', dims: ['Diagnosis','Planning','Stakeholder Mgmt','Risk Mitigation'] },
     'data-detective': { scenario: 'scenarios/data-detective-project-management.json', construct: 'Project Metrics Analysis', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
     'the-take':       null,
-    'the-forum':      { scenario: 'scenarios/the-forum-project-prioritization.json', construct: 'Project Prioritization', dims: ['Trade-off Analysis','Evidence Use','Engagement','Synthesizing'] }
+    'the-forum':      { scenario: 'scenarios/the-forum-project-prioritization.json', construct: 'Project Prioritization', dims: ['Trade-off Analysis','Evidence Use','Engagement','Synthesizing'] },
+    'triage-sim':     { scenario: 'scenarios/triage-sim-project-management.json', construct: 'Incident Triage & Prioritization', dims: ['Severity Assessment','Time Pressure','Escalation Communication','Resource Allocation'] }
+  },
+  'emt': {
+    'signal-check':   { scenario: 'scenarios/signal-check-emt.json', construct: 'Pre-Hospital Emergency Care (NREMT)', dims: ['Bystander & Scene Safety','Airway & Circulation','Trauma & Triage','Protocols & Scope'] },
+    'the-brief':      { scenario: 'scenarios/the-brief-emt.json', construct: 'EMS Protocol Analysis', dims: ['Evidence Synthesis','Risk Assessment','Critical Evaluation','Communication'] },
+    'data-detective': { scenario: 'scenarios/data-detective-emt.json', construct: 'EMS Operations Data Reasoning', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
+    'the-take':       { scenario: 'scenarios/the-take-emt.json', construct: 'EMS Policy Argumentation', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
+    'the-forum':      { scenario: 'scenarios/the-forum-emt.json', construct: 'EMS Team Decision-Making', dims: ['Clinical Reasoning','Risk Assessment','Evidence Use','Decision Quality'] },
+    'triage-sim':     { scenario: 'scenarios/triage-sim-emt.json', construct: 'MCI Triage (START Protocol)', dims: ['START Protocol','Clinical Prioritization','Time Pressure','Radio Communication'] }
+  },
+  'pharmacy-tech': {
+    'signal-check':   { scenario: 'scenarios/signal-check-pharmacy-tech.json', construct: 'Pharmaceutical Knowledge (ExCPT/PTCE)', dims: ['Medication Safety','Drug Interactions','Dispensing Accuracy','Patient Education & Scope'] },
+    'the-brief':      { scenario: 'scenarios/the-brief-pharmacy-tech.json', construct: 'Formulary & Drug Utilization Analysis', dims: ['Clinical Analysis','Cost-Benefit','Critical Evaluation','Communication'] },
+    'data-detective': { scenario: 'scenarios/data-detective-pharmacy-tech.json', construct: 'Pharmacy Operations & Error Analysis', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
+    'the-take':       { scenario: 'scenarios/the-take-pharmacy-tech.json', construct: 'Pharmacy Policy Argumentation', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
+    'the-forum':      { scenario: 'scenarios/the-forum-pharmacy-tech.json', construct: 'Pharmacy Workflow Decision-Making', dims: ['Safety Reasoning','Operational Fit','Evidence Use','Decision Quality'] },
+    'triage-sim':     null
   }
 };
 
@@ -1334,7 +1356,8 @@ const TASK_BASE_URLS = {
   'the-brief':      { desktop: 'the-brief.html',       mobile: 'the-brief-mobile.html' },
   'data-detective': { desktop: 'data-detective.html',  mobile: 'data-detective-mobile.html' },
   'the-take':       { desktop: 'the-take.html',        mobile: 'the-take-mobile.html' },
-  'the-forum':      { desktop: 'the-forum.html',       mobile: 'the-forum-mobile.html' }
+  'the-forum':      { desktop: 'the-forum.html',       mobile: 'the-forum-mobile.html' },
+  'triage-sim':     { desktop: 'triage-sim.html',      mobile: 'triage-sim.html' }
 };
 
 let currentConstruct = 'all';
