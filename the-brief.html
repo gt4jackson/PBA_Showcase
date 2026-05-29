@@ -1548,14 +1548,27 @@ async function loadPack() {
     }
   }
 
-  // Default fallback
+  // No construct param — show picker for all available constructs
+  // Build a combined list so users can pick any scenario regardless of hub filter
+  const allVersions = Object.entries(SCENARIO_VERSIONS).flatMap(([con, vers]) =>
+    vers.map(v => ({ ...v, _construct: con }))
+  );
+  if (allVersions.length > 0) {
+    showPicker('all', allVersions);
+    return null;
+  }
+
+  // Ultimate fallback (no SCENARIO_VERSIONS defined)
   return fetchScenario(DEFAULT_SCENARIO);
 }
 
 function showPicker(construct, versions) {
   document.getElementById('screen-landing').style.display = 'none';
   document.getElementById('screen-picker').style.display = 'flex';
-  document.getElementById('picker-tag').textContent = 'The Brief — ' + construct.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const tagLabel = construct === 'all'
+    ? 'The Brief — Choose a scenario'
+    : 'The Brief — ' + construct.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  document.getElementById('picker-tag').textContent = tagLabel;
   document.getElementById('picker-title').textContent = 'Available versions';
 
   const container = document.getElementById('picker-cards');
