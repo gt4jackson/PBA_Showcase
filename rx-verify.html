@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rx Verify — PBA Showcase</title>
+<style>
+:root {
+  --bg: #1a212b;
+  --surface: #242e3d;
+  --surface2: #2d3a4f;
+  --accent: #4dd3fe;
+  --text: #f2e9d8;
+  --muted: rgba(242,233,216,0.45);
+  --border: rgba(242,233,216,0.08);
+  --border-strong: rgba(242,233,216,0.15);
+  --ready: #22c55e;
+  --clarify: #f59e0b;
+  --dnf: #ef4444;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.header-back { text-decoration: none; color: var(--muted); font-size: 13px; display: flex; align-items: center; gap: 4px; }
+.header-back:hover { color: var(--text); }
+.header-title { font-weight: 700; font-size: 15px; }
+.header-construct { font-size: 11px; color: var(--muted); }
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.phase-badge {
+  font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px;
+  background: rgba(77,211,254,0.1); color: var(--accent); border: 1px solid rgba(77,211,254,0.2);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.rx-progress-label { font-size: 12px; color: var(--muted); }
+.progress-bar { height: 3px; background: var(--border); flex-shrink: 0; }
+.progress-fill { height: 100%; background: var(--accent); transition: width 0.4s ease; }
+
+/* ── Intro ── */
+#intro-screen {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 32px; gap: 20px; overflow-y: auto;
+}
+.intro-emoji { font-size: 48px; line-height: 1; }
+.intro-title { font-size: 22px; font-weight: 800; text-align: center; }
+.intro-subtitle { font-size: 14px; color: var(--muted); text-align: center; max-width: 520px; line-height: 1.65; }
+.intro-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px 24px; max-width: 580px; width: 100%;
+}
+.intro-card-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--accent); margin-bottom: 10px;
+}
+.intro-steps { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.intro-steps li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; line-height: 1.6; color: var(--text);
+}
+.intro-step-num {
+  flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(77,211,254,0.12); color: var(--accent);
+  border: 1px solid rgba(77,211,254,0.25);
+  font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+  margin-top: 2px;
+}
+.decision-legend { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; max-width: 580px; }
+.decision-chip {
+  display: flex; align-items: center; gap: 6px; padding: 6px 14px;
+  border-radius: 20px; font-size: 11px; font-weight: 700;
+}
+.decision-chip.ready   { background: rgba(34,197,94,0.12);  color: var(--ready);  border: 1px solid rgba(34,197,94,0.25); }
+.decision-chip.clarify { background: rgba(245,158,11,0.12); color: var(--clarify);border: 1px solid rgba(245,158,11,0.25); }
+.decision-chip.dnf     { background: rgba(239,68,68,0.12);  color: var(--dnf);    border: 1px solid rgba(239,68,68,0.25); }
+.start-btn {
+  padding: 13px 40px; background: var(--accent); border: none; border-radius: 10px;
+  color: #1a212b; font-family: inherit; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: background 0.15s, transform 0.1s; letter-spacing: 0.02em;
+}
+.start-btn:hover { background: #6cdeff; transform: translateY(-1px); }
+
+/* ── Workspace ── */
+.workspace {
+  flex: 1; display: flex; gap: 8px; padding: 8px; overflow: hidden;
+}
+.panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden; display: flex; flex-direction: column;
+}
+.panel-header {
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted); flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+}
+.panel-body { flex: 1; overflow-y: auto; padding: 14px; }
+.panel-body::-webkit-scrollbar { width: 4px; }
+.panel-body::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+/* ── Rx Pad ── */
+#rx-panel { width: 300px; flex-shrink: 0; }
+.rx-pad {
+  background: #f5f0e8;
+  color: #1a1a1a;
+  border-radius: 8px;
+  padding: 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  border: 2px solid #c8b89a;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.rx-pad-header {
+  text-align: center; border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 8px; margin-bottom: 12px;
+}
+.rx-pad-header h2 { font-size: 16px; letter-spacing: 0.15em; font-family: Georgia, serif; font-weight: 700; }
+.rx-pad-header p { font-size: 10px; color: #555; margin-top: 2px; font-family: sans-serif; letter-spacing: 0.04em; }
+.rx-field { margin-bottom: 10px; border-bottom: 1px solid #c8b89a; padding-bottom: 6px; }
+.rx-field:last-child { border-bottom: none; margin-bottom: 0; }
+.rx-field-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: #666; margin-bottom: 2px; font-family: sans-serif;
+}
+.rx-field-value { font-size: 14px; font-weight: 600; min-height: 20px; }
+.rx-field-value.empty { color: #cc3333; font-style: italic; }
+.rx-field-value.blank-indicator {
+  color: #cc3333; font-style: italic; border-bottom: 1px solid #cc3333;
+  display: inline-block; min-width: 60px;
+}
+.controlled-badge {
+  background: #cc0000; color: white; font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 4px; display: inline-block; margin-top: 4px;
+  font-family: sans-serif; letter-spacing: 0.04em;
+}
+.rx-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+
+/* ── Checklist Panel ── */
+#checklist-panel { flex: 1; }
+.checklist-progress {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  padding-bottom: 12px; border-bottom: 1px solid var(--border);
+}
+.checklist-progress-label { font-size: 12px; color: var(--muted); }
+.checklist-progress-dots { display: flex; gap: 5px; margin-left: auto; }
+.progress-dot {
+  width: 28px; height: 6px; border-radius: 3px;
+  background: var(--border); transition: background 0.3s;
+}
+.progress-dot.done { background: var(--accent); }
+.progress-dot.active { background: rgba(77,211,254,0.4); }
+
+.checklist-fields { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.checklist-row {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px;
+  background: var(--surface2); border-radius: 8px;
+  border-left: 3px solid transparent; transition: border-color 0.2s;
+}
+.checklist-row.status-ok    { border-left-color: var(--ready); }
+.checklist-row.status-issue { border-left-color: var(--clarify); }
+.checklist-row.status-na    { border-left-color: var(--muted); }
+.checklist-row-label { flex: 1; }
+.checklist-field-name { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.checklist-field-question { font-size: 11px; color: var(--muted); line-height: 1.4; }
+.checklist-btns { display: flex; gap: 4px; flex-shrink: 0; }
+.check-btn {
+  padding: 5px 9px; border-radius: 5px; font-family: inherit;
+  font-size: 10px; font-weight: 700; cursor: pointer; text-align: center;
+  border: 1px solid transparent; transition: all 0.15s; white-space: nowrap;
+}
+.check-btn.ok     { background: rgba(34,197,94,0.1);  color: var(--ready);  border-color: rgba(34,197,94,0.2); }
+.check-btn.ok:hover, .check-btn.ok.selected { background: var(--ready);  color: #1a212b; border-color: var(--ready); }
+.check-btn.issue  { background: rgba(245,158,11,0.1); color: var(--clarify);border-color: rgba(245,158,11,0.2); }
+.check-btn.issue:hover, .check-btn.issue.selected { background: var(--clarify); color: #1a212b; border-color: var(--clarify); }
+.check-btn.na     { background: rgba(242,233,216,0.05); color: var(--muted); border-color: var(--border); }
+.check-btn.na:hover, .check-btn.na.selected { background: rgba(242,233,216,0.15); color: var(--text); border-color: var(--border-strong); }
+
+.decision-section { border-top: 1px solid var(--border); padding-top: 14px; margin-bottom: 14px; }
+.decision-section-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted); margin-bottom: 10px;
+}
+.decision-btns { display: flex; gap: 8px; }
+.decision-btn {
+  flex: 1; padding: 10px 8px; border-radius: 8px; font-family: inherit;
+  font-size: 12px; font-weight: 700; cursor: pointer; text-align: center;
+  border: 1px solid transparent; transition: all 0.15s; display: flex;
+  align-items: center; justify-content: center; gap: 5px;
+}
+.decision-btn.ready  { background: rgba(34,197,94,0.1);  color: var(--ready);  border-color: rgba(34,197,94,0.2); }
+.decision-btn.ready:hover, .decision-btn.ready.selected   { background: var(--ready);  color: #1a212b; border-color: var(--ready); }
+.decision-btn.clarify{ background: rgba(245,158,11,0.1); color: var(--clarify);border-color: rgba(245,158,11,0.2); }
+.decision-btn.clarify:hover, .decision-btn.clarify.selected{ background: var(--clarify); color: #1a212b; border-color: var(--clarify); }
+.decision-btn.dnf    { background: rgba(239,68,68,0.1);  color: var(--dnf);    border-color: rgba(239,68,68,0.2); }
+.decision-btn.dnf:hover, .decision-btn.dnf.selected       { background: var(--dnf);    color: #fff;    border-color: var(--dnf); }
+
+.confirm-btn {
+  width: 100%; padding: 11px; background: rgba(77,211,254,0.1);
+  border: 1px solid rgba(77,211,254,0.3); border-radius: 8px;
+  color: var(--accent); font-family: inherit; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: background 0.15s; opacity: 0.4; pointer-events: none;
+}
+.confirm-btn.ready { opacity: 1; pointer-events: auto; background: var(--accent); color: #1a212b; border-color: transparent; }
+.confirm-btn.ready:hover { background: #6cdeff; }
+
+/* ── DEA Teaching Box ── */
+.dea-teaching-box {
+  background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 8px; padding: 12px 14px; margin-top: 10px; margin-bottom: 4px;
+}
+.dea-teaching-box summary {
+  cursor: pointer; font-size: 11px; font-weight: 700; color: var(--dnf);
+  text-transform: uppercase; letter-spacing: 0.05em; list-style: none;
+  display: flex; align-items: center; gap: 6px;
+}
+.dea-teaching-box summary::before { content: "▶"; font-size: 8px; }
+details[open] .dea-teaching-box summary::before { content: "▼"; }
+.dea-steps { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+.dea-step { font-size: 11px; line-height: 1.6; color: var(--text); display: flex; gap: 8px; }
+.dea-step-num {
+  flex-shrink: 0; width: 16px; height: 16px; border-radius: 50%;
+  background: rgba(239,68,68,0.15); color: var(--dnf);
+  font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+
+/* ── Results ── */
+#results-screen {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 28px; gap: 20px; overflow-y: auto;
+}
+.results-header { text-align: center; }
+.score-circle {
+  width: 120px; height: 120px; border-radius: 50%;
+  background: conic-gradient(var(--accent) 0deg, var(--surface2) 0deg);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+  box-shadow: 0 0 0 4px var(--surface2), 0 0 0 6px rgba(77,211,254,0.2);
+}
+.score-inner {
+  width: 88px; height: 88px; border-radius: 50%; background: var(--bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.score-pct { font-size: 26px; font-weight: 800; color: var(--accent); line-height: 1; }
+.score-label { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.performance-text { font-size: 14px; color: var(--text); max-width: 500px; text-align: center; line-height: 1.6; }
+.score-breakdown { font-size: 12px; color: var(--muted); }
+
+.results-accordions { width: 100%; max-width: 680px; display: flex; flex-direction: column; gap: 10px; }
+.result-accordion {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+}
+.result-accordion-header {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+  cursor: pointer; user-select: none;
+}
+.result-accordion-header:hover { background: rgba(255,255,255,0.02); }
+.result-rx-label { font-size: 12px; color: var(--muted); min-width: 90px; }
+.result-decision-badge {
+  font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px;
+}
+.result-decision-badge.correct { background: rgba(34,197,94,0.15); color: var(--ready); border: 1px solid rgba(34,197,94,0.3); }
+.result-decision-badge.wrong   { background: rgba(239,68,68,0.15); color: var(--dnf); border: 1px solid rgba(239,68,68,0.3); }
+.result-score-chip {
+  margin-left: auto; font-size: 12px; font-weight: 700; color: var(--accent);
+}
+.result-accordion-chevron { color: var(--muted); font-size: 12px; transition: transform 0.2s; }
+.result-accordion.open .result-accordion-chevron { transform: rotate(180deg); }
+
+.result-accordion-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border); }
+.result-accordion.open .result-accordion-body { display: block; }
+
+.result-decision-row {
+  display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.result-decision-row .rdl { color: var(--muted); min-width: 100px; }
+.result-decision-row .rdv { font-weight: 600; }
+
+.result-fields { margin-top: 12px; display: flex; flex-direction: column; gap: 5px; }
+.result-field-row {
+  display: flex; align-items: flex-start; gap: 10px; padding: 8px 10px;
+  background: var(--surface2); border-radius: 6px; font-size: 12px;
+}
+.result-field-name { flex: 0 0 140px; font-weight: 600; }
+.result-field-status { flex-shrink: 0; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+.rfs-correct { background: rgba(34,197,94,0.12); color: var(--ready); }
+.rfs-wrong   { background: rgba(239,68,68,0.12); color: var(--dnf); }
+.rfs-na      { background: rgba(242,233,216,0.08); color: var(--muted); }
+.result-field-teaching { flex: 1; color: var(--muted); line-height: 1.5; font-size: 11px; }
+
+.result-teaching-box {
+  margin-top: 12px; padding: 12px 14px;
+  background: rgba(77,211,254,0.06); border: 1px solid rgba(77,211,254,0.15);
+  border-radius: 8px;
+}
+.result-teaching-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--accent); margin-bottom: 6px;
+}
+.result-teaching-text { font-size: 12px; line-height: 1.65; color: var(--text); }
+
+.try-again-btn {
+  padding: 12px 36px; background: rgba(77,211,254,0.1); border: 1px solid rgba(77,211,254,0.3);
+  border-radius: 10px; color: var(--accent); font-family: inherit; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: background 0.15s;
+}
+.try-again-btn:hover { background: rgba(77,211,254,0.18); }
+
+/* ── Hidden ── */
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header" id="main-header">
+  <a href="index.html" class="header-back">← Hub</a>
+  <div>
+    <div class="header-title">Rx Verify</div>
+    <div class="header-construct" id="header-construct">Prescription Legality &amp; Completeness Verification</div>
+  </div>
+  <div class="header-right">
+    <span class="phase-badge" id="phase-badge">Intro</span>
+    <span class="rx-progress-label hidden" id="rx-progress-label">Rx 1 of 3</span>
+  </div>
+</div>
+<div class="progress-bar">
+  <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+</div>
+
+<!-- ── Intro Screen ── -->
+<div id="intro-screen">
+  <div class="intro-emoji">📋</div>
+  <div class="intro-title" id="intro-title">Rx Verify</div>
+  <div class="intro-subtitle" id="intro-subtitle"></div>
+
+  <div class="intro-card">
+    <div class="intro-card-label">How it works</div>
+    <ul class="intro-steps">
+      <li><span class="intro-step-num">1</span>You'll work through 3 prescriptions, verifying each field against legal dispensing requirements.</li>
+      <li><span class="intro-step-num">2</span>For each field, mark it OK ✓, Issue ⚠️, or N/A. Then make your dispensing decision.</li>
+      <li><span class="intro-step-num">3</span>After all 3, you'll see your score and field-by-field feedback with teaching notes.</li>
+    </ul>
+  </div>
+
+  <div class="decision-legend">
+    <span class="decision-chip ready">✅ Ready to Fill</span>
+    <span class="decision-chip clarify">⚠️ Needs Clarification</span>
+    <span class="decision-chip dnf">🚫 Do Not Fill</span>
+  </div>
+
+  <button class="start-btn" id="start-btn">Start Verification →</button>
+</div>
+
+<!-- ── Verify Screen ── -->
+<div class="workspace hidden" id="verify-screen">
+
+  <!-- Left: Rx Pad -->
+  <div class="panel" id="rx-panel">
+    <div class="panel-header">
+      <span>Prescription</span>
+      <span id="rx-controlled-header" class="hidden" style="color:var(--dnf);font-size:10px;">CONTROLLED</span>
+    </div>
+    <div class="panel-body">
+      <div class="rx-pad" id="rx-pad">
+        <!-- Dynamically populated -->
+      </div>
+      <!-- DEA Teaching (Rx2 only) -->
+      <div id="dea-teaching-container" class="hidden" style="margin-top:10px;">
+        <details>
+          <div class="dea-teaching-box">
+            <summary>DEA Checksum Verification Guide</summary>
+            <div class="dea-steps" id="dea-steps"></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Checklist + Decision -->
+  <div class="panel" id="checklist-panel">
+    <div class="panel-header">
+      <span>Verification Checklist</span>
+    </div>
+    <div class="panel-body">
+
+      <div class="checklist-progress">
+        <span class="checklist-progress-label" id="checklist-progress-label">Prescription 1 of 3</span>
+        <div class="checklist-progress-dots" id="checklist-progress-dots"></div>
+      </div>
+
+      <div class="checklist-fields" id="checklist-fields">
+        <!-- Dynamically populated -->
+      </div>
+
+      <div class="decision-section">
+        <div class="decision-section-label">Dispensing Decision</div>
+        <div class="decision-btns" id="decision-btns">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <button class="confirm-btn" id="confirm-btn">Confirm &amp; Next Prescription →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Results Screen ── -->
+<div id="results-screen" class="hidden">
+  <div class="results-header">
+    <div class="score-circle" id="score-circle">
+      <div class="score-inner">
+        <div class="score-pct" id="score-pct">—</div>
+        <div class="score-label">Score</div>
+      </div>
+    </div>
+    <div class="score-breakdown" id="score-breakdown"></div>
+    <div class="performance-text" id="performance-text" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="results-accordions" id="results-accordions"></div>
+
+  <button class="try-again-btn" id="try-again-btn">Try Again</button>
+</div>
+
+<script src="feedback.js"></script>
+<script>
+// ── State ──
+let scenario = null;
+let currentRxIdx = 0;
+let responses = []; // { fieldStatuses: {}, decision: null }
+
+// ── Load scenario ──
+const params = new URLSearchParams(location.search);
+const scenarioPath = params.get('scenario') || 'scenarios/rx-verify-pharmacy-tech.json';
+
+fetch(scenarioPath)
+  .then(r => r.json())
+  .then(data => {
+    scenario = data;
+    initIntro();
+  })
+  .catch(() => {
+    document.body.innerHTML = '<p style="color:var(--dnf);padding:40px;font-size:16px;">Failed to load scenario. Check path: ' + scenarioPath + '</p>';
+  });
+
+function initIntro() {
+  document.getElementById('intro-title').textContent = scenario.construct_name;
+  document.getElementById('intro-subtitle').textContent = scenario.construct_description;
+  document.getElementById('header-construct').textContent = scenario.construct_name;
+}
+
+document.getElementById('start-btn').addEventListener('click', () => {
+  currentRxIdx = 0;
+  responses = [];
+  document.getElementById('intro-screen').classList.add('hidden');
+  document.getElementById('verify-screen').classList.remove('hidden');
+  document.getElementById('phase-badge').textContent = 'Verify';
+  document.getElementById('rx-progress-label').classList.remove('hidden');
+  renderRx(currentRxIdx);
+});
+
+// ── Render prescription ──
+function renderRx(idx) {
+  const rx = scenario.prescriptions[idx];
+  const d = rx.rx_display;
+
+  // Header progress
+  document.getElementById('rx-progress-label').textContent = 'Rx ' + (idx+1) + ' of ' + scenario.prescriptions.length;
+  updateProgress(idx);
+
+  // Controlled badge
+  const ctrlHeader = document.getElementById('rx-controlled-header');
+  if (d.is_controlled) ctrlHeader.classList.remove('hidden');
+  else ctrlHeader.classList.add('hidden');
+
+  // Build Rx Pad
+  const pad = document.getElementById('rx-pad');
+  pad.innerHTML = buildRxPad(d);
+
+  // DEA teaching
+  const deaContainer = document.getElementById('dea-teaching-container');
+  if (d.is_controlled && rx.dea_teaching) {
+    deaContainer.classList.remove('hidden');
+    const stepsEl = document.getElementById('dea-steps');
+    stepsEl.innerHTML = rx.dea_teaching.steps.map((s, i) =>
+      `<div class="dea-step"><span class="dea-step-num">${i+1}</span><span>${s}</span></div>`
+    ).join('');
+  } else {
+    deaContainer.classList.add('hidden');
+  }
+
+  // Build checklist
+  buildChecklist(rx);
+
+  // Build decision buttons
+  buildDecisionBtns(rx);
+
+  // Reset confirm
+  updateConfirmBtn();
+
+  // Dots
+  buildProgressDots(idx);
+  document.getElementById('checklist-progress-label').textContent = rx.label;
+}
+
+function buildRxPad(d) {
+  const refillDisplay = d.refills === '' || d.refills === null
+    ? '<span class="rx-field-value blank-indicator">[blank]</span>'
+    : `<span class="rx-field-value">${d.refills}</span>`;
+
+  const deaDisplay = d.prescriber_dea
+    ? `<div class="rx-field"><div class="rx-field-label">DEA Number</div><div class="rx-field-value">${d.prescriber_dea}</div></div>`
+    : '';
+  const npiDisplay = d.prescriber_npi
+    ? `<div class="rx-field"><div class="rx-field-label">NPI</div><div class="rx-field-value">${d.prescriber_npi}</div></div>`
+    : '';
+  const phoneDisplay = d.prescriber_phone
+    ? `<div class="rx-field"><div class="rx-field-label">Phone</div><div class="rx-field-value">${d.prescriber_phone}</div></div>`
+    : '';
+  const controlledBadge = d.is_controlled
+    ? `<span class="controlled-badge">SCHEDULE ${d.schedule} CONTROLLED SUBSTANCE</span>`
+    : '';
+  const daysSupply = d.days_supply
+    ? `<div class="rx-field"><div class="rx-field-label">Days Supply</div><div class="rx-field-value">${d.days_supply}</div></div>`
+    : '';
+
+  return `
+    <div class="rx-pad-header">
+      <h2>PRESCRIPTION</h2>
+      <p>LEGAL DOCUMENT — NOT VALID IF ALTERED</p>
+      ${controlledBadge}
+    </div>
+    <div class="rx-grid">
+      <div class="rx-field">
+        <div class="rx-field-label">Patient Name</div>
+        <div class="rx-field-value">${d.patient_name}</div>
+      </div>
+      <div class="rx-field">
+        <div class="rx-field-label">Date of Birth</div>
+        <div class="rx-field-value">${d.patient_dob}</div>
+      </div>
+    </div>
+    <div class="rx-field">
+      <div class="rx-field-label">Prescriber</div>
+      <div class="rx-field-value">${d.prescriber_name}</div>
+    </div>
+    <div class="rx-field">
+      <div class="rx-field-label">Address</div>
+      <div class="rx-field-value">${d.prescriber_address}</div>
+    </div>
+    ${phoneDisplay}${deaDisplay}${npiDisplay}
+    <div class="rx-field">
+      <div class="rx-field-label">Date Written</div>
+      <div class="rx-field-value">${d.date}</div>
+    </div>
+    <div class="rx-field">
+      <div class="rx-field-label">Drug</div>
+      <div class="rx-field-value">${d.drug}</div>
+    </div>
+    <div class="rx-field">
+      <div class="rx-field-label">Sig (Directions)</div>
+      <div class="rx-field-value">${d.sig}</div>
+    </div>
+    <div class="rx-grid">
+      <div class="rx-field">
+        <div class="rx-field-label">Quantity</div>
+        <div class="rx-field-value">${d.quantity_written || d.quantity}</div>
+      </div>
+      <div class="rx-field">
+        <div class="rx-field-label">Refills</div>
+        ${refillDisplay}
+      </div>
+    </div>
+    ${daysSupply}
+    <div class="rx-field">
+      <div class="rx-field-label">Prescriber Signature</div>
+      <div class="rx-field-value" style="font-family: Georgia, serif; font-style: italic;">${d.signature}</div>
+    </div>
+  `;
+}
+
+function buildChecklist(rx) {
+  const container = document.getElementById('checklist-fields');
+  container.innerHTML = '';
+
+  // Filter applicable fields
+  const fields = scenario.checklist_template.filter(f => {
+    if (f.na_for_noncontrolled && !rx.rx_display.is_controlled) return false; // skip DEA entirely for non-controlled
+    return true;
+  });
+
+  fields.forEach(field => {
+    const cfData = rx.checklist_fields.find(cf => cf.id === field.id);
+    const isNAField = field.na_for_noncontrolled; // was it shown for this Rx at all?
+
+    const row = document.createElement('div');
+    row.className = 'checklist-row';
+    row.dataset.fieldId = field.id;
+
+    const btnsHtml = `
+      <div class="checklist-btns">
+        <button class="check-btn ok" data-status="ok" data-field="${field.id}">✓ OK</button>
+        <button class="check-btn issue" data-status="issue" data-field="${field.id}">⚠️ Issue</button>
+        ${field.na_for_noncontrolled ? '' : ''}
+      </div>
+    `;
+
+    row.innerHTML = `
+      <div class="checklist-row-label">
+        <div class="checklist-field-name">${field.label}</div>
+        <div class="checklist-field-question">${field.question}</div>
+      </div>
+      <div class="checklist-btns">
+        <button class="check-btn ok" data-status="ok" data-field="${field.id}">✓ OK</button>
+        <button class="check-btn issue" data-status="issue" data-field="${field.id}">⚠️ Issue</button>
+      </div>
+    `;
+
+    container.appendChild(row);
+
+    // Button listeners
+    row.querySelectorAll('.check-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Deselect siblings
+        row.querySelectorAll('.check-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        // Update row border
+        row.className = 'checklist-row status-' + btn.dataset.status;
+        updateConfirmBtn();
+      });
+    });
+  });
+}
+
+function buildDecisionBtns(rx) {
+  const container = document.getElementById('decision-btns');
+  container.innerHTML = '';
+  scenario.decisions.forEach(dec => {
+    const btn = document.createElement('button');
+    const cls = dec.id === 'ready' ? 'ready' : dec.id === 'clarification' ? 'clarify' : 'dnf';
+    btn.className = `decision-btn ${cls}`;
+    btn.dataset.decision = dec.id;
+    btn.innerHTML = `${dec.icon} ${dec.label}`;
+    btn.addEventListener('click', () => {
+      container.querySelectorAll('.decision-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      updateConfirmBtn();
+    });
+    container.appendChild(btn);
+  });
+}
+
+function buildProgressDots(activeIdx) {
+  const container = document.getElementById('checklist-progress-dots');
+  container.innerHTML = '';
+  scenario.prescriptions.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot' + (i < activeIdx ? ' done' : i === activeIdx ? ' active' : '');
+    container.appendChild(dot);
+  });
+}
+
+function updateProgress(rxIdx) {
+  const pct = (rxIdx / scenario.prescriptions.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function allFieldsChecked() {
+  const rows = document.querySelectorAll('#checklist-fields .checklist-row');
+  for (const row of rows) {
+    if (!row.querySelector('.check-btn.selected')) return false;
+  }
+  return true;
+}
+
+function decisionSelected() {
+  return !!document.querySelector('#decision-btns .decision-btn.selected');
+}
+
+function updateConfirmBtn() {
+  const btn = document.getElementById('confirm-btn');
+  if (allFieldsChecked() && decisionSelected()) {
+    btn.classList.add('ready');
+    const isLast = currentRxIdx === scenario.prescriptions.length - 1;
+    btn.textContent = isLast ? 'Submit & View Results →' : 'Confirm & Next Prescription →';
+  } else {
+    btn.classList.remove('ready');
+    btn.textContent = 'Confirm & Next Prescription →';
+  }
+}
+
+document.getElementById('confirm-btn').addEventListener('click', () => {
+  if (!document.getElementById('confirm-btn').classList.contains('ready')) return;
+
+  // Collect response
+  const rx = scenario.prescriptions[currentRxIdx];
+  const fieldStatuses = {};
+  document.querySelectorAll('#checklist-fields .checklist-row').forEach(row => {
+    const sel = row.querySelector('.check-btn.selected');
+    fieldStatuses[row.dataset.fieldId] = sel ? sel.dataset.status : null;
+  });
+  const decisionBtn = document.querySelector('#decision-btns .decision-btn.selected');
+  const decision = decisionBtn ? decisionBtn.dataset.decision : null;
+
+  responses.push({ rxId: rx.id, fieldStatuses, decision });
+
+  currentRxIdx++;
+  if (currentRxIdx < scenario.prescriptions.length) {
+    renderRx(currentRxIdx);
+  } else {
+    showResults();
+  }
+});
+
+// ── Scoring ──
+function computeScore() {
+  let totalPoints = 0;
+  let maxPoints = 0;
+  const rxResults = [];
+
+  scenario.prescriptions.forEach((rx, i) => {
+    const resp = responses[i];
+    const sw = rx.score_weights;
+    let rxPoints = 0;
+    let rxMax = 0;
+
+    // Decision
+    rxMax += sw.decision;
+    if (resp.decision === rx.correct_decision) {
+      rxPoints += sw.decision;
+    }
+
+    // Fields
+    const applicableFields = scenario.checklist_template.filter(f => {
+      if (f.na_for_noncontrolled && !rx.rx_display.is_controlled) return false;
+      return true;
+    });
+
+    const fieldDetails = [];
+    applicableFields.forEach(f => {
+      const cfData = rx.checklist_fields.find(cf => cf.id === f.id);
+      const correctStatus = cfData ? cfData.correct_status : 'ok';
+      const userStatus = resp.fieldStatuses[f.id];
+
+      if (correctStatus === 'issue') {
+        rxMax += sw.per_correct_issue;
+        if (userStatus === 'issue') {
+          rxPoints += sw.per_correct_issue;
+          fieldDetails.push({ field: f, userStatus, correctStatus, result: 'correct' });
+        } else {
+          rxPoints += sw.false_negative_penalty; // negative
+          fieldDetails.push({ field: f, userStatus, correctStatus, result: 'false_negative', teaching: cfData.teaching_point });
+        }
+      } else {
+        rxMax += sw.per_correct_ok;
+        if (userStatus === 'ok') {
+          rxPoints += sw.per_correct_ok;
+          fieldDetails.push({ field: f, userStatus, correctStatus, result: 'correct' });
+        } else if (userStatus === 'issue') {
+          rxPoints += sw.false_positive_penalty; // negative
+          fieldDetails.push({ field: f, userStatus, correctStatus, result: 'false_positive' });
+        } else {
+          fieldDetails.push({ field: f, userStatus, correctStatus, result: 'correct' });
+        }
+      }
+    });
+
+    rxPoints = Math.max(0, rxPoints);
+    totalPoints += rxPoints;
+    maxPoints += rxMax;
+
+    rxResults.push({ rx, resp, rxPoints, rxMax, fieldDetails });
+  });
+
+  const pct = maxPoints > 0 ? Math.round((totalPoints / maxPoints) * 100) : 0;
+  return { totalPoints, maxPoints, pct, rxResults };
+}
+
+function showResults() {
+  document.getElementById('verify-screen').classList.add('hidden');
+  document.getElementById('results-screen').classList.remove('hidden');
+  document.getElementById('phase-badge').textContent = 'Results';
+  document.getElementById('rx-progress-label').classList.add('hidden');
+  document.getElementById('progress-fill').style.width = '100%';
+
+  const score = computeScore();
+
+  // Score circle
+  const deg = (score.pct / 100) * 360;
+  document.getElementById('score-circle').style.background =
+    `conic-gradient(var(--accent) ${deg}deg, var(--surface2) ${deg}deg)`;
+  document.getElementById('score-pct').textContent = score.pct + '%';
+  document.getElementById('score-breakdown').textContent =
+    score.totalPoints + ' / ' + score.maxPoints + ' points';
+
+  // Performance label
+  const label = scenario.performance_labels.find(l => score.pct >= l.min);
+  document.getElementById('performance-text').textContent = label ? label.text : '';
+
+  // Accordions
+  const container = document.getElementById('results-accordions');
+  container.innerHTML = '';
+
+  score.rxResults.forEach((rxr, i) => {
+    const decisionCorrect = rxr.resp.decision === rxr.rx.correct_decision;
+    const correctDecObj = scenario.decisions.find(d => d.id === rxr.rx.correct_decision);
+    const userDecObj = scenario.decisions.find(d => d.id === rxr.resp.decision);
+    const rxPct = rxr.rxMax > 0 ? Math.round((rxr.rxPoints / rxr.rxMax) * 100) : 0;
+
+    const accordion = document.createElement('div');
+    accordion.className = 'result-accordion';
+    accordion.innerHTML = `
+      <div class="result-accordion-header">
+        <span class="result-rx-label">${rxr.rx.label}</span>
+        <span class="result-decision-badge ${decisionCorrect ? 'correct' : 'wrong'}">
+          ${decisionCorrect ? '✓ Correct decision' : '✗ Wrong decision'}
+        </span>
+        <span class="result-score-chip">${rxPct}%</span>
+        <span class="result-accordion-chevron">▼</span>
+      </div>
+      <div class="result-accordion-body">
+        <div class="result-decision-row">
+          <span class="rdl">Your decision:</span>
+          <span class="rdv" style="color:${userDecObj ? userDecObj.color : 'inherit'}">${userDecObj ? userDecObj.icon + ' ' + userDecObj.label : rxr.resp.decision}</span>
+        </div>
+        <div class="result-decision-row" style="border-bottom:none;">
+          <span class="rdl">Correct:</span>
+          <span class="rdv" style="color:${correctDecObj ? correctDecObj.color : 'inherit'}">${correctDecObj ? correctDecObj.icon + ' ' + correctDecObj.label : rxr.rx.correct_decision}</span>
+        </div>
+        <div class="result-fields" id="result-fields-${i}"></div>
+        <div class="result-teaching-box">
+          <div class="result-teaching-label">Decision teaching</div>
+          <div class="result-teaching-text">${rxr.rx.decision_teaching}</div>
+        </div>
+      </div>
+    `;
+    container.appendChild(accordion);
+
+    // Toggle
+    accordion.querySelector('.result-accordion-header').addEventListener('click', () => {
+      accordion.classList.toggle('open');
+    });
+    // Auto-open wrong ones
+    if (!decisionCorrect || rxr.fieldDetails.some(f => f.result !== 'correct')) {
+      accordion.classList.add('open');
+    }
+
+    // Field breakdown
+    const fieldsContainer = accordion.querySelector(`#result-fields-${i}`);
+    rxr.fieldDetails.forEach(fd => {
+      const row = document.createElement('div');
+      row.className = 'result-field-row';
+
+      let statusLabel, statusClass, teachingText = '';
+      if (fd.result === 'correct') {
+        statusLabel = '✓ Correct';
+        statusClass = 'rfs-correct';
+      } else if (fd.result === 'false_negative') {
+        statusLabel = '✗ Missed issue';
+        statusClass = 'rfs-wrong';
+        teachingText = fd.teaching || '';
+      } else if (fd.result === 'false_positive') {
+        statusLabel = '✗ Over-flagged';
+        statusClass = 'rfs-wrong';
+        teachingText = 'This field was actually OK — no issue here.';
+      }
+
+      row.innerHTML = `
+        <span class="result-field-name">${fd.field.label}</span>
+        <span class="result-field-status ${statusClass}">${statusLabel}</span>
+        ${teachingText ? `<span class="result-field-teaching">${teachingText}</span>` : ''}
+      `;
+      fieldsContainer.appendChild(row);
+    });
+  });
+}
+
+document.getElementById('try-again-btn').addEventListener('click', () => {
+  document.getElementById('results-screen').classList.add('hidden');
+  document.getElementById('intro-screen').classList.remove('hidden');
+  document.getElementById('phase-badge').textContent = 'Intro';
+  document.getElementById('rx-progress-label').classList.add('hidden');
+  document.getElementById('progress-fill').style.width = '0%';
+  currentRxIdx = 0;
+  responses = [];
+});
+</script>
+</body>
+</html>

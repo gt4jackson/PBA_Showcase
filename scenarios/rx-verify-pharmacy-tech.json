@@ -1,0 +1,218 @@
+{
+  "construct_id": "pharmacy_tech_rx_verify",
+  "construct_name": "Prescription Legality & Completeness Verification",
+  "construct_description": "The ability to systematically review a prescription for legal completeness — checking every required field against dispensing regulations, performing DEA number validation for controlled substances, and making a defensible dispensing decision before a pharmacist's final check.",
+  "pba_category": {
+    "id": 4,
+    "name": "Simulation-Based Assessment",
+    "description": "A three-prescription verification task requiring field-by-field review and a final dispensing decision for each."
+  },
+  "checklist_template": [
+    {
+      "id": "patient_id",
+      "label": "Patient name & DOB",
+      "question": "Is the patient name and date of birth present and legible?",
+      "show_always": true
+    },
+    {
+      "id": "prescriber_info",
+      "label": "Prescriber info",
+      "question": "Is the prescriber name, address, and contact information complete?",
+      "show_always": true
+    },
+    {
+      "id": "rx_date",
+      "label": "Prescription date",
+      "question": "Is the date present and within the valid fill window?",
+      "show_always": true
+    },
+    {
+      "id": "drug_info",
+      "label": "Drug, strength & form",
+      "question": "Is the drug name, strength, and dosage form complete and legible?",
+      "show_always": true
+    },
+    {
+      "id": "sig",
+      "label": "Sig (directions)",
+      "question": "Are the directions explicit, complete, and unambiguous?",
+      "show_always": true
+    },
+    {
+      "id": "quantity",
+      "label": "Quantity",
+      "question": "Is the quantity written out clearly?",
+      "show_always": true
+    },
+    {
+      "id": "refills",
+      "label": "Refills",
+      "question": "Is the refill count explicitly stated (not blank)?",
+      "show_always": true
+    },
+    {
+      "id": "dea",
+      "label": "Controlled substance (DEA)",
+      "question": "If Schedule II–V: is DEA number present and valid?",
+      "show_always": false,
+      "show_when_controlled": true,
+      "na_for_noncontrolled": true
+    },
+    {
+      "id": "signature",
+      "label": "Prescriber signature",
+      "question": "Is the prescription signed?",
+      "show_always": true
+    }
+  ],
+  "prescriptions": [
+    {
+      "id": "rx1",
+      "label": "Prescription 1 of 3",
+      "rx_display": {
+        "patient_name": "Maria Santos",
+        "patient_dob": "09/14/1968",
+        "prescriber_name": "Dr. Thomas Webb, MD",
+        "prescriber_address": "847 Lakeview Medical Pkwy",
+        "prescriber_phone": "(312) 555-0192",
+        "prescriber_dea": null,
+        "prescriber_npi": null,
+        "date": "05/21/2026",
+        "drug": "Metformin HCl 500mg tablets",
+        "sig": "Take as directed",
+        "quantity": "60",
+        "quantity_written": "Sixty (60)",
+        "refills": "",
+        "signature": "T. Webb, MD",
+        "is_controlled": false,
+        "schedule": null
+      },
+      "checklist_fields": [
+        { "id": "patient_id",    "correct_status": "ok",    "teaching_point": null },
+        { "id": "prescriber_info","correct_status": "ok",   "teaching_point": null },
+        { "id": "rx_date",       "correct_status": "ok",    "teaching_point": null },
+        { "id": "drug_info",     "correct_status": "ok",    "teaching_point": null },
+        { "id": "sig",           "correct_status": "issue", "teaching_point": "\"Take as directed\" is not an acceptable sig. Pharmacies are legally required to print explicit directions on the dispensing label. Without them, a patient has no guidance on how to take their medication. Always flag ambiguous sigs for prescriber clarification." },
+        { "id": "quantity",      "correct_status": "ok",    "teaching_point": null },
+        { "id": "refills",       "correct_status": "issue", "teaching_point": "A blank refill field is not the same as \"0 refills.\" The prescriber's intent is unknown — it could be intentionally left blank, be a transcription omission, or mean unlimited refills in some interpretations. Legally, it must be explicitly stated. Never assume blank equals zero." },
+        { "id": "signature",     "correct_status": "ok",    "teaching_point": null }
+      ],
+      "correct_decision": "clarification",
+      "decision_teaching": "Two fields require prescriber clarification before this prescription can be filled: the ambiguous \"take as directed\" sig and the blank refills field. \"Take as directed\" is one of the most commonly rejected sig instructions — pharmacies cannot legally print non-instructions on a label. The blank refills field creates legal ambiguity that only the prescriber can resolve.",
+      "score_weights": {
+        "decision": 15,
+        "per_correct_issue": 5,
+        "per_correct_ok": 2,
+        "false_positive_penalty": -2,
+        "false_negative_penalty": -5
+      }
+    },
+    {
+      "id": "rx2",
+      "label": "Prescription 2 of 3",
+      "rx_display": {
+        "patient_name": "Robert Holloway",
+        "patient_dob": "03/27/1955",
+        "prescriber_name": "Dr. Patricia Nguyen, MD",
+        "prescriber_address": "220 North Shore Medical",
+        "prescriber_phone": null,
+        "prescriber_dea": "BN4827156",
+        "prescriber_npi": null,
+        "date": "05/27/2026",
+        "drug": "Zolpidem 10mg tablets",
+        "sig": "Take 1 tablet by mouth at bedtime",
+        "quantity": "30",
+        "quantity_written": "Thirty (30)",
+        "refills": "0",
+        "signature": "P. Nguyen, MD",
+        "is_controlled": true,
+        "schedule": "IV"
+      },
+      "dea_teaching": {
+        "title": "DEA Number Checksum Validation",
+        "steps": [
+          "DEA format: 2 letters followed by 7 digits (e.g. BN4827156).",
+          "Step 1 — Add digits at positions 1, 3, 5 (the odd positions): 4 + 2 + 1 = 7.",
+          "Step 2 — Add digits at positions 2, 4, 6 (the even positions): 8 + 7 + 5 = 20. Multiply by 2: 20 × 2 = 40.",
+          "Step 3 — Sum of Step 1 + Step 2: 7 + 40 = 47.",
+          "Step 4 — The last digit of 47 is 7. The 7th digit of the DEA number must equal 7.",
+          "Actual 7th digit of BN4827156 is 6. The checksum FAILS — this DEA number is invalid."
+        ]
+      },
+      "checklist_fields": [
+        { "id": "patient_id",    "correct_status": "ok",    "teaching_point": null },
+        { "id": "prescriber_info","correct_status": "ok",   "teaching_point": null },
+        { "id": "rx_date",       "correct_status": "ok",    "teaching_point": null },
+        { "id": "drug_info",     "correct_status": "ok",    "teaching_point": null },
+        { "id": "sig",           "correct_status": "ok",    "teaching_point": null },
+        { "id": "quantity",      "correct_status": "ok",    "teaching_point": null },
+        { "id": "refills",       "correct_status": "ok",    "teaching_point": null },
+        { "id": "dea",           "correct_status": "issue", "teaching_point": "DEA number checksum validation is mandatory for all Schedule II–V medications. BN4827156 fails the checksum: odd-position digits (4+2+1=7) plus double the even-position digits (8+7+5=20, ×2=40) equals 47, so the 7th digit should be 7 — but it is 6. A failed checksum indicates the number is either forged or contains a transcription error. You cannot fill this prescription without a verified DEA number." },
+        { "id": "signature",     "correct_status": "ok",    "teaching_point": null }
+      ],
+      "correct_decision": "do_not_fill",
+      "decision_teaching": "An invalid DEA number on a controlled substance prescription means the prescription cannot be filled — period. DEA number validation is a legal requirement, not a courtesy check. A failed checksum may indicate forgery or a transcription error; either way, you must not dispense a Schedule IV substance without a verified, valid DEA number. Contact the prescriber's office to obtain the correct DEA number before proceeding.",
+      "score_weights": {
+        "decision": 15,
+        "per_correct_issue": 5,
+        "per_correct_ok": 2,
+        "false_positive_penalty": -2,
+        "false_negative_penalty": -5
+      }
+    },
+    {
+      "id": "rx3",
+      "label": "Prescription 3 of 3",
+      "rx_display": {
+        "patient_name": "James Okonkwo",
+        "patient_dob": "11/30/1972",
+        "prescriber_name": "Dr. Anita Sharma, MD",
+        "prescriber_address": "551 Westbrook Health Center",
+        "prescriber_phone": null,
+        "prescriber_dea": null,
+        "prescriber_npi": "1234567893",
+        "date": "05/26/2026",
+        "drug": "Lisinopril 10mg tablets",
+        "sig": "Take 1 tablet by mouth once daily",
+        "quantity": "30",
+        "quantity_written": "Thirty (30)",
+        "refills": "5",
+        "signature": "A. Sharma, MD",
+        "is_controlled": false,
+        "schedule": null,
+        "days_supply": "30"
+      },
+      "checklist_fields": [
+        { "id": "patient_id",    "correct_status": "ok", "teaching_point": null },
+        { "id": "prescriber_info","correct_status": "ok","teaching_point": null },
+        { "id": "rx_date",       "correct_status": "ok", "teaching_point": null },
+        { "id": "drug_info",     "correct_status": "ok", "teaching_point": null },
+        { "id": "sig",           "correct_status": "ok", "teaching_point": null },
+        { "id": "quantity",      "correct_status": "ok", "teaching_point": null },
+        { "id": "refills",       "correct_status": "ok", "teaching_point": null },
+        { "id": "signature",     "correct_status": "ok", "teaching_point": null }
+      ],
+      "correct_decision": "ready",
+      "decision_teaching": "This prescription is complete and correct. All required fields are present and explicit, the sig contains unambiguous directions, refills are clearly stated, and no DEA number is needed for a non-controlled medication. Recognizing when a prescription is genuinely ready to fill — without manufacturing concerns — is just as important as catching real errors. Over-flagging clean prescriptions wastes pharmacist time and erodes confidence in your flags.",
+      "score_weights": {
+        "decision": 15,
+        "per_correct_issue": 5,
+        "per_correct_ok": 2,
+        "false_positive_penalty": -2,
+        "false_negative_penalty": -5
+      }
+    }
+  ],
+  "decisions": [
+    { "id": "ready",         "label": "Ready to Fill",       "color": "#22c55e", "icon": "✅" },
+    { "id": "clarification", "label": "Needs Clarification", "color": "#f59e0b", "icon": "⚠️" },
+    { "id": "do_not_fill",   "label": "Do Not Fill",         "color": "#ef4444", "icon": "🚫" }
+  ],
+  "performance_labels": [
+    { "min": 90, "text": "Exceptional accuracy — PTCE-ready verification skills 💊" },
+    { "min": 75, "text": "Strong verification instincts with minor gaps — solid pharmacy tech foundation 👏" },
+    { "min": 60, "text": "Good foundation — review DEA validation and sig completeness requirements 📋" },
+    { "min": 40, "text": "Key issues missed — controlled substance requirements and sig legality need focused review ⚠️" },
+    { "min": 0,  "text": "Critical verification steps missed — legal completeness requirements need concentrated study 🚨" }
+  ]
+}
