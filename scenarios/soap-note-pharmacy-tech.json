@@ -1,0 +1,99 @@
+{
+  "construct_name": "Soap Note: Pharmacy Tech Verbal Escalation",
+  "construct_description": "Call the on-duty pharmacist to flag two prescription concerns before filling them. Demonstrate use of ISMP verbal escalation format — Identify yourself, Patient ID, Concern, Specific issue, Recommendation/Ask — to communicate drug interaction and allergy risks clearly.",
+  "handoff_format": "ISMP Verbal Escalation",
+  "scene": {
+    "icon": "💊",
+    "title": "Prescription Flags — Pharmacist Escalation Call",
+    "context": "You are a pharmacy technician and you have just pulled up David Park's prescriptions for filling. You've identified two prescriptions in the queue that have flags you are not authorized to override on your own. You need to call the on-duty pharmacist before dispensing. The pharmacist answers — give your verbal escalation using the ISMP format. Be specific: name the drugs, name the concerns, and tell the pharmacist what you need them to do.",
+    "urgency_label": "Hold on dispensing — 2 flags pending review",
+    "reference_sections": [
+      {
+        "label": "Patient Profile",
+        "content_html": "<table style='width:100%;border-collapse:collapse;font-size:0.88em'><tbody><tr><td style='padding:4px 8px;font-weight:600'>Name</td><td style='padding:4px 8px'>David Park</td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px;font-weight:600'>Age / Sex</td><td style='padding:4px 8px'>72-year-old male</td></tr><tr><td style='padding:4px 8px;font-weight:600'>MRN</td><td style='padding:4px 8px'>MRN-447821</td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px;font-weight:600'>DOB</td><td style='padding:4px 8px'>03/14/1953</td></tr><tr><td style='padding:4px 8px;font-weight:600'>Allergies</td><td style='padding:4px 8px'><span style='color:#f87171;font-weight:600'>Codeine</span> (nausea/vomiting), <span style='color:#f87171;font-weight:600'>Latex</span></td></tr></tbody></table>"
+      },
+      {
+        "label": "Current Medications",
+        "content_html": "<table style='width:100%;border-collapse:collapse;font-size:0.88em'><thead><tr><th style='text-align:left;padding:4px 8px;border-bottom:1px solid rgba(242,233,216,0.15)'>Drug</th><th style='text-align:left;padding:4px 8px;border-bottom:1px solid rgba(242,233,216,0.15)'>Dose / Sig</th></tr></thead><tbody><tr><td style='padding:4px 8px'><strong>Warfarin</strong></td><td style='padding:4px 8px'>5 mg daily</td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px'>Lisinopril</td><td style='padding:4px 8px'>10 mg daily</td></tr><tr><td style='padding:4px 8px'>Metoprolol succinate</td><td style='padding:4px 8px'>25 mg BID</td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px'>Atorvastatin</td><td style='padding:4px 8px'>20 mg daily (evening)</td></tr><tr><td style='padding:4px 8px'>Omeprazole</td><td style='padding:4px 8px'>20 mg daily</td></tr></tbody></table>"
+      },
+      {
+        "label": "New Prescriptions — Flagged",
+        "content_html": "<div style='border-left:3px solid #f87171;padding-left:10px;margin-bottom:12px'><p style='margin:0 0 4px;font-weight:600;color:#f87171'>Rx #1: Tramadol 50 mg TID PRN pain</p><ul style='margin:0;padding-left:1.2em;font-size:0.88em;line-height:1.7'><li>Tramadol + warfarin → <strong>increased bleeding risk</strong></li><li>Tramadol is an opioid-like compound → potential <strong>cross-sensitivity with codeine allergy</strong></li></ul></div><div style='border-left:3px solid #fb923c;padding-left:10px'><p style='margin:0 0 4px;font-weight:600;color:#fb923c'>Rx #2: Fluconazole 150 mg single dose</p><ul style='margin:0;padding-left:1.2em;font-size:0.88em;line-height:1.7'><li>Fluconazole is a <strong>strong CYP2C9 inhibitor</strong></li><li>Warfarin is metabolized via CYP2C9 → <strong>INR can spike dramatically</strong></li><li>Potential for serious hemorrhagic event if not managed</li></ul></div>"
+      },
+      {
+        "label": "ISMP Escalation Format",
+        "content_html": "<ol style='margin:0;padding-left:1.4em;line-height:1.9;font-size:0.88em'><li><strong>Identify yourself</strong> — name, role, location</li><li><strong>Patient ID</strong> — name, DOB or MRN</li><li><strong>Concern #1</strong> — drug name, specific issue, clinical risk</li><li><strong>Concern #2</strong> — drug name, specific issue, clinical risk</li><li><strong>Ask</strong> — what do you need the pharmacist to do?</li><li><strong>Urgency</strong> — clarify dispensing is on hold pending review</li></ol>"
+      }
+    ]
+  },
+  "format_guide": {
+    "name": "ISMP Verbal Escalation",
+    "sections": [
+      {
+        "label": "Identify Yourself",
+        "prompt": "State your name, your role (pharmacy technician), and where you're calling from."
+      },
+      {
+        "label": "Patient Identification",
+        "prompt": "Give patient name, date of birth or MRN so the pharmacist can pull the chart."
+      },
+      {
+        "label": "Concern",
+        "prompt": "State that you have flagged prescriptions you need reviewed before dispensing."
+      },
+      {
+        "label": "Specific Issues",
+        "prompt": "Name each drug and explain the specific concern clearly — interaction, allergy risk, clinical consequence."
+      },
+      {
+        "label": "Recommendation / Ask",
+        "prompt": "Tell the pharmacist what you need: DUR override review, prescriber contact, clinical check. Note that dispensing is on hold."
+      }
+    ]
+  },
+  "required_elements": [
+    {
+      "id": "self_identification",
+      "label": "Self-identification as pharmacy technician",
+      "keywords": ["tech", "technician", "pharmacy tech", "I'm", "my name", "calling from", "this is"],
+      "teaching_point": "Lead with who you are. The pharmacist needs to immediately understand your scope of practice — you are a tech escalating for pharmacist oversight, not making a clinical recommendation. Starting without identification is an ISMP-flagged communication failure."
+    },
+    {
+      "id": "patient_id",
+      "label": "Patient identification (name and age/DOB/MRN)",
+      "keywords": ["David Park", "David", "Park", "72", "447821", "MRN", "03/14"],
+      "teaching_point": "Two patient identifiers are required before any medication discussion (Joint Commission NPSG 01.01.01). Name plus DOB or MRN confirms you're both looking at the same patient record — this prevents errors from lookaliike or soundalike names."
+    },
+    {
+      "id": "tramadol_concern",
+      "label": "Tramadol concern (interaction and/or allergy)",
+      "keywords": ["tramadol", "warfarin", "bleeding", "codeine", "allergy", "opioid", "cross-sensitivity", "cross sensitivity"],
+      "teaching_point": "Two independent concerns exist with tramadol: (1) it potentiates warfarin's anticoagulant effect, elevating bleeding risk; and (2) tramadol has opioid-like activity and the patient has a documented codeine allergy — cross-sensitivity is a real clinical consideration. Naming both shows deeper safety awareness."
+    },
+    {
+      "id": "fluconazole_concern",
+      "label": "Fluconazole concern (CYP2C9 / warfarin INR)",
+      "keywords": ["fluconazole", "warfarin", "INR", "CYP2C9", "interaction", "CYP", "inhibitor", "enzyme"],
+      "teaching_point": "Fluconazole is one of the most clinically significant warfarin interactions in pharmacy practice. It inhibits CYP2C9, the primary enzyme that clears warfarin, causing INR to spike to dangerous levels. Naming the mechanism (CYP2C9 inhibition) rather than just 'an interaction' demonstrates clinical depth."
+    },
+    {
+      "id": "specific_ask",
+      "label": "Specific ask to the pharmacist",
+      "keywords": ["verify", "check", "review", "contact prescriber", "approve", "override", "DUR", "clinical check", "need you to"],
+      "teaching_point": "Close with a clear action request. 'I need you to review the DUR flags' or 'Can you contact the prescriber about the fluconazole?' defines the pharmacist's role. Escalating without a specific ask puts the burden on them to figure out what you need — that slows resolution."
+    },
+    {
+      "id": "hold_on_dispensing",
+      "label": "Dispensing on hold pending review",
+      "keywords": ["before filling", "before dispensing", "on hold", "holding", "prior to dispensing", "not filled", "haven't filled", "waiting"],
+      "teaching_point": "Explicitly stating 'I have not dispensed these yet' closes the loop on safety. It confirms the medication has not left the pharmacy, which is the entire point of the escalation. Without this statement, the pharmacist cannot be certain the drugs aren't already on their way to the patient."
+    }
+  ],
+  "performance_labels": [
+    { "min_pct": 90, "label": "Exemplary", "description": "Full ISMP protocol followed. Both concerns named with mechanisms. Clear ask made. Dispensing hold confirmed. Pharmacist has everything needed to act immediately." },
+    { "min_pct": 75, "label": "Proficient", "description": "Both drugs mentioned with concerns. May be missing mechanism detail (e.g., named interaction but not CYP2C9) or dispensing hold not explicitly stated." },
+    { "min_pct": 60, "label": "Developing", "description": "One concern communicated well, second is thin or missing. Or the ask is vague ('I just wanted to let you know')." },
+    { "min_pct": 40, "label": "Beginning", "description": "Patient identified but clinical concerns are not specific. Pharmacist would need to ask clarifying questions before acting." },
+    { "min_pct": 0,  "label": "Insufficient", "description": "Report does not give the pharmacist enough information to identify the safety concern or take action." }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "construct_name": "Soap Note: EMS Verbal Handoff",
+  "construct_description": "Give a structured verbal patient handoff to the receiving ER team for an incoming critical patient. Demonstrate use of the EMS Verbal Report format: Situation → History → Assessment/Vitals → Treatment → ETA.",
+  "handoff_format": "EMS Verbal Report",
+  "scene": {
+    "icon": "🚑",
+    "title": "Incoming STEMI — Verbal ER Handoff",
+    "context": "You are the lead EMT arriving at Regional Medical Center with a 58-year-old male who collapsed at his workplace with chest pain. The ER charge nurse and attending physician are at the ambulance bay. You have about 60 seconds to give your verbal report before they take over care. Use the EMS Verbal Report format and include everything they need to activate the cath lab.",
+    "urgency_label": "Incoming patient — 6 min ETA",
+    "reference_sections": [
+      {
+        "label": "Patient & Scene",
+        "content_html": "<p><strong>58-year-old male</strong><br>Chief complaint: <strong>chest pain</strong><br>Onset: approximately <strong>20 minutes ago</strong></p><p>Found collapsed at desk at work. Coworkers called 911. Wife arrived on scene — corroborated history, reports no known drug allergies.</p><p>Mental status on contact: <strong>alert and oriented × 4</strong>, anxious, cooperative<br>Appearance: <strong>pale, diaphoretic, cool skin</strong></p>"
+      },
+      {
+        "label": "Vital Signs",
+        "content_html": "<table style='width:100%;border-collapse:collapse;font-size:0.88em'><thead><tr><th style='text-align:left;padding:4px 8px;border-bottom:1px solid rgba(242,233,216,0.15)'>Parameter</th><th style='text-align:left;padding:4px 8px;border-bottom:1px solid rgba(242,233,216,0.15)'>Value</th></tr></thead><tbody><tr><td style='padding:4px 8px'>BP</td><td style='padding:4px 8px'><strong>152 / 94 mmHg</strong></td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px'>HR</td><td style='padding:4px 8px'><strong>118 bpm — irregular</strong></td></tr><tr><td style='padding:4px 8px'>RR</td><td style='padding:4px 8px'>18 / min</td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px'>SpO₂ (RA)</td><td style='padding:4px 8px'>93%</td></tr><tr><td style='padding:4px 8px'>SpO₂ (on O₂)</td><td style='padding:4px 8px'><strong>98%</strong> on 4 L/min NC</td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px'>GCS</td><td style='padding:4px 8px'>15 (E4 V5 M6)</td></tr><tr><td style='padding:4px 8px'>Skin</td><td style='padding:4px 8px'>Pale, diaphoretic, cool</td></tr></tbody></table>"
+      },
+      {
+        "label": "Past Medical History",
+        "content_html": "<ul style='margin:0;padding-left:1.2em;line-height:1.7'><li><strong>Hypertension</strong> (diagnosed, on medication)</li><li><strong>Hyperlipidemia</strong> (diagnosed, on medication)</li><li>Takes <em>\"something for his heart\"</em> — name unknown, no medication list available at scene</li></ul><p style='margin-top:8px'><strong>Allergies:</strong> NKDA per wife</p>"
+      },
+      {
+        "label": "12-Lead ECG Findings",
+        "content_html": "<p style='color:#4dd3fe;font-weight:600;margin-bottom:6px'>⚠ Inferior STEMI Pattern</p><ul style='margin:0;padding-left:1.2em;line-height:1.7'><li><strong>ST elevation</strong> in leads II, III, aVF (inferior territory)</li><li><strong>Reciprocal changes</strong> (ST depression) in leads I and aVL</li><li>Rhythm: irregular — possible atrial fibrillation with RVR vs. sinus tachycardia with ectopy</li></ul><p style='margin-top:8px;font-size:0.85em;color:rgba(242,233,216,0.6)'>Right-sided leads not obtained in field. RV involvement cannot be ruled out — relevant to nitro decision.</p>"
+      },
+      {
+        "label": "Interventions & Treatment",
+        "content_html": "<ul style='margin:0;padding-left:1.2em;line-height:1.7'><li><strong>O₂:</strong> 4 L/min via nasal cannula → SpO₂ 98%</li><li><strong>Aspirin:</strong> 324 mg PO (chewed) — patient tolerated</li><li><strong>IV access:</strong> right antecubital, 18-gauge, NS at KVO rate</li><li><strong>12-lead ECG:</strong> acquired and transmitted to receiving facility</li></ul><p style='margin-top:8px;color:#f87171;font-size:0.88em'><strong>Nitroglycerin withheld</strong> — BP borderline (152/94); inferior STEMI raises suspicion for right ventricular involvement; protocol directs withhold pending RV assessment. No repeat BP drop observed.</p>"
+      },
+      {
+        "label": "ETA & Request",
+        "content_html": "<p><strong>ETA: 6 minutes</strong></p><p>Requesting <strong>cath lab activation</strong> on arrival for presumed inferior STEMI.</p><p style='font-size:0.85em;color:rgba(242,233,216,0.6)'>Patient condition stable en route. No changes in mental status. IV patent. Repeat BP pending.</p>"
+      }
+    ]
+  },
+  "format_guide": {
+    "name": "EMS Verbal Report",
+    "sections": [
+      {
+        "label": "Situation",
+        "prompt": "Who is the patient and what is the chief complaint? Age, sex, what happened, when?"
+      },
+      {
+        "label": "History",
+        "prompt": "Relevant medical history, current medications, allergies."
+      },
+      {
+        "label": "Assessment / Vitals",
+        "prompt": "Current vital signs, mental status, skin signs, and key clinical findings (ECG)."
+      },
+      {
+        "label": "Treatment",
+        "prompt": "All interventions performed en route, including anything withheld and why."
+      },
+      {
+        "label": "ETA + Request",
+        "prompt": "Time to arrival and any specific resources or activations needed."
+      }
+    ]
+  },
+  "required_elements": [
+    {
+      "id": "patient_id",
+      "label": "Patient identification",
+      "keywords": ["58", "male", "chest pain", "diaphoresis", "diaphoretic"],
+      "teaching_point": "Lead with patient age, sex, and chief complaint. The receiving team needs to orient immediately — 'We have a 58-year-old male with chest pain and diaphoresis' establishes acuity in the first breath."
+    },
+    {
+      "id": "onset_mechanism",
+      "label": "Onset and mechanism",
+      "keywords": ["20 minutes", "20 min", "at work", "desk", "collapsed"],
+      "teaching_point": "Onset time matters enormously for STEMI — door-to-balloon time is measured from symptom onset. 'Onset approximately 20 minutes ago, collapsed at his desk at work' gives the team a timeline to work from."
+    },
+    {
+      "id": "relevant_history",
+      "label": "Relevant medical history",
+      "keywords": ["hypertension", "hyperlipidemia", "cardiac", "heart", "medication", "no known drug allergies", "NKDA"],
+      "teaching_point": "Hypertension and hyperlipidemia are major cardiac risk factors — they contextualize this presentation. Mentioning an unknown cardiac medication alerts the team to check for drug interactions (especially with thrombolytics or anticoagulants)."
+    },
+    {
+      "id": "vital_signs",
+      "label": "Vital signs (BP and HR minimum)",
+      "keywords": ["152", "94", "118", "irregular", "SpO2", "oxygen saturation", "93", "98"],
+      "teaching_point": "Report BP and HR at minimum. The irregular HR flags a possible arrhythmia. SpO₂ trend (93% → 98% on O₂) shows intervention response. These numbers drive immediate triage decisions in the bay."
+    },
+    {
+      "id": "ecg_findings",
+      "label": "12-lead ECG findings",
+      "keywords": ["inferior", "STEMI", "ST elevation", "II", "III", "aVF", "reciprocal", "aVL"],
+      "teaching_point": "This is the most critical clinical finding. Name the territory (inferior), the leads (II, III, aVF), and the pattern (ST elevation / STEMI). Mentioning reciprocal changes in I and aVL confirms the diagnosis and demonstrates clinical precision."
+    },
+    {
+      "id": "interventions",
+      "label": "Interventions performed",
+      "keywords": ["oxygen", "O2", "aspirin", "IV", "intravenous", "access", "nasal cannula", "324"],
+      "teaching_point": "List all pre-hospital interventions so the team doesn't duplicate them. O₂, aspirin, and IV access are the ACS triage cornerstones. Dosing (324 mg aspirin, 18g IV) lets them plan their next steps."
+    },
+    {
+      "id": "nitro_reasoning",
+      "label": "Nitroglycerin withheld — reasoning",
+      "keywords": ["nitro", "nitroglycerin", "withheld", "held", "right ventricular", "RV", "inferior", "protocol"],
+      "teaching_point": "Explicitly stating what you did NOT give and why is critical. Inferior STEMIs carry RV involvement risk — nitroglycerin in RV infarct can cause catastrophic hypotension. The receiving physician needs to know this decision was intentional, not an omission."
+    },
+    {
+      "id": "eta_cath_lab",
+      "label": "ETA and cath lab activation request",
+      "keywords": ["cath lab", "catheterization", "6 minutes", "6 min", "activation", "ETA", "arriving"],
+      "teaching_point": "Close with the ask. 'Six minutes out, requesting cath lab activation' gives the team time to mobilize. This is the purpose of the pre-arrival call — every minute of pre-notification reduces door-to-balloon time."
+    }
+  ],
+  "performance_labels": [
+    { "min_pct": 90, "label": "Exemplary", "description": "All critical elements communicated clearly and in logical sequence. Cath lab would be activated without hesitation." },
+    { "min_pct": 75, "label": "Proficient", "description": "Most elements present. Minor omissions unlikely to cause harm but could slow team response." },
+    { "min_pct": 60, "label": "Developing", "description": "Core facts present but missing key clinical details (ECG findings, nitro reasoning). Team would need to ask follow-up questions." },
+    { "min_pct": 40, "label": "Beginning", "description": "Significant gaps in the report. Missing elements that directly affect clinical decision-making." },
+    { "min_pct": 0,  "label": "Insufficient", "description": "Report does not provide enough information for the receiving team to initiate appropriate care." }
+  ]
+}

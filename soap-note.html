@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soap Note — Verbal Handoff Task</title>
+<style>
+  :root {
+    --bg: #1a212b;
+    --surface: #242e3d;
+    --accent: #4dd3fe;
+    --text: #f2e9d8;
+    --border: rgba(242,233,216,0.08);
+    --muted: rgba(242,233,216,0.45);
+    --danger: #f87171;
+    --success: #4ade80;
+    --warning: #fb923c;
+    --surface2: #2d3a4d;
+    --radius: 10px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .app-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .back-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: var(--text); }
+  .header-title {
+    flex: 1;
+    font-size: 0.95em;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .phase-badge {
+    background: rgba(77,211,254,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(77,211,254,0.3);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 0.78em;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .timer-display {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    color: var(--muted);
+    min-width: 52px;
+    text-align: right;
+  }
+  .timer-display.running { color: var(--accent); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-track {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 56px;
+    z-index: 99;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  /* ── MAIN WRAPPER ── */
+  .main-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+  }
+
+  /* ── PHASE PANELS ── */
+  .phase-panel { display: none; }
+  .phase-panel.active { display: block; }
+
+  /* ── SCENARIO SELECTOR ── */
+  .scenario-selector {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .scenario-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 0.88em;
+    color: var(--muted);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .scenario-chip:hover { border-color: rgba(77,211,254,0.3); color: var(--text); }
+  .scenario-chip.active {
+    background: rgba(77,211,254,0.1);
+    border-color: rgba(77,211,254,0.4);
+    color: var(--accent);
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .card-icon {
+    font-size: 1.8em;
+    line-height: 1;
+  }
+  .card-title {
+    font-size: 1.15em;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .card-subtitle {
+    font-size: 0.85em;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ── INTRO PHASE ── */
+  .urgency-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(251,146,60,0.12);
+    color: var(--warning);
+    border: 1px solid rgba(251,146,60,0.25);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 0.82em;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .context-text {
+    color: rgba(242,233,216,0.8);
+    font-size: 0.95em;
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
+  .format-guide {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .format-guide-title {
+    font-size: 0.78em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .format-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .format-section-row {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    font-size: 0.88em;
+  }
+  .format-section-label {
+    font-weight: 700;
+    color: var(--text);
+    min-width: 110px;
+    flex-shrink: 0;
+  }
+  .format-section-prompt {
+    color: var(--muted);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 24px;
+    border-radius: 8px;
+    font-size: 0.92em;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .btn-primary:hover { background: #7de0ff; }
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: rgba(242,233,216,0.2); background: #36455c; }
+  .btn-danger {
+    background: var(--danger);
+    color: #fff;
+  }
+  .btn-danger:hover { background: #f95c5c; }
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* ── TASK PHASE — TWO PANEL ── */
+  .task-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  /* ── LEFT PANEL: REFERENCE ── */
+  .ref-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: sticky;
+    top: 76px;
+    max-height: calc(100vh - 100px);
+    display: flex;
+    flex-direction: column;
+  }
+  .ref-panel-header {
+    padding: 14px 18px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ref-panel-title {
+    font-size: 0.82em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+  }
+  .ref-panel-body {
+    overflow-y: auto;
+    flex: 1;
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface2) transparent;
+  }
+
+  /* Accordion */
+  .accordion-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .accordion-item:last-child { border-bottom: none; }
+  .accordion-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 0.85em;
+    font-weight: 600;
+    text-align: left;
+    transition: background 0.12s;
+  }
+  .accordion-trigger:hover { background: rgba(242,233,216,0.04); }
+  .accordion-arrow {
+    color: var(--muted);
+    font-size: 0.8em;
+    transition: transform 0.2s;
+  }
+  .accordion-item.open .accordion-arrow { transform: rotate(180deg); }
+  .accordion-content {
+    display: none;
+    padding: 2px 18px 14px;
+    font-size: 0.85em;
+    color: rgba(242,233,216,0.75);
+    line-height: 1.65;
+  }
+  .accordion-item.open .accordion-content { display: block; }
+  .accordion-content table { color: rgba(242,233,216,0.8); }
+
+  /* ── RIGHT PANEL: RECORDING ── */
+  .record-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .record-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* Record button pulse */
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(248,113,113,0.5); }
+    70% { box-shadow: 0 0 0 12px rgba(248,113,113,0); }
+    100% { box-shadow: 0 0 0 0 rgba(248,113,113,0); }
+  }
+  .btn-record.recording {
+    background: var(--danger);
+    color: #fff;
+    animation: pulse-ring 1.4s ease infinite;
+  }
+  .btn-record {
+    background: rgba(248,113,113,0.15);
+    color: var(--danger);
+    border: 1px solid rgba(248,113,113,0.3);
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-size: 0.92em;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn-record:hover:not(.recording) {
+    background: rgba(248,113,113,0.25);
+  }
+  .btn-record:disabled { opacity: 0.4; cursor: not-allowed; animation: none; }
+
+  .word-count {
+    font-size: 0.82em;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  /* Live transcript */
+  .transcript-live-wrap {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    min-height: 80px;
+    font-size: 0.9em;
+    line-height: 1.7;
+  }
+  .transcript-live-wrap .placeholder {
+    color: rgba(242,233,216,0.2);
+    font-style: italic;
+  }
+  .transcript-interim {
+    color: var(--muted);
+    font-style: italic;
+  }
+  .transcript-final { color: var(--text); }
+  .live-label {
+    font-size: 0.75em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .live-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--danger);
+    margin-right: 6px;
+    animation: blink 1s ease infinite;
+  }
+  @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.2; } }
+
+  /* Edit textarea */
+  .transcript-edit-wrap { position: relative; }
+  .transcript-edit-label {
+    font-size: 0.75em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  textarea.transcript-edit {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.9em;
+    font-family: inherit;
+    line-height: 1.7;
+    padding: 14px 16px;
+    resize: vertical;
+    min-height: 140px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  textarea.transcript-edit:focus { border-color: rgba(77,211,254,0.4); }
+
+  /* Fallback */
+  .fallback-note {
+    background: rgba(251,146,60,0.1);
+    border: 1px solid rgba(251,146,60,0.25);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.85em;
+    color: var(--warning);
+    display: none;
+  }
+
+  .submit-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 4px;
+  }
+
+  /* ── RESULTS PHASE ── */
+  .score-hero {
+    text-align: center;
+    padding: 32px 24px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .score-circle {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    border: 4px solid var(--accent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .score-pct {
+    font-size: 1.8em;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .score-label-small { font-size: 0.7em; color: var(--muted); }
+  .score-perf-label {
+    font-size: 1.1em;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .score-perf-desc {
+    font-size: 0.88em;
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .elements-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+  .element-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .element-row.pass { border-left: 3px solid var(--success); }
+  .element-row.fail { border-left: 3px solid var(--danger); }
+  .element-status { font-size: 1.2em; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+  .element-label { font-weight: 600; font-size: 0.92em; margin-bottom: 4px; }
+  .element-teaching {
+    font-size: 0.85em;
+    color: var(--muted);
+    line-height: 1.6;
+    display: none;
+  }
+  .element-row.fail .element-teaching { display: block; }
+
+  .results-transcript {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 0.88em;
+    line-height: 1.75;
+    color: rgba(242,233,216,0.7);
+    white-space: pre-wrap;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+  }
+
+  .retry-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ── UTIL ── */
+  .section-label {
+    font-size: 0.75em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  @media (max-width: 800px) {
+    .task-layout { grid-template-columns: 1fr; }
+    .ref-panel { position: static; max-height: 340px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <a href="index.html" class="back-link">&#8592; Showcase</a>
+  <div class="header-title" id="headerTitle">Verbal Handoff</div>
+  <span class="phase-badge" id="phaseBadge">Intro</span>
+  <div class="timer-display" id="timerDisplay">0:00</div>
+</header>
+
+<!-- PROGRESS BAR -->
+<div class="progress-track">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- ══════════════════════════════════════════════
+       PHASE 1: INTRO
+  ══════════════════════════════════════════════ -->
+  <div class="phase-panel active" id="phaseIntro">
+
+    <div class="section-label">Select Scenario</div>
+    <div class="scenario-selector" id="scenarioSelector">
+      <!-- populated by JS -->
+    </div>
+
+    <div id="introCard" class="card" style="display:none">
+      <div class="card-header">
+        <div class="card-icon" id="introIcon"></div>
+        <div>
+          <div class="card-title" id="introTitle"></div>
+          <div class="card-subtitle" id="introSubtitle"></div>
+        </div>
+      </div>
+
+      <div class="urgency-tag" id="introUrgency"></div>
+
+      <p class="context-text" id="introContext"></p>
+
+      <div class="format-guide" id="introFormatGuide">
+        <div class="format-guide-title" id="formatGuideName"></div>
+        <div class="format-sections" id="formatSections"></div>
+      </div>
+
+      <button class="btn btn-primary" id="btnStartTask" onclick="startTask()">
+        Start Task &#8594;
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       PHASE 2: TASK (REVIEW + RECORD)
+  ══════════════════════════════════════════════ -->
+  <div class="phase-panel" id="phaseTask">
+    <div class="task-layout">
+
+      <!-- LEFT: Reference panel -->
+      <div class="ref-panel" id="refPanel">
+        <div class="ref-panel-header">
+          <span id="refPanelIcon" style="font-size:1.1em"></span>
+          <span class="ref-panel-title">Reference</span>
+        </div>
+        <div class="ref-panel-body" id="refPanelBody">
+          <!-- accordion items injected here -->
+        </div>
+      </div>
+
+      <!-- RIGHT: Recording panel -->
+      <div class="record-panel">
+
+        <div class="card" style="padding:20px">
+          <div class="section-label">Your Task</div>
+          <p id="taskContextRepeat" style="font-size:0.9em;color:rgba(242,233,216,0.75);line-height:1.7;margin-bottom:0"></p>
+        </div>
+
+        <div class="card" style="padding:20px">
+          <div class="section-label">Voice Recording</div>
+
+          <!-- Fallback notice -->
+          <div class="fallback-note" id="fallbackNote">
+            Your browser does not support the Web Speech API. Use the text area below to type your response instead.
+          </div>
+
+          <div class="live-label" id="liveLabelEl" style="display:none">
+            <span class="live-dot"></span>Recording live
+          </div>
+          <div class="transcript-live-wrap" id="transcriptLive" style="display:none">
+            <span class="placeholder" id="livePlaceholder">Listening…</span>
+          </div>
+
+          <div style="height:12px"></div>
+
+          <div class="record-controls">
+            <button class="btn-record" id="btnRecord" onclick="toggleRecording()">
+              🎙 Start Recording
+            </button>
+            <button class="btn btn-secondary" id="btnStop" onclick="stopRecording()" style="display:none">
+              ⏹ Stop
+            </button>
+            <span class="word-count" id="wordCount">0 words</span>
+          </div>
+
+          <div style="height:16px"></div>
+
+          <div class="transcript-edit-wrap">
+            <div class="transcript-edit-label">Your response — edit or type below</div>
+            <textarea class="transcript-edit" id="transcriptEdit"
+              placeholder="Your transcribed response will appear here. You can edit it before submitting."
+              oninput="onEditInput()"></textarea>
+          </div>
+        </div>
+
+        <div class="submit-row">
+          <button class="btn btn-secondary" onclick="goToIntro()">&#8592; Back</button>
+          <button class="btn btn-primary" id="btnSubmit" onclick="submitResponse()" disabled>
+            Score My Response &#8594;
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       PHASE 3: RESULTS
+  ══════════════════════════════════════════════ -->
+  <div class="phase-panel" id="phaseResults">
+
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="score-hero">
+        <div class="score-circle" id="scoreCircle">
+          <span class="score-pct" id="scorePct">—</span>
+          <span class="score-label-small">score</span>
+        </div>
+        <div class="score-perf-label" id="scorePerfLabel"></div>
+        <div class="score-perf-desc" id="scorePerfDesc"></div>
+      </div>
+      <div style="padding:0 24px 24px">
+        <div class="section-label">Element Checklist</div>
+        <div class="elements-list" id="elementsList"></div>
+        <div class="divider"></div>
+        <div class="section-label">Your Response</div>
+        <div class="results-transcript" id="resultsTranscript"></div>
+        <div class="retry-row">
+          <button class="btn btn-secondary" onclick="goToTask()">&#8617; Try Again</button>
+          <button class="btn btn-primary" onclick="goToIntro()">&#8592; New Scenario</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /main-wrap -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// SCENARIO REGISTRY
+// ═══════════════════════════════════════════════════════════════════════════
+const SCENARIOS = [
+  { file: 'scenarios/soap-note-emt.json',                 label: '🚑 EMT Handoff' },
+  { file: 'scenarios/soap-note-project-management.json',  label: '📊 PM Briefing' },
+  { file: 'scenarios/soap-note-pharmacy-tech.json',       label: '💊 Pharmacy Tech' },
+  { file: 'scenarios/soap-note-financial-literacy.json',  label: '💼 Financial Advisor' },
+];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// VOICE API HOOK
+// ── Replace createVoiceSession() to connect your own voice pipeline.
+// ── Contract: returns { start(), stop(), isSupported() }
+// ── Callbacks: onTranscript(text, isFinal), onError(msg), onEnd()
+// ═══════════════════════════════════════════════════════════════════════════
+function createVoiceSession({ onTranscript, onError, onEnd }) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return null;
+  const rec = new SpeechRecognition();
+  rec.continuous = true;
+  rec.interimResults = true;
+  rec.lang = 'en-US';
+  rec.onresult = (e) => {
+    let interim = '', final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) final += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    if (final) onTranscript(final, true);
+    else if (interim) onTranscript(interim, false);
+  };
+  rec.onerror = (e) => onError(e.error);
+  rec.onend = onEnd;
+  return {
+    start()       { rec.start(); },
+    stop()        { rec.stop(); },
+    isSupported() { return true; }
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// APP STATE
+// ═══════════════════════════════════════════════════════════════════════════
+let scenario       = null;
+let voiceSession   = null;
+let isRecording    = false;
+let accumulatedFinal = '';
+let currentInterim   = '';
+let timerInterval  = null;
+let timerSeconds   = 0;
+let timerRunning   = false;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  // Build scenario chips
+  const sel = document.getElementById('scenarioSelector');
+  SCENARIOS.forEach((s, i) => {
+    const chip = document.createElement('button');
+    chip.className = 'scenario-chip';
+    chip.textContent = s.label;
+    chip.onclick = () => loadScenario(i);
+    sel.appendChild(chip);
+  });
+
+  // Auto-load first scenario
+  loadScenario(0);
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SCENARIO LOADING
+// ═══════════════════════════════════════════════════════════════════════════
+async function loadScenario(index) {
+  // Highlight chip
+  document.querySelectorAll('.scenario-chip').forEach((c, i) => {
+    c.classList.toggle('active', i === index);
+  });
+
+  const entry = SCENARIOS[index];
+  try {
+    const resp = await fetch(entry.file);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    scenario = await resp.json();
+  } catch (err) {
+    alert(`Could not load scenario: ${err.message}`);
+    return;
+  }
+
+  renderIntro();
+  document.getElementById('introCard').style.display = 'block';
+  document.getElementById('btnStartTask').disabled = false;
+}
+
+function renderIntro() {
+  const s = scenario;
+  document.getElementById('headerTitle').textContent = s.construct_name;
+  document.getElementById('introIcon').textContent   = s.scene.icon;
+  document.getElementById('introTitle').textContent  = s.scene.title;
+  document.getElementById('introSubtitle').textContent = s.construct_description;
+  document.getElementById('introUrgency').textContent  = '⏱ ' + s.scene.urgency_label;
+  document.getElementById('introContext').textContent  = s.scene.context;
+
+  // Format guide
+  document.getElementById('formatGuideName').textContent = 'Format: ' + s.format_guide.name;
+  const sectionsEl = document.getElementById('formatSections');
+  sectionsEl.innerHTML = '';
+  s.format_guide.sections.forEach(sec => {
+    const row = document.createElement('div');
+    row.className = 'format-section-row';
+    row.innerHTML = `<span class="format-section-label">${sec.label}</span><span class="format-section-prompt">${sec.prompt}</span>`;
+    sectionsEl.appendChild(row);
+  });
+
+  setProgress(15);
+  setPhase('intro', 'Intro');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PHASE NAVIGATION
+// ═══════════════════════════════════════════════════════════════════════════
+function setPhase(name, label) {
+  document.querySelectorAll('.phase-panel').forEach(p => p.classList.remove('active'));
+  const phaseMap = { intro: 'phaseIntro', task: 'phaseTask', results: 'phaseResults' };
+  document.getElementById(phaseMap[name]).classList.add('active');
+  document.getElementById('phaseBadge').textContent = label;
+}
+
+function setProgress(pct) {
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function goToIntro() {
+  stopRecording();
+  stopTimer();
+  resetTimer();
+  setPhase('intro', 'Intro');
+  setProgress(15);
+}
+
+function goToTask() {
+  stopRecording();
+  stopTimer();
+  resetTimer();
+  accumulatedFinal = '';
+  currentInterim   = '';
+  document.getElementById('transcriptEdit').value = '';
+  document.getElementById('btnSubmit').disabled = true;
+  updateLiveDisplay();
+  updateWordCount();
+  setPhase('task', 'Record');
+  setProgress(50);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// START TASK
+// ═══════════════════════════════════════════════════════════════════════════
+function startTask() {
+  if (!scenario) return;
+  buildRefPanel();
+  buildTaskPrompt();
+  goToTask();
+}
+
+function buildRefPanel() {
+  const s = scenario;
+  document.getElementById('refPanelIcon').textContent = s.scene.icon;
+
+  const body = document.getElementById('refPanelBody');
+  body.innerHTML = '';
+  s.scene.reference_sections.forEach((sec, i) => {
+    const item = document.createElement('div');
+    item.className = 'accordion-item' + (i < 2 ? ' open' : '');
+    item.innerHTML = `
+      <button class="accordion-trigger" onclick="toggleAccordion(this)">
+        <span>${sec.label}</span>
+        <span class="accordion-arrow">▾</span>
+      </button>
+      <div class="accordion-content">${sec.content_html}</div>
+    `;
+    body.appendChild(item);
+  });
+}
+
+function buildTaskPrompt() {
+  document.getElementById('taskContextRepeat').textContent = scenario.scene.context;
+}
+
+function toggleAccordion(trigger) {
+  const item = trigger.closest('.accordion-item');
+  item.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TIMER
+// ═══════════════════════════════════════════════════════════════════════════
+function startTimer() {
+  if (timerRunning) return;
+  timerRunning = true;
+  timerInterval = setInterval(() => {
+    timerSeconds++;
+    const m = Math.floor(timerSeconds / 60);
+    const s = String(timerSeconds % 60).padStart(2, '0');
+    const el = document.getElementById('timerDisplay');
+    el.textContent = `${m}:${s}`;
+    el.classList.add('running');
+  }, 1000);
+}
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  document.getElementById('timerDisplay').classList.remove('running');
+}
+function resetTimer() {
+  timerSeconds = 0;
+  document.getElementById('timerDisplay').textContent = '0:00';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// RECORDING
+// ═══════════════════════════════════════════════════════════════════════════
+function toggleRecording() {
+  if (isRecording) stopRecording();
+  else startRecording();
+}
+
+function startRecording() {
+  // Show live UI
+  document.getElementById('transcriptLive').style.display = 'block';
+  document.getElementById('liveLabelEl').style.display = 'block';
+
+  // Try speech API
+  voiceSession = createVoiceSession({
+    onTranscript(text, isFinal) {
+      if (isFinal) {
+        accumulatedFinal += (accumulatedFinal ? ' ' : '') + text.trim();
+        currentInterim = '';
+        syncEditFromFinal();
+      } else {
+        currentInterim = text;
+      }
+      updateLiveDisplay();
+    },
+    onError(msg) {
+      if (msg === 'no-speech') return; // ignore no-speech
+      document.getElementById('fallbackNote').style.display = 'block';
+      document.getElementById('fallbackNote').textContent =
+        `Voice error: "${msg}". Please type your response below.`;
+      stopRecording();
+    },
+    onEnd() {
+      // Restart if we're supposed to still be recording (continuous mode can stop)
+      if (isRecording && voiceSession) {
+        try { voiceSession.start(); } catch(e) { /* already started */ }
+      }
+    }
+  });
+
+  if (!voiceSession) {
+    // No speech API
+    document.getElementById('fallbackNote').style.display = 'block';
+    document.getElementById('transcriptLive').style.display = 'none';
+    document.getElementById('liveLabelEl').style.display = 'none';
+    isRecording = false;
+    return;
+  }
+
+  voiceSession.start();
+  isRecording = true;
+  startTimer();
+
+  const btnRec = document.getElementById('btnRecord');
+  btnRec.textContent = '🔴 Recording…';
+  btnRec.classList.add('recording');
+  document.getElementById('btnStop').style.display = 'inline-flex';
+}
+
+function stopRecording() {
+  if (!isRecording) return;
+  isRecording = false;
+  if (voiceSession) { try { voiceSession.stop(); } catch(e){} voiceSession = null; }
+  currentInterim = '';
+  updateLiveDisplay();
+
+  const btnRec = document.getElementById('btnRecord');
+  btnRec.textContent = '🎙 Start Recording';
+  btnRec.classList.remove('recording');
+  document.getElementById('btnStop').style.display = 'none';
+}
+
+function syncEditFromFinal() {
+  const ta = document.getElementById('transcriptEdit');
+  ta.value = accumulatedFinal;
+  updateWordCount();
+  updateSubmitBtn();
+}
+
+function updateLiveDisplay() {
+  const liveEl = document.getElementById('transcriptLive');
+  if (!accumulatedFinal && !currentInterim) {
+    liveEl.innerHTML = '<span class="placeholder" id="livePlaceholder">Listening…</span>';
+    return;
+  }
+  let html = '';
+  if (accumulatedFinal) html += `<span class="transcript-final">${escHtml(accumulatedFinal)}</span> `;
+  if (currentInterim)   html += `<span class="transcript-interim">${escHtml(currentInterim)}</span>`;
+  liveEl.innerHTML = html;
+}
+
+function onEditInput() {
+  updateWordCount();
+  updateSubmitBtn();
+}
+
+function updateWordCount() {
+  const text = document.getElementById('transcriptEdit').value.trim();
+  const words = text ? text.split(/\s+/).length : 0;
+  document.getElementById('wordCount').textContent = `${words} word${words !== 1 ? 's' : ''}`;
+}
+
+function updateSubmitBtn() {
+  const text = document.getElementById('transcriptEdit').value.trim();
+  document.getElementById('btnSubmit').disabled = text.length < 10;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SCORING
+// ═══════════════════════════════════════════════════════════════════════════
+function submitResponse() {
+  stopRecording();
+  stopTimer();
+
+  const response = document.getElementById('transcriptEdit').value.trim();
+  if (!response) return;
+
+  const lower = response.toLowerCase();
+  const elements = scenario.required_elements;
+
+  let passed = 0;
+  const results = elements.map(el => {
+    const hit = el.keywords.some(kw => lower.includes(kw.toLowerCase()));
+    if (hit) passed++;
+    return { ...el, hit };
+  });
+
+  const pct = Math.round((passed / elements.length) * 100);
+
+  // Performance label
+  const perfLabel = scenario.performance_labels
+    .slice()
+    .sort((a, b) => b.min_pct - a.min_pct)
+    .find(pl => pct >= pl.min_pct) || scenario.performance_labels[scenario.performance_labels.length - 1];
+
+  renderResults(pct, perfLabel, results, response);
+  setPhase('results', 'Results');
+  setProgress(100);
+}
+
+function renderResults(pct, perfLabel, results, responseText) {
+  // Score circle color
+  const circleEl = document.getElementById('scoreCircle');
+  const color = pct >= 80 ? 'var(--success)' : pct >= 55 ? 'var(--warning)' : 'var(--danger)';
+  circleEl.style.borderColor = color;
+  document.getElementById('scorePct').style.color = color;
+  document.getElementById('scorePct').textContent = pct + '%';
+  document.getElementById('scorePerfLabel').textContent = perfLabel.label;
+  document.getElementById('scorePerfDesc').textContent = perfLabel.description;
+
+  // Elements list
+  const listEl = document.getElementById('elementsList');
+  listEl.innerHTML = '';
+  results.forEach(el => {
+    const row = document.createElement('div');
+    row.className = 'element-row ' + (el.hit ? 'pass' : 'fail');
+    row.innerHTML = `
+      <div class="element-status">${el.hit ? '✅' : '❌'}</div>
+      <div>
+        <div class="element-label">${el.label}</div>
+        ${!el.hit ? `<div class="element-teaching">${el.teaching_point}</div>` : ''}
+      </div>
+    `;
+    listEl.appendChild(row);
+  });
+
+  // Transcript
+  document.getElementById('resultsTranscript').textContent = responseText;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════════════════════
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+
+<script src="feedback.js"></script>
+</body>
+</html>

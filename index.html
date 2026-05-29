@@ -934,6 +934,37 @@ body {
       </div>
     </div>
 
+    <div class="task-card" id="card-soap-note" data-task-id="soap-note" data-desktop="soap-note.html" data-mobile="soap-note.html">
+      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat4), var(--cat1));"></div>
+      <div class="task-card-badges">
+        <span class="task-card-badge cat-badge-4">Cat 4 — Simulation</span>
+        <span class="task-card-badge cat-badge-1">Cat 1 — Constructed Response</span>
+      </div>
+      <h3>Verbal Handoff</h3>
+      <p class="task-card-desc">Review a live scenario, then deliver a structured verbal briefing. Speak naturally — the task listens, transcribes, and scores your coverage of required elements.</p>
+      <div class="task-card-construct">
+        <div class="task-card-construct-label">Construct assessed</div>
+        <div class="task-card-construct-name">EMS Patient Handoff (SOAP)</div>
+        <div class="task-card-dims">
+          <span class="dim-tag">Oral Communication</span>
+          <span class="dim-tag">Clinical Completeness</span>
+          <span class="dim-tag">Structured Reporting</span>
+          <span class="dim-tag">Time Efficiency</span>
+        </div>
+      </div>
+      <div class="task-card-footer">
+        <span class="task-card-meta">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          ~8 min
+        </span>
+        <a class="task-card-action" id="action-soap-note" href="soap-note.html">
+          Start task
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <span class="construct-na-note">Not applicable for this construct</span>
+      </div>
+    </div>
+
   </div>
 </main>
 
@@ -1336,8 +1367,9 @@ const TASK_CONSTRUCT_MAP = {
     'data-detective': { scenario: null, construct: 'Data Reasoning', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
     'the-take':       { scenario: null, construct: 'Argumentation + Evidence Evaluation', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
     'the-forum':      { scenario: null, construct: 'Project Prioritization + Collaboration', dims: ['Trade-off Analysis','Evidence Use','Engagement','Synthesizing'] },
-    'triage-sim':     { scenario: null, construct: 'MCI Triage (NREMT)', dims: ['START Protocol','Clinical Prioritization','Time Pressure','Radio Communication'] }
+    'triage-sim':     { scenario: null, construct: 'MCI Triage (NREMT)', dims: ['START Protocol','Clinical Prioritization','Time Pressure','Radio Communication'] },
     'rx-check':       { scenario: null, construct: 'Prescription Verification (ExCPT/PTCE)', dims: ['Allergy Screening','Drug Interactions','Duplicate Therapy','Pharmacist Communication'] },
+    'soap-note':      { scenario: null, construct: 'Verbal Handoff', dims: ['Oral Communication','Clinical Completeness','Structured Reporting','Time Efficiency'] },
   },
   'ai-literacy': {
     'signal-check':   { scenario: 'scenarios/signal-check-ai-literacy.json', construct: 'AI Literacy', dims: ['AI Foundations','Responsible AI','Prompting & Interaction','Workflow & Application'] },
@@ -1345,8 +1377,9 @@ const TASK_CONSTRUCT_MAP = {
     'data-detective': null,
     'the-take':       { scenario: 'scenarios/the-take-argumentation.json', construct: 'Argumentation on AI Policy', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
     'the-forum':      { scenario: 'scenarios/the-forum-ai-literacy.json', construct: 'AI Tool Adoption', dims: ['AI Evaluation','Risk-Benefit','Evidence Use','Decision Quality'] },
-    'triage-sim':     null
+    'triage-sim':     null,
     'rx-check':       null,
+    'soap-note':      null,
   },
   'financial-literacy': {
     'signal-check':   { scenario: 'scenarios/signal-check-financial-literacy.json', construct: 'Financial Literacy', dims: ['Budgeting','Saving & Investing','Debt & Credit','Risk & Protection'] },
@@ -1354,8 +1387,9 @@ const TASK_CONSTRUCT_MAP = {
     'data-detective': { scenario: 'scenarios/data-detective-financial-literacy.json', construct: 'Financial Data Reasoning', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
     'the-take':       { scenario: 'scenarios/the-take-financial-literacy.json', construct: 'Financial Policy Argumentation', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
     'the-forum':      null,
-    'triage-sim':     null
+    'triage-sim':     null,
     'rx-check':       null,
+    'soap-note':      { scenario: 'scenarios/soap-note-financial-literacy.json', construct: 'Client Situation Summary', dims: ['Oral Communication','Financial Completeness','Structured Reporting','Client Clarity'] },
   },
   'project-management': {
     'signal-check':   { scenario: 'scenarios/signal-check-project-management.json', construct: 'Project Management', dims: ['Planning','Risk Management','Stakeholder Comms','Execution & Control'] },
@@ -1363,8 +1397,9 @@ const TASK_CONSTRUCT_MAP = {
     'data-detective': { scenario: 'scenarios/data-detective-project-management.json', construct: 'Project Metrics Analysis', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
     'the-take':       null,
     'the-forum':      { scenario: 'scenarios/the-forum-project-prioritization.json', construct: 'Project Prioritization', dims: ['Trade-off Analysis','Evidence Use','Engagement','Synthesizing'] },
-    'triage-sim':     { scenario: 'scenarios/triage-sim-project-management.json', construct: 'Incident Triage & Prioritization', dims: ['Severity Assessment','Time Pressure','Escalation Communication','Resource Allocation'] }
+    'triage-sim':     { scenario: 'scenarios/triage-sim-project-management.json', construct: 'Incident Triage & Prioritization', dims: ['Severity Assessment','Time Pressure','Escalation Communication','Resource Allocation'] },
     'rx-check':       null,
+    'soap-note':      { scenario: 'scenarios/soap-note-project-management.json', construct: 'SBAR Status Briefing', dims: ['Oral Communication','Situation Clarity','Assessment Quality','Recommendation'] },
   },
   'emt': {
     'signal-check':   { scenario: 'scenarios/signal-check-emt.json', construct: 'Pre-Hospital Emergency Care (NREMT)', dims: ['Bystander & Scene Safety','Airway & Circulation','Trauma & Triage','Protocols & Scope'] },
@@ -1372,8 +1407,9 @@ const TASK_CONSTRUCT_MAP = {
     'data-detective': { scenario: 'scenarios/data-detective-emt.json', construct: 'EMS Operations Data Reasoning', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
     'the-take':       { scenario: 'scenarios/the-take-emt.json', construct: 'EMS Policy Argumentation', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
     'the-forum':      { scenario: 'scenarios/the-forum-emt.json', construct: 'EMS Team Decision-Making', dims: ['Clinical Reasoning','Risk Assessment','Evidence Use','Decision Quality'] },
-    'triage-sim':     { scenario: 'scenarios/triage-sim-emt.json', construct: 'MCI Triage (START Protocol)', dims: ['START Protocol','Clinical Prioritization','Time Pressure','Radio Communication'] }
+    'triage-sim':     { scenario: 'scenarios/triage-sim-emt.json', construct: 'MCI Triage (START Protocol)', dims: ['START Protocol','Clinical Prioritization','Time Pressure','Radio Communication'] },
     'rx-check':       null,
+    'soap-note':      { scenario: 'scenarios/soap-note-emt.json', construct: 'EMS Patient Handoff (SOAP)', dims: ['Patient ID','Clinical Findings','Interventions','ETA Communication'] },
   },
   'pharmacy-tech': {
     'signal-check':   { scenario: 'scenarios/signal-check-pharmacy-tech.json', construct: 'Pharmaceutical Knowledge (ExCPT/PTCE)', dims: ['Medication Safety','Drug Interactions','Dispensing Accuracy','Patient Education & Scope'] },
@@ -1381,8 +1417,9 @@ const TASK_CONSTRUCT_MAP = {
     'data-detective': { scenario: 'scenarios/data-detective-pharmacy-tech.json', construct: 'Pharmacy Operations & Error Analysis', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
     'the-take':       { scenario: 'scenarios/the-take-pharmacy-tech.json', construct: 'Pharmacy Policy Argumentation', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
     'the-forum':      { scenario: 'scenarios/the-forum-pharmacy-tech.json', construct: 'Pharmacy Workflow Decision-Making', dims: ['Safety Reasoning','Operational Fit','Evidence Use','Decision Quality'] },
-    'triage-sim':     null
+    'triage-sim':     null,
     'rx-check':       { scenario: 'scenarios/rx-check-pharmacy-tech.json', construct: 'Prescription Verification (ExCPT/PTCE)', dims: ['Allergy Screening','Drug Interactions','Duplicate Therapy','Pharmacist Communication'] },
+    'soap-note':      { scenario: 'scenarios/soap-note-pharmacy-tech.json', construct: 'Medication Concern Escalation', dims: ['Patient ID','Drug Concern 1','Drug Concern 2','Pharmacist Ask'] },
   }
 };
 
@@ -1394,7 +1431,8 @@ const TASK_BASE_URLS = {
   'the-take':       { desktop: 'the-take.html',        mobile: 'the-take-mobile.html' },
   'the-forum':      { desktop: 'the-forum.html',       mobile: 'the-forum-mobile.html' },
   'triage-sim':     { desktop: 'triage-sim.html',      mobile: 'triage-sim.html' },
-  'rx-check':       { desktop: 'rx-check.html',        mobile: 'rx-check.html' }
+  'rx-check':       { desktop: 'rx-check.html',        mobile: 'rx-check.html' },
+  'soap-note':      { desktop: 'soap-note.html',       mobile: 'soap-note.html' }
 };
 
 let currentConstruct = 'all';

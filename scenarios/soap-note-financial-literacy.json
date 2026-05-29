@@ -1,0 +1,95 @@
+{
+  "construct_name": "Soap Note: Financial Advisor Client Summary",
+  "construct_description": "Give a verbal summary of a client's financial situation to a senior advisor who is taking over the account. Cover who the client is, the full financial snapshot, the key risks and gaps you've identified, and your priority recommendations.",
+  "handoff_format": "Client Situation Summary",
+  "scene": {
+    "icon": "💼",
+    "title": "Client Account Handoff — Sandra Reyes",
+    "context": "You are a junior financial advisor handing off client Sandra Reyes to a senior advisor who will manage her account going forward. The senior advisor has her file open but hasn't reviewed it yet. You have about 2–3 minutes to walk through the key points. Don't just recite facts — flag the risks you see and give your read on what needs to happen first. The senior advisor will take it from there.",
+    "urgency_label": "Account handoff — senior advisor taking over",
+    "reference_sections": [
+      {
+        "label": "Client Profile",
+        "content_html": "<table style='width:100%;border-collapse:collapse;font-size:0.88em'><tbody><tr><td style='padding:4px 8px;font-weight:600'>Name</td><td style='padding:4px 8px'>Sandra Reyes</td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px;font-weight:600'>Age / Sex</td><td style='padding:4px 8px'>54-year-old female</td></tr><tr><td style='padding:4px 8px;font-weight:600'>Occupation</td><td style='padding:4px 8px'>Public school teacher</td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px;font-weight:600'>Retirement target</td><td style='padding:4px 8px'>11 years (age 65)</td></tr><tr><td style='padding:4px 8px;font-weight:600'>Marital status</td><td style='padding:4px 8px'>Divorced, two adult children</td></tr></tbody></table>"
+      },
+      {
+        "label": "Financial Snapshot",
+        "content_html": "<table style='width:100%;border-collapse:collapse;font-size:0.88em'><thead><tr><th style='text-align:left;padding:4px 8px;border-bottom:1px solid rgba(242,233,216,0.15)'>Asset / Liability</th><th style='text-align:right;padding:4px 8px;border-bottom:1px solid rgba(242,233,216,0.15)'>Amount</th><th style='text-align:left;padding:4px 8px;border-bottom:1px solid rgba(242,233,216,0.15)'>Notes</th></tr></thead><tbody><tr><td style='padding:4px 8px'>403(b) retirement</td><td style='padding:4px 8px;text-align:right'>$187,000</td><td style='padding:4px 8px;color:#f87171'>90% equities ⚠</td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px'>Emergency fund</td><td style='padding:4px 8px;text-align:right'>$12,000</td><td style='padding:4px 8px'>~3 months expenses</td></tr><tr><td style='padding:4px 8px'>Credit card debt</td><td style='padding:4px 8px;text-align:right;color:#f87171'>($34,000)</td><td style='padding:4px 8px;color:#f87171'>3 cards, 18–24% APR ⚠</td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px'>Primary residence</td><td style='padding:4px 8px;text-align:right'>~$368,000 value</td><td style='padding:4px 8px'>$148K mortgage, ~$220K equity</td></tr><tr><td style='padding:4px 8px'>Life insurance</td><td style='padding:4px 8px;text-align:right'>$50,000</td><td style='padding:4px 8px;color:#f87171'>Employer only — no individual policy ⚠</td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px'>Will / estate plan</td><td style='padding:4px 8px;text-align:right'>—</td><td style='padding:4px 8px;color:#f87171'>None in place ⚠</td></tr></tbody></table>"
+      },
+      {
+        "label": "Identified Risks",
+        "content_html": "<ul style='margin:0;padding-left:1.2em;line-height:1.9;font-size:0.88em'><li><strong>Allocation risk:</strong> 90% equities at 54 is too aggressive — a market downturn in the next 5 years could devastate retirement assets with insufficient time to recover</li><li><strong>Debt drag:</strong> 18–24% APR credit card debt will compound faster than almost any investment return; carrying this into retirement is a serious risk</li><li><strong>Retirement shortfall:</strong> $187K at 54 is significantly below typical benchmarks for her income level and timeline; needs accelerated contributions</li><li><strong>Insurance gap:</strong> $50K employer life insurance may evaporate at retirement; no individual coverage for income replacement or mortgage protection</li><li><strong>Estate vulnerability:</strong> No will or beneficiary review — assets could be distributed contrary to her wishes</li></ul>"
+      },
+      {
+        "label": "Priority Recommendations",
+        "content_html": "<ol style='margin:0;padding-left:1.4em;line-height:1.9;font-size:0.88em'><li><strong>Rebalance 403(b)</strong> — shift toward age-appropriate allocation (e.g., 60/40 or target-date fund)</li><li><strong>Aggressive debt paydown</strong> — avalanche method on the highest-APR card first; consider a balance transfer to lower-rate card</li><li><strong>Increase retirement contributions</strong> — maximize catch-up contributions (age 50+ eligible)</li><li><strong>Insurance review</strong> — quote individual term or permanent life policy before retirement</li><li><strong>Estate planning</strong> — will, healthcare proxy, beneficiary designations</li></ol>"
+      }
+    ]
+  },
+  "format_guide": {
+    "name": "Client Situation Summary",
+    "sections": [
+      {
+        "label": "Who",
+        "prompt": "Who is the client? Name, age, profession, how far from retirement?"
+      },
+      {
+        "label": "Financial Snapshot",
+        "prompt": "Key numbers: retirement savings, debt, emergency fund, real estate, insurance."
+      },
+      {
+        "label": "Risks / Gaps",
+        "prompt": "What are the major concerns you've identified? Be specific — name the issue and why it matters."
+      },
+      {
+        "label": "Priority Recommendations",
+        "prompt": "What should the senior advisor focus on first? Give at least 2 concrete next steps."
+      }
+    ]
+  },
+  "required_elements": [
+    {
+      "id": "client_id",
+      "label": "Client identification and retirement timeline",
+      "keywords": ["Sandra", "Reyes", "54", "11 years", "teacher", "retire", "retirement"],
+      "teaching_point": "Name, age, occupation, and retirement timeline belong in the first sentence. 'Sandra Reyes, 54-year-old teacher, 11 years from retirement' gives the senior advisor the lens through which to evaluate everything else you're about to say."
+    },
+    {
+      "id": "retirement_savings",
+      "label": "Retirement savings and allocation concern",
+      "keywords": ["187", "403b", "403(b)", "equities", "aggressive", "90%", "90 percent", "allocation"],
+      "teaching_point": "The dollar amount and the allocation are both critical. $187K alone sounds okay; $187K in 90% equities at 54 is a risk flag. The senior advisor needs both data points — the number and the context — to understand the urgency of a rebalance conversation."
+    },
+    {
+      "id": "debt",
+      "label": "Credit card debt amount and APR",
+      "keywords": ["34K", "$34", "credit card", "APR", "18", "24", "high interest", "interest rate", "debt"],
+      "teaching_point": "High-interest debt is often the highest-priority financial issue — it compounds at 18–24% while investments rarely earn that reliably. Naming the amount and the APR together conveys the urgency. 'She's carrying $34K in credit card debt at up to 24% APR' is a sentence that creates urgency."
+    },
+    {
+      "id": "emergency_fund",
+      "label": "Emergency fund status",
+      "keywords": ["12K", "$12", "emergency fund", "3 months", "three months", "reserves"],
+      "teaching_point": "Three months of reserves at 54 is thin — especially with high-interest debt and an underfunded retirement. Acknowledging the emergency fund status shows comprehensive review; it's easy to overlook the positives and the gaps that aren't dramatic but still matter."
+    },
+    {
+      "id": "real_estate_insurance",
+      "label": "Home equity and insurance gap",
+      "keywords": ["148K", "$148", "mortgage", "equity", "220K", "$220", "life insurance", "50K", "$50", "employer"],
+      "teaching_point": "Home equity ($220K) is her largest asset and worth noting as a potential retirement resource. The $50K employer life insurance is a significant gap — it disappears at retirement and likely doesn't cover income replacement or the mortgage. Both belong in the snapshot."
+    },
+    {
+      "id": "priority_recommendations",
+      "label": "Priority recommendations (at least 2 concrete steps)",
+      "keywords": ["rebalance", "debt paydown", "debt pay", "insurance", "estate", "will", "contributions", "catch-up", "allocation"],
+      "teaching_point": "Ending with concrete next steps is what separates a summary from an analysis. 'Rebalance the 403(b) and attack the credit card debt first' gives the senior advisor an agenda for the first client meeting. Vague recommendations like 'review her situation' don't help anyone take action."
+    }
+  ],
+  "performance_labels": [
+    { "min_pct": 90, "label": "Exemplary", "description": "All key numbers cited. Allocation risk, debt APR, and insurance gap all flagged. At least 2 priority recommendations with rationale. Senior advisor can walk into the client meeting prepared." },
+    { "min_pct": 75, "label": "Proficient", "description": "Strong overview with most key figures. May be missing one data point (e.g., APR not mentioned, or estate planning gap skipped)." },
+    { "min_pct": 60, "label": "Developing", "description": "Covers client ID and retirement savings but missing debt detail or recommendations are vague. Senior advisor would need to re-review the file." },
+    { "min_pct": 40, "label": "Beginning", "description": "Some figures mentioned but no risk framing. Reads like a recitation of numbers without clinical/advisory judgment." },
+    { "min_pct": 0,  "label": "Insufficient", "description": "Summary does not give the senior advisor enough to proceed with the client relationship." }
+  ]
+}

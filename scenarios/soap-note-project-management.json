@@ -1,0 +1,105 @@
+{
+  "construct_name": "Soap Note: PM Verbal Status Briefing",
+  "construct_description": "Give a structured verbal project status briefing to a VP who has 3 minutes. Demonstrate use of SBAR format — Situation, Background, Assessment, Recommendation — to communicate project health, root cause, and a clear path forward.",
+  "handoff_format": "SBAR Briefing",
+  "scene": {
+    "icon": "📊",
+    "title": "Horizon CRM — VP Status Brief",
+    "context": "You are the project manager for the Horizon CRM implementation. Your VP has flagged the project on her radar and pulled you in for a quick stand-up. She has exactly 3 minutes before her next meeting. She needs to understand where things stand, how you got here, what's still at risk, and what you need from her. Use SBAR format to make the most of the time.",
+    "urgency_label": "3-minute VP briefing — decision needed",
+    "reference_sections": [
+      {
+        "label": "Project Overview",
+        "content_html": "<table style='width:100%;border-collapse:collapse;font-size:0.88em'><tbody><tr><td style='padding:4px 8px;font-weight:600'>Project</td><td style='padding:4px 8px'>Horizon CRM Implementation</td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px;font-weight:600'>Go-Live</td><td style='padding:4px 8px'>6 weeks from today</td></tr><tr><td style='padding:4px 8px;font-weight:600'>Schedule Status</td><td style='padding:4px 8px'><span style='color:#f87171;font-weight:600'>3 weeks behind</span> (recovered 1 wk via OT)</td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px;font-weight:600'>Budget Status</td><td style='padding:4px 8px'><span style='color:#f87171;font-weight:600'>$40K over budget</span></td></tr><tr><td style='padding:4px 8px;font-weight:600'>Overall RAG</td><td style='padding:4px 8px'><span style='color:#f87171;font-weight:600'>🔴 Red</span></td></tr></tbody></table>"
+      },
+      {
+        "label": "Root Cause",
+        "content_html": "<p><strong>Vendor delivered API documentation late</strong></p><ul style='margin:4px 0;padding-left:1.2em;line-height:1.7'><li>Contract required delivery by <strong>Week 2</strong></li><li>Actual delivery: <strong>Week 4</strong> — 2 weeks late</li><li>Blocked integration team from starting on time</li><li>Cascading delay across payment integration and data migration workstreams</li></ul><p style='font-size:0.85em;color:rgba(242,233,216,0.6);margin-top:6px'>1 week recovered via team overtime. Net exposure: 2 weeks.</p>"
+      },
+      {
+        "label": "Feature Status",
+        "content_html": "<table style='width:100%;border-collapse:collapse;font-size:0.88em'><thead><tr><th style='text-align:left;padding:4px 8px;border-bottom:1px solid rgba(242,233,216,0.15)'>Feature</th><th style='text-align:left;padding:4px 8px;border-bottom:1px solid rgba(242,233,216,0.15)'>Status</th></tr></thead><tbody><tr><td style='padding:4px 8px'>Core CRM modules (3)</td><td style='padding:4px 8px'><span style='color:#4ade80'>✓ Complete</span></td></tr><tr style='background:rgba(242,233,216,0.04)'><td style='padding:4px 8px'>Payment integration</td><td style='padding:4px 8px'><span style='color:#f87171'>⚠ At risk</span></td></tr><tr><td style='padding:4px 8px'>Data migration</td><td style='padding:4px 8px'><span style='color:#f87171'>⚠ At risk</span></td></tr></tbody></table>"
+      },
+      {
+        "label": "Options on the Table",
+        "content_html": "<ol style='margin:0;padding-left:1.4em;line-height:1.9'><li><strong>Scope reduction</strong> — defer payment integration to v1.1; hit original go-live date without it</li><li><strong>Timeline extension</strong> — push go-live 3 weeks; ship everything as planned</li><li><strong>Contract integrator</strong> — bring in specialist at <strong>$25K</strong>; could recover ~2 weeks; still may need 1-week extension</li></ol>"
+      },
+      {
+        "label": "What You Need from the VP",
+        "content_html": "<ul style='margin:0;padding-left:1.2em;line-height:1.7'><li>Decision on which path forward to pursue</li><li>Budget approval if contractor option is selected (+$25K)</li><li>Air cover with the vendor (contract breach discussion)</li><li>Stakeholder alignment message to business units on timeline shift (if applicable)</li></ul>"
+      }
+    ]
+  },
+  "format_guide": {
+    "name": "SBAR",
+    "sections": [
+      {
+        "label": "Situation",
+        "prompt": "What project, what is the current status in one sentence?"
+      },
+      {
+        "label": "Background",
+        "prompt": "What caused this? Give the root cause and how you got here."
+      },
+      {
+        "label": "Assessment",
+        "prompt": "Where do things stand right now? What is still at risk? Numbers matter here."
+      },
+      {
+        "label": "Recommendation",
+        "prompt": "What are the options? Which do you recommend? What do you need from the VP?"
+      }
+    ]
+  },
+  "required_elements": [
+    {
+      "id": "project_situation",
+      "label": "Project name and current status",
+      "keywords": ["Horizon", "CRM", "behind", "over budget", "schedule", "delayed"],
+      "teaching_point": "Name the project and lead with status. 'Horizon CRM is currently behind schedule and over budget' orients the VP in the first sentence — she should never have to ask what you're talking about."
+    },
+    {
+      "id": "root_cause",
+      "label": "Root cause (vendor / API docs)",
+      "keywords": ["vendor", "API", "documentation", "docs", "late", "delayed delivery", "week 2", "week 4"],
+      "teaching_point": "Executives want to know why. 'The vendor delivered API documentation two weeks late against contract' is a complete root cause in one sentence. It also signals you have a vendor accountability issue worth escalating."
+    },
+    {
+      "id": "schedule_gap",
+      "label": "Schedule gap and recovery status",
+      "keywords": ["3 weeks", "three weeks", "behind", "recovered", "1 week", "one week", "overtime", "OT"],
+      "teaching_point": "Quantify the gap and what the team has already done. '3 weeks behind, recovered 1 through overtime, net 2 weeks exposed' shows both the problem and your team's initiative — and tells the VP what's still unresolved."
+    },
+    {
+      "id": "budget",
+      "label": "Budget overrun",
+      "keywords": ["40K", "$40", "over budget", "budget", "cost overrun"],
+      "teaching_point": "Budget impacts require explicit mention — VPs track financial exposure closely. '$40K over budget' is specific and actionable. Vague language like 'some cost pressure' undersells the seriousness."
+    },
+    {
+      "id": "risk_items",
+      "label": "At-risk deliverables",
+      "keywords": ["payment integration", "payment", "data migration", "migration", "at risk", "incomplete"],
+      "teaching_point": "Name what's still in jeopardy. Payment integration and data migration are the unfinished items — saying so specifically tells the VP what stakeholders will be impacted if you don't course-correct."
+    },
+    {
+      "id": "options_recommendation",
+      "label": "Options and/or recommendation",
+      "keywords": ["scope", "defer", "extension", "contractor", "contract integrator", "25K", "$25", "v1.1", "option"],
+      "teaching_point": "Don't just report problems — bring solutions. Presenting 2–3 concrete options (scope reduction, extension, contractor) positions you as a leader, not just a reporter. Even better: state your recommendation clearly."
+    },
+    {
+      "id": "ask",
+      "label": "Clear ask to the VP",
+      "keywords": ["decision", "need", "approve", "approval", "support", "direction", "asking", "request"],
+      "teaching_point": "End with the ask. 'I need a decision by EOD Thursday' or 'I need your approval on the contractor option' makes the VP's role clear. A briefing without an ask is just a status update — a briefing with an ask is a leadership tool."
+    }
+  ],
+  "performance_labels": [
+    { "min_pct": 90, "label": "Exemplary", "description": "Crisp SBAR delivery. Numbers cited accurately. Options presented. Clear ask made. VP has everything to decide." },
+    { "min_pct": 75, "label": "Proficient", "description": "Strong overview with most key elements. May be missing a concrete ask or one specific data point." },
+    { "min_pct": 60, "label": "Developing", "description": "Covers situation and background but assessment is thin or no recommendation offered. VP would need to ask follow-up questions." },
+    { "min_pct": 40, "label": "Beginning", "description": "Communicates distress without structure. Missing root cause, numbers, or path forward." },
+    { "min_pct": 0,  "label": "Insufficient", "description": "Does not give the VP enough to understand the situation or make a decision." }
+  ]
+}
