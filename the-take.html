@@ -975,7 +975,7 @@ function renderInfoDrawer() {
     <h4>Memo Structure</h4>
     <ul>${SECTIONS.map(s => `<li><strong>${esc(s.label)}</strong> — ${esc(s.hint)}</li>`).join('')}</ul>
     <h4>Tips</h4>
-    <ul>${PACK.coaching_tips.slice(0, 3).map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+    <ul>${(PACK.coaching_tips || []).slice(0, 3).map(t => `<li>${esc(t)}</li>`).join('')}</ul>
   `;
   const _jsonStr = JSON.stringify(PACK, null, 2).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   document.getElementById('info-body').innerHTML = `<div class="info-tabs"><button class="info-tab active" onclick="switchInfoTab('overview',this)">Overview</button><button class="info-tab" onclick="switchInfoTab('json',this)">Construct JSON</button></div><div class="info-tab-pane active" id="info-pane-overview">${_overview}</div><div class="info-tab-pane" id="info-pane-json"><pre class="json-viewer">${_jsonStr}</pre></div>`;
@@ -1389,7 +1389,7 @@ function init() {
   </div>
 </div>
 
-<div class="version-badge">v1.101</div>
+<div class="version-badge">v1.102</div>
 <script src="feedback.js"></script>
 </body>
 </html>
