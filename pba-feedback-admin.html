@@ -3,345 +3,500 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Feedback Admin — PBA Showcase</title>
+<title>Admin — PBA Showcase</title>
 <style>
   :root {
-    --bg: #1a212b;
-    --surface: #242e3d;
-    --accent: #4dd3fe;
-    --text: #f2e9d8;
-    --border: rgba(242,233,216,0.08);
-    --border-strong: rgba(242,233,216,0.15);
+    --bg: #1a212b; --surface: #242e3d; --surface2: #2d3a4f;
+    --accent: #4dd3fe; --text: #f2e9d8;
+    --border: rgba(242,233,216,0.08); --border-strong: rgba(242,233,216,0.15);
     --muted: rgba(242,233,216,0.45);
+    --cat1: #4dd3fe; --cat3: #f59e0b; --cat4: #9e9eff; --cat6: #e879f9; --cat7: #468254;
+    --ok: #22c55e; --warn: #f59e0b; --na: #4b5563;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', system-ui, sans-serif;
-    font-size: 14px;
-    min-height: 100vh;
-    padding: 32px 24px;
-  }
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  header h1 {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--accent);
-  }
-  header .back-link {
-    font-size: 13px;
-    color: var(--muted);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  header .back-link:hover { color: var(--text); }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 14px; min-height: 100vh; }
 
-  .stats-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 24px;
+  /* ── Header ── */
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 28px; border-bottom: 1px solid var(--border);
+    flex-wrap: wrap; gap: 12px; background: var(--surface);
   }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 20px;
-    min-width: 130px;
-    flex: 1;
-  }
-  .stat-card .stat-val {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--accent);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .stat-card .stat-label {
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
+  .page-header h1 { font-size: 20px; font-weight: 700; color: var(--accent); }
+  .page-header .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .back-link { font-size: 13px; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 5px; }
+  .back-link:hover { color: var(--text); }
 
-  .filters {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-    align-items: center;
+  /* ── Tabs ── */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); padding: 0 28px; background: var(--surface); }
+  .tab-btn {
+    padding: 12px 20px; font-family: inherit; font-size: 13px; font-weight: 600;
+    background: none; border: none; cursor: pointer; color: var(--muted);
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
   }
-  .filters select, .filters input {
-    padding: 8px 12px;
-    background: var(--surface);
-    border: 1px solid var(--border-strong);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: inherit;
-    font-size: 13px;
-    outline: none;
-  }
-  .filters select:focus, .filters input:focus {
-    border-color: rgba(77,211,254,0.4);
-  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-panel { display: none; padding: 28px; }
+  .tab-panel.active { display: block; }
+
+  /* ── Stats ── */
+  .stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; min-width: 130px; flex: 1; }
+  .stat-card .stat-val { font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .stat-card .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* ── Filters ── */
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+  .filters select { padding: 8px 12px; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 13px; outline: none; }
+  .filters select:focus { border-color: rgba(77,211,254,0.4); }
   .filters select option { background: #1a212b; }
   .filters label { font-size: 12px; color: var(--muted); }
-  #refresh-btn {
-    padding: 8px 16px;
-    background: rgba(77,211,254,0.1);
-    border: 1px solid rgba(77,211,254,0.25);
-    border-radius: 8px;
-    color: var(--accent);
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
+  #refresh-btn { padding: 8px 16px; background: rgba(77,211,254,0.1); border: 1px solid rgba(77,211,254,0.25); border-radius: 8px; color: var(--accent); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   #refresh-btn:hover { background: rgba(77,211,254,0.18); }
 
-  #entries-grid {
-    display: grid;
-    gap: 10px;
-  }
-
-  .entry-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-    display: grid;
-    grid-template-columns: 60px 1fr auto;
-    gap: 12px;
-    align-items: start;
-    transition: border-color 0.15s;
-  }
+  /* ── Feedback entries ── */
+  #entries-grid { display: grid; gap: 10px; }
+  .entry-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; display: grid; grid-template-columns: 60px 1fr auto; gap: 12px; align-items: start; }
   .entry-card:hover { border-color: var(--border-strong); }
-
-  .entry-emoji {
-    font-size: 36px;
-    text-align: center;
-    line-height: 1.1;
-  }
-  .entry-emoji .emoji-label {
-    display: block;
-    font-size: 10px;
-    color: var(--muted);
-    text-align: center;
-    margin-top: 2px;
-  }
-
-  .entry-body .page-name {
-    font-weight: 600;
-    font-size: 13px;
-    color: var(--accent);
-    margin-bottom: 4px;
-  }
-  .entry-body .comment {
-    font-size: 13px;
-    color: var(--text);
-    line-height: 1.5;
-    margin-bottom: 6px;
-  }
-  .entry-body .comment.empty {
-    color: var(--muted);
-    font-style: italic;
-  }
-  .entry-meta {
-    font-size: 11px;
-    color: var(--muted);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .entry-meta span {
-    background: rgba(242,233,216,0.06);
-    border-radius: 4px;
-    padding: 2px 7px;
-  }
-
-  .entry-time {
-    font-size: 11px;
-    color: var(--muted);
-    white-space: nowrap;
-    text-align: right;
-  }
-
-  #loading {
-    text-align: center;
-    padding: 60px;
-    color: var(--muted);
-    font-size: 15px;
-  }
-  #empty {
-    display: none;
-    text-align: center;
-    padding: 60px;
-    color: var(--muted);
-  }
+  .entry-emoji { font-size: 36px; text-align: center; line-height: 1.1; }
+  .entry-emoji .emoji-label { display: block; font-size: 10px; color: var(--muted); text-align: center; margin-top: 2px; }
+  .entry-body .page-name { font-weight: 600; font-size: 13px; color: var(--accent); margin-bottom: 4px; }
+  .entry-body .comment { font-size: 13px; color: var(--text); line-height: 1.5; margin-bottom: 6px; }
+  .entry-body .comment.empty { color: var(--muted); font-style: italic; }
+  .entry-meta { font-size: 11px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px; }
+  .entry-meta span { background: rgba(242,233,216,0.06); border-radius: 4px; padding: 2px 7px; }
+  .entry-time { font-size: 11px; color: var(--muted); white-space: nowrap; text-align: right; }
+  #loading { text-align: center; padding: 60px; color: var(--muted); font-size: 15px; }
+  #empty { display: none; text-align: center; padding: 60px; color: var(--muted); }
   #empty .big { font-size: 42px; margin-bottom: 12px; }
-  #error-msg {
-    display: none;
-    background: rgba(239,68,68,0.12);
-    border: 1px solid rgba(239,68,68,0.25);
-    border-radius: 8px;
-    padding: 14px 18px;
-    color: #fca5a5;
-    margin-bottom: 20px;
+  #error-msg { display: none; background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25); border-radius: 8px; padding: 14px 18px; color: #fca5a5; margin-bottom: 20px; }
+
+  /* ── Coverage Map ── */
+  .map-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 16px; flex-wrap: wrap; }
+  .map-header h2 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+  .map-header p { font-size: 13px; color: var(--muted); line-height: 1.5; max-width: 600px; }
+
+  .coverage-stats { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .cov-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; font-size: 12px; }
+  .cov-stat strong { color: var(--accent); font-size: 20px; display: block; font-weight: 700; line-height: 1.2; }
+
+  .map-table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 32px; }
+  table.coverage-matrix { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .coverage-matrix th, .coverage-matrix td { padding: 10px 12px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); text-align: left; }
+  .coverage-matrix th:last-child, .coverage-matrix td:last-child { border-right: none; }
+  .coverage-matrix tr:last-child td { border-bottom: none; }
+  .coverage-matrix thead th { background: var(--surface2); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); white-space: nowrap; }
+  .coverage-matrix thead th.construct-header { text-align: center; }
+  .coverage-matrix tbody tr:hover td { background: rgba(255,255,255,0.02); }
+  .task-cell { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+  .task-icon { font-size: 14px; }
+  .task-name { font-weight: 600; color: var(--text); }
+  .task-shell { font-size: 10px; color: var(--muted); }
+
+  .scenario-cell { text-align: center; vertical-align: top; }
+  .scenario-list { display: flex; flex-direction: column; gap: 4px; align-items: center; }
+  .scenario-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(34,197,94,0.1); color: var(--ok);
+    border: 1px solid rgba(34,197,94,0.2); border-radius: 5px;
+    font-size: 10px; font-weight: 600; padding: 3px 8px;
+    text-decoration: none; white-space: nowrap;
+    transition: background 0.15s;
   }
+  .scenario-chip:hover { background: rgba(34,197,94,0.2); }
+  .scenario-chip.v2 { background: rgba(77,211,254,0.1); color: var(--accent); border-color: rgba(77,211,254,0.2); }
+  .scenario-chip.v2:hover { background: rgba(77,211,254,0.2); }
+  .na-cell { color: var(--na); font-size: 11px; text-align: center; }
+  .add-chip {
+    display: inline-flex; align-items: center; gap: 3px;
+    color: var(--muted); font-size: 10px; cursor: default;
+    border: 1px dashed rgba(242,233,216,0.15); border-radius: 5px;
+    padding: 3px 8px; opacity: 0.6;
+  }
+
+  .cat-badge {
+    display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+    margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .cat-1 { background: rgba(77,211,254,0.12); color: var(--cat1); }
+  .cat-3 { background: rgba(245,158,11,0.12); color: var(--cat3); }
+  .cat-4 { background: rgba(158,158,255,0.12); color: var(--cat4); }
+  .cat-6 { background: rgba(232,121,249,0.12); color: var(--cat6); }
+  .cat-7 { background: rgba(70,130,84,0.12); color: var(--cat7); }
+
+  /* ── Multi-scenario design note ── */
+  .design-note {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px 24px; margin-bottom: 24px;
+  }
+  .design-note h3 { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .design-note p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+  .design-note code { background: rgba(77,211,254,0.08); border: 1px solid rgba(77,211,254,0.15); border-radius: 4px; padding: 1px 6px; font-size: 12px; color: var(--accent); font-family: 'Courier New', monospace; }
+  .design-note pre { background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-size: 11px; color: var(--text); font-family: 'Courier New', monospace; overflow-x: auto; line-height: 1.6; }
+  .design-note .step { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+  .design-note .step-num { background: rgba(77,211,254,0.1); color: var(--accent); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .design-note .step-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .design-note .step-text strong { color: var(--text); }
 </style>
 </head>
 <body>
-<header>
+
+<div class="page-header">
   <div>
-    <h1>Feedback Admin</h1>
-    <div style="font-size:12px;color:var(--muted);margin-top:3px;">PBA Showcase — response viewer</div>
+    <h1>PBA Showcase Admin</h1>
+    <div class="sub">Feedback responses · Task/scenario coverage map</div>
   </div>
   <a href="/" class="back-link">
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     Back to showcase
   </a>
-</header>
-
-<div id="error-msg"></div>
-
-<div class="stats-row" id="stats-row">
-  <div class="stat-card"><div class="stat-val" id="stat-total">—</div><div class="stat-label">Total responses</div></div>
-  <div class="stat-card"><div class="stat-val" id="stat-avg">—</div><div class="stat-label">Avg. rating</div></div>
-  <div class="stat-card"><div class="stat-val" id="stat-pages">—</div><div class="stat-label">Pages covered</div></div>
-  <div class="stat-card"><div class="stat-val" id="stat-comments">—</div><div class="stat-label">With comments</div></div>
 </div>
 
-<div class="filters">
-  <label>Filter by page:</label>
-  <select id="filter-page"><option value="">All pages</option></select>
-  <label>Min rating:</label>
-  <select id="filter-rating">
-    <option value="0">All ratings</option>
-    <option value="3">3+ (Good)</option>
-    <option value="4">4+ (Nice)</option>
-    <option value="5">5 (Wow only)</option>
-  </select>
-  <button id="refresh-btn">↻ Refresh</button>
-  <span id="count-label" style="font-size:12px;color:var(--muted);margin-left:4px;"></span>
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('feedback', this)">📊 Feedback</button>
+  <button class="tab-btn" onclick="switchTab('coverage', this)">🗺 Coverage Map</button>
 </div>
 
-<div id="loading">Loading feedback…</div>
-<div id="empty"><div class="big">💬</div>No feedback yet — share the prototypes!</div>
-<div id="entries-grid"></div>
+<!-- ── Feedback Tab ── -->
+<div class="tab-panel active" id="tab-feedback">
+  <div id="error-msg"></div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-val" id="stat-total">—</div><div class="stat-label">Total responses</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-avg">—</div><div class="stat-label">Avg. rating</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-pages">—</div><div class="stat-label">Pages covered</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-comments">—</div><div class="stat-label">With comments</div></div>
+  </div>
+  <div class="filters">
+    <label>Filter by page:</label>
+    <select id="filter-page"><option value="">All pages</option></select>
+    <label>Min rating:</label>
+    <select id="filter-rating">
+      <option value="0">All ratings</option>
+      <option value="3">3+ (Good)</option>
+      <option value="4">4+ (Nice)</option>
+      <option value="5">5 (Wow only)</option>
+    </select>
+    <button id="refresh-btn" onclick="load()">↻ Refresh</button>
+    <span id="count-label" style="font-size:12px;color:var(--muted);margin-left:4px;"></span>
+  </div>
+  <div id="loading">Loading feedback…</div>
+  <div id="empty"><div class="big">💬</div>No feedback yet — share the prototypes!</div>
+  <div id="entries-grid"></div>
+</div>
+
+<!-- ── Coverage Map Tab ── -->
+<div class="tab-panel" id="tab-coverage">
+
+  <div class="map-header">
+    <div>
+      <h2>Task Shell × Scenario Coverage</h2>
+      <p>Every cell is a (task shell, construct) pair. Green chips are built scenarios — click to open. Dashed chips are build opportunities. Gray cells are intentional N/A.</p>
+    </div>
+  </div>
+
+  <div class="coverage-stats" id="cov-stats"></div>
+
+  <div class="map-table-wrap">
+    <table class="coverage-matrix" id="coverage-table"></table>
+  </div>
+
+  <!-- Multi-scenario design note -->
+  <div class="design-note">
+    <h3>📐 Adding a second scenario to an existing task+construct slot</h3>
+    <p>The scenario map below is structured as arrays — each slot can hold multiple scenario files. When a slot has more than one, the hub card should offer a version selector. Here's how to extend:</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text"><strong>Create the new scenario JSON</strong> — e.g. <code>scenarios/the-brief-project-management-v2.json</code> with adjusted weightings or a different case study. Follow the existing schema for that task type.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text"><strong>Add it to the SCENARIO_MAP in this file</strong> — append to the array for that task+construct pair. The coverage matrix will automatically show both chips.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text"><strong>Update TASK_CONSTRUCT_MAP in index.html</strong> — change the single <code>scenario: '...'</code> value to an array, and add a version-selector UI to the card (or use URL params to let the user pick at launch).</div>
+    </div>
+
+    <p style="margin-top:4px">The simplest hub UI for version selection: a small <code>v1 · v2</code> toggle appended to the card footer, where each version links to the shell with <code>?scenario=...</code>. No changes to the task shell itself are needed.</p>
+
+    <pre>// index.html — multi-scenario slot example
+'project-management': {
+  'the-brief': [
+    { scenario: 'scenarios/the-brief-project-management.json',    label: 'v1 — Project Recovery',  dims: [...] },
+    { scenario: 'scenarios/the-brief-project-management-v2.json', label: 'v2 — Scope Trade-offs',  dims: [...] }
+  ]
+}</pre>
+  </div>
+</div>
 
 <script>
-  let allEntries = [];
+/* ─────────────────────────────────────────────────────
+   SCENARIO MAP
+   Each slot is an array — supports multiple scenarios
+   per task+construct pair for future extensibility.
+   { file, label, notes }
+───────────────────────────────────────────────────── */
+const CONSTRUCTS = [
+  { id: 'ai-literacy',        label: '🤖 AI Literacy' },
+  { id: 'financial-literacy', label: '💰 Financial Literacy' },
+  { id: 'project-management', label: '📋 Project Management' },
+  { id: 'emt',                label: '🚑 EMT / Paramedic' },
+  { id: 'pharmacy-tech',      label: '💊 Pharmacy Tech' },
+];
 
-  async function load() {
-    document.getElementById('loading').style.display = '';
-    document.getElementById('empty').style.display = 'none';
-    document.getElementById('entries-grid').innerHTML = '';
-    document.getElementById('error-msg').style.display = 'none';
-
-    try {
-      const res = await fetch('/api/feedback-list');
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      allEntries = data.entries || [];
-      populatePageFilter();
-      updateStats(allEntries);
-      render();
-    } catch (err) {
-      const el = document.getElementById('error-msg');
-      el.style.display = '';
-      el.textContent = `Could not load feedback: ${err.message}. Make sure FEEDBACK_KV is bound in Cloudflare Pages settings.`;
-      document.getElementById('loading').style.display = 'none';
+const TASKS = [
+  {
+    id: 'signal-check', label: 'Signal Check', icon: '💬', shell: 'signal-check.html',
+    cat: 4,
+    scenarios: {
+      'ai-literacy':        [{ file: 'scenarios/signal-check-ai-literacy.json',       label: 'AI Literacy' }],
+      'financial-literacy': [{ file: 'scenarios/signal-check-financial-literacy.json', label: 'Financial Literacy' }],
+      'project-management': [{ file: 'scenarios/signal-check-project-management.json', label: 'Project Management' }],
+      'emt':                [{ file: 'scenarios/signal-check-emt.json',                label: 'EMT Clinical Knowledge' }],
+      'pharmacy-tech':      [{ file: 'scenarios/signal-check-pharmacy-tech.json',      label: 'Pharmaceutical Knowledge' }],
     }
-  }
+  },
+  {
+    id: 'the-brief', label: 'The Brief', icon: '📄', shell: 'the-brief.html',
+    cat: 7,
+    scenarios: {
+      'ai-literacy':        [{ file: 'scenarios/the-brief-critical-thinking.json',     label: 'AI Fluency' }],
+      'financial-literacy': [{ file: 'scenarios/the-brief-financial-literacy.json',    label: 'Financial Analysis' }],
+      'project-management': [{ file: 'scenarios/the-brief-project-management.json',    label: 'Project Recovery' }],
+      'emt':                [{ file: 'scenarios/the-brief-emt.json',                   label: 'EMS Protocol Analysis' }],
+      'pharmacy-tech':      [{ file: 'scenarios/the-brief-pharmacy-tech.json',         label: 'Formulary Analysis' }],
+    }
+  },
+  {
+    id: 'data-detective', label: 'Data Detective', icon: '🔍', shell: 'data-detective.html',
+    cat: 3,
+    scenarios: {
+      'ai-literacy':        null,
+      'financial-literacy': [{ file: 'scenarios/data-detective-financial-literacy.json', label: 'Financial Data Reasoning' }],
+      'project-management': [{ file: 'scenarios/data-detective-project-management.json', label: 'Project Metrics Analysis' }],
+      'emt':                [{ file: 'scenarios/data-detective-emt.json',                 label: 'EMS Operations Data' }],
+      'pharmacy-tech':      [{ file: 'scenarios/data-detective-pharmacy-tech.json',       label: 'Pharmacy Error Analysis' }],
+    }
+  },
+  {
+    id: 'the-take', label: 'The Take', icon: '✍️', shell: 'the-take.html',
+    cat: 1,
+    scenarios: {
+      'ai-literacy':        [{ file: 'scenarios/the-take-argumentation.json',          label: 'AI Policy Argumentation' }],
+      'financial-literacy': [{ file: 'scenarios/the-take-financial-literacy.json',     label: 'Financial Policy' }],
+      'project-management': null,
+      'emt':                [{ file: 'scenarios/the-take-emt.json',                    label: 'EMS Policy' }],
+      'pharmacy-tech':      [{ file: 'scenarios/the-take-pharmacy-tech.json',          label: 'Pharmacy Policy' }],
+    }
+  },
+  {
+    id: 'the-forum', label: 'The Forum', icon: '🗣️', shell: 'the-forum.html',
+    cat: 6,
+    scenarios: {
+      'ai-literacy':        [{ file: 'scenarios/the-forum-ai-literacy.json',           label: 'AI Tool Adoption' }],
+      'financial-literacy': null,
+      'project-management': [{ file: 'scenarios/the-forum-project-prioritization.json',label: 'Project Prioritization' }],
+      'emt':                [{ file: 'scenarios/the-forum-emt.json',                   label: 'EMS Team Decision' }],
+      'pharmacy-tech':      [{ file: 'scenarios/the-forum-pharmacy-tech.json',         label: 'Pharmacy Workflow' }],
+    }
+  },
+  {
+    id: 'triage-sim', label: 'Triage Sim', icon: '🚨', shell: 'triage-sim.html',
+    cat: 4,
+    scenarios: {
+      'ai-literacy':        null,
+      'financial-literacy': null,
+      'project-management': [{ file: 'scenarios/triage-sim-project-management.json',   label: 'Incident Triage (P0–P3)' }],
+      'emt':                [{ file: 'scenarios/triage-sim-emt.json',                  label: 'MCI Triage (START)' }],
+      'pharmacy-tech':      null,
+    }
+  },
+  {
+    id: 'rx-check', label: 'Rx Check', icon: '⚠️', shell: 'rx-check.html',
+    cat: 4,
+    scenarios: {
+      'ai-literacy':        null,
+      'financial-literacy': null,
+      'project-management': null,
+      'emt':                null,
+      'pharmacy-tech':      [{ file: 'scenarios/rx-check-pharmacy-tech.json',          label: 'Drug Interaction Screening' }],
+    }
+  },
+  {
+    id: 'rx-verify', label: 'Rx Verify', icon: '📋', shell: 'rx-verify.html',
+    cat: 4,
+    scenarios: {
+      'ai-literacy':        null,
+      'financial-literacy': null,
+      'project-management': null,
+      'emt':                null,
+      'pharmacy-tech':      [{ file: 'scenarios/rx-verify-pharmacy-tech.json',         label: 'Prescription Verification' }],
+    }
+  },
+  {
+    id: 'soap-note', label: 'Verbal Handoff', icon: '🎙️', shell: 'soap-note.html',
+    cat: 4,
+    scenarios: {
+      'ai-literacy':        null,
+      'financial-literacy': [{ file: 'scenarios/soap-note-financial-literacy.json',    label: 'Client Situation Summary' }],
+      'project-management': [{ file: 'scenarios/soap-note-project-management.json',    label: 'SBAR Status Briefing' }],
+      'emt':                [{ file: 'scenarios/soap-note-emt.json',                   label: 'EMS Patient Handoff' }],
+      'pharmacy-tech':      [{ file: 'scenarios/soap-note-pharmacy-tech.json',         label: 'Medication Escalation' }],
+    }
+  },
+];
 
-  function populatePageFilter() {
-    const pages = [...new Set(allEntries.map(e => e.page))].sort();
-    const sel = document.getElementById('filter-page');
-    sel.innerHTML = '<option value="">All pages</option>';
-    pages.forEach(p => {
-      const o = document.createElement('option');
-      o.value = p; o.textContent = p;
-      sel.appendChild(o);
+const CAT_LABELS = { 1: 'Cat 1', 3: 'Cat 3', 4: 'Cat 4', 6: 'Cat 6', 7: 'Cat 7' };
+const CAT_CLASS  = { 1: 'cat-1', 3: 'cat-3', 4: 'cat-4', 6: 'cat-6', 7: 'cat-7' };
+
+/* ── Tab switching ── */
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+/* ── Build coverage table ── */
+function buildCoverageMap() {
+  let totalPossible = 0, totalBuilt = 0, totalGaps = 0;
+
+  const table = document.getElementById('coverage-table');
+  let html = '<thead><tr><th>Task Shell</th>';
+  CONSTRUCTS.forEach(c => { html += `<th class="construct-header">${c.label}</th>`; });
+  html += '</tr></thead><tbody>';
+
+  TASKS.forEach(task => {
+    html += `<tr>
+      <td>
+        <div class="task-cell">
+          <span class="task-icon">${task.icon}</span>
+          <div>
+            <div class="task-name">${task.label}</div>
+            <div class="task-shell">${task.shell}</div>
+            <span class="cat-badge ${CAT_CLASS[task.cat]}">${CAT_LABELS[task.cat]}</span>
+          </div>
+        </div>
+      </td>`;
+
+    CONSTRUCTS.forEach(c => {
+      const slot = task.scenarios[c.id];
+      if (slot === null || slot === undefined) {
+        // Intentional N/A
+        html += `<td class="scenario-cell"><span class="na-cell">—</span></td>`;
+      } else if (Array.isArray(slot) && slot.length > 0) {
+        totalPossible++; totalBuilt++;
+        html += `<td class="scenario-cell"><div class="scenario-list">`;
+        slot.forEach((s, i) => {
+          const cls = i === 0 ? 'scenario-chip' : 'scenario-chip v2';
+          const vLabel = slot.length > 1 ? ` (v${i+1})` : '';
+          html += `<a class="${cls}" href="${task.shell}?scenario=${s.file}" target="_blank" title="${s.file}">✓ ${s.label}${vLabel}</a>`;
+        });
+        html += `<span class="add-chip" title="Add another scenario for this slot">+ add</span>`;
+        html += `</div></td>`;
+      } else {
+        // Possible but not yet built
+        totalPossible++;
+        html += `<td class="scenario-cell"><span class="add-chip" title="Scenario not yet built">＋ build</span></td>`;
+        totalGaps++;
+      }
     });
-  }
+    html += '</tr>';
+  });
 
-  function updateStats(entries) {
-    document.getElementById('stat-total').textContent = entries.length;
-    const avg = entries.length
-      ? (entries.reduce((s, e) => s + (e.emojiValue || 0), 0) / entries.length).toFixed(1)
-      : '—';
-    document.getElementById('stat-avg').textContent = avg;
-    document.getElementById('stat-pages').textContent = new Set(entries.map(e => e.page)).size;
-    document.getElementById('stat-comments').textContent = entries.filter(e => e.comment?.trim()).length;
-  }
+  html += '</tbody>';
+  table.innerHTML = html;
 
-  function render() {
-    const pageFlt = document.getElementById('filter-page').value;
-    const ratingFlt = parseInt(document.getElementById('filter-rating').value) || 0;
+  // Coverage stats
+  const statsEl = document.getElementById('cov-stats');
+  statsEl.innerHTML = `
+    <div class="cov-stat"><strong>${TASKS.length}</strong>Task shells</div>
+    <div class="cov-stat"><strong>${CONSTRUCTS.length}</strong>Constructs</div>
+    <div class="cov-stat"><strong>${totalBuilt}</strong>Scenarios built</div>
+    <div class="cov-stat"><strong style="color:var(--warn)">${totalGaps}</strong>Build opportunities</div>
+    <div class="cov-stat"><strong>${Math.round(totalBuilt/totalPossible*100)}%</strong>Coverage</div>`;
+}
 
-    const filtered = allEntries.filter(e => {
-      if (pageFlt && e.page !== pageFlt) return false;
-      if (ratingFlt && (e.emojiValue || 0) < ratingFlt) return false;
-      return true;
-    });
+/* ── Feedback logic ── */
+let allEntries = [];
 
+async function load() {
+  document.getElementById('loading').style.display = '';
+  document.getElementById('empty').style.display = 'none';
+  document.getElementById('entries-grid').innerHTML = '';
+  document.getElementById('error-msg').style.display = 'none';
+  try {
+    const res = await fetch('/api/feedback-list');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    allEntries = data.entries || [];
+    populatePageFilter();
+    updateStats(allEntries);
+    render();
+  } catch (err) {
+    const el = document.getElementById('error-msg');
+    el.style.display = '';
+    el.textContent = `Could not load feedback: ${err.message}. Make sure FEEDBACK_KV is bound in Cloudflare Pages settings.`;
     document.getElementById('loading').style.display = 'none';
-    document.getElementById('count-label').textContent =
-      filtered.length !== allEntries.length ? `${filtered.length} of ${allEntries.length} shown` : `${allEntries.length} responses`;
-
-    if (filtered.length === 0) {
-      document.getElementById('empty').style.display = '';
-      document.getElementById('entries-grid').innerHTML = '';
-      return;
-    }
-    document.getElementById('empty').style.display = 'none';
-
-    const grid = document.getElementById('entries-grid');
-    grid.innerHTML = filtered.map(e => {
-      const dt = new Date(e.timestamp);
-      const timeStr = dt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })
-        + ' · ' + dt.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
-      const comment = e.comment?.trim();
-      const metaTags = [
-        e.role ? e.role : null,
-      ].filter(Boolean);
-
-      return `
-        <div class="entry-card">
-          <div class="entry-emoji">
-            ${e.emoji || '?'}
-            <span class="emoji-label">${e.emojiLabel || ''}</span>
-          </div>
-          <div class="entry-body">
-            <div class="page-name">${escHtml(e.page || 'Unknown')}</div>
-            <div class="comment ${comment ? '' : 'empty'}">${comment ? escHtml(comment) : 'No comment'}</div>
-            ${metaTags.length ? `<div class="entry-meta">${metaTags.map(t => `<span>${escHtml(t)}</span>`).join('')}</div>` : ''}
-          </div>
-          <div class="entry-time">${timeStr}</div>
-        </div>`;
-    }).join('');
   }
+}
 
-  function escHtml(str) {
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+function populatePageFilter() {
+  const pages = [...new Set(allEntries.map(e => e.page))].sort();
+  const sel = document.getElementById('filter-page');
+  sel.innerHTML = '<option value="">All pages</option>';
+  pages.forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; sel.appendChild(o); });
+}
 
-  document.getElementById('filter-page').addEventListener('change', render);
-  document.getElementById('filter-rating').addEventListener('change', render);
-  document.getElementById('refresh-btn').addEventListener('click', load);
+function updateStats(entries) {
+  document.getElementById('stat-total').textContent = entries.length;
+  const avg = entries.length ? (entries.reduce((s,e) => s+(e.emojiValue||0),0)/entries.length).toFixed(1) : '—';
+  document.getElementById('stat-avg').textContent = avg;
+  document.getElementById('stat-pages').textContent = new Set(entries.map(e=>e.page)).size;
+  document.getElementById('stat-comments').textContent = entries.filter(e=>e.comment?.trim()).length;
+}
 
-  load();
+function render() {
+  const pageFlt = document.getElementById('filter-page').value;
+  const ratingFlt = parseInt(document.getElementById('filter-rating').value)||0;
+  const filtered = allEntries.filter(e => {
+    if (pageFlt && e.page !== pageFlt) return false;
+    if (ratingFlt && (e.emojiValue||0) < ratingFlt) return false;
+    return true;
+  });
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('count-label').textContent =
+    filtered.length !== allEntries.length ? `${filtered.length} of ${allEntries.length} shown` : `${allEntries.length} responses`;
+  if (filtered.length === 0) { document.getElementById('empty').style.display = ''; document.getElementById('entries-grid').innerHTML = ''; return; }
+  document.getElementById('empty').style.display = 'none';
+  const grid = document.getElementById('entries-grid');
+  grid.innerHTML = filtered.map(e => {
+    const dt = new Date(e.timestamp);
+    const timeStr = dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+dt.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    const comment = e.comment?.trim();
+    const metaTags = [e.role||null].filter(Boolean);
+    return `<div class="entry-card">
+      <div class="entry-emoji">${e.emoji||'?'}<span class="emoji-label">${e.emojiLabel||''}</span></div>
+      <div class="entry-body">
+        <div class="page-name">${escHtml(e.page||'Unknown')}</div>
+        <div class="comment ${comment?'':'empty'}">${comment?escHtml(comment):'No comment'}</div>
+        ${metaTags.length?`<div class="entry-meta">${metaTags.map(t=>`<span>${escHtml(t)}</span>`).join('')}</div>`:''}
+      </div>
+      <div class="entry-time">${timeStr}</div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+document.getElementById('filter-page').addEventListener('change', render);
+document.getElementById('filter-rating').addEventListener('change', render);
+
+// Boot
+load();
+buildCoverageMap();
 </script>
 </body>
 </html>
