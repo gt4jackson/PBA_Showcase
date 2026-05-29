@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rx Check — PBA Showcase</title>
+<style>
+:root {
+  --bg: #1a212b;
+  --surface: #242e3d;
+  --surface2: #2d3a4f;
+  --accent: #4dd3fe;
+  --text: #f2e9d8;
+  --muted: rgba(242,233,216,0.45);
+  --border: rgba(242,233,216,0.08);
+  --border-strong: rgba(242,233,216,0.15);
+  --clear:  #22c55e;
+  --review: #f59e0b;
+  --hold:   #ef4444;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.header-back { text-decoration: none; color: var(--muted); font-size: 13px; display: flex; align-items: center; gap: 4px; }
+.header-back:hover { color: var(--text); }
+.header-title { font-weight: 700; font-size: 15px; }
+.header-construct { font-size: 11px; color: var(--muted); }
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.timer-display {
+  font-family: 'Courier New', monospace;
+  font-size: 16px; font-weight: 700;
+  color: var(--accent);
+  background: rgba(77,211,254,0.08);
+  border: 1px solid rgba(77,211,254,0.2);
+  border-radius: 8px; padding: 5px 12px;
+  min-width: 70px; text-align: center;
+  transition: color 0.3s, background 0.3s;
+}
+.timer-display.urgent { color: var(--hold); background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); }
+.phase-badge {
+  font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px;
+  background: rgba(77,211,254,0.1); color: var(--accent); border: 1px solid rgba(77,211,254,0.2);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.progress-bar { height: 3px; background: var(--border); flex-shrink: 0; }
+.progress-fill { height: 100%; background: var(--accent); transition: width 0.3s; }
+
+/* ── Panels ── */
+.workspace { flex: 1; display: flex; gap: 8px; padding: 8px; overflow: hidden; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.panel-header {
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted); flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+}
+.panel-body { flex: 1; overflow-y: auto; padding: 14px; }
+.panel-body::-webkit-scrollbar { width: 4px; }
+.panel-body::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+/* ── Intro ── */
+#intro-screen {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 32px; gap: 24px; overflow-y: auto;
+}
+.intro-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 24px 28px; max-width: 620px; width: 100%;
+}
+.intro-card-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--accent); margin-bottom: 8px;
+}
+.intro-card-text { font-size: 14px; line-height: 1.65; color: var(--text); margin-bottom: 14px; }
+.intro-meta {
+  font-size: 12px; color: var(--muted); border-top: 1px solid var(--border);
+  padding-top: 12px; display: flex; gap: 20px; flex-wrap: wrap;
+}
+.flag-legend { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; max-width: 620px; }
+.flag-chip {
+  display: flex; align-items: center; gap: 6px; padding: 6px 14px;
+  border-radius: 20px; font-size: 11px; font-weight: 700;
+}
+.flag-chip.clear  { background: rgba(34,197,94,0.12);  color: var(--clear);  border: 1px solid rgba(34,197,94,0.25); }
+.flag-chip.review { background: rgba(245,158,11,0.12); color: var(--review); border: 1px solid rgba(245,158,11,0.25); }
+.flag-chip.hold   { background: rgba(239,68,68,0.12);  color: var(--hold);   border: 1px solid rgba(239,68,68,0.25); }
+.start-btn {
+  padding: 13px 40px; background: var(--accent); border: none; border-radius: 10px;
+  color: #1a212b; font-family: inherit; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: background 0.15s, transform 0.1s; letter-spacing: 0.02em;
+}
+.start-btn:hover { background: #6cdeff; transform: translateY(-1px); }
+
+/* ── Patient profile panel ── */
+#profile-panel { width: 240px; flex-shrink: 0; }
+.allergy-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(239,68,68,0.12); color: var(--hold);
+  border: 1px solid rgba(239,68,68,0.25); border-radius: 6px;
+  font-size: 11px; font-weight: 600; padding: 3px 8px; margin: 2px;
+}
+.profile-section { margin-bottom: 14px; }
+.profile-section-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted); margin-bottom: 6px;
+}
+.med-row {
+  padding: 5px 0; border-bottom: 1px solid var(--border);
+  font-size: 11px; line-height: 1.5;
+}
+.med-row:last-child { border-bottom: none; }
+.med-name { font-weight: 600; color: var(--text); }
+.med-detail { color: var(--muted); }
+.condition-tag {
+  display: inline-block; background: rgba(77,211,254,0.08); color: var(--accent);
+  border: 1px solid rgba(77,211,254,0.15); border-radius: 4px;
+  font-size: 10px; padding: 2px 7px; margin: 2px;
+}
+.flag-status-block {
+  margin-top: 14px; padding: 12px; background: var(--surface2);
+  border-radius: 8px; border: 1px solid var(--border);
+}
+.flag-status-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 8px; }
+.flag-count-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+.flag-count-row .fc-val { font-size: 15px; font-weight: 700; }
+.fc-clear  { color: var(--clear); }
+.fc-review { color: var(--review); }
+.fc-hold   { color: var(--hold); }
+.proceed-btn {
+  margin-top: 12px; width: 100%; padding: 9px;
+  background: rgba(77,211,254,0.1); border: 1px solid rgba(77,211,254,0.3);
+  border-radius: 8px; color: var(--accent); font-family: inherit; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s; opacity: 0.4; pointer-events: none;
+}
+.proceed-btn.ready { opacity: 1; pointer-events: auto; background: var(--accent); color: #1a212b; border-color: transparent; }
+.proceed-btn.ready:hover { background: #6cdeff; }
+
+/* ── Prescription cards ── */
+.rx-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px; margin-bottom: 10px; transition: border-color 0.2s;
+}
+.rx-card.flagged-clear  { border-color: var(--clear); }
+.rx-card.flagged-review { border-color: var(--review); }
+.rx-card.flagged-hold   { border-color: var(--hold); }
+.rx-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; gap: 8px; }
+.rx-label { font-weight: 700; font-size: 12px; color: var(--muted); }
+.rx-prescriber { font-size: 11px; color: var(--muted); }
+.rx-drug-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.rx-dose { font-size: 12px; color: var(--accent); font-weight: 600; }
+.rx-details-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 3px 12px;
+  margin: 8px 0 10px; padding: 8px; background: rgba(0,0,0,0.15); border-radius: 6px;
+}
+.rx-detail { font-size: 11px; line-height: 1.5; }
+.rx-detail .dk { color: var(--muted); }
+.rx-detail .dv { color: var(--text); font-weight: 600; }
+.rx-indication { font-size: 11px; color: var(--muted); font-style: italic; margin-bottom: 10px; }
+.flag-btns { display: flex; gap: 6px; }
+.flag-btn {
+  flex: 1; padding: 7px 6px; border-radius: 6px; font-family: inherit;
+  font-size: 10px; font-weight: 700; cursor: pointer; text-align: center;
+  text-transform: uppercase; letter-spacing: 0.04em; transition: all 0.15s;
+  border: 1px solid transparent;
+}
+.flag-btn.clear  { background: rgba(34,197,94,0.1);  color: var(--clear);  border-color: rgba(34,197,94,0.2); }
+.flag-btn.clear:hover, .flag-btn.clear.selected  { background: var(--clear);  color: #1a212b; border-color: var(--clear); }
+.flag-btn.review { background: rgba(245,158,11,0.1); color: var(--review); border-color: rgba(245,158,11,0.2); }
+.flag-btn.review:hover, .flag-btn.review.selected { background: var(--review); color: #1a212b; border-color: var(--review); }
+.flag-btn.hold   { background: rgba(239,68,68,0.1);  color: var(--hold);   border-color: rgba(239,68,68,0.2); }
+.flag-btn.hold:hover, .flag-btn.hold.selected   { background: var(--hold);   color: #fff;    border-color: var(--hold); }
+
+/* ── Note phase ── */
+#note-workspace { display: none; }
+.note-summary-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; font-size: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.flag-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.flag-dot.clear  { background: var(--clear); }
+.flag-dot.review { background: var(--review); }
+.flag-dot.hold   { background: var(--hold); }
+.note-summary-drug { font-weight: 600; flex: 1; }
+.note-flag-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.note-flag-label.clear  { color: var(--clear); }
+.note-flag-label.review { color: var(--review); }
+.note-flag-label.hold   { color: var(--hold); }
+.prompt-box {
+  background: rgba(77,211,254,0.05); border: 1px solid rgba(77,211,254,0.15);
+  border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;
+}
+.prompt-box strong { color: var(--accent); display: block; margin-bottom: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+.prompt-box p { font-size: 13px; line-height: 1.6; color: var(--text); }
+#note-textarea {
+  width: 100%; min-height: 130px; padding: 12px;
+  background: rgba(0,0,0,0.2); border: 1px solid var(--border-strong);
+  border-radius: 8px; color: var(--text); font-family: 'Courier New', monospace;
+  font-size: 13px; line-height: 1.6; resize: vertical; outline: none;
+  transition: border-color 0.15s;
+}
+#note-textarea:focus { border-color: rgba(77,211,254,0.4); }
+#note-textarea::placeholder { color: var(--muted); font-family: inherit; }
+.note-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+.word-count { font-size: 11px; color: var(--muted); }
+.submit-btn {
+  padding: 10px 28px; background: var(--accent); border: none; border-radius: 8px;
+  color: #1a212b; font-family: inherit; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: background 0.15s;
+}
+.submit-btn:hover { background: #6cdeff; }
+.submit-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* ── Results ── */
+#results-screen {
+  flex: 1; overflow-y: auto; padding: 20px;
+  display: none; flex-direction: column; gap: 18px; align-items: center;
+}
+#results-screen.visible { display: flex; }
+.results-inner { max-width: 700px; width: 100%; }
+.score-hero {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 18px;
+}
+.score-hero .score-num { font-size: 52px; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+.score-hero .score-label { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+.score-hero .score-verdict { font-size: 15px; color: var(--text); font-weight: 600; }
+.score-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+.score-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
+.score-card .sc-val { font-size: 24px; font-weight: 700; color: var(--accent); }
+.score-card .sc-label { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.results-section { margin-bottom: 18px; }
+.results-section h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 10px; }
+.rx-result {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 14px; margin-bottom: 8px;
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.result-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.result-detail { flex: 1; }
+.result-detail .rd-drug { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+.result-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 5px; }
+.result-chip {
+  font-size: 10px; font-weight: 700; padding: 2px 9px;
+  border-radius: 20px; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.result-chip.clear  { background: rgba(34,197,94,0.12);  color: var(--clear); }
+.result-chip.review { background: rgba(245,158,11,0.12); color: var(--review); }
+.result-chip.hold   { background: rgba(239,68,68,0.12);  color: var(--hold); }
+.result-chip.neutral { background: rgba(77,211,254,0.1); color: var(--accent); }
+.result-teaching { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.restart-btn {
+  padding: 11px 32px; background: rgba(77,211,254,0.1); border: 1px solid rgba(77,211,254,0.25);
+  border-radius: 8px; color: var(--accent); font-family: inherit; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s; margin: 0 auto; display: block;
+}
+.restart-btn:hover { background: rgba(77,211,254,0.18); }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header" id="main-header" style="display:none">
+  <a href="/" class="header-back">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Hub
+  </a>
+  <div>
+    <div class="header-title" id="header-title">Rx Check</div>
+    <div class="header-construct" id="header-construct"></div>
+  </div>
+  <div class="header-right">
+    <div class="phase-badge" id="phase-badge">Brief</div>
+    <div class="timer-display" id="timer-display" style="display:none">0:00</div>
+  </div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<!-- Loading -->
+<div id="loading-screen" style="flex:1;display:flex;align-items:center;justify-content:center;">
+  <div style="color:var(--muted);font-size:14px;">Loading scenario…</div>
+</div>
+
+<!-- Intro -->
+<div id="intro-screen" style="display:none">
+  <div style="max-width:620px;width:100%;text-align:center;margin-bottom:4px;">
+    <div style="font-size:28px;margin-bottom:8px;">💊</div>
+    <h2 id="intro-construct-name" style="font-size:20px;font-weight:700;margin-bottom:6px;color:var(--text)"></h2>
+    <p id="intro-construct-desc" style="font-size:13px;color:var(--muted);line-height:1.6;max-width:500px;margin:0 auto 16px;"></p>
+  </div>
+  <div class="intro-card">
+    <div class="intro-card-label">📋 Incoming Queue</div>
+    <div class="intro-card-text" id="intro-briefing"></div>
+    <div class="intro-meta" id="intro-meta"></div>
+  </div>
+  <div class="flag-legend">
+    <div class="flag-chip clear">✅ Clear — fill as written</div>
+    <div class="flag-chip review">⚠️ Review — flag for pharmacist</div>
+    <div class="flag-chip hold">🚫 Hold — allergy or critical issue</div>
+  </div>
+  <div style="font-size:12px;color:var(--muted);text-align:center;max-width:480px;line-height:1.6;">
+    Review each prescription against the patient's medication profile. Flag any allergy conflicts, drug interactions, or duplicate therapy — then write a brief note to the pharmacist.
+  </div>
+  <button class="start-btn" id="start-btn">Start Queue →</button>
+</div>
+
+<!-- Check workspace -->
+<div class="workspace" id="check-workspace" style="display:none">
+
+  <!-- Patient profile -->
+  <div class="panel" id="profile-panel">
+    <div class="panel-header">Patient Profile</div>
+    <div class="panel-body" id="profile-body"></div>
+  </div>
+
+  <!-- Prescriptions -->
+  <div class="panel" style="flex:1">
+    <div class="panel-header">
+      <span id="rx-panel-label">Prescriptions</span>
+      <span id="rx-progress" style="color:var(--muted)">0 / 0 flagged</span>
+    </div>
+    <div class="panel-body" id="rx-body"></div>
+  </div>
+
+</div>
+
+<!-- Note workspace -->
+<div class="workspace" id="note-workspace">
+  <div class="panel" style="width:220px;flex-shrink:0">
+    <div class="panel-header">Your Flags</div>
+    <div class="panel-body" id="flags-summary-panel"></div>
+  </div>
+  <div class="panel" style="flex:1">
+    <div class="panel-header">Pharmacist Note</div>
+    <div class="panel-body">
+      <div class="prompt-box">
+        <strong>Write to the pharmacist</strong>
+        <p id="note-prompt-text"></p>
+      </div>
+      <textarea id="note-textarea" rows="6"></textarea>
+      <div class="note-footer">
+        <span class="word-count" id="word-count">0 words</span>
+        <button class="submit-btn" id="submit-btn" disabled onclick="submitNote()">Submit Note</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Results -->
+<div id="results-screen">
+  <div class="results-inner">
+    <div class="score-hero">
+      <div class="score-num" id="final-score">—</div>
+      <div class="score-label">Overall Score</div>
+      <div class="score-verdict" id="score-verdict"></div>
+    </div>
+    <div class="score-row">
+      <div class="score-card"><div class="sc-val" id="sc-flags">—</div><div class="sc-label">Flag Accuracy</div></div>
+      <div class="score-card"><div class="sc-val" id="sc-note">—</div><div class="sc-label">Pharmacist Note</div></div>
+    </div>
+    <div class="results-section">
+      <h3>Prescription Review</h3>
+      <div id="rx-results"></div>
+    </div>
+    <div class="results-section">
+      <h3>Your Pharmacist Note</h3>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'Courier New',monospace;font-size:12px;line-height:1.7;color:var(--text);" id="note-display"></div>
+    </div>
+    <button class="restart-btn" onclick="location.reload()">Try Again ↺</button>
+  </div>
+</div>
+
+<script>
+const STATE = {
+  scenario: null,
+  flags: {},        // rxId → flagId
+  startTime: null,
+  elapsed: 0,
+  timerInterval: null
+};
+
+/* ── Load ── */
+async function loadScenario() {
+  const params = new URLSearchParams(window.location.search);
+  const src = params.get('scenario') || 'scenarios/rx-check-pharmacy-tech.json';
+  try {
+    const res = await fetch(src);
+    if (!res.ok) throw new Error('Not found');
+    STATE.scenario = await res.json();
+    initIntro();
+  } catch (e) {
+    document.getElementById('loading-screen').innerHTML =
+      `<div style="color:var(--hold);text-align:center">Failed to load scenario.<br><small>${e.message}</small></div>`;
+  }
+}
+
+function initIntro() {
+  const s = STATE.scenario;
+  document.title = `Rx Check — ${s.construct_name}`;
+  document.getElementById('header-title').textContent = 'Rx Check';
+  document.getElementById('header-construct').textContent = s.construct_name;
+  document.getElementById('intro-construct-name').textContent = s.construct_name;
+  document.getElementById('intro-construct-desc').textContent = s.construct_description;
+
+  const p = s.patient;
+  document.getElementById('intro-briefing').textContent =
+    `You have ${s.prescriptions.length} new prescriptions to process for ${p.name}, ${p.age}F. ` +
+    `Review each one against her current medication profile, allergy list, and conditions. ` +
+    `Flag anything that needs pharmacist attention before dispensing.`;
+
+  document.getElementById('intro-meta').innerHTML =
+    `<span>👤 ${p.name}, ${p.age}F</span>` +
+    `<span>🚨 ${p.allergies.length} documented allergies</span>` +
+    `<span>💊 ${p.current_medications.length} current medications</span>` +
+    `<span>📋 ${s.prescriptions.length} new prescriptions</span>`;
+
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('intro-screen').style.display = 'flex';
+  document.getElementById('main-header').style.display = 'flex';
+  setProgress(0.05);
+}
+
+/* ── Start ── */
+document.getElementById('start-btn').onclick = startCheckPhase;
+
+function startCheckPhase() {
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('check-workspace').style.display = 'flex';
+  document.getElementById('timer-display').style.display = '';
+  document.getElementById('phase-badge').textContent = 'Screening';
+  setProgress(0.2);
+
+  buildProfilePanel();
+  buildRxCards();
+
+  STATE.startTime = Date.now();
+  STATE.timerInterval = setInterval(updateTimer, 500);
+}
+
+function buildProfilePanel() {
+  const p = STATE.scenario.patient;
+  const body = document.getElementById('profile-body');
+
+  // Allergies
+  let html = `<div class="profile-section">
+    <div class="profile-section-label">⚠️ Allergies</div>`;
+  p.allergies.forEach(a => {
+    html += `<span class="allergy-tag" title="${a.reaction} (${a.documented})">${a.allergen}</span>`;
+  });
+  html += `</div>`;
+
+  // Conditions
+  html += `<div class="profile-section">
+    <div class="profile-section-label">Conditions</div>`;
+  p.conditions.forEach(c => {
+    html += `<span class="condition-tag">${c}</span>`;
+  });
+  html += `</div>`;
+
+  // Current meds
+  html += `<div class="profile-section">
+    <div class="profile-section-label">Current Medications</div>`;
+  p.current_medications.forEach(m => {
+    html += `<div class="med-row">
+      <span class="med-name">${m.drug} ${m.dose}</span>
+      <span class="med-detail"> · ${m.frequency}</span>
+      <div class="med-detail" style="font-size:10px;margin-top:1px">${m.indication}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Flag status
+  html += `<div class="flag-status-block">
+    <div class="flag-status-label">Flag Status</div>
+    <div class="flag-count-row"><span>✅ Clear</span><span class="fc-val fc-clear" id="cnt-clear">0</span></div>
+    <div class="flag-count-row"><span>⚠️ Review</span><span class="fc-val fc-review" id="cnt-review">0</span></div>
+    <div class="flag-count-row"><span>🚫 Hold</span><span class="fc-val fc-hold" id="cnt-hold">0</span></div>
+    <button class="proceed-btn" id="proceed-btn" onclick="proceedToNote()">Write Pharmacist Note →</button>
+  </div>`;
+
+  body.innerHTML = html;
+}
+
+function buildRxCards() {
+  const s = STATE.scenario;
+  const body = document.getElementById('rx-body');
+  document.getElementById('rx-progress').textContent = `0 / ${s.prescriptions.length} flagged`;
+  body.innerHTML = '';
+  s.prescriptions.forEach(rx => body.appendChild(buildRxCard(rx)));
+}
+
+function buildRxCard(rx) {
+  const card = document.createElement('div');
+  card.className = 'rx-card';
+  card.id = `rxcard-${rx.id}`;
+
+  card.innerHTML = `
+    <div class="rx-card-header">
+      <div>
+        <div class="rx-label">${rx.label} · <span class="rx-prescriber">${rx.prescriber}</span></div>
+        <div class="rx-drug-name">${rx.drug}</div>
+        <div class="rx-dose">${rx.dose} · ${rx.route} · ${rx.frequency}</div>
+      </div>
+    </div>
+    <div class="rx-details-grid">
+      <div class="rx-detail"><span class="dk">Dose: </span><span class="dv">${rx.dose}</span></div>
+      <div class="rx-detail"><span class="dk">Route: </span><span class="dv">${rx.route}</span></div>
+      <div class="rx-detail"><span class="dk">Frequency: </span><span class="dv">${rx.frequency}</span></div>
+      <div class="rx-detail"><span class="dk">Duration: </span><span class="dv">${rx.duration}</span></div>
+    </div>
+    <div class="rx-indication">Indication: ${rx.indication}</div>
+    <div class="flag-btns">
+      <button class="flag-btn clear"  data-rx="${rx.id}" data-flag="clear">✅ Clear</button>
+      <button class="flag-btn review" data-rx="${rx.id}" data-flag="review">⚠️ Review</button>
+      <button class="flag-btn hold"   data-rx="${rx.id}" data-flag="hold">🚫 Hold</button>
+    </div>`;
+
+  card.querySelectorAll('.flag-btn').forEach(btn => {
+    btn.addEventListener('click', () => flagRx(rx.id, btn.dataset.flag));
+  });
+  return card;
+}
+
+function flagRx(rxId, flagId) {
+  STATE.flags[rxId] = flagId;
+  const card = document.getElementById(`rxcard-${rxId}`);
+  card.className = `rx-card flagged-${flagId}`;
+  card.querySelectorAll('.flag-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.flag === flagId);
+  });
+  updateFlagProgress();
+}
+
+function updateFlagProgress() {
+  const s = STATE.scenario;
+  const total = s.prescriptions.length;
+  const flagged = Object.keys(STATE.flags).length;
+  const counts = { clear: 0, review: 0, hold: 0 };
+  Object.values(STATE.flags).forEach(f => { if (counts[f] !== undefined) counts[f]++; });
+  ['clear','review','hold'].forEach(f => {
+    const el = document.getElementById('cnt-' + f);
+    if (el) el.textContent = counts[f];
+  });
+  document.getElementById('rx-progress').textContent = `${flagged} / ${total} flagged`;
+  setProgress(0.2 + (flagged / total) * 0.4);
+  const btn = document.getElementById('proceed-btn');
+  if (flagged === total) btn.classList.add('ready');
+  else btn.classList.remove('ready');
+}
+
+/* ── Note phase ── */
+function proceedToNote() {
+  clearInterval(STATE.timerInterval);
+  STATE.elapsed = Math.floor((Date.now() - STATE.startTime) / 1000);
+  document.getElementById('check-workspace').style.display = 'none';
+  document.getElementById('note-workspace').style.display = 'flex';
+  document.getElementById('phase-badge').textContent = 'Pharmacist Note';
+  setProgress(0.7);
+
+  // Flags summary
+  const s = STATE.scenario;
+  const panel = document.getElementById('flags-summary-panel');
+  panel.innerHTML = s.prescriptions.map(rx => {
+    const flag = STATE.flags[rx.id] || 'clear';
+    return `<div class="note-summary-card">
+      <div class="flag-dot ${flag}"></div>
+      <div class="note-summary-drug">${rx.drug}</div>
+      <div class="note-flag-label ${flag}">${flag.toUpperCase()}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('note-prompt-text').textContent = s.pharmacist_note.prompt;
+  const ta = document.getElementById('note-textarea');
+  ta.placeholder = s.pharmacist_note.placeholder || 'Pharmacist — flagging the following items...';
+
+  ta.addEventListener('input', () => {
+    const words = ta.value.trim().split(/\s+/).filter(Boolean).length;
+    document.getElementById('word-count').textContent = `${words} words`;
+    document.getElementById('submit-btn').disabled = words < 10;
+  });
+}
+
+/* ── Score & Results ── */
+function submitNote() {
+  document.getElementById('note-workspace').style.display = 'none';
+  const results = document.getElementById('results-screen');
+  results.classList.add('visible');
+  document.getElementById('phase-badge').textContent = 'Results';
+  setProgress(1);
+
+  const s = STATE.scenario;
+  const sc = s.scoring;
+
+  // Flag accuracy
+  let flagPoints = 0;
+  s.prescriptions.forEach(rx => {
+    const assigned = STATE.flags[rx.id];
+    const correct  = rx.correct_flag;
+    if (assigned === correct) {
+      flagPoints += sc.flag_accuracy.points_per_correct;
+    } else {
+      const rule = sc.flag_accuracy.partial_rules.find(r => r.from === correct && r.to === assigned);
+      flagPoints += rule ? rule.points : 0;
+    }
+  });
+  const flagPct = Math.round((flagPoints / sc.flag_accuracy.max_points) * 100);
+
+  // Note score
+  const note = document.getElementById('note-textarea').value.toLowerCase();
+  const kw = s.pharmacist_note.scoring_keywords;
+  const countHits = arr => arr.filter(k => note.includes(k.toLowerCase())).length;
+  const holdHits   = Math.min(countHits(kw.hold_items),   kw.hold_items.length);
+  const reviewHits = Math.min(countHits(kw.review_items), kw.review_items.length);
+  const actionHits = countHits(kw.action_requested) > 0 ? 1 : 0;
+  const wordCount  = note.trim().split(/\s+/).filter(Boolean).length;
+  const brevity    = wordCount >= 40 && wordCount <= 150 ? 5 : wordCount < 10 ? 0 : 3;
+
+  const dims = sc.pharmacist_note.dimensions;
+  const notePoints = Math.round(
+    (holdHits   / kw.hold_items.length)   * dims[0].max +
+    (reviewHits / kw.review_items.length) * dims[1].max +
+    actionHits                            * dims[2].max +
+    brevity
+  );
+  const notePct = Math.round((notePoints / sc.pharmacist_note.max_points) * 100);
+
+  const totalPct = Math.round((flagPoints + notePoints) / (sc.flag_accuracy.max_points + sc.pharmacist_note.max_points) * 100);
+  const verdict  = s.performance_labels.find(l => totalPct >= l.min)?.text || '';
+
+  document.getElementById('final-score').textContent  = totalPct + '%';
+  document.getElementById('score-verdict').textContent = verdict;
+  document.getElementById('sc-flags').textContent  = flagPct + '%';
+  document.getElementById('sc-note').textContent   = notePct + '%';
+
+  // Per-prescription results
+  const container = document.getElementById('rx-results');
+  s.prescriptions.forEach(rx => {
+    const assigned  = STATE.flags[rx.id];
+    const correct   = rx.correct_flag;
+    const isCorrect = assigned === correct;
+    container.innerHTML += `
+      <div class="rx-result">
+        <span class="result-icon">${isCorrect ? '✅' : '❌'}</span>
+        <div class="result-detail">
+          <div class="rd-drug">${rx.drug} <span style="font-weight:400;color:var(--muted);font-size:11px">${rx.dose} · ${rx.route}</span></div>
+          <div class="result-chips">
+            <span class="result-chip neutral">You:</span>
+            <span class="result-chip ${assigned}">${assigned.toUpperCase()}</span>
+            ${!isCorrect ? `<span class="result-chip neutral">Correct:</span><span class="result-chip ${correct}">${correct.toUpperCase()}</span>` : ''}
+          </div>
+          <div class="result-teaching">${rx.teaching_point}</div>
+        </div>
+      </div>`;
+  });
+
+  document.getElementById('note-display').textContent = document.getElementById('note-textarea').value;
+}
+
+function updateTimer() {
+  const elapsed = Math.floor((Date.now() - STATE.startTime) / 1000);
+  const m = Math.floor(elapsed / 60), s = elapsed % 60;
+  const display = document.getElementById('timer-display');
+  display.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  display.classList.toggle('urgent', elapsed > 300);
+}
+
+function setProgress(f) {
+  document.getElementById('progress-fill').style.width = (f * 100) + '%';
+}
+
+loadScenario();
+</script>
+<script src="feedback.js"></script>
+</body>
+</html>

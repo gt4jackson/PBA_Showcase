@@ -1,0 +1,157 @@
+{
+  "construct_id": "pharmacy_tech_rx_check",
+  "construct_name": "Prescription Verification & Interaction Screening (ExCPT/PTCE)",
+  "construct_description": "The ability to review incoming prescriptions against a patient's medication profile, identify allergy conflicts, drug-drug interactions, duplicate therapy, and dosing concerns — and communicate flagged items clearly to the pharmacist before dispensing.",
+  "pba_category": {
+    "id": 4,
+    "name": "Simulation-Based Assessment",
+    "description": "A simulated prescription queue requiring cross-referencing against a patient profile under realistic time pressure."
+  },
+  "flag_system": {
+    "categories": [
+      { "id": "clear",  "label": "CLEAR",  "color": "#22c55e", "text_on_color": "#1a212b", "icon": "✅", "description": "No issues identified — proceed to pharmacist final check" },
+      { "id": "review", "label": "REVIEW", "color": "#f59e0b", "text_on_color": "#1a212b", "icon": "⚠️", "description": "Potential concern — flag for pharmacist verification" },
+      { "id": "hold",   "label": "HOLD",   "color": "#ef4444", "text_on_color": "#ffffff", "icon": "🚫", "description": "Allergy conflict or critical issue — do not fill without resolution" }
+    ]
+  },
+  "patient": {
+    "name": "Margaret Chen",
+    "age": 67,
+    "dob": "03/14/1958",
+    "mrn": "MRN-004471",
+    "insurance": "BlueCross PPO",
+    "allergies": [
+      { "allergen": "Penicillin",    "reaction": "Hives",        "severity": "Moderate", "documented": "2019" },
+      { "allergen": "Sulfa drugs",   "reaction": "Rash",         "severity": "Moderate", "documented": "2021" }
+    ],
+    "conditions": [
+      "Type 2 Diabetes Mellitus",
+      "Hypertension",
+      "Atrial Fibrillation",
+      "Chronic Kidney Disease — Stage 3 (eGFR 38)"
+    ],
+    "current_medications": [
+      { "drug": "Warfarin",      "dose": "5mg",    "frequency": "Once daily",       "indication": "Atrial fibrillation — anticoagulation" },
+      { "drug": "Metformin",     "dose": "1000mg", "frequency": "Twice daily",      "indication": "Type 2 diabetes" },
+      { "drug": "Lisinopril",    "dose": "10mg",   "frequency": "Once daily",       "indication": "Hypertension / kidney protection" },
+      { "drug": "Atorvastatin",  "dose": "40mg",   "frequency": "Once daily (PM)",  "indication": "Hyperlipidemia" },
+      { "drug": "Metoprolol",    "dose": "50mg",   "frequency": "Twice daily",      "indication": "Rate control — atrial fibrillation" }
+    ]
+  },
+  "prescriptions": [
+    {
+      "id": "rx1",
+      "label": "Rx #1",
+      "prescriber": "Dr. Okafor, Primary Care",
+      "drug": "Amoxicillin",
+      "dose": "500mg",
+      "route": "Oral",
+      "frequency": "Three times daily",
+      "duration": "10 days",
+      "indication": "Acute sinusitis",
+      "correct_flag": "hold",
+      "issues": ["allergy"],
+      "rationale": "Amoxicillin is a penicillin-class antibiotic. Patient has a documented penicillin allergy (hives, 2019). This is a direct allergy conflict — do not fill without pharmacist and prescriber resolution.",
+      "teaching_point": "Always cross-check antibiotic class against allergy list — not just the specific drug name. 'Amoxicillin' doesn't appear in the allergy list, but it IS a penicillin. Knowing drug classes is what makes this catch possible."
+    },
+    {
+      "id": "rx2",
+      "label": "Rx #2",
+      "prescriber": "Dr. Okafor, Primary Care",
+      "drug": "Ibuprofen",
+      "dose": "400mg",
+      "route": "Oral",
+      "frequency": "Three times daily as needed",
+      "duration": "30 days",
+      "indication": "Pain management",
+      "correct_flag": "review",
+      "issues": ["drug-drug interaction", "contraindication"],
+      "rationale": "Multiple concerns: (1) NSAIDs + warfarin = significantly elevated bleeding risk. (2) NSAIDs are relatively contraindicated in CKD stage 3 — can further reduce GFR. (3) NSAIDs can blunt the antihypertensive effect of lisinopril. Needs pharmacist evaluation — may need to recommend acetaminophen instead.",
+      "teaching_point": "Ibuprofen looks routine but this patient has three reasons it's concerning: warfarin interaction, CKD, and lisinopril. No single flag makes it a HOLD — but the combination demands pharmacist judgment before dispensing."
+    },
+    {
+      "id": "rx3",
+      "label": "Rx #3",
+      "prescriber": "Dr. Vasquez, Cardiology",
+      "drug": "Lisinopril",
+      "dose": "20mg",
+      "route": "Oral",
+      "frequency": "Once daily",
+      "duration": "90 days",
+      "indication": "Hypertension",
+      "correct_flag": "review",
+      "issues": ["duplicate therapy / dose change"],
+      "rationale": "Patient is already on Lisinopril 10mg daily from a current prescription. This new Rx is for 20mg — possibly an intentional dose increase ordered by cardiology, or possibly a duplicate. The tech cannot determine intent. Pharmacist must verify: intentional titration or error?",
+      "teaching_point": "Duplicate therapy is a common source of medication errors. When you see the same drug prescribed twice at different doses, it's almost never obviously wrong — it might be a dose increase. That's exactly why it needs a pharmacist review, not a tech judgment call."
+    },
+    {
+      "id": "rx4",
+      "label": "Rx #4",
+      "prescriber": "Dr. Vasquez, Cardiology",
+      "drug": "Furosemide",
+      "dose": "20mg",
+      "route": "Oral",
+      "frequency": "Once daily",
+      "duration": "90 days",
+      "indication": "Fluid retention / edema management",
+      "correct_flag": "clear",
+      "issues": [],
+      "rationale": "Furosemide (loop diuretic) is a new medication with no allergy conflicts, no significant interactions with current medications at this dose, and an appropriate indication for this patient's profile. Proceed to pharmacist final check.",
+      "teaching_point": "Not every prescription has a problem — and recognizing that is part of the skill. Furosemide at 20mg with this profile is straightforward. Over-flagging wastes pharmacist time and undermines the signal value of your genuine flags."
+    },
+    {
+      "id": "rx5",
+      "label": "Rx #5",
+      "prescriber": "Dr. Okafor, Primary Care",
+      "drug": "Trimethoprim-Sulfamethoxazole (TMP-SMX)",
+      "dose": "160/800mg",
+      "route": "Oral",
+      "frequency": "Twice daily",
+      "duration": "7 days",
+      "indication": "UTI",
+      "correct_flag": "hold",
+      "issues": ["allergy", "drug-drug interaction"],
+      "rationale": "Two critical issues: (1) Sulfamethoxazole contains a sulfonamide — patient has a documented sulfa drug allergy (rash, 2021). Direct allergy conflict. (2) TMP-SMX significantly potentiates warfarin, raising INR and bleeding risk — a clinically significant interaction even independent of the allergy. Double flag: allergy conflict + serious interaction.",
+      "teaching_point": "TMP-SMX is one of the most common sources of allergy errors because techs look for 'sulfa' in the allergy list and don't recognize that 'Trimethoprim-Sulfamethoxazole' contains it. Learn the brand names and full chemical names of common sulfa drugs."
+    }
+  ],
+  "pharmacist_note": {
+    "prompt": "Write a brief note to the pharmacist summarizing what you flagged and why. Be specific — include drug names, the issue type, and what you need them to verify or resolve.",
+    "placeholder": "Pharmacist — flagging the following items from Margaret Chen's queue before processing...",
+    "word_range": [40, 150],
+    "scoring_keywords": {
+      "hold_items": ["amoxicillin", "penicillin", "tmp-smx", "sulfamethoxazole", "sulfa", "bactrim", "allergy"],
+      "review_items": ["ibuprofen", "nsaid", "warfarin", "lisinopril", "duplicate", "interaction", "bleeding", "ckd", "kidney"],
+      "action_requested": ["verify", "confirm", "resolve", "check", "review", "contact", "clarify", "prescriber"]
+    }
+  },
+  "scoring": {
+    "flag_accuracy": {
+      "max_points": 50,
+      "points_per_correct": 10,
+      "partial_rules": [
+        { "from": "hold",   "to": "review", "points": 5, "reason": "Missed allergy conflict severity — dangerous under-flag" },
+        { "from": "hold",   "to": "clear",  "points": 0, "reason": "Critical miss — allergy conflict not caught" },
+        { "from": "review", "to": "hold",   "points": 7, "reason": "Over-flagged — conservative but acceptable" },
+        { "from": "review", "to": "clear",  "points": 3, "reason": "Under-flagged — interaction or concern missed" },
+        { "from": "clear",  "to": "review", "points": 7, "reason": "Over-flagged — conservative but acceptable" }
+      ]
+    },
+    "pharmacist_note": {
+      "max_points": 50,
+      "dimensions": [
+        { "id": "hold_coverage",   "label": "Both HOLD items clearly identified", "max": 20 },
+        { "id": "review_coverage", "label": "REVIEW concerns communicated",        "max": 15 },
+        { "id": "action_request",  "label": "Clear ask for pharmacist action",     "max": 10 },
+        { "id": "brevity",         "label": "Concise and professional",            "max": 5  }
+      ]
+    }
+  },
+  "performance_labels": [
+    { "min": 90, "text": "Excellent catch rate — PTCE-ready accuracy 💊" },
+    { "min": 75, "text": "Strong screening skills with minor gaps — solid tech instincts 👏" },
+    { "min": 60, "text": "Good foundation — review allergy class recognition and NSAID interactions 📋" },
+    { "min": 40, "text": "Key interactions missed — particularly the drug-class allergy flags ⚠️" },
+    { "min": 0,  "text": "Critical catches missed — allergy screening needs focused review 🚨" }
+  ]
+}
