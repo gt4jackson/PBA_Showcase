@@ -775,7 +775,7 @@ function logEvidence(event, data = {}) {
 // ── INIT FROM PACK ──────────────────────────
 function initFromPack() {
   document.title = 'Data Detective — PBA Showcase';
-  document.getElementById('landing-category').textContent = PACK.pba_category.name;
+  document.getElementById('landing-category').textContent = (PACK.pba_category || {}).name || 'Process Assessment';
   document.getElementById('landing-title').textContent = 'Data Detective';
   document.getElementById('landing-desc').textContent = DS.description;
   const dimsHtml = PACK.dimensions.map(d => `${d.icon} <strong>${d.name}</strong> (${Math.round(d.weight*100)}%) — ${d.description}`).join('<br>');
@@ -1109,7 +1109,7 @@ function populateInfoDrawer() {
     <tr><td style="text-transform:capitalize">${esc(k)}</td><td>${esc(v)}</td></tr>
   `).join('');
 
-  const anomalyRows = PACK.anomalies.map(a => `
+  const anomalyRows = (PACK.anomalies || []).map(a => `
     <tr><td>${esc(a.severity)}</td><td>${esc(a.description)}</td></tr>
   `).join('');
 

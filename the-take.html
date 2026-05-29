@@ -1065,11 +1065,12 @@ function scoreRun() {
 
   // 1. Claim Clarity
   const claimText = (sections.position || '').toLowerCase();
-  const claimMax = PACK.dimensions.find(d => d.id === 'claim_clarity').max_score;
+  const claimMax = (PACK.dimensions.find(d => d.id === 'claim_clarity') || {}).max_score || 20;
+  const ccRubric = (PACK.rubric || {}).claim_clarity || {};
   let claimScore = 0;
-  const strongClaim = PACK.rubric.claim_clarity.strong_indicators.some(i => claimText.includes(i.toLowerCase()));
-  const weakClaim = PACK.rubric.claim_clarity.weak_indicators.some(i => claimText.includes(i.toLowerCase()));
-  const hasKeywords = PACK.rubric.claim_clarity.keywords.filter(k => claimText.includes(k)).length;
+  const strongClaim = (ccRubric.strong_indicators || []).some(i => claimText.includes(i.toLowerCase()));
+  const weakClaim = (ccRubric.weak_indicators || []).some(i => claimText.includes(i.toLowerCase()));
+  const hasKeywords = (ccRubric.keywords || []).filter(k => claimText.includes(k)).length;
 
   if (strongClaim) claimScore = claimMax;
   else if (hasKeywords >= 2 && !weakClaim) claimScore = Math.round(claimMax * 0.75);
@@ -1088,18 +1089,20 @@ function scoreRun() {
   });
 
   // 2. Evidence Use
-  const evidMax = PACK.dimensions.find(d => d.id === 'evidence_use').max_score;
-  const sourceRefs = PACK.rubric.evidence_use.source_refs.filter(k => fullText.includes(k.toLowerCase())).length;
-  const integrationHits = PACK.rubric.evidence_use.integration_keywords.filter(k => fullText.includes(k.toLowerCase())).length;
+  const evidMax = (PACK.dimensions.find(d => d.id === 'evidence_use') || {}).max_score || 25;
+  const euRubric = (PACK.rubric || {}).evidence_use || {};
+  const sourceRefs = (euRubric.source_refs || []).filter(k => fullText.includes(k.toLowerCase())).length;
+  const sourceRefsTotal = Math.max(1, (euRubric.source_refs || []).length);
+  const integrationHits = (euRubric.integration_keywords || []).filter(k => fullText.includes(k.toLowerCase())).length;
   const sourcesRead = Object.keys(STATE.sourceReadTimes).length;
   const citedSources = new Set();
-  SCENARIO.sources.forEach(s => {
-    if (fullText.includes(s.tab_label.toLowerCase())) citedSources.add(s.id);
+  (SCENARIO.sources || []).forEach(s => {
+    if (fullText.includes((s.tab_label || '').toLowerCase())) citedSources.add(s.id);
   });
 
   let evidScore = 0;
-  evidScore += Math.min(evidMax * 0.5, (sourceRefs / PACK.rubric.evidence_use.source_refs.length) * evidMax * 0.5);
-  evidScore += Math.min(evidMax * 0.3, (citedSources.size / PACK.rubric.evidence_use.min_sources_referenced) * evidMax * 0.3);
+  evidScore += Math.min(evidMax * 0.5, (sourceRefs / sourceRefsTotal) * evidMax * 0.5);
+  evidScore += Math.min(evidMax * 0.3, (citedSources.size / Math.max(1, euRubric.min_sources_referenced || 2)) * evidMax * 0.3);
   evidScore += Math.min(evidMax * 0.2, integrationHits * (evidMax * 0.05));
   evidScore = Math.min(evidMax, Math.round(evidScore));
 
@@ -1109,7 +1112,7 @@ function scoreRun() {
     good: evidScore >= evidMax * 0.6,
     note: citedSources.size >= 3
       ? `Strong evidence integration — referenced ${citedSources.size} sources with ${sourceRefs} specific data points.`
-      : `Only ${citedSources.size} source(s) explicitly referenced. Aim for at least ${PACK.rubric.evidence_use.min_sources_referenced} to show balanced analysis.`
+      : `Only ${citedSources.size} source(s) explicitly referenced. Aim for at least ${euRubric.min_sources_referenced || 2} to show balanced analysis.`
   });
 
   // 3. Source Evaluation

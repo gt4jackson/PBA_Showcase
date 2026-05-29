@@ -1581,9 +1581,17 @@ function showPicker(construct, versions) {
 
 async function acceptVersion(file) {
   document.getElementById('screen-picker').style.display = 'none';
-  PACK = await fetchScenario(file);
-  SC = PACK.scenario;
-  initFromPack();
+  try {
+    PACK = await fetchScenario(file);
+    SC = PACK.scenario;
+    initFromPack();
+  } catch(e) {
+    console.error('acceptVersion failed:', e);
+    // Fallback to inline scenario so user always sees something
+    PACK = CONSTRUCT_PACK_INLINE;
+    SC = PACK.scenario;
+    initFromPack();
+  }
   document.getElementById('screen-landing').style.display = 'flex';
 }
 
@@ -1622,41 +1630,49 @@ function wordCount(s) {
 
 // ── INIT FROM PACK ──────────────────────────
 function initFromPack() {
+  // Defensive helpers
+  const cat = PACK.pba_category || {};
+  const skills = PACK.skills || [];
+  const deliverable = SC.deliverable || {};
+  const tools = SC.workbench_tools || [];
+
   // Landing
-  document.getElementById('landing-category').textContent = PACK.pba_category.name;
-  document.getElementById('landing-title').textContent = SC.title;
-  document.getElementById('landing-desc').textContent = SC.briefing.split('\n')[0];
-  const skillsHtml = PACK.skills.map(s => `${s.icon} <strong>${s.name}</strong> (${Math.round(s.weight * 100)}%) — ${s.description}`).join('<br>');
-  document.getElementById('landing-skills').innerHTML = 'Skills assessed:<br>' + skillsHtml;
+  document.getElementById('landing-category').textContent = cat.name || 'AI-Augmented Task';
+  document.getElementById('landing-title').textContent = SC.title || '';
+  document.getElementById('landing-desc').textContent = (SC.briefing || '').split('\n')[0];
+  const skillsHtml = skills.map(s => `${s.icon || ''} <strong>${s.name}</strong> (${Math.round((s.weight||0) * 100)}%) — ${s.description||''}`).join('<br>');
+  document.getElementById('landing-skills').innerHTML = skills.length ? 'Skills assessed:<br>' + skillsHtml : '';
 
   // Title
-  document.title = SC.title + ' — PBA Showcase';
+  document.title = (SC.title || 'The Brief') + ' — PBA Showcase';
 
   // Banner
-  document.getElementById('banner-construct-name').textContent = PACK.construct_name;
+  document.getElementById('banner-construct-name').textContent = PACK.construct_name || '';
 
   // Workspace header
-  document.getElementById('ws-title').textContent = SC.title;
-  document.getElementById('ws-client').textContent = SC.client;
+  document.getElementById('ws-title').textContent = SC.title || '';
+  document.getElementById('ws-client').textContent = SC.client || '';
 
   // Briefing
-  document.getElementById('ws-briefing').textContent = SC.briefing;
+  document.getElementById('ws-briefing').textContent = SC.briefing || '';
 
-  // Deliverable
-  document.getElementById('ws-deliverable-name').textContent = 'Deliverable — ' + SC.deliverable.name;
-  document.getElementById('ws-deliverable-instructions').textContent = SC.deliverable.instructions;
+  // Deliverable (optional field)
+  if (deliverable.name) {
+    document.getElementById('ws-deliverable-name').textContent = 'Deliverable — ' + deliverable.name;
+    document.getElementById('ws-deliverable-instructions').textContent = deliverable.instructions || '';
+  }
 
   // Budget
   updateBudgetDisplay();
 
   // Left panel — default to first inbox item selected
-  STATE.selectedEmailId = SC.inbox.length > 0 ? SC.inbox[0].id : null;
+  STATE.selectedEmailId = (SC.inbox || []).length > 0 ? SC.inbox[0].id : null;
   renderLeftPanel();
 
-  // Workbench tools
+  // Workbench tools (optional field)
   renderToolTabs();
-  if (SC.workbench_tools.length > 0) {
-    STATE.activeTool = SC.workbench_tools[0].id;
+  if (tools.length > 0) {
+    STATE.activeTool = tools[0].id;
     updateToolSelection();
   }
 
@@ -1744,7 +1760,7 @@ document.querySelectorAll('[data-left-tab]').forEach(tab => {
 // ── WORKBENCH TOOL TABS ──────────────────────
 function renderToolTabs() {
   const container = document.getElementById('wb-tool-tabs');
-  container.innerHTML = SC.workbench_tools.map(t => `
+  container.innerHTML = (SC.workbench_tools || []).map(t => `
     <button class="tool-tab ${STATE.activeTool === t.id ? 'active' : ''}" data-tool-id="${t.id}">
       ${t.icon || ''} ${escHtml(t.name)} <span class="tool-cost">· ${t.cost}</span>
     </button>
@@ -1763,7 +1779,7 @@ function updateToolSelection() {
   document.querySelectorAll('.tool-tab').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.toolId === STATE.activeTool);
   });
-  const tool = SC.workbench_tools.find(t => t.id === STATE.activeTool);
+  const tool = (SC.workbench_tools || []).find(t => t.id === STATE.activeTool);
   document.getElementById('wb-tool-desc').textContent = tool ? tool.description : '';
   document.getElementById('wb-input-meta').textContent = tool
     ? `Cost: ${tool.cost} · Remaining: ${SC.budget_tokens - STATE.tokensSpent}`
@@ -1772,7 +1788,7 @@ function updateToolSelection() {
 }
 
 function updateRunButton() {
-  const tool = SC.workbench_tools.find(t => t.id === STATE.activeTool);
+  const tool = (SC.workbench_tools || []).find(t => t.id === STATE.activeTool);
   const prompt = document.getElementById('wb-prompt').value.trim();
   const btn = document.getElementById('wb-run-btn');
   btn.disabled = !prompt || !tool || (SC.budget_tokens - STATE.tokensSpent) < tool.cost;
@@ -1784,7 +1800,7 @@ function runTool() {
   const prompt = promptEl.value.trim();
   if (!prompt) return;
 
-  const tool = SC.workbench_tools.find(t => t.id === STATE.activeTool);
+  const tool = (SC.workbench_tools || []).find(t => t.id === STATE.activeTool);
   if (!tool) return;
 
   const remaining = SC.budget_tokens - STATE.tokensSpent;
@@ -1886,11 +1902,14 @@ const editor = document.getElementById('ws-editor');
 editor.addEventListener('input', () => {
   const wc = wordCount(editor.value);
   const wcEl = document.getElementById('ws-word-count');
-  wcEl.textContent = `${wc} / ${SC.deliverable.max_words} words`;
-  wcEl.className = 'word-count' + (wc > SC.deliverable.max_words ? ' over' : '');
+  const dlv = SC.deliverable || {};
+  const maxW = dlv.max_words || 500;
+  const minW = dlv.min_words || 50;
+  wcEl.textContent = `${wc} / ${maxW} words`;
+  wcEl.className = 'word-count' + (wc > maxW ? ' over' : '');
 
   // Enable/disable submit
-  document.getElementById('ws-submit-btn').disabled = wc < SC.deliverable.min_words;
+  document.getElementById('ws-submit-btn').disabled = wc < minW;
 });
 
 // Log typing periodically
@@ -2056,13 +2075,16 @@ function scoreRun() {
         : "Appears to accept an unverified claim. Always verify facts before using them."
       });
     } else if (dim.id === 'structure_and_length') {
-      const inRange = wc >= SC.deliverable.min_words && wc <= SC.deliverable.max_words;
+      const dlv2 = SC.deliverable || {};
+      const minW2 = dlv2.min_words || 50;
+      const maxW2 = dlv2.max_words || 500;
+      const inRange = wc >= minW2 && wc <= maxW2;
       const hasStructure = /recommendation|reason|risk|assumption/i.test(memo);
       if (inRange && hasStructure) score = 100;
       else if (inRange || hasStructure) score = 65;
       else score = 30;
       feedback.push({ dim: dim.name, good: score >= 80,
-        note: `Length: ${wc} words (target ${SC.deliverable.min_words}-${SC.deliverable.max_words}). ${hasStructure ? 'Structure detected.' : 'Consider adding clear sections (Recommendation / Reasons / Risks / Assumptions).'}`
+        note: `Length: ${wc} words (target ${minW2}-${maxW2}). ${hasStructure ? 'Structure detected.' : 'Consider adding clear sections (Recommendation / Reasons / Risks / Assumptions).'}`
       });
     } else if (dim.keywords_positive) {
       const hits = dim.keywords_positive.filter(k => memoLower.includes(k.toLowerCase())).length;
