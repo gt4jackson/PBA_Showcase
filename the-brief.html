@@ -1715,14 +1715,14 @@ function renderLeftPanel() {
       </div>
     `;
   } else {
-    const listHtml = SC.files.map(f => `
+    const listHtml = (SC.files || SC.sources || []).map(f => `
       <button class="file-item ${STATE.selectedFileId === f.id ? 'active' : ''}" onclick="selectFile('${f.id}')">
-        <div class="file-name">${escHtml(f.name)}</div>
-        <div class="file-meta">${escHtml(f.type)} · <span class="file-reliability-${f.reliability}">${f.reliability}</span></div>
+        <div class="file-name">${escHtml(f.name || f.tab_label || f.title || '')}</div>
+        <div class="file-meta">${escHtml(f.type || '')} · <span class="file-reliability-${f.reliability || ''}">${f.reliability || ''}</span></div>
       </button>
     `).join('');
 
-    const selected = SC.files.find(f => f.id === STATE.selectedFileId);
+    const selected = (SC.files || SC.sources || []).find(f => f.id === STATE.selectedFileId);
     const contentHtml = selected
       ? `<div class="file-content-view">${escHtml(selected.content)}</div>`
       : '<div class="empty-state">Select a file.</div>';
@@ -1746,7 +1746,7 @@ function selectEmail(id) {
 
 function selectFile(id) {
   STATE.selectedFileId = id;
-  const file = SC.files.find(f => f.id === id);
+  const file = (SC.files || SC.sources || []).find(f => f.id === id);
   logEvidence('file_opened', { file_id: id, file_name: file?.name, reliability: file?.reliability });
   renderLeftPanel();
 }
@@ -1853,7 +1853,7 @@ function runTool() {
 
 function pickScriptedResponse(toolId, prompt) {
   const pLower = prompt.toLowerCase();
-  const candidates = SC.scripted_responses.filter(r => r.tool_id === toolId);
+  const candidates = (SC.scripted_responses || SC.ai_workbench?.responses || []).filter(r => r.tool_id === toolId);
 
   let best = null;
   let bestScore = 0;
@@ -2004,11 +2004,11 @@ function populateInfoDrawer() {
     <tr><td style="text-transform:capitalize;">${escHtml(k)}</td><td>${escHtml(v)}</td></tr>
   `).join('');
 
-  const toolRows = SC.workbench_tools.map(t => `
-    <tr><td>${t.icon} ${escHtml(t.name)}</td><td>${t.cost}</td><td>${escHtml(t.description)}</td></tr>
+  const toolRows = (SC.workbench_tools || []).map(t => `
+    <tr><td>${t.icon || ''} ${escHtml(t.name)}</td><td>${t.cost}</td><td>${escHtml(t.description)}</td></tr>
   `).join('');
 
-  const trapRows = SC.traps.map(t => `
+  const trapRows = (SC.traps || []).map(t => `
     <tr><td>${escHtml(t.type)}</td><td>${escHtml(t.description)}</td></tr>
   `).join('');
 

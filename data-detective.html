@@ -1036,7 +1036,7 @@ function drawChart() {
 // ── QUESTIONS ───────────────────────────────
 function renderQuestions() {
   const container = document.getElementById('questions-container');
-  container.innerHTML = PACK.questions.map(q => `
+  container.innerHTML = (PACK.questions || []).map(q => `
     <div class="question-card" id="qcard-${q.id}">
       <div class="question-num ${q.type}">${esc(q.label)}</div>
       <div class="question-text">${esc(q.text)}</div>
@@ -1073,7 +1073,7 @@ function submitAnswer(qId) {
 
 function updateProgress() {
   const answered = Object.keys(STATE.answersSubmitted).length;
-  const total = PACK.questions.length;
+  const total = (PACK.questions || []).length;
   document.getElementById('ws-progress').textContent = `${answered} / ${total} answered`;
   document.getElementById('submit-final-btn').disabled = answered < total;
   document.getElementById('submit-bar-info').textContent = answered < total
@@ -1144,7 +1144,7 @@ function scoreRun() {
   let maxPoints = 0;
   const questionScores = {};
 
-  for (const q of PACK.questions) {
+  for (const q of (PACK.questions || [])) {
     const answer = (STATE.answersSubmitted[q.id] || '').toLowerCase();
     const hits = q.scorer.key_concepts.filter(k => answer.includes(k.toLowerCase())).length;
     const lengthOk = answer.length >= q.scorer.length_threshold;
@@ -1197,7 +1197,7 @@ function scoreRun() {
   const answerQuality = maxPoints > 0 ? Math.round((totalPoints / maxPoints) * 100) : 0;
   const composite = Math.round(answerQuality * 0.6 + processScore * 0.4);
 
-  const overallLabel = PACK.overall_labels.find(l => composite >= l.min && composite <= l.max) || PACK.overall_labels[0];
+  const overallLabel = (PACK.overall_labels || []).find(l => composite >= l.min && composite <= l.max) || (PACK.overall_labels || [{}])[0];
 
   return { questionScores, dimScores, answerQuality, processScore, composite, feedback, overallLabel, sorts, filters, charts, noteWords };
 }
@@ -1235,7 +1235,7 @@ function renderResults(r) {
     </div>
   `).join('');
 
-  const tipsHtml = PACK.coaching_tips.map(t => `<li>${esc(t)}</li>`).join('');
+  const tipsHtml = (PACK.coaching_tips || []).map(t => `<li>${esc(t)}</li>`).join('');
 
   document.getElementById('results-container').innerHTML = `
     <div class="results-header">

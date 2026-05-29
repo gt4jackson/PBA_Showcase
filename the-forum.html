@@ -829,7 +829,7 @@ function sendMessage() {
 // ── TRIGGER ENGINE ──
 function checkTriggers(text) {
   const lower = text.toLowerCase();
-  for (const trig of SC.trigger_messages) {
+  for (const trig of (SC.trigger_messages || [])) {
     if (STATE.triggersFired[trig.trigger] && trig.once) continue;
     const match = trig.keywords.some(k => lower.includes(k.toLowerCase()));
     if (match) {
@@ -931,12 +931,12 @@ function openDecision() {
   ol.classList.remove('hidden');
   ol.innerHTML = `<div class="decision-card">
     <h3>Propose Your Decision</h3>
-    <p>Select exactly <strong>2 features</strong> that fit within the ${SC.budget_points}-point budget. Then write a brief rationale.</p>
+    <p>Select exactly <strong>2 features</strong> that fit within the ${SC.budget_points || SC.budget || "available"}-point budget. Then write a brief rationale.</p>
     <div class="decision-options" id="decision-options">
       ${SC.decision_options.map(o => `
         <label class="decision-opt" id="opt-${o.id}">
           <input type="checkbox" value="${o.id}" onchange="updateDecision()">
-          <div><div class="decision-opt-label">${esc(o.name)} <span style="color:var(--text-tertiary)">(${o.points} pts)</span></div>
+          <div><div class="decision-opt-label">${esc(o.name)} <span style="color:var(--text-tertiary)">(${o.points ?? o.cost_k ?? ""} pts)</span></div>
           <div class="decision-opt-desc">${esc(o.desc)}</div></div>
         </label>`).join('')}
     </div>
@@ -956,8 +956,8 @@ function updateDecision() {
   });
 
   const display = document.getElementById('points-display');
-  const overBudget = totalPts > SC.budget_points;
-  display.innerHTML = `Selected: ${totalPts} / ${SC.budget_points} pts ${overBudget ? '<span style="color:var(--rose)">— Over budget!</span>' : ids.length === 2 ? '<span style="color:var(--emerald)">✓ Within budget</span>' : ''}`;
+  const overBudget = SC.budget_points != null && totalPts > SC.budget_points;
+  display.innerHTML = `Selected: ${totalPts}${SC.budget_points != null ? " / " + SC.budget_points + " pts" : ""} ${overBudget ? '<span style="color:var(--rose)">— Over budget!</span>' : ids.length === 2 ? '<span style="color:var(--emerald)">✓ Within budget</span>' : ''}`;
 
   const rationale = document.getElementById('decision-rationale')?.value?.trim() || '';
   document.getElementById('decision-submit-btn').disabled = ids.length !== 2 || overBudget || rationale.length < 10;
@@ -982,7 +982,7 @@ function submitDecision() {
   const featureNames = ids.map(id => SC.decision_options.find(o => o.id === id)?.name).join(' + ');
   addMessage('user', `**My proposal:** ${featureNames} (${totalPts} pts)\n\n${esc(rationale)}`);
 
-  logEvidence('decision_submitted', { features: ids, total_points: totalPts, rationale, within_budget: totalPts <= SC.budget_points });
+  logEvidence('decision_submitted', { features: ids, total_points: totalPts, rationale, within_budget: SC.budget_points == null || totalPts <= SC.budget_points });
 
   // Teammates react
   setTimeout(() => {
@@ -1022,29 +1022,32 @@ function scoreRun() {
   collabDims.engagement = engScore;
 
   // Building
-  const buildHits = PACK.rubric.collaboration.build_keywords.filter(k => allText.match(new RegExp(k, 'i'))).length;
+  const _rubric = PACK.rubric || {};
+  const _collab = _rubric.collaboration || {};
+  const _domain = _rubric.domain || {};
+  const buildHits = (_collab.build_keywords || []).filter(k => allText.match(new RegExp(k, 'i'))).length;
   const buildScore = Math.min(100, repliedTo.size * 20 + buildHits * 12);
   collabDims.building = buildScore;
 
   // Challenging
-  const challengeHits = PACK.rubric.collaboration.challenge_keywords.filter(k => allText.includes(k)).length;
+  const challengeHits = (_collab.challenge_keywords || []).filter(k => allText.includes(k)).length;
   collabDims.challenging = Math.min(100, challengeHits * 15);
 
   // Synthesizing
-  const synthHits = PACK.rubric.collaboration.synthesis_keywords.filter(k => allText.includes(k)).length;
+  const synthHits = (_collab.synthesis_keywords || []).filter(k => allText.includes(k)).length;
   collabDims.synthesizing = Math.min(100, synthHits * 20 + (STATE.decisionSubmitted ? 30 : 0));
 
   const collabComposite = Math.round(Object.values(collabDims).reduce((a, b) => a + b, 0) / 4);
 
   // DOMAIN SCORING
   const domainDims = {};
-  const tradeHits = PACK.rubric.domain.tradeoff_keywords.filter(k => allText.includes(k)).length;
+  const tradeHits = (_domain.tradeoff_keywords || []).filter(k => allText.includes(k)).length;
   domainDims.tradeoff_analysis = Math.min(100, tradeHits * 12);
 
-  const evidHits = PACK.rubric.domain.evidence_keywords.filter(k => allText.includes(k)).length;
+  const evidHits = (_domain.evidence_keywords || []).filter(k => allText.includes(k)).length;
   domainDims.evidence_use = Math.min(100, evidHits * 10);
 
-  const flawHits = PACK.rubric.domain.flaw_keywords.filter(k => allText.includes(k)).length;
+  const flawHits = (_domain.flaw_keywords || []).filter(k => allText.includes(k)).length;
   domainDims.flaw_detection = Math.min(100, flawHits * 15);
 
   // Decision quality
@@ -1055,7 +1058,7 @@ function scoreRun() {
       dqScore += decEvt.within_budget ? 40 : 0;
       dqScore += decEvt.features.length === 2 ? 20 : 0;
       dqScore += decEvt.rationale.length >= 40 ? 20 : 10;
-      const validCombo = PACK.rubric.domain.decision_valid_combos.find(c =>
+      const validCombo = (_domain.decision_valid_combos || []).find(c =>
         c.ids.length === decEvt.features.length && c.ids.every(id => decEvt.features.includes(id)));
       dqScore += validCombo ? 20 : 0;
     }
@@ -1064,7 +1067,8 @@ function scoreRun() {
 
   const domainComposite = Math.round(Object.values(domainDims).reduce((a, b) => a + b, 0) / 4);
   const composite = Math.round((domainComposite + collabComposite) / 2);
-  const overallLabel = PACK.overall_labels.find(l => composite >= l.min && composite <= l.max) || PACK.overall_labels[PACK.overall_labels.length-1];
+  const _ol = PACK.overall_labels || [];
+  const overallLabel = _ol.find(l => composite >= l.min && composite <= l.max) || _ol[_ol.length - 1] || { text: "Task complete." };
 
   // Feedback
   const feedback = [];
