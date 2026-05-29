@@ -847,8 +847,9 @@ const STATE = {
   msgCount: 0,
   queue: [],
   draining: false,
-  history: [],      // conversation history sent to LLM for context
+  history: [],       // conversation history sent to LLM for context
   inFollowUp: false, // true when LLM issued a follow-up for the current question
+  redirectCount: 0,  // off-topic redirects issued for current question (max 2)
 };
 
 // Scores initialized from dimensions in async boot below
@@ -993,6 +994,87 @@ function processNext() {
 function lockInput() { inputField.disabled = true; sendBtn.disabled = true; sendBtn.classList.remove('active'); }
 function unlockInput() { inputField.disabled = false; sendBtn.disabled = false; inputField.focus(); STATE.phase = 'WAITING'; }
 
+// ── OFF-TOPIC DETECTION ──────────────────────────────────────────────────────
+
+const OFF_TOPIC_FOOD = [
+  'steak','porterhouse','ribeye','burger','pizza','taco','burrito','sushi',
+  'sandwich','pasta','salad','chicken','salmon','lobster','shrimp','ramen',
+  'lunch','dinner','breakfast','brunch','snack','dessert','cake','cookie',
+  'hungry','starving','hangry','restaurant','menu','waiter','chef','recipe',
+  'donut','bagel','coffee','beer','wine','cocktail','whiskey','vodka'
+];
+const OFF_TOPIC_RANDOM = [
+  'weather','raining','sunny','hot outside','cold outside',
+  'sports','football','baseball','basketball','soccer','nfl','nba','mlb',
+  'movie','netflix','tv show','episode','season','streaming','spotify',
+  'tired','sleepy','exhausted','bored','distracted',
+  'traffic','commute','parking','uber','lyft',
+  'weekend','vacation','holiday','trip','travel',
+  'my dog','my cat','my kid','my boss','my friend',
+  'instagram','tiktok','twitter','social media','going viral'
+];
+const EVASIVE_PATTERNS = [
+  /^(skip|pass|next|nope|nah|na|n\/a|idk|dunno|no idea|no clue)\.?$/i,
+  /^i (don'?t|do not) (know|care|have a clue|want to)/i,
+  /^(whatever|who cares|doesn'?t matter|not relevant|this is dumb|this is boring)/i,
+  /^(can we skip|can i skip|just skip|move on|next question)/i,
+];
+
+// Redirect message banks — casual, in-persona voice
+const REDIRECTS = {
+  too_short: [
+    "ha, that's brief! 😄 can you give me a little more to work with?",
+    "okay but i need more than that — what do you actually think?",
+    "come on, i know you've got more to say than that 😄",
+  ],
+  evasive: [
+    "no wrong answers here, i promise! just tell me what comes to mind.",
+    "seriously, whatever you think is fine — i'm just curious about your take.",
+    "don't overthink it! share your honest thoughts and we'll roll with it. 😊",
+  ],
+  gibberish: [
+    "okay i think your keyboard got away from you there 😂 want to try again?",
+    "...i'm gonna need that in actual words 😄 give it another shot!",
+    "lol did your cat walk across the keyboard? try that again for real.",
+  ],
+  off_topic: [
+    "haha okay i appreciate the vibe, but let's stay on track 😄 back to my question —",
+    "lol you're trying to distract me! but seriously though —",
+    "ha! love the energy but let's circle back — what do you actually think about",
+  ],
+};
+const REDIRECT_GIVE_UP = [
+  "okay, i'll let that one slide 😄 let's keep it moving!",
+  "fair enough, we'll move on! next one —",
+  "alright, i'll take it 😄 moving on...",
+];
+
+function detectOffTopic(text) {
+  const T = text.trim();
+  const lower = T.toLowerCase();
+  const words = T.split(/\s+/).filter(w => w.length > 0);
+
+  // Single-word responses
+  if (words.length === 1) return 'too_short';
+
+  // Gibberish: no vowels at all, OR 5+ repeated chars
+  if (words.length <= 4 && !/[aeiou]/i.test(T)) return 'gibberish';
+  if (/(.)\1{4,}/.test(T)) return 'gibberish';
+
+  // Evasive patterns
+  if (EVASIVE_PATTERNS.some(p => p.test(T))) return 'evasive';
+
+  // Food & drink
+  if (OFF_TOPIC_FOOD.some(w => lower.includes(w))) return 'off_topic';
+
+  // Random life topics
+  if (OFF_TOPIC_RANDOM.some(w => lower.includes(w))) return 'off_topic';
+
+  return null;
+}
+
+// ── INPUT ────────────────────────────────────────────────────────────────────
+
 async function onUserSend() {
   const text = inputField.value.trim();
   if (!text || STATE.phase !== 'WAITING') return;
@@ -1002,6 +1084,45 @@ async function onUserSend() {
   STATE.phase = 'THINKING';
 
   const q = PACK.questions[STATE.qIndex];
+
+  // ── OFF-TOPIC CHECK ───────────────────────────────────────────────
+  const offType = detectOffTopic(text);
+  if (offType && STATE.redirectCount < 2) {
+    STATE.redirectCount++;
+    const bank = REDIRECTS[offType];
+    let msg = pick(bank);
+    // For clearly off-topic, append a shortened re-ask
+    if (offType === 'off_topic') {
+      const questionText = Array.isArray(q.messages) ? q.messages[0] : q.messages;
+      // Trim to first sentence so it's not too long
+      const shortQ = questionText.split(/[.!?]/)[0].trim();
+      msg = msg + ' ' + shortQ + '?';
+    }
+    logEvidence('off_topic_redirect', { type: offType, response_text: text, redirect_count: STATE.redirectCount });
+    enqueuePersonaMessage(msg, 400);
+    enqueue({ type: 'unlock_input' });
+    drainQueue();
+    return;
+  }
+  if (offType && STATE.redirectCount >= 2) {
+    // Gave it two chances — accept gracefully and move on
+    enqueuePersonaMessage(pick(REDIRECT_GIVE_UP), 300);
+    STATE.redirectCount = 0;
+    STATE.qIndex++;
+    if (STATE.qIndex < PACK.questions.length) {
+      const nextMsg = pick(PACK.questions[STATE.qIndex].messages);
+      STATE.history.push({ role: 'assistant', content: nextMsg });
+      enqueuePersonaMessage(nextMsg, 500);
+      enqueue({ type: 'unlock_input' });
+    } else {
+      enqueue({ type: 'show_results' });
+    }
+    drainQueue();
+    return;
+  }
+  // Valid response — reset redirect counter
+  STATE.redirectCount = 0;
+  // ─────────────────────────────────────────────────────────────────
 
   // Add user message to history before calling LLM
   STATE.history.push({ role: 'user', content: text });
@@ -1079,6 +1200,7 @@ async function onUserSend() {
   } else {
     // ── ADVANCE PATH ────────────────────────────────────────────────
     STATE.inFollowUp = false;
+    STATE.redirectCount = 0;
     STATE.qIndex++;
     enqueuePersonaMessage(replyText, 200);
 
@@ -1210,6 +1332,7 @@ function startConversation() {
   STATE.taskStartTime = Date.now();
   STATE.history = [];
   STATE.inFollowUp = false;
+  STATE.redirectCount = 0;
   logEvidence('task_start', { construct: PACK.construct_id, persona: PACK.persona.name });
   addTimestamp();
 
