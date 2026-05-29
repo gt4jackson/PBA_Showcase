@@ -1,0 +1,851 @@
+{
+  "construct_id": "product_launch_ai",
+  "construct_name": "Product Launch Planning with AI",
+  "construct_description": "The ability to decompose a complex product launch into workstreams, use AI to draft communications and enablement materials, and catch AI errors before they ship.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "Medium (formative / demonstration)",
+    "temporal": "Single-session, 20-25 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated workplace)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "task_decomposition",
+      "name": "Task Decomposition",
+      "icon": "🧩",
+      "description": "Breaking a messy problem into logical, AI-solvable subtasks.",
+      "color": "#10b981",
+      "weight": 0.4
+    },
+    {
+      "id": "prompt_engineering",
+      "name": "Prompt Engineering",
+      "icon": "✏️",
+      "description": "Writing clear, specific prompts that get useful results from AI tools.",
+      "color": "#3b82f6",
+      "weight": 0.3
+    },
+    {
+      "id": "tool_selection",
+      "name": "Tool Selection",
+      "icon": "🛠️",
+      "description": "Picking the right tool for each subtask (chat, search, calc, expert).",
+      "color": "#f59e0b",
+      "weight": 0.2
+    },
+    {
+      "id": "critical_evaluation",
+      "name": "Critical Evaluation",
+      "icon": "🔍",
+      "description": "Spotting hallucinations, bias, errors, and unreliable outputs.",
+      "color": "#f43f5e",
+      "weight": 0.1
+    }
+  ],
+  "scenario": {
+    "id": "product_launch",
+    "title": "The Product Launch Plan",
+    "client": "Vellum Analytics",
+    "estimated_minutes": 25,
+    "budget_tokens": 130,
+    "briefing": "Vellum Analytics is a B2B SaaS company launching a new feature called 'Forecast Studio' — an AI-powered demand forecasting module for their existing supply-chain platform. The PM needs you to produce three deliverables: (1) a prioritized launch task list, (2) a draft announcement email to existing customers, and (3) a short FAQ for the sales team. The brief is intentionally vague — you'll need to ask clarifying questions and chain multiple AI calls to build a solid plan. Not all the information in the files is consistent, and the PM hasn't made every decision yet.",
+    "inbox": [
+      {
+        "id": "email_brief",
+        "from": "Raj Patel <raj@vellumanalytics.example>",
+        "subject": "Launch plan for Forecast Studio — need your help",
+        "body": "Hey, thanks for picking this up. We're launching Forecast Studio in about 4 weeks. I need three things from you:\n\n1. A prioritized task list for launch (what needs to happen, in what order)\n2. A draft customer announcement email (aimed at our existing ~2,000 customers)\n3. A short FAQ for the sales team (5-8 questions they'll get from prospects)\n\nSome context:\n- Forecast Studio uses ML to predict demand 90 days out\n- It integrates into our existing Supply Chain Hub dashboard\n- Pricing hasn't been finalized — it might be included in Enterprise tier or sold as an add-on\n- Beta testers loved the accuracy but flagged the UI as 'not intuitive'\n- We're still deciding whether to do a webinar, a blog post, or both for the launch\n\nI know this is vague — part of the job is figuring out what questions to ask. The files panel has what I could pull together. Hit me with questions if you need anything. — Raj"
+      },
+      {
+        "id": "email_beta",
+        "from": "Sana Kwon <sana@vellumanalytics.example>",
+        "subject": "Beta feedback summary for Forecast Studio",
+        "body": "Hey — Raj asked me to share the beta highlights with you. Here's the TLDR:\n\n- 14 beta customers over 6 weeks\n- Accuracy: 92% within ±5% of actual demand (huge win)\n- NPS from beta group: 72 (very strong)\n- Top complaint: UI flow for setting up forecast parameters is confusing (8 of 14 flagged this)\n- Second complaint: no way to export forecasts to CSV/Excel yet\n- One beta customer (Meridian Logistics) saw a 23% reduction in overstock after using it for 4 weeks\n\nHappy to answer questions. — Sana"
+      },
+      {
+        "id": "email_conflict",
+        "from": "Tomas Reyes <tomas@vellumanalytics.example>",
+        "subject": "Heads up — pricing conflict",
+        "body": "FYI: the sales team has been telling prospects Forecast Studio will be free for Enterprise customers, but finance wants it as a paid add-on ($299/mo). Raj hasn't decided yet. Don't commit to pricing in any customer-facing materials — just say 'pricing details coming soon' or something like that. — Tomas"
+      }
+    ],
+    "files": [
+      {
+        "id": "file_feature_spec",
+        "name": "forecast_studio_spec.txt",
+        "type": "reference",
+        "reliability": "reliable",
+        "content": "FORECAST STUDIO — FEATURE SPECIFICATION (v2.1)\n\nOverview: AI-powered demand forecasting module for Vellum Supply Chain Hub.\n\nCore capabilities:\n- 90-day rolling demand forecast using proprietary ML model\n- Integrates with existing inventory, PO, and sales data in Supply Chain Hub\n- Supports SKU-level and category-level forecasting\n- Confidence intervals displayed for each prediction\n- Alert system for predicted stockouts or overstock situations\n\nKnown limitations (as of v2.1):\n- No CSV/Excel export yet (planned for v2.2, ~6 weeks post-launch)\n- UI for parameter setup rated 'confusing' by 57% of beta testers\n- Minimum 6 months of historical data required for reliable forecasts\n- Model retrains weekly; daily retraining planned for Q3\n\nIntegration: Available via existing Supply Chain Hub dashboard. No separate login needed.\n\nTarget users: Supply chain managers, demand planners, ops directors.\n\nBeta results: 92% accuracy (±5%), NPS 72, 14 customers tested over 6 weeks."
+      },
+      {
+        "id": "file_competitor",
+        "name": "competitor_analysis.txt",
+        "type": "reference",
+        "reliability": "partially_outdated",
+        "content": "COMPETITIVE LANDSCAPE — DEMAND FORECASTING (Last updated: 8 months ago)\n\n1. Kinaxis RapidResponse — Enterprise-grade, $$$. Strong ML. Long implementation.\n2. Blue Yonder (Panasonic) — Market leader. Heavy. Best for huge retailers.\n3. Anaplan — Flexible planning platform. Good but not specialized in demand forecasting.\n4. Inventory Planner (Shopify ecosystem) — SMB focused. Simple. Limited ML.\n5. Foresight AI — Startup. Similar positioning to Forecast Studio. Raised $12M Series A 8 months ago. Watch closely.\n\nNOTE: Foresight AI has since launched a 'free tier' for startups. This analysis may be outdated.\n\nVellum differentiator: Forecast Studio is the only demand forecasting tool natively embedded in an existing supply-chain platform, eliminating integration overhead.\n\n[This document has not been updated in 8 months.]"
+      },
+      {
+        "id": "file_pricing_options",
+        "name": "pricing_options_draft.txt",
+        "type": "internal",
+        "reliability": "draft",
+        "content": "FORECAST STUDIO PRICING — OPTIONS UNDER DISCUSSION (DRAFT — NOT FINALIZED)\n\nOption A: Included in Enterprise tier\n- Pro: Drives Enterprise upgrades; simple messaging\n- Con: No incremental revenue from existing Enterprise customers\n- Sales team preference: this one\n\nOption B: Paid add-on ($299/month)\n- Pro: Direct revenue; signals premium value\n- Con: Friction for existing customers; sales team pushback\n- Finance preference: this one\n\nOption C: Free for Enterprise, paid add-on for Professional tier ($199/month)\n- Pro: Compromise; rewards Enterprise while monetizing Professional\n- Con: Complex messaging\n\nDecision expected: TBD (Raj + CFO meeting next Tuesday)\n\nIMPORTANT: Do NOT communicate pricing externally until decision is made."
+      },
+      {
+        "id": "file_customer_segments",
+        "name": "customer_segments.txt",
+        "type": "data",
+        "reliability": "reliable",
+        "content": "VELLUM ANALYTICS CUSTOMER BASE\n\nTotal active customers: ~2,000\n\nTier breakdown:\n- Enterprise: 340 customers (17%) — $1,200+/mo, full platform access\n- Professional: 1,180 customers (59%) — $399/mo, core features\n- Starter: 480 customers (24%) — $99/mo, basic features\n\nIndustry breakdown:\n- Retail/E-commerce: 42%\n- Manufacturing: 28%\n- Food & Beverage: 15%\n- Other (pharma, logistics, etc.): 15%\n\nEngagement: 68% MAU across all tiers. Enterprise has 89% MAU.\n\nKey insight: Retail/e-commerce customers have the highest churn (4.2%/mo) and the most demand for forecasting tools. Manufacturing customers have the lowest churn (1.1%/mo)."
+      }
+    ],
+    "workbench_tools": [
+      {
+        "id": "chat_llm",
+        "name": "Chat AI",
+        "description": "General-purpose chat assistant. Good for drafting, brainstorming, and structuring plans. Can make things up.",
+        "cost_per_use": 5,
+        "reliability": 0.75,
+        "best_for": [
+          "writing",
+          "brainstorming",
+          "planning"
+        ]
+      },
+      {
+        "id": "web_search",
+        "name": "Web Search",
+        "description": "Searches the web for current information. Good for competitor info, market data, and best practices.",
+        "cost_per_use": 8,
+        "reliability": 0.9,
+        "best_for": [
+          "facts",
+          "competitors",
+          "best_practices"
+        ]
+      },
+      {
+        "id": "calculator",
+        "name": "Calculator",
+        "description": "Exact numeric computation. Use for math, not a chat LLM.",
+        "cost_per_use": 1,
+        "reliability": 1.0,
+        "best_for": [
+          "math",
+          "computation"
+        ]
+      },
+      {
+        "id": "expert",
+        "name": "Human Expert",
+        "description": "Consult a domain expert. Expensive but reliable for strategy and judgment calls.",
+        "cost_per_use": 25,
+        "reliability": 0.98,
+        "best_for": [
+          "judgment",
+          "strategy",
+          "edge_cases"
+        ]
+      }
+    ],
+    "scripted_responses": [
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "task",
+          "list",
+          "launch",
+          "plan",
+          "prioritize"
+        ],
+        "response": "Here's a prioritized launch task list for Forecast Studio:\n\nWeek 1-2 (Immediate):\n1. Finalize pricing decision (blocker for all customer-facing content)\n2. Address top UI complaint — improve parameter setup flow (even a quick-fix helps)\n3. Draft customer announcement email\n4. Draft sales team FAQ\n5. Set up tracking/analytics for feature adoption\n\nWeek 2-3:\n6. Decide launch content format (webinar, blog post, or both)\n7. Create help docs / getting-started guide\n8. Brief sales team + do internal demo\n9. Prepare support team for incoming questions\n10. Set up in-app onboarding tooltip flow\n\nWeek 3-4:\n11. Send customer announcement email\n12. Publish blog post / host webinar\n13. Enable feature for all eligible customers\n14. Monitor adoption metrics and support ticket volume\n15. Schedule 2-week post-launch retro\n\nNote: Pricing (#1) is the critical blocker. Nothing customer-facing can go out until it's resolved.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "announcement",
+          "email",
+          "customer",
+          "draft"
+        ],
+        "response": "Here's a draft customer announcement email:\n\nSubject: Introducing Forecast Studio — predict demand before it happens\n\nHi [First Name],\n\nWe're excited to announce Forecast Studio, now available inside your Vellum Supply Chain Hub.\n\nForecast Studio uses machine learning to predict demand up to 90 days out — at the SKU or category level — so you can reduce stockouts, cut overstock, and plan with confidence.\n\nWhat you get:\n- 90-day rolling demand forecasts powered by your own data\n- Stockout and overstock alerts before they happen\n- Confidence intervals so you know how much to trust each prediction\n- One beta customer reduced overstock by 23% in just 4 weeks\n\nForecast Studio lives right inside your existing dashboard — no new logins, no setup hassle.\n\n[Pricing details coming soon / Included with your Enterprise plan / Available as an add-on — INSERT CORRECT OPTION]\n\nGet started: Log into Supply Chain Hub and click 'Forecast Studio' in the left nav.\n\nQuestions? Reply to this email or check out our FAQ [link].\n\nBest,\nThe Vellum Analytics Team\n\n---\nNote: You'll need to fill in the pricing line once the decision is made. Also consider adding a CTA for a webinar if you decide to do one.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "faq",
+          "sales",
+          "questions"
+        ],
+        "response": "Here's a draft Sales Team FAQ for Forecast Studio:\n\n1. What is Forecast Studio?\nAn AI-powered demand forecasting tool built into Vellum Supply Chain Hub. It predicts demand 90 days out at SKU or category level.\n\n2. How accurate is it?\n92% accuracy within ±5% in beta testing with 14 customers over 6 weeks.\n\n3. How much does it cost?\n[PRICING TBD — do not quote pricing until finalized. Say: 'Pricing details are being finalized — I'll have specifics for you shortly.']\n\n4. Does the customer need to do anything to set it up?\nNo separate install. It's in the existing Supply Chain Hub dashboard. They need at least 6 months of historical data for reliable forecasts.\n\n5. Can customers export forecasts?\nNot yet — CSV/Excel export is coming in v2.2 (~6 weeks post-launch). For now, data is viewable in-dashboard.\n\n6. What if customers say the UI is confusing?\nWe know the parameter setup flow needs improvement — it's being worked on. Point them to the getting-started guide and offer a quick demo call.\n\n7. Who is this best for?\nSupply chain managers, demand planners, and ops directors — especially in retail/e-commerce and manufacturing.\n\n8. What about competitors like Foresight AI?\nOur key differentiator is native integration — Forecast Studio lives inside Supply Chain Hub, so there's zero integration overhead. Standalone tools require months of implementation.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "pricing",
+          "include",
+          "enterprise",
+          "add-on"
+        ],
+        "response": "I'd suggest the following for the pricing section:\n\nSince pricing hasn't been finalized, use placeholder language in all customer-facing materials: 'Pricing details coming soon' or 'Contact your account manager for pricing information.'\n\nDo NOT commit to 'free for Enterprise' or '$299/mo add-on' — both are still under discussion per Tomas's email. The decision is expected after Raj's meeting with the CFO next Tuesday.\n\nFor the sales FAQ, I'd recommend: 'Pricing is being finalized. Please direct pricing questions to your manager until we have official numbers.'",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "pricing",
+          "free",
+          "enterprise"
+        ],
+        "response": "Based on the information I have, Forecast Studio will be included free for all Enterprise tier customers. Enterprise customers ($1,200+/mo) get full access at no additional cost. Professional tier customers can add it for $299/month.",
+        "is_hallucination": true,
+        "trap_id": "pricing_leak"
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "pricing",
+          "$299"
+        ],
+        "response": "The confirmed pricing for Forecast Studio is $299/month as a paid add-on for all tiers. This has been approved by finance.",
+        "is_hallucination": true,
+        "trap_id": "pricing_leak"
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "clarify",
+          "question",
+          "ask",
+          "raj",
+          "unclear",
+          "ambiguous"
+        ],
+        "response": "Great instinct to identify what's unclear. Here are the key open questions I'd flag:\n\n1. Pricing: What's the final pricing model? (This is the #1 blocker — you can't write customer-facing content without it)\n2. Launch content: Webinar, blog post, or both? Who's producing it?\n3. UI fix timeline: Will the parameter setup UI be improved before launch, or is it launching as-is?\n4. CSV export: Should we mention the upcoming export feature in the announcement, or keep it quiet until it's ready?\n5. Segmentation: Are we announcing to all 2,000 customers at once, or phasing by tier?\n6. Support readiness: Has the support team been briefed? Do they need new playbooks?\n\nI'd recommend getting answers to #1 and #3 before drafting any customer-facing materials.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "help",
+          "start",
+          "begin",
+          "approach"
+        ],
+        "response": "Good idea to plan your approach. Here's what I'd suggest:\n\n1. Read all the emails and files to understand the full picture\n2. Identify what's unclear or conflicting (there's a pricing conflict and some vague areas)\n3. Use the Planner to break the three deliverables into subtasks\n4. Draft each deliverable, using tools as needed\n5. Be careful about pricing — it's not finalized\n\nThe three deliverables are:\n- Prioritized launch task list\n- Customer announcement email\n- Sales team FAQ (5-8 questions)\n\nWant me to help with any specific one?",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "webinar",
+          "blog",
+          "content",
+          "launch"
+        ],
+        "response": "For the launch content decision, here are the trade-offs:\n\nWebinar:\n- Pro: Interactive, lets you demo the UI, builds excitement, captures leads\n- Con: Requires more prep (slides, speaker, scheduling), lower attendance than email\n- Best if: You want to address the UI confusion head-on with a live demo\n\nBlog post:\n- Pro: Evergreen, SEO value, easy to share, lower effort\n- Con: Passive, no interaction, can't demo\n- Best if: You want a permanent reference + SEO\n\nBoth:\n- Pro: Maximum reach. Blog for SEO + reference, webinar for engagement\n- Con: More work. Only worth it if you have bandwidth\n\nRecommendation: Do both if possible. The webinar addresses the UI concern directly (live demo), and the blog post serves as a lasting reference. If forced to pick one, go webinar — the UI concern makes live demo valuable.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "ui",
+          "confusing",
+          "parameter",
+          "setup"
+        ],
+        "response": "The beta feedback is clear: 8 of 14 testers (57%) found the parameter setup UI confusing. This is a significant issue for launch.\n\nOptions:\n1. Delay launch to fix the UI (probably not feasible in 4 weeks)\n2. Launch as-is with a strong getting-started guide and in-app tooltips\n3. Quick-fix the worst pain points + add tooltips (best compromise)\n\nFor the announcement email: I'd avoid mentioning UI complexity. For the FAQ: acknowledge it honestly and point to help resources. For the task list: prioritize the UI quick-fix in Week 1-2.\n\nThe 23% overstock reduction from Meridian Logistics is a strong counterbalance — lead with outcomes in messaging.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "export",
+          "csv",
+          "excel"
+        ],
+        "response": "CSV/Excel export is planned for v2.2, roughly 6 weeks after launch. For the announcement email, I'd recommend NOT promising it — just focus on what's available now. For the sales FAQ, be transparent: 'Export is coming in the next update. For now, forecasts are viewable in the dashboard.'\n\nPromising features that aren't shipped yet can create expectations you can't meet on day one.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "segment",
+          "tier",
+          "rollout",
+          "phase"
+        ],
+        "response": "Consider a phased rollout by tier:\n\nPhase 1 (Launch day): Enterprise customers (340)\n- Highest engagement (89% MAU), most likely to adopt\n- Can serve as internal proof points for the next wave\n\nPhase 2 (1-2 weeks later): Professional customers (1,180)\n- Largest segment, pricing sensitivity matters here\n- Let Enterprise feedback surface any issues first\n\nPhase 3 (Optional): Starter customers (480)\n- Depends on pricing model — may not be available to this tier\n\nAlternative: Launch to all simultaneously with tier-specific messaging. Simpler but riskier if issues emerge.\n\nNote: Raj hasn't specified a rollout strategy, so you may want to flag this as an open question and recommend one.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "summarize",
+          "files",
+          "data",
+          "reference"
+        ],
+        "response": "Here's a summary of your reference materials:\n\n1. Feature Spec (v2.1) — 90-day ML demand forecasting, integrates into Supply Chain Hub. Known issues: confusing UI (57% of beta), no CSV export yet, needs 6 months of historical data.\n\n2. Competitor Analysis (8 months old!) — Main competitors: Kinaxis, Blue Yonder, Anaplan, Inventory Planner, Foresight AI. Key differentiator: native integration. Note: Foresight AI has since launched a free tier.\n\n3. Pricing Options (DRAFT) — Three options under discussion. NOT finalized. Sales wants Option A (included in Enterprise), Finance wants Option B ($299 add-on). Decision pending.\n\n4. Customer Segments — 2,000 customers: 17% Enterprise, 59% Professional, 24% Starter. Retail/e-commerce has highest churn AND most demand for forecasting.\n\nKey conflicts/gaps:\n- Pricing is unresolved (biggest blocker)\n- Competitor analysis is 8 months stale\n- UI issue is acknowledged but unfixed\n- No rollout strategy specified",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "competitor",
+          "foresight",
+          "differentiat"
+        ],
+        "response": "Key competitive positioning for Forecast Studio vs. alternatives:\n\n1. vs. Foresight AI (closest competitor): Vellum's advantage is native integration — no implementation project needed. Foresight requires data connectors and separate onboarding. However, Foresight now has a free tier which could attract price-sensitive prospects.\n\n2. vs. Kinaxis/Blue Yonder: These are enterprise-heavy solutions with long implementation cycles (6-12 months) and high costs. Forecast Studio is lightweight and already integrated.\n\n3. vs. Anaplan: Anaplan is a general planning platform, not specialized in demand forecasting. Forecast Studio is purpose-built.\n\nNote: The competitor analysis is 8 months old. I'd recommend a quick web search to check for any major changes.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "foresight ai",
+          "demand forecasting"
+        ],
+        "response": "Foresight AI (foresight.ai) has been active since their $12M Series A. Recent developments: launched a free tier for companies with <$5M revenue, added Shopify integration, and published case studies claiming 88% forecast accuracy. They're positioning aggressively against legacy tools but their free tier is limited (30-day forecasts vs. Forecast Studio's 90-day). No native supply-chain platform integration — requires standalone setup.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "saas",
+          "product launch",
+          "best practice",
+          "announcement"
+        ],
+        "response": "Best practices for B2B SaaS feature launches:\n1. Internal enablement first (sales, support, CS teams briefed before external announcement)\n2. Phased rollout to catch issues early (power users first, then broader base)\n3. Clear, benefit-focused messaging (lead with outcomes, not features)\n4. Multiple content formats (email + blog + webinar covers different learning styles)\n5. Social proof from beta (case studies, quotes, metrics)\n6. Prepared FAQ for sales and support teams\n7. In-app guidance for discoverability (tooltips, banners, modals)\n8. Defined success metrics and monitoring plan\n9. Post-launch retro scheduled in advance",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "demand forecasting",
+          "market",
+          "saas"
+        ],
+        "response": "The demand forecasting software market is estimated at $7-8B globally (2024), growing at ~12% CAGR. Key trends: AI/ML adoption accelerating, shift from legacy on-prem to cloud-native SaaS, increasing demand from mid-market companies (not just enterprise). Supply chain disruptions in recent years have driven urgency for better forecasting tools.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "competitor",
+          "kinaxis",
+          "blue yonder",
+          "demand"
+        ],
+        "response": "Recent competitor activity in demand forecasting:\n- Kinaxis: Released RapidResponse v14 with enhanced ML capabilities. Remains enterprise-focused ($100K+ annual contracts).\n- Blue Yonder: Acquired by Panasonic. Strong in retail. Heavy implementation (avg 9 months).\n- Anaplan: Pivoting more toward connected planning. Not deepening forecasting-specific features.\n- Inventory Planner: Growing in Shopify ecosystem. Very SMB. No ML.\n- Foresight AI: Most direct competitor. Free tier launched. 88% accuracy claim. No native platform integration.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "enterprise",
+          "customer",
+          "revenue"
+        ],
+        "response": "Enterprise tier:\n- 340 customers × $1,200/mo = $408,000/mo = $4,896,000/yr\n\nProfessional tier:\n- 1,180 customers × $399/mo = $470,820/mo = $5,649,840/yr\n\nStarter tier:\n- 480 customers × $99/mo = $47,520/mo = $570,240/yr\n\nTotal estimated ARR: ~$11.1M\n\nIf Forecast Studio is a $299/mo add-on and 20% of Enterprise + 10% of Professional adopt:\n- Enterprise: 68 × $299 = $20,332/mo\n- Professional: 118 × $299 = $35,282/mo\n- Total incremental: $55,614/mo = $667,368/yr (~6% revenue uplift)",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "beta",
+          "accuracy",
+          "nps"
+        ],
+        "response": "Beta metrics:\n- Accuracy: 92% within ±5% (14 customers, 6 weeks)\n- NPS: 72 (considered 'excellent' — above 50 is great, above 70 is world-class)\n- UI complaint rate: 8/14 = 57%\n- Overstock reduction (Meridian case): 23%\n\nFor comparison:\n- Industry average NPS for B2B SaaS: ~30-40\n- Vellum beta NPS of 72 is roughly 2x industry average",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "churn",
+          "retail",
+          "manufacturing"
+        ],
+        "response": "Churn by segment:\n- Retail/e-commerce: 4.2%/mo = ~40% annual churn (very high)\n  - At 42% of 2,000 = 840 retail customers\n  - Losing ~35/month\n- Manufacturing: 1.1%/mo = ~12.5% annual churn (acceptable)\n  - At 28% of 2,000 = 560 manufacturing customers\n  - Losing ~6/month\n\nRetail customers have 3.8x higher churn than manufacturing. If Forecast Studio reduces retail churn even by 1 percentage point, that saves ~8 customers/month = ~$38K/yr in retained revenue (at avg $399/mo).",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "launch",
+          "strategy",
+          "recommend"
+        ],
+        "response": "My recommendation for the Forecast Studio launch:\n\n1. Pricing: Don't include any pricing in customer-facing materials until Raj finalizes. Use 'details coming soon.' This is a hard requirement.\n\n2. Rollout: Phase it — Enterprise first (they're the power users and most engaged), then Professional 1-2 weeks later. This catches issues early.\n\n3. UI concern: Be transparent in the FAQ but lead with outcomes (92% accuracy, 23% overstock reduction). Launch with enhanced tooltips/onboarding. Don't delay launch for a full UI redesign.\n\n4. Content: Do both webinar and blog. Webinar demos the UI live (addresses confusion), blog post is the SEO/reference asset.\n\n5. Critical path: Pricing decision → internal enablement → customer email → webinar/blog → monitor. Nothing customer-facing until pricing is locked.\n\n6. Measure: Track activation rate (how many eligible customers enable Forecast Studio in week 1), time-to-first-forecast, and NPS at 30 days.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "pricing",
+          "decision",
+          "recommend"
+        ],
+        "response": "I can't make the pricing decision for you — that's Raj's call with the CFO. But here's a framework:\n\nOption C (free for Enterprise, $199 add-on for Professional) is the best compromise:\n- Rewards your highest-value customers (drives retention)\n- Generates incremental revenue from the largest segment (1,180 Professional customers)\n- The lower price point ($199 vs $299) reduces adoption friction\n\nHowever: do NOT put any pricing in external materials until the decision is final. The worst outcome is publishing a price and having to walk it back.\n\nFor your deliverables: use placeholder language like 'pricing details coming soon.' Flag it as an open item in the task list.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "competitor",
+          "positioning"
+        ],
+        "response": "Your competitive positioning should lean heavily on 'native integration.' Here's the messaging framework:\n\n'Unlike standalone forecasting tools that require months of implementation and data migration, Forecast Studio is built right into Vellum Supply Chain Hub. Your data is already there. Just turn it on.'\n\nThis neutralizes the biggest advantage of competitors (Foresight AI's free tier, Kinaxis's deep analytics) by making the switching cost argument. Time-to-value is your killer differentiator — a customer can get a forecast in minutes, not months.\n\nFor the FAQ, prepare a Foresight AI comparison since sales will definitely face it. Lead with: (1) 90-day vs 30-day forecast window, (2) native integration vs standalone, (3) 92% accuracy in real beta data.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "all",
+          "three",
+          "deliverable",
+          "everything"
+        ],
+        "response": "I can help draft all three deliverables, but I'd recommend tackling them in order:\n\n1. Task list first — it forces you to think through the whole launch\n2. FAQ second — it surfaces the hard questions you need to answer\n3. Announcement email last — it's the customer-facing piece and benefits from the thinking in #1 and #2\n\nWant me to start with the task list?",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "beta",
+          "result",
+          "case study",
+          "meridian"
+        ],
+        "response": "The beta results are strong and you should lead with them:\n\n- 92% accuracy (±5%) — this is the headline stat\n- NPS 72 — world-class for B2B SaaS\n- 23% overstock reduction for Meridian Logistics in 4 weeks — concrete ROI story\n- 14 customers tested over 6 weeks — credible sample for a beta\n\nFor the announcement email, I'd lead with the Meridian case: 'One beta customer reduced overstock by 23% in 4 weeks.' Concrete beats abstract.\n\nFor the FAQ, prepare to answer: 'What were the beta results?' with the full metrics.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "limitation",
+          "known",
+          "issue",
+          "caveat"
+        ],
+        "response": "Known limitations to be transparent about (in appropriate contexts):\n\n1. UI confusion — 57% of beta testers flagged parameter setup. For FAQ: acknowledge + offer help resources.\n2. No CSV export — coming in v2.2 (~6 weeks). For FAQ: be upfront, don't promise a date.\n3. 6-month data minimum — customers with less history won't get reliable forecasts. For FAQ: state clearly.\n4. Weekly model retraining — daily planned for Q3. For FAQ: mention if asked, don't lead with it.\n\nFor the announcement email: focus on benefits and outcomes, not limitations. For the FAQ: be honest about all of them. Sales teams lose trust when they're caught off-guard.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "task list",
+          "priorities",
+          "order",
+          "timeline"
+        ],
+        "response": "Here's a suggested task list for the launch:\n\n1. Finalize pricing (BLOCKER — all other materials depend on this)\n2. Create sales enablement materials and FAQ\n3. Brief the support team on common questions\n4. Draft and review announcement email\n5. Set up monitoring dashboards for launch day\n6. Send announcement to existing customers\n7. Publish on website and social channels\n8. Monitor feedback and support tickets\n\nPricing must be decided before you can complete the FAQ or email — it's the critical path.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "announcement",
+          "email",
+          "draft",
+          "customer"
+        ],
+        "response": "For the announcement email, focus on benefits, not features:\n\n- Lead with the customer pain point (forecasting accuracy, overstock reduction)\n- Cite the beta results (92% accuracy, 23% overstock reduction)\n- Keep it concise — customers scan, they don't read\n- Include a clear CTA (try it, learn more, book a demo)\n- Do NOT include specific pricing — use 'contact us for pricing' or 'pricing details coming soon' since it's not finalized\n\nAvoid the trap of including the $299/$199 numbers from the internal emails — those aren't confirmed.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "beta",
+          "results",
+          "data",
+          "metrics"
+        ],
+        "response": "From the files, the beta results are:\n- 92% forecast accuracy (vs. industry average ~60-70%)\n- 23% reduction in overstock for beta customers\n- NPS of 72 (excellent — anything above 50 is great)\n- 14 beta customers participated\n\nThese are strong numbers. Use them in the announcement email and FAQ. The 92% accuracy and 23% overstock reduction are your headline stats.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "pricing",
+          "$299",
+          "$199",
+          "cost",
+          "how much"
+        ],
+        "response": "Based on the emails, pricing is being discussed at $299/month for standard and $199/month for existing customers. However — and this is important — the pricing email from the VP of Sales says 'these are proposed numbers, NOT finalized. Do not share externally until approved by the pricing committee.'\n\nDo not include specific pricing in any customer-facing materials. Use placeholder language: 'Pricing details coming soon' or 'Contact your account manager for pricing.'",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "competitor",
+          "comparison",
+          "DataPulse",
+          "rival"
+        ],
+        "response": "The competitive analysis file mentions DataPulse as the main competitor. However, note the file header: the analysis is from 6 months ago. Competitor positioning, pricing, and features can change significantly in that timeframe.\n\nIn your FAQ, you can reference competitive advantages (accuracy, ease of setup) but avoid citing specific competitor pricing or features that may be outdated. Focus on your own strengths rather than attacking competitors with potentially stale data.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "faq",
+          "questions",
+          "sales",
+          "support"
+        ],
+        "response": "Key FAQ questions to address:\n\n1. What does DemandSense do? (elevator pitch)\n2. How accurate is it? (cite 92% from beta)\n3. How much does it cost? (pricing TBD — use placeholder)\n4. How does it compare to [competitor]? (focus on your strengths)\n5. How long does setup take?\n6. What data integrations are supported?\n7. Can I export forecasts?\n8. Is there a free trial?\n9. What about data security/privacy?\n10. Who are the beta customers? (anonymize unless you have permission)",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "three",
+          "deliverables",
+          "parts",
+          "package"
+        ],
+        "response": "The launch plan should have 3 parts:\n\n1. **Task List** — Prioritized timeline of what needs to happen before and during launch. Include owners and deadlines.\n\n2. **Announcement Email** — Customer-facing email highlighting benefits, beta results, and CTA. Remember: no specific pricing.\n\n3. **Sales FAQ** — Q&A document for the sales team covering product, pricing (with caveats), competitive positioning, and common objections.\n\nMake sure all three are consistent — don't put different claims in the email vs. FAQ.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "product launch",
+          "email",
+          "best practice",
+          "announcement"
+        ],
+        "response": "Product launch email best practices: (1) Subject line under 50 chars with urgency or curiosity. (2) Lead with the customer benefit, not the feature. (3) Include 1-2 proof points (metrics, testimonials). (4) Single clear CTA. (5) Keep body under 200 words. (6) Mobile-optimized. (7) Send Tuesday-Thursday, 10am-2pm. (8) A/B test subject lines. Average open rate for product announcements: 20-25%.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "NPS",
+          "72",
+          "benchmark",
+          "good"
+        ],
+        "response": "NPS benchmarks by industry: SaaS/B2B software average NPS is 30-40. An NPS of 72 is considered 'world-class' — companies like Apple and USAA achieve similar scores. For a beta product, 72 is exceptionally strong and worth highlighting in marketing materials. However, note that beta NPS often decreases at scale as the customer base diversifies beyond early adopters.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "overstock",
+          "savings",
+          "reduction",
+          "ROI"
+        ],
+        "response": "Overstock reduction ROI estimate:\nIf average customer has $500K in annual inventory:\n  23% overstock reduction = $115,000 saved per year\n  At $299/month ($3,588/year): ROI = 32x\n  At $199/month ($2,388/year): ROI = 48x\n\nNote: These are rough estimates. Actual savings vary by customer size and industry.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "pricing",
+          "not finalized",
+          "what to do",
+          "placeholder"
+        ],
+        "response": "Never put unfinalized pricing in customer-facing materials. If pricing changes after you've published, you create legal and trust issues. Use these placeholder approaches:\n\n- FAQ: 'Pricing will be announced at launch. Contact your account manager for early access pricing.'\n- Email: 'Competitive pricing available — talk to your account rep.'\n- Task list: 'BLOCKER: Pricing approval required before email and FAQ can be finalized.'\n\nMake it clear in your task list that pricing is a dependency for the other deliverables.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "support",
+          "team",
+          "brief",
+          "prepare",
+          "ready"
+        ],
+        "response": "The support team needs to be briefed before launch. Here's a prep plan:\n\n1. Schedule a 30-minute internal demo of Forecast Studio (let support try it)\n2. Share the FAQ document — they'll get the same questions from customers\n3. Prepare a 'known issues' doc: UI confusion for parameter setup, no CSV export yet, 6-month data minimum\n4. Set up a dedicated Slack channel for Forecast Studio support questions\n5. Create canned responses for the top 5 expected questions\n6. Brief them on pricing status: 'Pricing is being finalized. Direct customers to their account manager.'\n\nSupport readiness is often overlooked in feature launches but it's critical — unprepared support teams create a terrible first impression.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "in-app",
+          "onboarding",
+          "tooltip",
+          "guide"
+        ],
+        "response": "Given that 57% of beta testers found the parameter setup UI confusing, in-app onboarding is critical. Suggestions:\n\n1. First-run tooltip tour: Guide users through the setup flow step-by-step\n2. Interactive walkthrough: Highlight each field with explanations\n3. Sample/demo forecast: Pre-load a demo dataset so users can see what the output looks like before setting up their own\n4. Help icons: Add ⓘ tooltips next to every parameter field\n5. 'Getting Started' banner: Link to the help docs from inside the Forecast Studio dashboard\n\nThis should be on the task list in Week 2 — before the customer announcement goes out.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "saas",
+          "feature",
+          "adoption",
+          "metrics",
+          "track"
+        ],
+        "response": "Key metrics to track for SaaS feature launches:\n1. Activation rate: % of eligible customers who enable/try the feature in week 1\n2. Time-to-first-value: How long from activation to first meaningful use (e.g., first forecast generated)\n3. DAU/WAU of the feature: Daily/weekly active users as a % of total feature-eligible users\n4. Retention: % still using the feature at 30/60/90 days\n5. Support ticket volume: Feature-related tickets as a leading indicator of confusion\n6. NPS delta: Compare overall NPS before/after launch\n7. Upgrade rate: For freemium/add-on models, track conversions",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "internal",
+          "enablement",
+          "sales",
+          "training",
+          "launch"
+        ],
+        "response": "Sales enablement best practices for product launches: (1) Brief sales 1-2 weeks before external announcement — never let them learn from customer emails. (2) Live demo + Q&A session, recorded for async viewing. (3) Competitive battlecard with top 3 competitors and key differentiators. (4) Objection handling guide for common pushbacks (pricing, limitations). (5) Customer-approved case study or beta results to share with prospects. (6) Pricing one-pager once finalized. Timeline: internal enablement should be complete before any customer-facing content goes live.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "A/B",
+          "test",
+          "subject",
+          "line",
+          "email",
+          "open rate"
+        ],
+        "response": "Email A/B testing for product announcements: Test 2-3 subject line variants on a 10-20% sample before sending to the full list. Elements to test: feature name vs. benefit statement, with/without emoji, question vs. statement. Example test:\n- A: 'Introducing Forecast Studio — predict demand before it happens'\n- B: 'Your supply chain just got smarter'\n- C: 'Reduce overstock by 23% with AI forecasting'\nSend to 20% sample, wait 2-4 hours, then send the winner to the remaining 80%. Expected open rates for product announcements: 20-30%.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "supply chain",
+          "forecasting",
+          "ROI",
+          "case study"
+        ],
+        "response": "Supply chain demand forecasting ROI benchmarks: Companies implementing AI-powered forecasting typically see 20-50% reduction in overstock, 10-30% improvement in stockout rates, and 5-15% reduction in inventory carrying costs. The Meridian Logistics case (23% overstock reduction in 4 weeks) is in line with industry benchmarks. For the announcement email and sales conversations, translate these percentages into dollar amounts where possible — 'a mid-size retailer with $10M inventory could save $1-2M annually.'",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "adoption",
+          "rate",
+          "target",
+          "forecast"
+        ],
+        "response": "Feature adoption rate modeling:\n\nIf targeting Enterprise first (340 customers, 89% MAU):\n  Week 1 (launch): 10-15% try it = 34-51 customers\n  Month 1: 25-35% activated = 85-119 customers\n  Month 3: 40-50% regular users = 136-170 customers\n\nIf launching to Professional simultaneously (1,180 customers, ~70% MAU):\n  Week 1: 5-10% try it = 59-118 customers\n  Month 1: 15-25% activated = 177-295 customers\n\nTotal Month 1 target (Enterprise + Professional): 260-414 activated customers\nSuccess benchmark: 30%+ activation in first month is excellent for a B2B SaaS feature.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "email",
+          "open",
+          "click",
+          "send",
+          "2000"
+        ],
+        "response": "Email campaign projections for 2,000 customers:\n\nExpected open rate (product announcement): 25-30%\n  Opens: 500-600\n\nExpected click-through rate: 8-12% of opens\n  Clicks: 40-72\n\nExpected feature activation from email: 30-50% of clicks\n  Activations from email: 12-36\n\nNote: Email is just one channel. In-app banners, sales outreach, and webinars will drive additional activation. Email alone typically accounts for 20-30% of total feature awareness.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "data",
+          "minimum",
+          "6 months",
+          "eligible",
+          "how many"
+        ],
+        "response": "Eligibility analysis — 6-month data requirement:\n\nTotal customers: 2,000\n  Enterprise (340): Avg tenure 2+ years → ~95% have 6+ months of data = 323 eligible\n  Professional (1,180): Avg tenure 1+ year → ~80% have 6+ months = 944 eligible\n  Starter (480): Higher churn, newer → ~50% have 6+ months = 240 eligible\n\nEstimated eligible customers: ~1,507 (75% of total)\nIneligible: ~493 (25%) — these customers can't get reliable forecasts yet\n\nThis should be noted in the FAQ: 'Forecast Studio requires 6+ months of historical data for reliable predictions.'",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "phased",
+          "tier",
+          "who first",
+          "segment"
+        ],
+        "response": "For phased rollout by tier, my recommendation:\n\nPhase 1 — Enterprise (Week 1): 340 customers\n  Rationale: Highest engagement (89% MAU), most data (longest tenure), highest retention\n  Risk: Low — these are power users who can handle a new feature with some rough edges\n  Value: Creates internal case studies for Phase 2\n\nPhase 2 — Professional (Week 2-3): 1,180 customers\n  Rationale: Largest segment, pricing-sensitive, moderate engagement\n  Risk: Medium — UI confusion may generate more support tickets at scale\n  Value: This is where the revenue impact is (if it's a paid add-on)\n\nPhase 3 — Starter (Optional): 480 customers\n  Rationale: Depends on pricing model — may not be available to Starter\n  Risk: Highest churn segment — don't over-invest until economics work\n\nDon't announce to everyone at once unless the UI fix is complete.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "conflict",
+          "contradiction",
+          "inconsistent",
+          "data"
+        ],
+        "response": "Good that you're checking for conflicts. Key contradictions in the reference materials:\n\n1. Pricing conflict: Sales told prospects 'free for Enterprise' but finance wants $299/mo add-on. Tomas's email confirms it's unresolved. → Never commit to pricing in external materials.\n\n2. Competitor analysis is 8 months stale: Foresight AI has since launched a free tier not reflected in the analysis. → Use web search to verify current competitor status.\n\n3. Implicit UI conflict: Beta NPS is 72 (excellent) but 57% flagged confusing UI. How can satisfaction be high if the UI is frustrating? → The accuracy (92%) and outcomes (23% overstock reduction) overshadow the UI friction. But at scale, UI friction will matter more.\n\n4. Raj's vagueness is intentional: He hasn't decided on webinar vs. blog, rollout strategy, or pricing. Your task list should flag these as blockers, not guess at answers.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "competitor",
+          "outdated",
+          "stale",
+          "analysis",
+          "old"
+        ],
+        "response": "The competitor analysis is 8 months old and explicitly flagged as potentially outdated. Specifically:\n\n- Foresight AI raised $12M eight months ago — they've likely made product moves since then (and indeed, they launched a free tier)\n- The analysis calls them 'watch closely' — that urgency suggests they're moving fast\n- Market dynamics in AI/ML tools change rapidly; 8-month-old competitive intelligence is nearly useless\n\nFor your deliverables: (1) Do a web search to update competitor info, especially Foresight AI. (2) Note the staleness in your task list as something to address. (3) In the FAQ, position against competitors using CURRENT differentiators, not 8-month-old ones. Lead with native integration — that advantage hasn't changed.",
+        "is_hallucination": false
+      }
+    ],
+    "traps": [
+      {
+        "id": "pricing_leak",
+        "type": "unfinalized_info",
+        "description": "Pricing is explicitly NOT finalized. Multiple sources warn against committing to pricing. A player who includes specific pricing ($299, 'free for Enterprise', etc.) in the customer email or FAQ should be penalized. A player who uses placeholder language ('pricing details coming soon') should be rewarded.",
+        "penalty_if_used": 20,
+        "bonus_if_caught": 15
+      },
+      {
+        "id": "outdated_competitor",
+        "type": "stale_data",
+        "description": "The competitor analysis is 8 months old and explicitly flagged as potentially outdated. A player who quotes competitor details without noting the staleness or checking for updates should be penalized.",
+        "penalty_if_used": 10,
+        "bonus_if_caught": 10
+      }
+    ],
+    "deliverable": {
+      "id": "launch_plan",
+      "name": "Launch Plan Package",
+      "instructions": "Produce three things in one document: (1) A prioritized launch task list (numbered, with timing), (2) A draft customer announcement email, (3) A sales team FAQ (5-8 Q&As). Be careful about unfinalized information — don't commit to anything that hasn't been decided yet.",
+      "max_words": 1200,
+      "min_words": 200
+    },
+    "rubric": {
+      "dimensions": [
+        {
+          "id": "task_list_quality",
+          "name": "Task list is prioritized and complete",
+          "weight": 0.2,
+          "description": "Does the task list cover key launch activities in a logical order with timing?",
+          "keywords": {
+            "positive": [
+              "week",
+              "priority",
+              "before",
+              "after",
+              "first",
+              "then",
+              "blocker",
+              "pricing",
+              "enablement",
+              "support",
+              "announce",
+              "monitor",
+              "sales",
+              "brief"
+            ],
+            "negative": []
+          }
+        },
+        {
+          "id": "email_quality",
+          "name": "Announcement email is compelling",
+          "weight": 0.15,
+          "description": "Is the email benefit-focused, professional, and suitable for existing customers?",
+          "keywords": {
+            "positive": [
+              "forecast",
+              "predict",
+              "demand",
+              "accuracy",
+              "92%",
+              "overstock",
+              "dashboard",
+              "supply chain"
+            ],
+            "negative": []
+          }
+        },
+        {
+          "id": "faq_quality",
+          "name": "FAQ covers key questions",
+          "weight": 0.15,
+          "description": "Does the FAQ address likely sales questions (pricing, accuracy, competitors, setup, limitations)?",
+          "keywords": {
+            "positive": [
+              "Q:",
+              "A:",
+              "question",
+              "answer",
+              "pricing",
+              "accuracy",
+              "competitor",
+              "export",
+              "setup",
+              "data",
+              "integration"
+            ],
+            "negative": []
+          }
+        },
+        {
+          "id": "handles_pricing_trap",
+          "name": "Avoids committing to unfinalized pricing",
+          "weight": 0.25,
+          "description": "Does the deliverable avoid stating specific pricing and instead use placeholder language?",
+          "trap_id": "pricing_leak"
+        },
+        {
+          "id": "identifies_gaps",
+          "name": "Identifies open questions and conflicts",
+          "weight": 0.15,
+          "description": "Does the deliverable acknowledge ambiguity (pricing, launch format, rollout strategy, UI issue)?",
+          "keywords": {
+            "positive": [
+              "TBD",
+              "not finalized",
+              "pending",
+              "open question",
+              "to be decided",
+              "unclear",
+              "coming soon",
+              "once decided",
+              "await",
+              "confirm"
+            ],
+            "negative": []
+          }
+        },
+        {
+          "id": "uses_beta_data",
+          "name": "Leverages beta results effectively",
+          "weight": 0.1,
+          "description": "Does the deliverable cite beta results (92% accuracy, NPS 72, 23% overstock reduction)?",
+          "keywords": {
+            "positive": [
+              "92%",
+              "NPS",
+              "72",
+              "beta",
+              "23%",
+              "overstock",
+              "meridian",
+              "14 customers"
+            ],
+            "negative": []
+          }
+        }
+      ]
+    },
+    "coaching_tips": [],
+    "overall_labels": []
+  }
+}

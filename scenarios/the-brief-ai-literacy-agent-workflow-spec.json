@@ -1,0 +1,864 @@
+{
+  "construct_id": "agent_workflow_spec",
+  "construct_name": "Agentic Workflow Specification",
+  "construct_description": "The ability to break down a complex healthcare or business process into a well-specified agentic workflow, using AI to draft and refine the spec while catching gaps.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "Medium (formative / demonstration)",
+    "temporal": "Single-session, 20-25 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated workplace)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "task_decomposition",
+      "name": "Task Decomposition",
+      "icon": "🧩",
+      "description": "Breaking a messy problem into logical, AI-solvable subtasks.",
+      "color": "#10b981",
+      "weight": 0.35
+    },
+    {
+      "id": "critical_evaluation",
+      "name": "Critical Evaluation",
+      "icon": "🔍",
+      "description": "Spotting hallucinations, bias, errors, and unreliable outputs.",
+      "color": "#f43f5e",
+      "weight": 0.3
+    },
+    {
+      "id": "prompt_engineering",
+      "name": "Prompt Engineering",
+      "icon": "✏️",
+      "description": "Writing clear, specific prompts that get useful results from AI tools.",
+      "color": "#3b82f6",
+      "weight": 0.2
+    },
+    {
+      "id": "tool_selection",
+      "name": "Tool Selection",
+      "icon": "🛠️",
+      "description": "Picking the right tool for each subtask (chat, search, calc, expert).",
+      "color": "#f59e0b",
+      "weight": 0.15
+    }
+  ],
+  "scenario": {
+    "id": "agent_workflow_spec",
+    "title": "The Agent Workflow Spec",
+    "client": "Relay Health",
+    "estimated_minutes": 25,
+    "budget_tokens": 100,
+    "briefing": "Relay Health is a telehealth platform that wants to deploy an AI agent to triage incoming patient messages — categorize urgency, route to the right department, and draft initial responses. You've been asked to write the technical specification for this agent. Stakeholders have conflicting requirements: the product manager wants maximum automation, the compliance officer is focused on HIPAA, and the CTO wants aggressive accuracy targets. Your spec needs to balance these priorities and set realistic guardrails.",
+    "inbox": [
+      {
+        "id": "cto_email",
+        "from": "David Park <david@relayhealth.example>",
+        "subject": "AI triage agent — need a spec by EOD",
+        "body": "We're ready to build the AI triage agent. I need a technical specification that covers: the workflow (what the agent does step by step), classification categories, routing rules, guardrails, escalation criteria, and a testing plan.\n\nTarget: 99.9% accuracy on urgency classification. The board wants this number and I need it in the spec.\n\nSee the reference docs in your files — current workflow, HIPAA guidelines, and system architecture."
+      },
+      {
+        "id": "compliance_email",
+        "from": "Maria Santos <maria@relayhealth.example>",
+        "subject": "CRITICAL — HIPAA requirements for the triage agent",
+        "body": "Before you write anything, read the HIPAA guidelines file. Key points:\n\n1. The agent must NOT provide medical advice, diagnose conditions, or recommend treatments. This is a legal and regulatory red line.\n2. Patient data access must follow minimum-necessary principle — only what's needed for routing.\n3. All agent actions need an audit trail.\n4. Human clinical review is required for anything that could affect patient care decisions.\n\nIf the spec doesn't address these, legal will block the project."
+      },
+      {
+        "id": "pm_email",
+        "from": "Jake Torres <jake@relayhealth.example>",
+        "subject": "Triage agent — automation targets",
+        "body": "The board presentation says this agent will handle 95% of messages without human intervention. Patients should never wait more than 30 seconds for initial triage.\n\nI've attached some sample patient messages so you can see what we're dealing with. Most are straightforward scheduling or refill requests — the agent should be able to handle those end-to-end without a human ever touching them.\n\nLet's make this the most autonomous system we can."
+      },
+      {
+        "id": "support_email",
+        "from": "Lisa Huang <lisa@relayhealth.example>",
+        "subject": "Sample patient messages for context",
+        "body": "Sharing some example messages from last month. Notice that even 'simple' messages sometimes contain subtle medical concerns buried in administrative requests. For example, a scheduling request that mentions new symptoms, or a refill request where the dosage seems wrong.\n\nOur human agents catch these because they read the full message carefully. Make sure the AI agent doesn't just keyword-match on the primary intent and miss secondary concerns."
+      }
+    ],
+    "files": [
+      {
+        "id": "file_sample_messages",
+        "name": "sample_patient_messages.txt",
+        "type": "data",
+        "reliability": "reliable",
+        "content": "SAMPLE PATIENT MESSAGES — Last 30 Days\n\nMSG-1 [Routine — Scheduling]\n\"Hi, I need to reschedule my Thursday appointment with Dr. Patel. Any time next week works.\"\n\nMSG-2 [Routine — Refill]\n\"Can I get a refill on my blood pressure medication? Same prescription as last time. Lisinopril 10mg.\"\n\nMSG-3 [Urgent — Symptoms]\n\"I've been having chest pain on and off since yesterday. It gets worse when I lie down. Should I go to the ER?\"\n\nMSG-4 [Ambiguous — Mixed intent]\n\"I'd like to schedule a follow-up for my knee. Also, I started getting headaches after you changed my medication last week — is that normal?\"\n\nMSG-5 [Routine — Billing]\n\"I was charged twice for my last visit. Can someone look into this?\"\n\nMSG-6 [Urgent — Mental health]\n\"I haven't been sleeping and I'm feeling really hopeless. I don't know who else to talk to.\"\n\nMSG-7 [Ambiguous — Refill with concern]\n\"Refill request for metformin. By the way, my blood sugar readings have been really high this week — 250-300 range. Is my dosage still right?\"\n\nMSG-8 [Routine — Records]\n\"I need a copy of my vaccination records for my new job. How do I get those?\""
+      },
+      {
+        "id": "file_current_workflow",
+        "name": "current_triage_workflow.md",
+        "type": "reference",
+        "reliability": "reliable",
+        "content": "CURRENT TRIAGE WORKFLOW (Human Agents)\n\n1. Message received → added to queue\n2. Human agent reads full message within 5 minutes\n3. Classify urgency: Critical (immediate), Urgent (same day), Routine (48hr SLA)\n4. Classify type: Scheduling, Refill, Symptoms, Billing, Records, Mental Health, Other\n5. Route based on type:\n   - Scheduling → Scheduling team\n   - Refill → Pharmacy review (pharmacist must verify)\n   - Symptoms → Clinical team (nurse or physician)\n   - Billing → Billing department\n   - Records → Admin team\n   - Mental Health → Crisis team (priority routing)\n   - Other → General support\n6. Draft initial acknowledgment response\n7. Flag if message contains multiple intents (e.g., scheduling + symptom concern)\n\nKey rules:\n- Any mention of self-harm, suicidal ideation → immediate crisis team routing\n- Medication-related messages always get pharmacist review even if routine\n- Never provide medical advice — always route to clinical team\n- Messages in non-English → bilingual agent or translation service\n\nAverage handle time: 3-4 minutes per message\nCurrent volume: ~800 messages/day\nStaffing: 12 human agents across 3 shifts"
+      },
+      {
+        "id": "file_hipaa_guidelines",
+        "name": "hipaa_ai_guidelines.md",
+        "type": "reference",
+        "reliability": "reliable",
+        "content": "HIPAA COMPLIANCE GUIDELINES FOR AI SYSTEMS\n\n1. Minimum Necessary Standard\n   - AI agents may only access the minimum patient data needed for the specific task.\n   - Triage agents should access message content and basic demographics only.\n   - No access to full medical records, billing history, or treatment plans unless required.\n\n2. Prohibited AI Actions (without physician oversight)\n   - Providing medical advice or diagnoses\n   - Recommending treatments or medication changes\n   - Interpreting lab results or imaging\n   - Making clinical care decisions\n\n3. Audit Trail Requirements\n   - Every AI action must be logged: classification, routing decision, response generated\n   - Logs must include confidence scores, input data hash, and timestamp\n   - Audit logs retained for minimum 6 years\n\n4. Human Oversight\n   - Clinical decisions require human physician review\n   - AI confidence below threshold must route to human\n   - Patients must be informed when interacting with AI\n   - Opt-out mechanism required for AI triage\n\n5. Data Security\n   - All patient data encrypted in transit and at rest\n   - AI model training data must be de-identified\n   - No patient data used for model improvement without consent\n\n6. Liability\n   - Organization is responsible for AI agent actions\n   - Accuracy guarantees in marketing/specs create legal liability exposure"
+      },
+      {
+        "id": "file_architecture",
+        "name": "system_architecture.md",
+        "type": "reference",
+        "reliability": "reliable",
+        "content": "RELAY HEALTH — SYSTEM ARCHITECTURE\n\nCurrent Stack:\n- Patient portal: React + Node.js\n- Messaging: WebSocket + PostgreSQL message store\n- Auth: OAuth 2.0 + HIPAA-compliant session management\n- Infrastructure: AWS (HIPAA BAA in place)\n- Monitoring: Datadog + PagerDuty\n\nAI Integration Points:\n- Message queue: New messages arrive via SQS\n- Classification API: Endpoint for the triage model\n- Response generation: Template-based + LLM-assisted drafting\n- Human handoff: Zendesk integration for agent routing\n\nConstraints:\n- 30-second SLA for initial triage response\n- All AI calls must be logged to compliance audit trail\n- Patient data cannot leave AWS HIPAA-compliant region\n- LLM API calls must use de-identified/redacted message content"
+      }
+    ],
+    "workbench_tools": [
+      {
+        "id": "chat_llm",
+        "name": "Chat AI",
+        "description": "General-purpose assistant. Good for drafting specs, brainstorming workflow steps, and thinking through edge cases.",
+        "cost_per_use": 5,
+        "reliability": 0.75,
+        "best_for": [
+          "drafting",
+          "brainstorming",
+          "edge_cases"
+        ]
+      },
+      {
+        "id": "web_search",
+        "name": "Web Search",
+        "description": "Search for HIPAA regulations, AI healthcare best practices, and industry benchmarks.",
+        "cost_per_use": 8,
+        "reliability": 0.9,
+        "best_for": [
+          "regulations",
+          "best_practices",
+          "benchmarks"
+        ]
+      },
+      {
+        "id": "calculator",
+        "name": "Calculator",
+        "description": "Exact numeric computation. Use for SLA calculations, volume estimates, and staffing math.",
+        "cost_per_use": 1,
+        "reliability": 1.0,
+        "best_for": [
+          "math",
+          "computation"
+        ]
+      },
+      {
+        "id": "expert",
+        "name": "Human Expert",
+        "description": "Consult a healthcare AI compliance specialist. Expensive but critical for regulatory questions.",
+        "cost_per_use": 25,
+        "reliability": 0.98,
+        "best_for": [
+          "compliance",
+          "judgment",
+          "regulations"
+        ]
+      }
+    ],
+    "scripted_responses": [
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "triage",
+          "agent",
+          "spec",
+          "workflow"
+        ],
+        "response": "Here's a suggested workflow for the AI triage agent:\n\n1. Receive message from queue\n2. Extract intent and urgency using NLP classification\n3. Route based on category (scheduling → scheduling team, etc.)\n4. Generate acknowledgment response using templates\n5. Log all actions for audit trail\n\nWith modern NLP models, you should be able to achieve 99%+ accuracy on urgency classification. The key is a large enough training dataset with labeled examples covering all categories.",
+        "is_hallucination": true,
+        "trap_id": "accuracy_guarantee_trap"
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "hipaa",
+          "compliance",
+          "patient",
+          "medical advice"
+        ],
+        "response": "For HIPAA compliance, the agent should be restricted to routing and classification only. Under HIPAA and FDA guidelines, providing specific medical advice or diagnoses without human physician review creates significant liability and regulatory risk. The spec should explicitly list prohibited actions and require human handoff for any clinical content.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "accuracy",
+          "99.9",
+          "realistic",
+          "nlp",
+          "classification"
+        ],
+        "response": "Achieving 99.9% accuracy on free-text NLP classification is extremely ambitious. State-of-the-art models typically achieve 85-95% on multi-class text classification depending on category granularity and edge cases. Patient messages are especially challenging because of ambiguous intents and mixed concerns. I'd recommend a confidence-based approach: handle high-confidence cases autonomously (targeting 90-95% accuracy) and escalate uncertain cases to humans.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "autonomous",
+          "95%",
+          "without human"
+        ],
+        "response": "If you want 95% full automation, you'll need to carefully define what 'autonomous' means. Straightforward requests like scheduling and records could be fully automated. But medical-related messages (symptoms, medication, mental health) should always route to humans even if the classification is confident. A realistic target might be 60-70% fully autonomous with the rest getting human review.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "guardrail",
+          "safety",
+          "rules",
+          "escalation"
+        ],
+        "response": "Key guardrails for a healthcare AI agent:\n- Hard block on medical advice, diagnoses, treatment recommendations\n- Mandatory escalation for: mental health/crisis keywords, medication concerns, symptom reports\n- Confidence threshold: below 0.85 → route to human\n- Multi-intent detection: if message has multiple concerns, route the most urgent one\n- Patient opt-out: respect requests to talk to a human\n- Audit logging of every decision\n- Regular human review of a sample of autonomous decisions",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "categories",
+          "classification",
+          "urgency"
+        ],
+        "response": "Suggested classification categories:\n\nUrgency levels:\n- Critical: chest pain, difficulty breathing, self-harm/suicidal ideation, allergic reaction\n- Urgent: new/worsening symptoms, medication side effects, high-abnormal readings\n- Routine: scheduling, refills, billing, records requests\n\nType categories:\n- Scheduling, Refill, Symptoms, Billing, Records, Mental Health, Other\n\nConsider adding a 'Multi-intent' flag for messages that contain both routine and clinical concerns.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "testing",
+          "plan",
+          "evaluate",
+          "monitor"
+        ],
+        "response": "Testing plan for the triage agent:\n1. Shadow mode: Run agent in parallel with human agents for 2-4 weeks, compare decisions\n2. Confusion matrix analysis: Track misclassification patterns by category\n3. Edge case testing: Specifically test ambiguous messages, multi-intent messages, non-English\n4. Ongoing monitoring: Weekly accuracy reviews, alert on classification confidence drops\n5. A/B testing: Gradually route more traffic to the agent, measure patient satisfaction\n6. Red team: Have clinicians write tricky messages to test edge cases",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "hipaa",
+          "ai",
+          "requirements",
+          "healthcare"
+        ],
+        "response": "HHS.gov and HIPAA Journal guidance on AI in healthcare: AI systems handling PHI must comply with the Privacy Rule (minimum necessary standard), Security Rule (encryption, access controls, audit trails), and Breach Notification Rule. Organizations are liable for AI agent actions as if they were employee actions. Accuracy claims in specs/marketing materials can create additional legal exposure if the system underperforms. Recent enforcement actions have targeted AI systems that provided unauthorized clinical recommendations.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "nlp",
+          "classification",
+          "accuracy",
+          "healthcare",
+          "benchmark"
+        ],
+        "response": "Published benchmarks for clinical NLP text classification: Multi-class urgency triage typically achieves 88-93% accuracy on well-labeled datasets (JAMIA, 2023). Key factors affecting accuracy: category granularity, message ambiguity, training data quality. Free-text patient messages are particularly challenging — a Johns Hopkins study found 12-18% of messages contain ambiguous or multi-intent content that even human annotators disagree on.",
+        "is_hallucination": false,
+        "trap_id": "accuracy_guarantee_trap"
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "ai",
+          "triage",
+          "best practices",
+          "guardrails"
+        ],
+        "response": "Best practices for healthcare AI triage (HealthIT.gov, WHO guidelines):\n- Never allow AI to provide medical advice without physician oversight\n- Implement confidence-based routing: high confidence → automate, low confidence → human review\n- Mandatory human review for medication changes, symptom reports, mental health\n- Shadow deployment before production: compare AI decisions to human decisions\n- Regular audits of AI decisions with clinical oversight committee\n- Patient right to opt out of AI triage",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "ai",
+          "agent",
+          "autonomous",
+          "rate",
+          "healthcare"
+        ],
+        "response": "Industry data on AI automation rates in healthcare messaging: Most production systems achieve 40-65% full automation (no human touch) for message triage. The remainder requires human review due to: clinical content (30-40%), ambiguous intent (10-15%), or low model confidence (5-10%). Systems targeting higher automation rates without clinical safeguards have faced regulatory action and malpractice liability.",
+        "is_hallucination": false,
+        "trap_id": "medical_advice_trap"
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "volume",
+          "messages",
+          "per day",
+          "agent",
+          "handle"
+        ],
+        "response": "At 800 messages/day:\n- If 60% fully automated (no human touch): 480 auto, 320 human review\n- If 95% automated (PM target): 760 auto, 40 human review\n  → Only 40 human-reviewed messages across 3 shifts ≈ 13/shift\n  → But this means 760 messages get no clinical review, including symptom reports\n- Current human handle time: 3-4 min/message × 800 = 40-53 staff-hours/day",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "sla",
+          "30 second",
+          "latency"
+        ],
+        "response": "30-second SLA budget:\n- Message queue polling: ~100ms\n- NLP classification: ~200-500ms (GPU inference)\n- Routing decision logic: ~50ms\n- Response generation: ~500-1000ms (template) or ~2-3s (LLM)\n- Audit logging: ~100ms\n- Network overhead: ~200ms\nTotal: ~1.2-4s for full pipeline → Well within 30-second SLA\nBottleneck is LLM response generation if using generative responses.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "99.9",
+          "accuracy",
+          "realistic",
+          "guarantee"
+        ],
+        "response": "Do NOT put 99.9% accuracy in the spec. That number is not achievable for NLP on free-text patient messages, and stating it creates legal liability per HIPAA guideline section 6. If the system misclassifies an urgent message and you've guaranteed 99.9%, you've just created a malpractice exposure.\n\nPropose this instead: 90-95% accuracy target for urgency classification, with a confidence-based escalation system that routes uncertain cases to humans. Measure and report accuracy weekly. Be transparent about limitations.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "autonomous",
+          "95%",
+          "medical advice",
+          "human review"
+        ],
+        "response": "95% autonomous handling is dangerous in healthcare. Break it down:\n- Scheduling, billing, records requests (maybe 40-50% of volume) → safe to automate\n- Refill requests → need pharmacist review, can be partially automated\n- Symptom reports, medication concerns, mental health → MUST have human clinical review\n\nRealistic target: 50-65% fully autonomous. The rest gets human review. The PM's 95% number is a board slide, not a safe engineering target. Your spec should push back with data.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "guardrail",
+          "escalation",
+          "when to escalate"
+        ],
+        "response": "Hard escalation rules (always route to human):\n- Any mention of self-harm, suicide, or crisis\n- Symptom reports (especially chest pain, breathing, neurological)\n- Medication concerns (side effects, dosage questions, drug interactions)\n- Messages containing clinical questions (\"is this normal?\", \"should I...\")\n- Classification confidence below 0.85\n- Multi-intent messages with any clinical component\n\nThe agent should NEVER attempt to answer clinical questions, even if it's confident about the classification.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "draft",
+          "response",
+          "template",
+          "acknowledgment"
+        ],
+        "response": "Here's a template for the agent's auto-acknowledgment responses:\n\nFor routine requests: \"Thanks for your message. We've received your [scheduling/refill/records] request and a team member will follow up within [SLA]. Reference: [ticket-id].\"\n\nFor clinical content: \"Thanks for reaching out. A member of our clinical team will review your message and respond shortly. If this is an emergency, please call 911 or go to your nearest ER.\"\n\nKeep auto-responses generic — never include clinical content or advice.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "failure",
+          "mode",
+          "error",
+          "what if",
+          "wrong"
+        ],
+        "response": "Key failure modes to address in the spec:\n\n1. Misclassification of urgent message as routine (worst case — delayed care)\n2. Agent provides medical advice despite guardrails\n3. Model confidence is high but classification is wrong\n4. Non-English messages misrouted\n5. Multi-intent messages where the urgent concern is secondary\n6. System outage — what happens to the queue?\n\nFor each, define the fallback behavior and monitoring alert.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "multi-intent",
+          "multiple",
+          "mixed",
+          "secondary"
+        ],
+        "response": "Multi-intent messages are one of the hardest challenges. For example, MSG-4 asks about a knee follow-up (routine) but also mentions medication headaches (potentially urgent).\n\nRecommended approach:\n1. Parse the message for all distinct intents\n2. Classify urgency for EACH intent independently\n3. Route based on the HIGHEST urgency intent\n4. Flag as multi-intent so the human agent sees both concerns\n\nNever drop the secondary intent — that's where hidden clinical concerns live.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "mental health",
+          "crisis",
+          "suicide",
+          "self-harm"
+        ],
+        "response": "Mental health and crisis messages require special handling:\n\n- Keywords: 'hopeless', 'suicidal', 'self-harm', 'don't want to live', 'end it'\n- Classification: ALWAYS Critical urgency, no exceptions\n- Routing: Immediate escalation to crisis team (bypass normal queue)\n- Response: Pre-approved crisis response template with hotline numbers (988 Suicide & Crisis Lifeline)\n- Never generate a novel response for crisis messages — use vetted templates only\n- Alert: Notify on-call clinical supervisor immediately\n\nThis must be the highest-priority routing rule with zero tolerance for misclassification.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "data",
+          "privacy",
+          "encrypt",
+          "pii",
+          "de-identify"
+        ],
+        "response": "Data handling requirements for the agent:\n\n- Message content: encrypted in transit (TLS) and at rest (AES-256)\n- LLM API calls: must use de-identified/redacted content — strip patient names, DOB, SSN before sending to any external model\n- Storage: all data stays in HIPAA-compliant AWS region\n- Retention: audit logs for 6 years minimum, message data per retention policy\n- Access: minimum-necessary principle — agent only sees message content and basic demographics\n- No patient data used for model training without explicit consent",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "opt-out",
+          "human",
+          "patient",
+          "choice"
+        ],
+        "response": "HIPAA and best practices require a patient opt-out mechanism:\n\n- Patients must be informed they're interacting with AI (transparency requirement)\n- Any patient can request human-only triage at any time\n- Opt-out preference should be stored in patient profile for future messages\n- Opt-out messages routed directly to human queue (skip AI entirely)\n- Disclosure text: 'This message was initially reviewed by our AI triage system. You can request human-only review at any time.'",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "sample",
+          "message",
+          "MSG",
+          "example",
+          "analyze"
+        ],
+        "response": "Looking at the sample messages:\n\n- MSG-1, MSG-5, MSG-8: Clearly routine — scheduling, billing, records. Safe to automate.\n- MSG-2: Routine refill but involves medication — needs pharmacist review per workflow.\n- MSG-3: Clearly urgent — chest pain. Must go to clinical team immediately.\n- MSG-4: Multi-intent — routine scheduling + medication side effect concern. Route as urgent.\n- MSG-6: Crisis — hopelessness, possible suicidal ideation. Immediate crisis team.\n- MSG-7: Appears routine (refill) but contains concerning blood sugar readings. Must escalate.\n\nMSG-4 and MSG-7 are the tricky ones — they look routine at first glance.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "patient",
+          "messaging",
+          "ai",
+          "triage",
+          "study"
+        ],
+        "response": "A 2023 JAMIA study of AI triage systems in patient messaging found: average accuracy of 89% on urgency classification, with the highest error rate on 'ambiguous' messages containing both routine and clinical content. Systems that used multi-intent detection reduced missed escalations by 34%. Key recommendation: shadow deployment for 4+ weeks before production, with clinical oversight committee reviewing edge cases weekly.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "fda",
+          "ai",
+          "healthcare",
+          "regulation",
+          "clinical"
+        ],
+        "response": "FDA guidance on AI in healthcare (2024): AI systems that perform clinical decision support may be classified as medical devices requiring FDA clearance. Triage systems that only route/categorize (without providing clinical recommendations) generally fall outside FDA device classification. However, if the system's routing decisions directly affect timing of clinical care, it may still face regulatory scrutiny. Consult regulatory counsel.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "shadow",
+          "deployment",
+          "parallel",
+          "testing"
+        ],
+        "response": "Shadow deployment best practices for healthcare AI: Run the AI system in parallel with human agents for 2-6 weeks. Compare AI decisions to human decisions on the same messages. Track: agreement rate, false negative rate (urgent messages AI classified as routine), average confidence score, and edge case categories. Only transition to production when agreement rate exceeds 90% and false negative rate is below 2%. Maintain human override capability indefinitely.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "confidence",
+          "threshold",
+          "calibration",
+          "model"
+        ],
+        "response": "Model confidence calibration for healthcare NLP: A well-calibrated model's confidence scores should correlate with actual accuracy. If the model says 0.90 confidence, it should be correct ~90% of the time. Calibration techniques: Platt scaling, temperature scaling, isotonic regression. For healthcare triage, set the human-escalation threshold conservatively (0.85-0.90) — it's better to over-escalate than to miss an urgent case.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "non-english",
+          "language",
+          "translation",
+          "multilingual"
+        ],
+        "response": "Multilingual patient messaging best practices: 15-20% of US healthcare messages are in non-English languages (primarily Spanish, Chinese, Vietnamese). Options: (1) multilingual NLP model trained on multiple languages, (2) translation layer before classification, (3) language detection + routing to bilingual agents. Translation-first approach is simplest but adds latency and may lose clinical nuance. Always offer patients the option to communicate in their preferred language.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "error rate",
+          "miss",
+          "urgent",
+          "false negative"
+        ],
+        "response": "False negative impact analysis:\nAt 800 messages/day, if 10% are urgent/critical = 80 urgent messages/day.\n\nAt 95% accuracy on urgent classification:\n  False negatives: 80 × 0.05 = 4 urgent messages/day misclassified as routine\n  Per month: ~120 missed urgent messages\n\nAt 90% accuracy:\n  False negatives: 80 × 0.10 = 8/day, ~240/month\n\nAt 99.9% accuracy (CTO target):\n  False negatives: 80 × 0.001 = 0.08/day ≈ 2.4/month\n  (Requires near-perfect NLP — not realistic)",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "cost",
+          "saving",
+          "human",
+          "automation",
+          "staff"
+        ],
+        "response": "Staffing impact at different automation rates:\n\nCurrent: 12 agents × 8hr shifts = 96 staff-hours/day for 800 messages\nPer message: ~7.2 minutes average (including handle time + overhead)\n\n60% automation: 320 human messages → ~38 staff-hours → ~5 agents needed\nSavings: 7 agents → significant cost reduction\n\n95% automation (PM target): 40 human messages → ~5 staff-hours → 1 agent per shift\nBut: most of those 40 messages are the hardest/most sensitive cases",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "spec",
+          "structure",
+          "outline",
+          "what to include"
+        ],
+        "response": "For a healthcare AI agent spec, I'd structure it as:\n\n1. Overview & Scope — what the agent does and doesn't do\n2. Workflow — step-by-step message processing pipeline\n3. Classification Schema — urgency levels + message types\n4. Routing Rules — where each category goes\n5. Guardrails & Prohibited Actions — hard limits (no medical advice, etc.)\n6. Escalation Criteria — when to route to humans, with confidence thresholds\n7. Response Templates — pre-approved acknowledgment messages\n8. Data & Privacy — HIPAA compliance details\n9. Accuracy Targets — realistic goals with caveats\n10. Testing & Monitoring Plan — shadow deployment, metrics, ongoing review\n11. Failure Modes & Fallbacks — what happens when things go wrong\n\nDon't skip sections 5, 6, and 11 — those are where most healthcare AI projects fail.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "msg-7",
+          "blood sugar",
+          "250",
+          "300",
+          "refill"
+        ],
+        "response": "MSG-7 is a perfect example of why 95% automation is dangerous. It looks like a simple refill request for metformin, but the patient mentions blood sugar readings of 250-300 — that's critically high for a diabetic patient (normal is 80-130 fasting). The agent might classify this as 'routine refill' based on the primary intent, but the secondary clinical concern needs immediate attention.\n\nYour spec MUST include multi-intent detection and a rule that any mention of abnormal vital signs or lab values triggers clinical review, regardless of the primary intent.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "liability",
+          "legal",
+          "sue",
+          "malpractice"
+        ],
+        "response": "From a legal perspective: Relay Health is liable for the AI agent's actions as if they were employee actions. Key liability risks:\n\n1. Misclassifying an urgent message as routine → delayed care → malpractice claim\n2. Agent provides medical advice (even indirectly) → practicing medicine without a license\n3. Stating '99.9% accuracy' in the spec → if it underperforms, that's a documented promise you failed to meet\n4. Patient data exposure through logging or API calls → HIPAA violation, fines up to $1.9M per incident\n\nThe spec should include disclaimers, accuracy targets framed as goals (not guarantees), and clear documentation that clinical decisions require human oversight.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "refill",
+          "medication",
+          "automated",
+          "safe"
+        ],
+        "response": "Refill requests seem simple but have hidden complexity. Even a 'routine' refill like MSG-2 (Lisinopril 10mg) needs pharmacist verification per the current workflow. The agent could pre-fill the refill form and route it to the pharmacy queue, but should never auto-approve a refill without pharmacist sign-off. Medication errors are a top patient safety risk.\n\nFor your spec: classify refill requests as 'Routine' urgency but route to Pharmacy (not general auto-response). The agent can draft an acknowledgment but the actual refill must go through human review.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "audit",
+          "trail",
+          "log",
+          "compliance"
+        ],
+        "response": "The audit trail requirements from the HIPAA guidelines are specific:\n\n1. Every AI action logged: classification decision, routing destination, confidence score, response generated\n2. Each log entry needs: timestamp, input data hash (not raw PHI), action taken, confidence score\n3. Retention: minimum 6 years per HIPAA\n4. Format: structured JSON logs (not plain text) for queryability\n5. Immutable: logs cannot be modified after creation\n\nFor the spec, define a log schema:\n{\n  timestamp, message_id_hash, urgency_class, confidence, message_type, routing_destination, response_template_id, processing_time_ms, escalation_reason (if any)\n}",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "stakeholder",
+          "conflict",
+          "disagree",
+          "balance"
+        ],
+        "response": "You're dealing with three conflicting stakeholder priorities:\n\n1. PM (Jake): 95% autonomous handling — wants maximum automation\n2. CTO (David): 99.9% accuracy — wants impossible precision\n3. Compliance (Maria): HIPAA guardrails — wants maximum safety\n\nThe right approach: compliance requirements are non-negotiable (they're legal), accuracy should be realistic (85-95%), and automation rate should be derived from what's safe (50-65% is realistic).\n\nYour spec should acknowledge each stakeholder's input but make clear that compliance > accuracy > automation. Frame the lower automation number as protecting the company from liability.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "rollout",
+          "phase",
+          "gradual",
+          "deploy"
+        ],
+        "response": "Suggested rollout phases for the triage agent:\n\nPhase 1 — Shadow Mode (Weeks 1-4):\n- Agent runs in parallel with human agents, no patient-facing output\n- Compare AI decisions to human decisions on every message\n- Build accuracy baseline and identify edge case patterns\n\nPhase 2 — Assisted Mode (Weeks 5-8):\n- Agent pre-classifies and pre-routes, but human confirms before any action\n- Measure time savings and agreement rate\n\nPhase 3 — Autonomous (Routine Only) (Weeks 9+):\n- Scheduling, billing, records → fully automated\n- Clinical content → always human-reviewed\n- Set confidence threshold at 0.90 for autonomous handling\n\nPhase 4 — Expand (Months 3+):\n- Gradually lower confidence threshold based on accuracy data\n- Never automate clinical decisions",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "MSG-6",
+          "hopeless",
+          "mental health",
+          "crisis"
+        ],
+        "response": "MSG-6 ('I haven't been sleeping and I'm feeling really hopeless') is a potential mental health crisis. This MUST be classified as Critical urgency with immediate routing to the crisis team.\n\nKey points for your spec:\n- Keyword detection: 'hopeless', 'suicidal', 'self-harm', 'don't want to live', 'no reason to go on'\n- Also detect indirect signals: 'no one cares', 'giving up', 'can't do this anymore'\n- Response: ONLY use pre-approved crisis templates (never LLM-generated)\n- Template must include: 988 Suicide & Crisis Lifeline number, reassurance, escalation notice\n- Alert: Trigger PagerDuty alert to on-call clinical supervisor\n- NEVER attempt to counsel or provide mental health advice\n- If in doubt, always escalate — false positives are acceptable here",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "hipaa",
+          "penalty",
+          "fine",
+          "violation"
+        ],
+        "response": "HIPAA violation penalties (HHS.gov, 2024):\n- Tier 1 (unknowing): $100-$50,000 per violation\n- Tier 2 (reasonable cause): $1,000-$50,000 per violation\n- Tier 3 (willful neglect, corrected): $10,000-$50,000 per violation\n- Tier 4 (willful neglect, not corrected): $50,000+ per violation\n- Annual maximum: $1.9 million per category\n\nAI-specific risks: HHS has stated that AI systems handling PHI are subject to the same penalties. If an AI agent improperly shares PHI or provides unauthorized medical advice, the organization — not the AI vendor — is liable.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "988",
+          "crisis",
+          "hotline",
+          "suicide",
+          "lifeline"
+        ],
+        "response": "The 988 Suicide & Crisis Lifeline (formerly National Suicide Prevention Lifeline) is the standard crisis resource in the US. Available 24/7 via call, text, or chat at 988. Healthcare AI systems handling patient messages should include 988 in all crisis-related auto-responses. The Crisis Text Line (text HOME to 741741) is an additional resource. Any auto-response for detected crisis situations must be pre-approved by clinical staff and include at least one of these resources.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "ai",
+          "transparency",
+          "patient",
+          "disclosure"
+        ],
+        "response": "Regulatory guidance on AI transparency in healthcare: AMA recommends patients be informed when AI is used in their care. Several states now require disclosure when AI generates clinical communications. Best practice: include a brief disclosure in auto-responses ('This initial response was generated by our automated triage system. A clinical team member will follow up.'). HIPAA doesn't explicitly require AI disclosure, but transparency builds trust and supports the opt-out requirement.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "sqs",
+          "aws",
+          "message queue",
+          "healthcare"
+        ],
+        "response": "AWS SQS for healthcare messaging: SQS is HIPAA-eligible when used within an AWS account covered by a Business Associate Agreement (BAA). For patient message triage: use FIFO queues to preserve message ordering, enable server-side encryption (SSE-SQS or SSE-KMS), set visibility timeout to match your 30-second SLA + buffer, and use dead-letter queues for messages that fail processing. Ensure all SQS operations are logged to CloudTrail for the HIPAA audit trail.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "audit",
+          "log",
+          "storage",
+          "6 years"
+        ],
+        "response": "Audit log storage estimate:\nAt 800 messages/day:\n- Log entry size: ~500 bytes (structured JSON with all required fields)\n- Daily: 800 × 500 = 400 KB\n- Annual: 400 KB × 365 = 146 MB\n- 6-year retention (HIPAA minimum): 146 MB × 6 = 876 MB ≈ ~1 GB\n\nWith additional metadata and indexes: ~3-5 GB over 6 years.\nStorage cost on AWS S3 (standard): ~$0.12/month.\nNegligible storage concern. The audit trail is cheap to maintain.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "classification",
+          "categories",
+          "breakdown",
+          "type"
+        ],
+        "response": "Estimated message type distribution (based on sample messages and industry data):\n\nScheduling: ~30% of 800/day = 240 messages (routine, automatable)\nRefill: ~20% = 160 (needs pharmacist review)\nBilling/Admin: ~15% = 120 (automatable)\nRecords: ~10% = 80 (automatable)\nSymptoms/Clinical: ~15% = 120 (must go to clinical team)\nMental Health: ~3% = 24 (critical routing)\nOther/Ambiguous: ~7% = 56 (likely needs human review)\n\nFully automatable (scheduling + billing + records): ~55% = 440/day\nNeeds human review (clinical + mental health + ambiguous + refill): ~45% = 360/day",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "latency",
+          "pipeline",
+          "sla",
+          "budget"
+        ],
+        "response": "Detailed 30-second SLA latency budget:\n\nStage 1 - Queue polling + deserialization: 100-200ms\nStage 2 - PII redaction/de-identification: 50-100ms\nStage 3 - Language detection: 20-50ms\nStage 4 - NLP classification (urgency + type): 200-500ms\nStage 5 - Multi-intent detection: 100-300ms\nStage 6 - Confidence evaluation: 10-20ms\nStage 7 - Routing decision: 20-50ms\nStage 8 - Response generation (template): 50-200ms\nStage 9 - Audit logging: 50-100ms\nStage 10 - Response delivery: 100-200ms\n\nTotal estimated: 700ms - 1.7s (well within 30s SLA)\nIf using LLM for response generation: add 1-3s → still within SLA",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "calculator",
+        "prompt_keywords": [
+          "staff",
+          "agent",
+          "human",
+          "reduce",
+          "need"
+        ],
+        "response": "Staffing analysis with AI triage:\n\nCurrent state: 12 agents, 800 messages/day, ~7.2 min/message avg\n\nWith 55% automation (realistic):\n- Auto-handled: 440 messages/day (no human touch)\n- Human-reviewed: 360 messages/day\n- These are the harder cases → avg 8-10 min/message\n- Hours needed: 360 × 9 min = 3,240 min = 54 hours/day\n- Agents needed: 54 / 8 = ~7 agents (vs. current 12)\n- Savings: 5 agents redirected to complex care\n\nWith 95% automation (PM target, unsafe):\n- Human-reviewed: 40/day → 2-3 agents\n- But clinical messages go unreviewed → dangerous",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "mixed",
+          "intent",
+          "MSG-4",
+          "MSG-7",
+          "ambiguous"
+        ],
+        "response": "MSG-4 and MSG-7 are the scenarios that break naive triage systems. The agent must never strip context or focus only on the 'primary' intent:\n\nMSG-4: Scheduling request + medication side effect → Route as URGENT (medication concern overrides scheduling)\nMSG-7: Refill request + critically high blood sugar (250-300) → Route as URGENT (clinical emergency overrides refill)\n\nDesign the agent to:\n1. Parse ALL intents in the message\n2. Score urgency for EACH intent independently\n3. Route based on the HIGHEST urgency intent\n4. Tag the message as 'multi-intent' so the human reviewer sees all concerns\n\nIf your agent only keyword-matches on 'reschedule' or 'refill,' patients like MSG-7 fall through the cracks.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "pm",
+          "pushback",
+          "95%",
+          "board",
+          "jake"
+        ],
+        "response": "Here's how to push back on Jake's 95% automation target without making it adversarial:\n\n1. Reframe the metric: '95% of messages processed within 30 seconds' (true — the agent touches all messages). The distinction is between 'processed' and 'resolved without human involvement.'\n\n2. Show the math: If 15% of messages have clinical content, automating those means ~120 messages/day get no clinical review. At even a 1% missed-urgency rate, that's 1-2 patients/day with delayed care.\n\n3. Propose a ladder: Start at 55% fully autonomous, publish monthly automation rates, and expand as confidence data proves safety. Jake can tell the board it's 'ramping toward 80%+' with a data-driven timeline.\n\n4. Lead with liability: 'If we automate clinical messages without oversight and a patient is harmed, the company is liable. The spec protects us.'",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "cto",
+          "david",
+          "pushback",
+          "99.9",
+          "accuracy"
+        ],
+        "response": "Here's how to address David's 99.9% accuracy request:\n\n1. Show published benchmarks: State-of-the-art clinical NLP achieves 88-93% on urgency classification. 99.9% isn't achievable with current technology on free-text messages.\n\n2. Explain the liability: Per HIPAA guidelines section 6, accuracy guarantees in specs create legal exposure. If you put 99.9% in writing and deliver 92%, that document becomes evidence in any malpractice case.\n\n3. Propose an alternative framing: '90-95% accuracy target with confidence-based escalation ensuring zero missed critical cases.' The safety net (human review for uncertain cases) is what actually protects patients — not a headline accuracy number.\n\n4. Offer ongoing measurement: 'We'll report accuracy weekly and improve toward the highest achievable rate.' This shows ambition without creating a legal liability.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "non-english",
+          "language",
+          "detect",
+          "bilingual"
+        ],
+        "response": "For non-English messages, the spec should address:\n\n1. Language detection: Add a language detection step early in the pipeline (before classification). Most NLP models perform poorly on non-English text unless specifically trained for it.\n\n2. Routing options:\n   - Option A: Route to bilingual human agent (safest, recommended for clinical content)\n   - Option B: Translate → classify → route (adds latency, may lose nuance)\n   - Option C: Multilingual NLP model (most complex, requires training data in each language)\n\n3. The current workflow routes non-English messages to bilingual agents. Your spec should maintain this for now and plan for multilingual capability in a future phase.\n\n4. Always offer patients the option to communicate in their preferred language — this is a health equity requirement.",
+        "is_hallucination": false
+      }
+    ],
+    "traps": [
+      {
+        "id": "medical_advice_trap",
+        "type": "compliance_violation",
+        "description": "The PM wants 95% autonomous handling, but many patient messages require human clinical review. Designing the agent to respond to medical questions (symptoms, medication concerns, mental health) without human oversight violates HIPAA and creates liability. The spec must draw a clear line between routing and advising.",
+        "planted_in": "pm_email"
+      },
+      {
+        "id": "accuracy_guarantee_trap",
+        "type": "unrealistic_target",
+        "description": "The CTO wants 99.9% accuracy on urgency classification. This is unrealistic for NLP on free-text patient messages — state-of-the-art achieves 85-95%. Putting this number in the spec creates legal liability (per HIPAA guidelines) and sets the team up for failure. The spec should propose a realistic target with confidence-based escalation.",
+        "planted_in": "cto_email"
+      }
+    ],
+    "deliverable": {
+      "id": "agent_spec_doc",
+      "name": "Agent Technical Specification",
+      "instructions": "Write a technical specification for the AI triage agent in markdown format. Cover: workflow steps, classification categories, routing rules, guardrails and prohibited actions, escalation criteria, accuracy targets, and testing/monitoring plan. Balance stakeholder requirements with compliance and safety.",
+      "min_words": 200,
+      "max_words": 1000
+    },
+    "rubric": {
+      "dimensions": [
+        {
+          "id": "workflow_completeness",
+          "name": "Workflow is complete and well-structured",
+          "weight": 0.15,
+          "description": "Does the spec define a clear step-by-step workflow?",
+          "keywords": {
+            "positive": [
+              "step",
+              "receive",
+              "classify",
+              "route",
+              "respond",
+              "escalate",
+              "log",
+              "audit",
+              "queue",
+              "confidence",
+              "threshold"
+            ],
+            "negative": []
+          }
+        },
+        {
+          "id": "guardrail_quality",
+          "name": "Guardrails address HIPAA and safety",
+          "weight": 0.2,
+          "description": "Does the spec prevent the agent from providing medical advice and include proper safety guardrails?",
+          "keywords": {
+            "positive": [
+              "must not",
+              "prohibited",
+              "never",
+              "guardrail",
+              "safety",
+              "HIPAA",
+              "audit",
+              "human review",
+              "clinical review",
+              "physician",
+              "opt-out",
+              "no medical advice",
+              "do not diagnose"
+            ],
+            "negative": []
+          }
+        },
+        {
+          "id": "handles_medical_advice_trap",
+          "name": "Limits autonomous handling for clinical content",
+          "weight": 0.2,
+          "description": "Does the spec acknowledge that clinical messages require human review, pushing back on the 95% automation target?",
+          "trap_id": "medical_advice_trap"
+        },
+        {
+          "id": "handles_accuracy_trap",
+          "name": "Sets realistic accuracy targets",
+          "weight": 0.2,
+          "description": "Does the spec push back on the 99.9% accuracy guarantee and propose a realistic target with confidence-based escalation?",
+          "trap_id": "accuracy_guarantee_trap"
+        },
+        {
+          "id": "escalation_design",
+          "name": "Escalation criteria are well-defined",
+          "weight": 0.15,
+          "description": "Does the spec define when and how the agent escalates to humans?",
+          "keywords": {
+            "positive": [
+              "escalate",
+              "human-in-the-loop",
+              "human review",
+              "fallback",
+              "confidence",
+              "threshold",
+              "crisis",
+              "self-harm",
+              "uncertain",
+              "clinical",
+              "handoff"
+            ],
+            "negative": []
+          }
+        },
+        {
+          "id": "testing_plan",
+          "name": "Testing and monitoring plan exists",
+          "weight": 0.1,
+          "description": "Does the spec include a plan for testing and ongoing monitoring?",
+          "keywords": {
+            "positive": [
+              "test",
+              "monitor",
+              "metric",
+              "evaluate",
+              "shadow",
+              "baseline",
+              "audit",
+              "A/B",
+              "review",
+              "accuracy",
+              "weekly",
+              "red team"
+            ],
+            "negative": []
+          }
+        }
+      ]
+    },
+    "coaching_tips": [],
+    "overall_labels": []
+  }
+}

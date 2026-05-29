@@ -1,0 +1,813 @@
+{
+  "construct_id": "agentic_handoff",
+  "construct_name": "Agentic Handoff & Oversight",
+  "construct_description": "The ability to design and evaluate an agentic handoff protocol that keeps humans appropriately in the loop at critical decision points.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "Medium (formative / demonstration)",
+    "temporal": "Single-session, 20-25 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated workplace)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "critical_evaluation",
+      "name": "Critical Evaluation",
+      "icon": "🔍",
+      "description": "Spotting hallucinations, bias, errors, and unreliable outputs.",
+      "color": "#f43f5e",
+      "weight": 0.45
+    },
+    {
+      "id": "prompt_engineering",
+      "name": "Prompt Engineering",
+      "icon": "✏️",
+      "description": "Writing clear, specific prompts that get useful results from AI tools.",
+      "color": "#3b82f6",
+      "weight": 0.2
+    },
+    {
+      "id": "tool_selection",
+      "name": "Tool Selection",
+      "icon": "🛠️",
+      "description": "Picking the right tool for each subtask (chat, search, calc, expert).",
+      "color": "#f59e0b",
+      "weight": 0.2
+    },
+    {
+      "id": "task_decomposition",
+      "name": "Task Decomposition",
+      "icon": "🧩",
+      "description": "Breaking a messy problem into logical, AI-solvable subtasks.",
+      "color": "#10b981",
+      "weight": 0.15
+    }
+  ],
+  "scenario": {
+    "id": "agent_handoff",
+    "title": "The Agentic Handoff",
+    "client": "Kestrel Finance",
+    "estimated_minutes": 20,
+    "budget_tokens": 100,
+    "briefing": "Kestrel Finance uses an AI coding agent to generate feature code overnight. The agent just completed an authentication module (login, registration, JWT sessions) and marked it as ready for human review. The code is already loaded in your editor. Your job: review it against the security checklist, fix the issues directly in the code, and add comments explaining what you changed. The agent writes clean-looking code but has blind spots — especially around security hardening.",
+    "inbox": [
+      {
+        "id": "manager_email",
+        "from": "Raj Anand <raj@kestrel.example>",
+        "subject": "Auth module ready for review — KF-892",
+        "body": "The AI agent finished the auth module for ticket KF-892. The code is loaded in your editor. Please:\n\n1. Review it against our security checklist (in your files)\n2. Fix any issues directly in the code\n3. Add // FIXED or // REVIEW comments explaining changes\n\nThis is going into our payments platform, so security is non-negotiable. The agent tends to get the structure right but cuts corners on hardening. Check everything."
+      },
+      {
+        "id": "security_email",
+        "from": "Nadia Okonkwo <nadia@kestrel.example>",
+        "subject": "Reminder: auth security checklist before merge",
+        "body": "Hey — just a reminder that all authentication code must pass our security checklist before merge. The checklist is in your reference files.\n\nPay special attention to secret management and logging practices. The last agent-generated module had a hardcoded API key that made it into staging. Let's not repeat that.\n\nAlso, make sure password handling follows our bcrypt standards. The agent sometimes takes shortcuts with password verification."
+      },
+      {
+        "id": "agent_email",
+        "from": "Kestrel AI Agent <agent@kestrel.example>",
+        "subject": "Task complete: KF-892 Auth module",
+        "body": "Task KF-892 completed.\n\nImplemented: POST /auth/login, POST /auth/register, authenticate middleware, GET /auth/me.\n\nNotes from my session:\n- Used bcrypt for password hashing and JWT for sessions\n- Used a placeholder value for JWT_SECRET — please replace before production\n- Set token expiry to 30 days for development convenience\n- Focused on getting the logic correct; may need security hardening\n\nConfidence: 0.91. Ready for human review."
+      }
+    ],
+    "files": [
+      {
+        "id": "file_security_checklist",
+        "name": "security_checklist.md",
+        "type": "reference",
+        "reliability": "reliable",
+        "content": "KESTREL FINANCE — AUTH SECURITY CHECKLIST (v2.1)\n\nRequired before merge:\n\n[ ] Secrets & Keys\n  - JWT secrets MUST come from environment variables (process.env)\n  - Never hardcode secrets, API keys, or credentials in source code\n  - Secrets must have at least 256 bits of entropy\n\n[ ] Password Handling\n  - Passwords MUST be hashed with bcrypt (cost factor >= 10)\n  - Login MUST use bcrypt.compare() — never compare plaintext to hash directly\n  - Passwords must NEVER appear in logs, error messages, or API responses\n\n[ ] Session & Token Management\n  - JWT expiry: max 4 hours for standard sessions\n  - Refresh token rotation required for long-lived sessions\n  - Token must include userId and role only\n\n[ ] Input Validation\n  - Email must be validated (format + length)\n  - Password must meet minimum complexity (8+ chars, mixed case, number)\n  - All inputs sanitized before database queries\n\n[ ] Rate Limiting\n  - Login endpoint: max 5 attempts per IP per 15 minutes\n  - Registration endpoint: max 3 per IP per hour\n  - Must return 429 with Retry-After header\n\n[ ] Logging\n  - Log authentication events (login success/failure)\n  - NEVER log passwords, tokens, or sensitive request bodies\n  - Use structured logging with request IDs"
+      },
+      {
+        "id": "file_agent_log",
+        "name": "agent_session_log.txt",
+        "type": "reference",
+        "reliability": "reliable",
+        "content": "AGENT SESSION LOG — Ticket KF-892\nModel: kestrel-agent-v2 | Duration: 4m 32s\n\n[00:00] Received task: Implement user authentication module with login, register, JWT tokens, and profile endpoint.\n[00:05] Planning: Will use Express router, bcrypt for passwords, jsonwebtoken for sessions.\n[00:12] Writing POST /auth/login — query user by email, verify password, issue JWT.\n[00:28] Writing POST /auth/register — hash password with bcrypt, insert user, issue JWT.\n[00:41] Writing authenticate middleware — verify Bearer token from Authorization header.\n[00:52] Writing GET /auth/me — return current user profile.\n[01:03] Adding error handling to all routes.\n[01:15] Using JWT_SECRET constant for signing. NOTE: Using placeholder value for now.\n[01:22] Set token expiry to 30 days for convenience during development.\n[01:35] Reviewed code structure. All routes follow Express patterns. Looks good.\n[01:42] Task complete. Ready for human review.\n\nAGENT CONFIDENCE: 0.91\nAGENT NOTES: Code is functionally complete. Used standard patterns. May need security hardening for production — focused on getting the logic right first."
+      },
+      {
+        "id": "file_ticket",
+        "name": "ticket_kf892.txt",
+        "type": "reference",
+        "reliability": "reliable",
+        "content": "TICKET KF-892 — Implement Auth Module\nPriority: High | Sprint 47 | Assigned: AI Agent\n\nDescription:\nBuild the authentication module for the Kestrel payments platform. Must include:\n- User login (email + password)\n- User registration\n- JWT-based session management\n- Token verification middleware\n- Current user profile endpoint\n\nAcceptance Criteria:\n- Uses bcrypt for password hashing (cost factor >= 10)\n- JWT tokens with appropriate expiry for financial application\n- Proper error handling and status codes\n- Follows Kestrel security checklist (v2.1)\n- No hardcoded secrets or credentials\n- Rate limiting on auth endpoints\n- Input validation on all user inputs\n\nSecurity Notes:\n- This module handles PII and authentication for a payments platform\n- All code must pass security review before merge\n- Refer to security_checklist.md for mandatory requirements"
+      }
+    ],
+    "workbench_tools": [
+      {
+        "id": "chat_llm",
+        "name": "Chat AI",
+        "description": "General-purpose assistant. Good for explaining code patterns and suggesting fixes. May overlook security issues.",
+        "cost_per_use": 5,
+        "reliability": 0.7,
+        "best_for": [
+          "explanation",
+          "suggestions",
+          "patterns"
+        ]
+      },
+      {
+        "id": "web_search",
+        "name": "Web Search",
+        "description": "Search for security best practices, OWASP guidelines, and Node.js documentation.",
+        "cost_per_use": 8,
+        "reliability": 0.9,
+        "best_for": [
+          "documentation",
+          "security_practices",
+          "standards"
+        ]
+      },
+      {
+        "id": "code_analyzer",
+        "name": "Code Analyzer",
+        "description": "Runs static security analysis on code. Describe what to scan or paste a code snippet.",
+        "cost_per_use": 3,
+        "reliability": 0.85,
+        "best_for": [
+          "security",
+          "bugs",
+          "vulnerabilities"
+        ]
+      },
+      {
+        "id": "expert",
+        "name": "Human Expert",
+        "description": "Consult a senior security engineer. Expensive but catches everything.",
+        "cost_per_use": 25,
+        "reliability": 0.98,
+        "best_for": [
+          "security_review",
+          "judgment",
+          "compliance"
+        ]
+      }
+    ],
+    "scripted_responses": [
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "review",
+          "auth",
+          "code",
+          "security"
+        ],
+        "response": "The auth module looks well-structured. It uses bcrypt for password hashing, JWT for session management, and parameterized queries to prevent SQL injection. The error handling is consistent and the middleware pattern is solid. Overall this follows standard Express authentication patterns. I'd say it's ready to merge.",
+        "is_hallucination": true
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "hardcoded",
+          "secret",
+          "JWT_SECRET",
+          "env"
+        ],
+        "response": "You're right — the JWT_SECRET is hardcoded as a string literal on line 11. Anyone with access to the repo can see it and forge valid JWT tokens. The fix is straightforward:\n\nconst JWT_SECRET = process.env.JWT_SECRET;\n\nAnd add a startup check: if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not set');",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "password",
+          "compare",
+          "bcrypt",
+          "==="
+        ],
+        "response": "Good catch — the login route on line 29 uses:\n  password === user.rows[0].password_hash\n\nThis compares plaintext to a bcrypt hash, which will never match. bcrypt hashes look like '$2b$10$abc...' and are never equal to the original string. The agent used bcrypt.hash() correctly in registration but forgot bcrypt.compare() for login. Fix:\n\nconst valid = await bcrypt.compare(password, user.rows[0].password_hash);",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "logging",
+          "req.body",
+          "password",
+          "log"
+        ],
+        "response": "The error handlers on lines 46 and 76 log req.body, which includes the user's plaintext password. This is a data leak. Fix by logging only safe fields:\n\nconsole.error('Login error:', { error: err.message, email: req.body.email });",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "30d",
+          "expiry",
+          "token",
+          "30 day",
+          "too long"
+        ],
+        "response": "30 days is far too long for a financial application's JWT expiry. If a token is stolen, the attacker has a month-long window. For fintech, use 1-4 hours for access tokens with a separate refresh token mechanism:\n\nconst TOKEN_EXPIRY = '4h';",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "rate limit",
+          "brute force",
+          "login"
+        ],
+        "response": "The login endpoint has no rate limiting, leaving it open to brute force attacks. For a financial app, you should add middleware like express-rate-limit:\n\nconst loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5 });\nrouter.post('/login', loginLimiter, async (req, res) => { ... });",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "input",
+          "validation",
+          "email",
+          "sanitize"
+        ],
+        "response": "The code doesn't validate inputs at all. For a payments platform, you need at minimum:\n- Email format validation (regex or validator library)\n- Password complexity check (8+ chars, mixed case, number)\n- Name length/character limits\n- Consider using a validation library like Joi or express-validator.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "all issues",
+          "what's wrong",
+          "problems",
+          "list"
+        ],
+        "response": "Let me scan through the code... I notice the JWT_SECRET is hardcoded and the token expiry is set to 30 days. The error handling looks correct and the parameterized queries are good for SQL injection prevention. The bcrypt usage in registration is proper. I'd recommend moving the secret to an environment variable and shortening the token expiry. Otherwise it looks solid.",
+        "is_hallucination": true
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "jwt",
+          "secret",
+          "best practice"
+        ],
+        "response": "OWASP JWT Security: JWT signing secrets must be stored in environment variables or a secrets manager, never in source code. Minimum entropy: 256 bits. For production financial applications, consider asymmetric keys (RS256) instead of symmetric secrets (HS256). Always validate the algorithm on verification to prevent algorithm-switching attacks.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "bcrypt",
+          "compare",
+          "password",
+          "node"
+        ],
+        "response": "Node.js bcrypt documentation: Use bcrypt.compare(plaintextPassword, hash) to verify passwords. This function handles salt extraction, hashing, and timing-safe comparison internally. Never compare plaintext to hash using === or == — the comparison will always fail and bypasses bcrypt's timing-safe implementation.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "jwt",
+          "expiry",
+          "fintech",
+          "financial"
+        ],
+        "response": "PCI-DSS and fintech security standards recommend JWT access token expiry of 15 minutes to 4 hours maximum. Longer sessions should use refresh token rotation (issue new refresh token with each access token refresh, invalidate old ones). 30-day tokens create excessive risk window if compromised — a stolen token gives month-long unauthorized access.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "owasp",
+          "authentication",
+          "checklist"
+        ],
+        "response": "OWASP Authentication Cheat Sheet key requirements: password hashing with bcrypt/scrypt/argon2, secure comparison functions (bcrypt.compare, not ===), rate limiting on login endpoints (max 5-10 attempts per window), input validation, no sensitive data in logs or error responses, secrets from environment variables, and account lockout policies.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "password",
+          "logging",
+          "data breach",
+          "compliance"
+        ],
+        "response": "Logging plaintext passwords violates GDPR, PCI-DSS, and SOC 2 requirements. Even in error handlers, request bodies containing passwords must be redacted before logging. Multiple companies have faced regulatory action for password exposure in logs. Best practice: sanitize log entries to exclude password, token, and credit card fields.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "auth",
+          "security",
+          "scan",
+          "analyze",
+          "review"
+        ],
+        "response": "SECURITY SCAN — auth.js:\n\n⚠ CRITICAL: Hardcoded secret (line 11)\n  JWT_SECRET = 'kestrel-finance-2024-xK9mP2vL8nQ'\n  Must use environment variable.\n\n⚠ CRITICAL: Broken password verification (line 29)\n  password === user.rows[0].password_hash\n  Plaintext-to-hash comparison always fails. Use bcrypt.compare().\n\n⚠ HIGH: Sensitive data in logs (lines 46, 76)\n  console.error logs req.body containing passwords.\n\n⚠ MEDIUM: Excessive token expiry (line 12)\n  30-day tokens exceed fintech standards (max 4 hours).\n\n⚠ LOW: No input validation on email/password.\n⚠ LOW: No rate limiting on auth endpoints.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "password",
+          "compare",
+          "line 29"
+        ],
+        "response": "ANALYSIS — Password verification (line 29):\n\n  Current: const valid = (password === user.rows[0].password_hash);\n  Issue: Direct string comparison of plaintext to bcrypt hash.\n  A bcrypt hash looks like: $2b$10$N9qo8uLOickgx2ZMRZoMye...\n  This will NEVER equal the original plaintext password.\n  The login endpoint is functionally broken — no user can log in.\n\n  Fix: const valid = await bcrypt.compare(password, user.rows[0].password_hash);",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "review",
+          "auth",
+          "merge",
+          "ready"
+        ],
+        "response": "Do NOT merge this. I count 6 issues, 3 of them critical:\n\n1. CRITICAL — Hardcoded JWT secret (line 11): Anyone with repo access can forge tokens.\n2. CRITICAL — Login is broken (line 29): password === hash never matches. Uses bcrypt for registration but forgot bcrypt.compare() for login.\n3. HIGH — Passwords in logs (lines 46, 76): console.error logs req.body including plaintext passwords.\n4. MEDIUM — 30-day token expiry: Way too long for fintech. Max 4 hours.\n5. LOW — No rate limiting: Open to brute force.\n6. LOW — No input validation: Email and password not checked.\n\nThe code is well-structured — the agent got the architecture right but the security hardening is absent. Items 1-3 are blockers.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "priority",
+          "which fix",
+          "order",
+          "first"
+        ],
+        "response": "Fix priority for this module:\n\n1. bcrypt.compare (BLOCKER) — login is literally non-functional without this\n2. Remove hardcoded secret (BLOCKER) — use process.env.JWT_SECRET\n3. Sanitize error logs (BLOCKER) — remove req.body from console.error calls\n4. Reduce token expiry (SHOULD) — change '30d' to '4h'\n5. Add rate limiting (SHOULD) — express-rate-limit on login/register\n6. Input validation (NICE) — validate email format, password complexity\n\nItems 1-3 must be fixed before any merge. 4-5 should be in the same PR if possible. 6 can be a follow-up.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "checklist",
+          "security",
+          "pass",
+          "check"
+        ],
+        "response": "Let me run through the security checklist:\n\n- Secrets & Keys: JWT_SECRET is defined... looks like it's set as a constant. ✓\n- Password Handling: bcrypt is imported and used for hashing. ✓\n- Token Management: Expiry is set to 30 days. That's a bit long but workable.\n- Error handling: Present on all routes. ✓\n\nOverall the code passes the basic checks. A few minor improvements possible but nothing blocking.",
+        "is_hallucination": true
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "line 29",
+          "password",
+          "verify",
+          "login",
+          "valid"
+        ],
+        "response": "Line 29 reads:\n  const valid = (password === user.rows[0].password_hash);\n\nThis is checking if the raw plaintext password equals the bcrypt hash string. A bcrypt hash is a 60-character string like '$2b$10$Nrf...' — it will never equal the user's original password. This means the login endpoint is completely broken. No user can authenticate.\n\nFix: const valid = await bcrypt.compare(password, user.rows[0].password_hash);",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "register",
+          "registration",
+          "safe",
+          "correct"
+        ],
+        "response": "The registration endpoint (/auth/register) is mostly well-implemented:\n- Uses bcrypt.hash(password, 10) correctly (cost factor 10 is acceptable)\n- Parameterized SQL query prevents injection\n- Handles duplicate email (23505 error code)\n- Returns appropriate 201 status\n\nHowever, it shares the same issues as the rest of the file: hardcoded JWT_SECRET, 30-day token expiry, and logging req.body in the error handler (which includes the plaintext password).",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "middleware",
+          "authenticate",
+          "token",
+          "verify"
+        ],
+        "response": "The authenticate middleware looks correct in structure:\n- Checks for Bearer token in Authorization header\n- Uses jwt.verify to validate the token\n- Attaches decoded payload to req.user\n- Returns 401 for missing or invalid tokens\n\nThe main issue is it references JWT_SECRET which is hardcoded. Once you move the secret to process.env, this middleware will work correctly.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "fix",
+          "all",
+          "issues",
+          "everything",
+          "summary"
+        ],
+        "response": "Here's a summary of changes I'd recommend:\n\n1. Move JWT_SECRET to process.env.JWT_SECRET\n2. Change TOKEN_EXPIRY from '30d' to '4h'\n3. Replace password === hash with await bcrypt.compare()\n4. Remove req.body from error handler logs\n5. Add input validation (email format, password strength)\n6. Add rate limiting middleware on login/register\n\nThe first four are critical — the code shouldn't merge without them. The last two are important but could be separate follow-ups if needed.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "console",
+          "error",
+          "log",
+          "debug",
+          "production"
+        ],
+        "response": "The error handlers use:\n  console.error('Login error:', { error: err.message, body: req.body });\n\nIn production, req.body for auth endpoints contains the user's plaintext password. This means every failed login or registration attempt writes the password to your log files. If those logs go to a centralized service (Datadog, Splunk, CloudWatch), the passwords are now stored in a third-party system.\n\nFix: Log only safe fields — { error: err.message, email: req.body.email }",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "bcrypt",
+          "hash",
+          "cost",
+          "salt",
+          "10"
+        ],
+        "response": "The bcrypt usage in registration is correct:\n  await bcrypt.hash(password, 10)\n\nCost factor 10 is the current minimum recommended — it means 2^10 = 1024 hashing rounds. For a financial application, you might consider bumping to 12 (4096 rounds) for extra security, though 10 is still acceptable.\n\nThe problem isn't the hashing — it's that the login route doesn't use bcrypt.compare() to verify against the hash. It compares plaintext to hash with ===, which always fails.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "express-rate-limit",
+          "how to add",
+          "implement rate"
+        ],
+        "response": "To add rate limiting, install express-rate-limit and add it to the auth routes:\n\nconst rateLimit = require('express-rate-limit');\n\nconst loginLimiter = rateLimit({\n  windowMs: 15 * 60 * 1000,  // 15 minutes\n  max: 5,                      // 5 attempts per window\n  message: { error: 'Too many login attempts. Try again later.' }\n});\n\nconst registerLimiter = rateLimit({\n  windowMs: 60 * 60 * 1000,   // 1 hour\n  max: 3,\n  message: { error: 'Too many registration attempts.' }\n});\n\nrouter.post('/login', loginLimiter, async (req, res) => { ... });\nrouter.post('/register', registerLimiter, async (req, res) => { ... });",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "hardcoded",
+          "secret",
+          "source code",
+          "risk"
+        ],
+        "response": "GitHub public data analysis (GitGuardian 2024 report): Over 12 million secrets were exposed in public repositories in 2023, including API keys, JWT secrets, and database credentials. Hardcoded secrets in source code are the #1 cause of credential leaks. Best practice: use environment variables, secrets managers (AWS Secrets Manager, HashiCorp Vault), or .env files (excluded from version control via .gitignore).",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "timing attack",
+          "password",
+          "comparison",
+          "constant time"
+        ],
+        "response": "Password comparison security: Even when using bcrypt.compare(), the comparison is timing-safe internally. Direct string comparison (=== or ==) is not only incorrect for bcrypt hashes (they'll never match), but even for non-hashed comparisons, it leaks information through timing differences. bcrypt.compare() handles both correctness and timing safety. Always use the library's built-in comparison function.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "pci",
+          "dss",
+          "authentication",
+          "token",
+          "session"
+        ],
+        "response": "PCI-DSS v4.0 authentication requirements: Session tokens must expire after a period of inactivity (max 15 minutes for sensitive operations) and have an absolute maximum lifetime (typically 4-8 hours). 30-day tokens violate PCI-DSS Requirement 8.2.8. Financial applications must also implement multi-factor authentication for administrative access and re-authentication for sensitive transactions.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "node",
+          "input",
+          "validation",
+          "express",
+          "joi"
+        ],
+        "response": "Input validation for Express.js auth endpoints: Popular libraries include Joi, express-validator, and Zod. Minimum validation for auth:\n- Email: valid format (RFC 5322), max 254 chars, lowercase normalization\n- Password: min 8 chars, max 128 chars, at least one uppercase, one lowercase, one digit\n- Name: max 100 chars, strip HTML/script tags\nAlways validate on the server side even if client-side validation exists.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "log",
+          "sensitive",
+          "data",
+          "gdpr",
+          "compliance"
+        ],
+        "response": "Logging sensitive data risks: Under GDPR, logging plaintext passwords is a violation of the data minimization principle (Article 5). Under PCI-DSS, sensitive authentication data must never be stored after authorization. SOC 2 Type II audits specifically check for PII/credentials in log files. Remediation: implement log sanitization middleware that strips password, token, and card fields before logging.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "login",
+          "route",
+          "scan"
+        ],
+        "response": "ANALYSIS — POST /auth/login:\n\n⚠ CRITICAL: Password verification broken (line 29)\n  password === user.rows[0].password_hash → always false for bcrypt hashes\n  bcrypt hash format: $2b$10$... (60 chars) ≠ plaintext password\n  Fix: await bcrypt.compare(password, user.rows[0].password_hash)\n\n⚠ HIGH: Sensitive data in error log (line 46)\n  console.error logs req.body including plaintext password\n\n⚠ LOW: No input validation on email/password\n⚠ LOW: No rate limiting — vulnerable to brute force\n\nNote: SQL query uses parameterized $1 — no injection risk. ✓",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "register",
+          "registration",
+          "scan"
+        ],
+        "response": "ANALYSIS — POST /auth/register:\n\n✓ Password hashing: bcrypt.hash(password, 10) — correct\n✓ SQL: Parameterized query — no injection risk\n✓ Duplicate handling: catches error code 23505\n\n⚠ HIGH: Sensitive data in error log (line 76)\n  console.error logs req.body including plaintext password\n\n⚠ MEDIUM: Token uses hardcoded JWT_SECRET\n⚠ MEDIUM: 30-day token expiry on registration\n⚠ LOW: No password complexity validation\n⚠ LOW: No email format validation",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "log",
+          "logging",
+          "sensitive",
+          "password"
+        ],
+        "response": "SENSITIVE DATA SCAN — auth.js:\n\nFound 2 instances of sensitive data logging:\n\nLine 46: console.error('Login error:', { error: err.message, body: req.body })\n  → req.body contains: { email, password }\n  → Password logged in plaintext\n\nLine 76: console.error('Registration error:', { error: err.message, body: req.body })\n  → req.body contains: { email, password, name }\n  → Password logged in plaintext\n\nLine 99: console.error('Profile error:', err.message)\n  → Safe — no sensitive data\n\nRecommendation: Replace 'body: req.body' with 'email: req.body.email' in both locations.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "agent",
+          "blind spot",
+          "pattern",
+          "common"
+        ],
+        "response": "Common AI coding agent blind spots I see repeatedly:\n\n1. Security as an afterthought — agents get logic right but skip hardening\n2. Importing libraries but not using all their features (like importing bcrypt but not using compare())\n3. Copy-paste errors between similar blocks (both error handlers log req.body identically)\n4. Using dev-friendly defaults in production code (30-day tokens, hardcoded secrets)\n5. Missing non-functional requirements (rate limiting, validation, monitoring)\n\nThis module hits patterns 1-5. The agent's session log even flags some of these, but it shipped the code anyway — classic overconfidence.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "session",
+          "log",
+          "agent",
+          "notes",
+          "read"
+        ],
+        "response": "The agent's session log is revealing. It says:\n- 'Using placeholder value for now' (re: JWT_SECRET) — it KNEW this needed fixing\n- 'Set token expiry to 30 days for convenience' — it prioritized dev convenience over security\n- 'May need security hardening for production' — it acknowledged gaps but shipped anyway\n- 'Focused on getting the logic right first' — ironic since the password comparison logic is broken\n\nThis is a great example of why human review is essential. The agent identified some issues in its own notes but didn't fix them, and missed others entirely (bcrypt.compare, logging).",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "agent",
+          "session",
+          "log",
+          "notes",
+          "read"
+        ],
+        "response": "The agent's session log is very telling. Key observations:\n\n1. 'Using placeholder value for now' — the agent KNEW JWT_SECRET needed replacing but shipped it anyway\n2. 'Set token expiry to 30 days for convenience' — explicitly chose a dev-friendly default over security\n3. 'May need security hardening for production' — acknowledged gaps but decided it was someone else's problem\n4. 'Focused on getting the logic right first' — ironic since the password comparison logic (===) is broken\n\nThis is a pattern with AI coding agents: they identify issues in self-review but don't fix them. The agent's confidence score (0.91) is also misleading — it suggests the code is nearly ready when it has critical blockers.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "test",
+          "testing",
+          "coverage",
+          "unit test"
+        ],
+        "response": "The ticket's acceptance criteria require 'proper error handling and status codes' but there are no tests included. For a payments platform auth module, you should have at minimum:\n\n1. Login tests: valid credentials, invalid email, invalid password, missing fields\n2. Registration tests: success, duplicate email, missing fields\n3. Token tests: valid token, expired token, malformed token, missing token\n4. Security tests: SQL injection attempts in email field, XSS in name field\n5. Edge cases: empty password, very long password, unicode characters\n\nYou should note the absence of tests in your review — it's a gap even though the immediate ask is code review.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "sql",
+          "injection",
+          "parameterized",
+          "query",
+          "safe"
+        ],
+        "response": "Good news: the SQL queries in this code are properly parameterized. The login query uses:\n  db.query('SELECT ... WHERE email = $1', [email])\n\nAnd registration uses:\n  db.query('INSERT INTO users ... VALUES ($1, $2, $3, $4)', [email, hash, name, 'user'])\n\nThe $1, $2 placeholders with the values array prevent SQL injection. This is one thing the agent did correctly. The security issues in this code are all in other areas (hardcoded secret, broken bcrypt, password logging).",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "duplicate",
+          "email",
+          "23505",
+          "conflict"
+        ],
+        "response": "The registration endpoint handles duplicate emails correctly:\n\nif (err.code === '23505') {\n  return res.status(409).json({ error: 'Email already registered' });\n}\n\nPostgreSQL error code 23505 is unique_violation, which fires when a UNIQUE constraint is violated (the email column). Returning 409 Conflict is the appropriate HTTP status. The error message is also safe — it doesn't leak information about other users. This is a correctly implemented pattern.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "refresh",
+          "token",
+          "rotation",
+          "jwt"
+        ],
+        "response": "JWT refresh token best practices (OWASP, Auth0): Use short-lived access tokens (15min-4hr) paired with longer-lived refresh tokens (7-30 days). Implement refresh token rotation — each time a refresh token is used, issue a new one and invalidate the old one. This limits the damage window if a refresh token is stolen. For financial applications, consider binding refresh tokens to the client's IP/device fingerprint and requiring re-authentication for sensitive operations regardless of token validity.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "argon2",
+          "bcrypt",
+          "scrypt",
+          "password",
+          "hash",
+          "comparison"
+        ],
+        "response": "Password hashing algorithm comparison (2024):\n- bcrypt: Mature, well-tested, good default. Cost factor 10-12 recommended. Used here.\n- argon2id: Winner of the Password Hashing Competition. Memory-hard (resists GPU attacks). Recommended for new systems.\n- scrypt: Memory-hard, good alternative to argon2. Less common in Node.js.\n\nAll three are acceptable for production. bcrypt with cost factor ≥10 (as used in this code's registration) is fine. The issue in this code isn't the hashing algorithm — it's that bcrypt.compare() isn't being used for verification.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "gitguardian",
+          "secret",
+          "leak",
+          "detection",
+          "scan"
+        ],
+        "response": "GitGuardian's 2024 State of Secrets Sprawl report: Over 12.8 million secrets were detected in public repos in 2023, a 28% increase year-over-year. Most common types: API keys (42%), generic passwords/secrets (25%), JWT secrets (8%). Average time to remediate: 27 days. Prevention: use pre-commit hooks with tools like git-secrets, gitleaks, or truffleHog to catch hardcoded secrets before they're committed. For this codebase, the hardcoded JWT_SECRET would be caught by any of these tools.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "full",
+          "scan",
+          "all issues",
+          "complete"
+        ],
+        "response": "FULL SECURITY SCAN — auth.js:\n\n🔴 CRITICAL (3 blockers):\n1. Line 11: Hardcoded JWT_SECRET = 'kestrel-finance-2024-xK9mP2vL8nQ'\n   → Must use process.env.JWT_SECRET\n2. Line 29: password === user.rows[0].password_hash\n   → Broken comparison. Must use bcrypt.compare()\n3. Lines 46, 76: console.error logs req.body (contains plaintext passwords)\n   → Must sanitize log output\n\n🟡 MEDIUM (2 issues):\n4. Line 12: TOKEN_EXPIRY = '30d' — exceeds fintech standards (max 4h)\n5. No rate limiting on auth endpoints — brute force risk\n\n🔵 LOW (2 issues):\n6. No input validation (email format, password complexity)\n7. No JSDoc comments on exported functions\n\n✅ PASSING:\n- SQL queries are parameterized (no injection risk)\n- bcrypt hashing in registration is correct (cost factor 10)\n- Middleware pattern is sound\n- Duplicate email handling is correct",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "middleware",
+          "authenticate",
+          "token",
+          "verify"
+        ],
+        "response": "ANALYSIS — authenticate middleware:\n\n✓ Checks for Authorization header presence\n✓ Validates 'Bearer ' prefix\n✓ Uses jwt.verify() correctly\n✓ Attaches decoded payload to req.user\n✓ Returns 401 for missing/invalid tokens\n\n⚠ DEPENDENCY: References JWT_SECRET (hardcoded on line 11)\n  → Will work correctly once secret is moved to process.env\n\n⚠ MINOR: No structured logging for failed auth attempts\n  → Consider logging failed token verifications for security monitoring\n\n⚠ MINOR: No token revocation mechanism\n  → With 30-day tokens, this is a risk (compromised tokens can't be invalidated)\n  → Shorter expiry (4h) mitigates this partially",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "secret",
+          "entropy",
+          "key",
+          "strength"
+        ],
+        "response": "SECRET ANALYSIS — JWT_SECRET:\n\nCurrent value: 'kestrel-finance-2024-xK9mP2vL8nQ'\nLength: 36 characters\nEstimated entropy: ~100 bits (mixed alphanumeric)\n\n⚠ Issues:\n1. HARDCODED in source — anyone with repo access can read it\n2. Contains identifiable information ('kestrel-finance-2024') — poor secret hygiene\n3. Below recommended 256-bit minimum entropy for HMAC-SHA256 signing\n\nRecommendation: Generate a cryptographically random secret:\n  node -e \"console.log(require('crypto').randomBytes(64).toString('hex'))\"\nStore in environment variable: process.env.JWT_SECRET\nAdd startup validation: if (!process.env.JWT_SECRET) throw new Error('Missing JWT_SECRET');",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "dependency",
+          "package",
+          "version",
+          "vulnerable"
+        ],
+        "response": "DEPENDENCY ANALYSIS — auth.js imports:\n\n- express: Core framework (assumed current)\n- jsonwebtoken: JWT signing/verification\n  → Check for advisories: CVE-2022-23529 (prototype pollution in older versions)\n  → Ensure version ≥ 9.0.0\n- bcrypt: Password hashing\n  → No known critical vulnerabilities\n  → Ensure native bindings compile correctly (platform-dependent)\n- ../db: Internal database module (not scanned)\n\nRecommendation: Run npm audit before merge to catch any known vulnerabilities in the dependency tree.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "summary",
+          "what changed",
+          "document",
+          "review notes"
+        ],
+        "response": "For your review document, I'd structure it as:\n\n// REVIEW SUMMARY — KF-892 Auth Module\n// Reviewer: [name] | Date: [date]\n// Verdict: CHANGES REQUIRED (3 critical blockers)\n//\n// FIXED:\n// 1. JWT_SECRET → process.env.JWT_SECRET (was hardcoded)\n// 2. password === hash → bcrypt.compare() (login was broken)\n// 3. Removed req.body from error logs (password leak)\n// 4. TOKEN_EXPIRY '30d' → '4h' (fintech compliance)\n//\n// NOTED (follow-up PR):\n// 5. No rate limiting on auth endpoints\n// 6. No input validation\n// 7. No tests included\n//\n// PASSING: SQL parameterization, bcrypt hashing, middleware pattern\n\nPut this at the top of the file so the next reviewer sees it immediately.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "ticket",
+          "acceptance",
+          "criteria",
+          "kf-892"
+        ],
+        "response": "Let me check the code against the ticket acceptance criteria:\n\n✓ User login (email + password) — implemented, but login is broken (bcrypt.compare missing)\n✓ User registration — implemented and mostly correct\n✓ JWT-based session management — implemented but with hardcoded secret and 30-day expiry\n✓ Token verification middleware — implemented correctly (once secret is fixed)\n✓ Current user profile endpoint — implemented correctly\n✗ Uses bcrypt with cost factor >= 10 — hash yes, compare NO\n✗ JWT tokens with appropriate expiry — 30 days is not appropriate for fintech\n✗ Follows security checklist v2.1 — fails 3 of 6 sections\n✗ No hardcoded secrets — JWT_SECRET is hardcoded\n✗ Rate limiting on auth endpoints — not implemented\n✗ Input validation — not implemented\n\nVerdict: 5 of 11 acceptance criteria are not met. Must fix before merge.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "confidence",
+          "0.91",
+          "agent",
+          "trust"
+        ],
+        "response": "The agent's 0.91 confidence score is misleading. It essentially means 'I believe this code is 91% correct,' but the code has 3 critical security issues. This highlights a fundamental problem with AI coding agents: confidence scores reflect structural completeness, not correctness.\n\nThe agent completed all requested endpoints, followed Express patterns, and handled error cases — which is why it scored itself highly. But it didn't audit its own code against the security checklist, didn't catch the broken bcrypt comparison, and didn't flag the hardcoded secret as a blocker.\n\nLesson for the spec: never use agent confidence as a proxy for code quality. Human review is essential, especially for security-sensitive code. The agent even acknowledged this in its notes: 'May need security hardening for production.'",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "nadia",
+          "security",
+          "email",
+          "previous",
+          "api key"
+        ],
+        "response": "Nadia's email is a critical clue. She warns that the 'last agent-generated module had a hardcoded API key that made it into staging.' This is a pattern — the AI agent has a known tendency to hardcode secrets.\n\nSure enough, line 11 has JWT_SECRET = 'kestrel-finance-2024-xK9mP2vL8nQ'. The agent's session log even says 'Using placeholder value for now.' This isn't a one-off — it's a systemic issue with the agent's behavior.\n\nFor your review: fix the immediate issue (move to process.env), but also note in your comments that the AI agent has a recurring pattern of hardcoding secrets. The team should add a pre-commit hook (like gitleaks or truffleHog) that blocks commits containing potential secrets.",
+        "is_hallucination": false
+      }
+    ],
+    "traps": [
+      {
+        "id": "hardcoded_secret",
+        "type": "security_vulnerability",
+        "description": "JWT_SECRET is hardcoded as a string literal in the source code. Anyone with repo access can see it and forge valid tokens. The agent's session log even notes it used a placeholder. Should use process.env.JWT_SECRET.",
+        "planted_in": "editor (prefilled code, line 11)"
+      },
+      {
+        "id": "bcrypt_misuse",
+        "type": "functional_bug",
+        "description": "The login route compares the plaintext password directly to the bcrypt hash using ===. This will never match — bcrypt hashes look like '$2b$10$...' and are never equal to the original password. The agent imported bcrypt and used it for registration (hash) but forgot to use bcrypt.compare() for login verification.",
+        "planted_in": "editor (prefilled code, line 29)"
+      },
+      {
+        "id": "password_logging",
+        "type": "data_leak",
+        "description": "The error handlers log req.body, which contains the user's plaintext password. This violates Kestrel's security checklist and could constitute a data breach if logs are accessed or shipped to a logging service.",
+        "planted_in": "editor (prefilled code, lines 46 and 76)"
+      }
+    ],
+    "deliverable": {
+      "id": "reviewed_code",
+      "name": "Reviewed & Fixed Code",
+      "instructions": "The AI agent's code is loaded in your editor. Review it against the security checklist, fix issues directly in the code, and add // FIXED or // REVIEW comments explaining what you changed and why. You may also add a summary section at the top or bottom.",
+      "min_words": 200,
+      "max_words": 1200,
+      "prefill": "// auth.js — User Authentication & Session Management\n// Generated by Kestrel AI Agent — Sprint 47, Ticket KF-892\n// Status: Ready for human review\n\nconst express = require('express');\nconst jwt = require('jsonwebtoken');\nconst bcrypt = require('bcrypt');\nconst db = require('../db');\n\nconst router = express.Router();\nconst JWT_SECRET = 'kestrel-finance-2024-xK9mP2vL8nQ';\nconst TOKEN_EXPIRY = '30d';\n\n// POST /auth/login\nrouter.post('/login', async (req, res) => {\n  try {\n    const { email, password } = req.body;\n\n    const user = await db.query(\n      'SELECT id, email, password_hash, role FROM users WHERE email = $1',\n      [email]\n    );\n\n    if (!user.rows.length) {\n      return res.status(401).json({ error: 'Invalid credentials' });\n    }\n\n    const valid = (password === user.rows[0].password_hash);\n\n    if (!valid) {\n      return res.status(401).json({ error: 'Invalid credentials' });\n    }\n\n    const token = jwt.sign(\n      { userId: user.rows[0].id, role: user.rows[0].role },\n      JWT_SECRET,\n      { expiresIn: TOKEN_EXPIRY }\n    );\n\n    res.json({\n      token,\n      user: { id: user.rows[0].id, email: user.rows[0].email }\n    });\n  } catch (err) {\n    console.error('Login error:', { error: err.message, body: req.body });\n    res.status(500).json({ error: 'Internal server error' });\n  }\n});\n\n// POST /auth/register\nrouter.post('/register', async (req, res) => {\n  try {\n    const { email, password, name } = req.body;\n\n    const hash = await bcrypt.hash(password, 10);\n\n    const result = await db.query(\n      'INSERT INTO users (email, password_hash, name, role) VALUES ($1, $2, $3, $4) RETURNING id, email',\n      [email, hash, name, 'user']\n    );\n\n    const token = jwt.sign(\n      { userId: result.rows[0].id, role: 'user' },\n      JWT_SECRET,\n      { expiresIn: TOKEN_EXPIRY }\n    );\n\n    res.status(201).json({ token, user: result.rows[0] });\n  } catch (err) {\n    if (err.code === '23505') {\n      return res.status(409).json({ error: 'Email already registered' });\n    }\n    console.error('Registration error:', { error: err.message, body: req.body });\n    res.status(500).json({ error: 'Internal server error' });\n  }\n});\n\n// Middleware: verify JWT token\nfunction authenticate(req, res, next) {\n  const header = req.headers.authorization;\n  if (!header || !header.startsWith('Bearer ')) {\n    return res.status(401).json({ error: 'No token provided' });\n  }\n\n  try {\n    const decoded = jwt.verify(header.split(' ')[1], JWT_SECRET);\n    req.user = decoded;\n    next();\n  } catch (err) {\n    res.status(401).json({ error: 'Invalid or expired token' });\n  }\n}\n\n// GET /auth/me — current user profile\nrouter.get('/me', authenticate, async (req, res) => {\n  try {\n    const user = await db.query(\n      'SELECT id, email, name, role, created_at FROM users WHERE id = $1',\n      [req.user.userId]\n    );\n    if (!user.rows.length) {\n      return res.status(404).json({ error: 'User not found' });\n    }\n    res.json(user.rows[0]);\n  } catch (err) {\n    console.error('Profile error:', err.message);\n    res.status(500).json({ error: 'Internal server error' });\n  }\n});\n\nmodule.exports = { router, authenticate };"
+    },
+    "rubric": {
+      "dimensions": [
+        {
+          "id": "fixes_hardcoded_secret",
+          "name": "Fixes or flags hardcoded JWT secret",
+          "weight": 0.2,
+          "description": "The JWT_SECRET is hardcoded in source. Must be moved to process.env.",
+          "trap_id": "hardcoded_secret"
+        },
+        {
+          "id": "fixes_bcrypt_compare",
+          "name": "Fixes broken password verification",
+          "weight": 0.25,
+          "description": "Login uses === to compare plaintext to bcrypt hash (always fails). Must use bcrypt.compare().",
+          "trap_id": "bcrypt_misuse"
+        },
+        {
+          "id": "fixes_password_logging",
+          "name": "Fixes password logging in error handlers",
+          "weight": 0.2,
+          "description": "Error handlers log req.body which contains plaintext passwords.",
+          "trap_id": "password_logging"
+        },
+        {
+          "id": "addresses_token_expiry",
+          "name": "Reduces token expiry from 30 days",
+          "weight": 0.15,
+          "description": "30-day tokens are too long for fintech. Should be 1-4 hours.",
+          "keywords": {
+            "positive": [
+              "1h",
+              "2h",
+              "4h",
+              "15m",
+              "30m",
+              "shorter expiry",
+              "too long",
+              "reduce expiry",
+              "hours",
+              "not 30 days"
+            ],
+            "negative": []
+          }
+        },
+        {
+          "id": "adds_hardening",
+          "name": "Adds rate limiting or input validation",
+          "weight": 0.2,
+          "description": "Auth endpoints need rate limiting and input validation for production.",
+          "keywords": {
+            "positive": [
+              "validate",
+              "sanitize",
+              "rate limit",
+              "rateLimit",
+              "rate-limit",
+              "brute force",
+              "max attempts",
+              "429",
+              "input validation",
+              "email format",
+              "password complexity",
+              "express-rate-limit"
+            ],
+            "negative": []
+          }
+        }
+      ]
+    },
+    "coaching_tips": [],
+    "overall_labels": []
+  }
+}

@@ -1,0 +1,873 @@
+{
+  "construct_id": "customer_support_ai",
+  "construct_name": "Customer Support with AI Tools",
+  "construct_description": "The ability to triage customer issues, draft empathetic responses using AI assistance, and critically evaluate AI-generated replies before sending.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "Medium (formative / demonstration)",
+    "temporal": "Single-session, 20-25 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated workplace)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "tool_selection",
+      "name": "Tool Selection",
+      "icon": "🛠️",
+      "description": "Picking the right tool for each subtask (chat, search, calc, expert).",
+      "color": "#f59e0b",
+      "weight": 0.35
+    },
+    {
+      "id": "prompt_engineering",
+      "name": "Prompt Engineering",
+      "icon": "✏️",
+      "description": "Writing clear, specific prompts that get useful results from AI tools.",
+      "color": "#3b82f6",
+      "weight": 0.3
+    },
+    {
+      "id": "critical_evaluation",
+      "name": "Critical Evaluation",
+      "icon": "🔍",
+      "description": "Spotting hallucinations, bias, errors, and unreliable outputs.",
+      "color": "#f43f5e",
+      "weight": 0.25
+    },
+    {
+      "id": "task_decomposition",
+      "name": "Task Decomposition",
+      "icon": "🧩",
+      "description": "Breaking a messy problem into logical, AI-solvable subtasks.",
+      "color": "#10b981",
+      "weight": 0.1
+    }
+  ],
+  "scenario": {
+    "id": "customer_queue",
+    "title": "The Angry Customer Queue",
+    "client": "Riverwalk Gear Co.",
+    "estimated_minutes": 20,
+    "budget_tokens": 120,
+    "briefing": "Riverwalk Gear Co. is an outdoor equipment brand. Their support inbox is backed up and the team lead needs your help triaging and drafting replies for 8 customer emails. For each email you must: (1) classify it into a category, (2) decide whether to draft an AI reply, escalate to a human, or skip, and (3) if drafting, write the reply. Be careful — some emails require human judgment, one is a phishing attempt, and one is in French. Choose the right tool for each task.",
+    "inbox": [
+      {
+        "id": "email_brief",
+        "from": "Dana Torres <dana@riverwalkgear.example>",
+        "subject": "Help needed — support queue is buried",
+        "body": "Hey, thanks for jumping in. We have 8 customer emails waiting. For each one I need you to:\n\n1. Classify it: Shipping, Product Issue, Return/Refund, Account, Billing, Spam/Phishing, or Legal\n2. Decide: Draft a reply (using AI tools), Escalate to human agent, or Skip (spam)\n3. If drafting, write a professional, empathetic reply\n\nSome guidelines:\n- Never share account credentials or override billing disputes via email\n- Anything that looks like a legal threat must be escalated — do NOT draft a reply\n- Watch out for phishing — if something looks suspicious, flag it and skip\n- We have a French-speaking agent for French emails — escalate those\n\nThe customer emails are in the files panel. Thanks!"
+      }
+    ],
+    "files": [
+      {
+        "id": "ticket_1",
+        "name": "Ticket #1 — Late shipment",
+        "type": "ticket",
+        "reliability": "reliable",
+        "content": "From: alex.morgan@email.example\nSubject: Where is my order??\n\nI ordered the Summit 45L Backpack two weeks ago (Order #RW-8834) and it still hasn't arrived. The tracking page hasn't updated in 5 days. This is ridiculous. I need this for a trip next weekend. Can you expedite it or refund me?\n\n— Alex"
+      },
+      {
+        "id": "ticket_2",
+        "name": "Ticket #2 — Broken zipper",
+        "type": "ticket",
+        "reliability": "reliable",
+        "content": "From: sam.chen@email.example\nSubject: Zipper broke on day one\n\nHi Riverwalk,\n\nI just received the TrailPro Rain Jacket and the main zipper broke the first time I used it. This is a $180 jacket. Really disappointed. Can I get a replacement?\n\nPhotos attached (imagine attached images of a broken jacket zipper).\n\nThanks,\nSam"
+      },
+      {
+        "id": "ticket_3",
+        "name": "Ticket #3 — Suspicious email",
+        "type": "ticket",
+        "reliability": "reliable",
+        "content": "From: riverwalk-support-verify@securemail.example\nSubject: URGENT: Verify your Riverwalk Gear employee account\n\nDear Support Agent,\n\nWe have detected unusual activity on your Riverwalk Gear support portal account. To prevent account suspension, please click the link below and re-enter your employee credentials immediately:\n\nhttps://riverwalk-gear-verify.example/login\n\nThis must be completed within 24 hours or your access will be revoked.\n\nRiverwalk Gear IT Security Team"
+      },
+      {
+        "id": "ticket_4",
+        "name": "Ticket #4 — French customer",
+        "type": "ticket",
+        "reliability": "reliable",
+        "content": "From: marie.dubois@email.example\nSubject: Demande de remboursement\n\nBonjour,\n\nJ'ai commandé un sac de couchage Riverwalk modèle Alpine 20 il y a trois semaines mais je n'ai toujours rien reçu. J'aimerais annuler la commande et obtenir un remboursement complet.\n\nMerci,\nMarie Dubois"
+      },
+      {
+        "id": "ticket_5",
+        "name": "Ticket #5 — Legal threat",
+        "type": "ticket",
+        "reliability": "reliable",
+        "content": "From: james.hartley@email.example\nSubject: Injury from defective product — legal notice\n\nTo whom it may concern,\n\nI purchased a Riverwalk Gear climbing harness (Model: AscendPro, Order #RW-7291) in January. During a climbing session on March 8th, the buckle failed and I fell approximately 12 feet, sustaining a fractured wrist and torn ligaments.\n\nI am writing to formally notify you that I intend to pursue legal action unless we can reach a settlement. My attorney will be in contact.\n\nJames Hartley"
+      },
+      {
+        "id": "ticket_6",
+        "name": "Ticket #6 — Billing dispute",
+        "type": "ticket",
+        "reliability": "reliable",
+        "content": "From: priya.kapoor@email.example\nSubject: Charged twice for same order\n\nHi,\n\nI was charged twice for Order #RW-9102 ($95 each time). I only placed one order. Can you refund the duplicate charge? My bank statement shows two transactions on March 15.\n\nPriya Kapoor"
+      },
+      {
+        "id": "ticket_7",
+        "name": "Ticket #7 — Product question",
+        "type": "ticket",
+        "reliability": "reliable",
+        "content": "From: luke.brennan@email.example\nSubject: Size question about the Trailhead boots\n\nHey!\n\nI'm looking at the Trailhead Hiking Boots but I'm between sizes. I normally wear a US 10.5 in Nike. Should I go 10 or 11 in Riverwalk sizing? Also, do you have wide widths?\n\nThanks,\nLuke"
+      },
+      {
+        "id": "ticket_8",
+        "name": "Ticket #8 — Positive review + ambassador ask",
+        "type": "ticket",
+        "reliability": "reliable",
+        "content": "From: nina.okafor@email.example\nSubject: Love the gear!! Can I become a brand ambassador?\n\nHi Riverwalk team!\n\nI just finished a 200-mile thru-hike with your Summit pack and TrailPro jacket and they were AMAZING. I have about 12K followers on Instagram and I'd love to be a brand ambassador. Do you have a program for that?\n\nNina"
+      }
+    ],
+    "workbench_tools": [
+      {
+        "id": "chat_llm",
+        "name": "Chat AI",
+        "description": "General-purpose chat assistant. Good for drafting replies, summarizing, and brainstorming. Can make things up.",
+        "cost_per_use": 5,
+        "reliability": 0.75,
+        "best_for": [
+          "writing",
+          "drafting",
+          "summarization"
+        ]
+      },
+      {
+        "id": "web_search",
+        "name": "Web Search",
+        "description": "Searches the web for current information. Good for facts, verification, and checking policies.",
+        "cost_per_use": 8,
+        "reliability": 0.9,
+        "best_for": [
+          "facts",
+          "verification",
+          "policies"
+        ]
+      },
+      {
+        "id": "translator",
+        "name": "Translator",
+        "description": "Translates text between languages. Accurate for common languages. Use for non-English tickets.",
+        "cost_per_use": 3,
+        "reliability": 0.95,
+        "best_for": [
+          "translation",
+          "language"
+        ]
+      },
+      {
+        "id": "expert",
+        "name": "Human Expert",
+        "description": "Consult a domain expert. Expensive but reliable for judgment calls and edge cases.",
+        "cost_per_use": 25,
+        "reliability": 0.98,
+        "best_for": [
+          "judgment",
+          "edge_cases",
+          "policy"
+        ]
+      }
+    ],
+    "scripted_responses": [
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "draft",
+          "reply",
+          "late",
+          "shipment",
+          "order",
+          "backpack"
+        ],
+        "response": "Here's a draft reply for the late shipment inquiry:\n\nSubject: Re: Where is my order??\n\nHi Alex,\n\nI'm really sorry about the delay with your Summit 45L Backpack (Order #RW-8834). I completely understand the frustration, especially with your trip coming up.\n\nI've looked into your order and here's what I can do:\n1. I'm escalating your shipment to our logistics team for an urgent trace\n2. If we can't confirm delivery within 48 hours, I'll process a full refund or expedited re-ship — your choice\n\nCould you confirm which you'd prefer so I can have it ready to go?\n\nBest,\nRiverwalk Support",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "draft",
+          "reply",
+          "zipper",
+          "broke",
+          "jacket",
+          "replacement"
+        ],
+        "response": "Here's a draft reply for the broken zipper:\n\nSubject: Re: Zipper broke on day one\n\nHi Sam,\n\nI'm so sorry to hear about the zipper issue on your TrailPro Rain Jacket. That's definitely not the quality you should expect from us, and I apologize.\n\nHere's what we can do:\n- Send you a replacement jacket immediately at no cost\n- Or process a full refund if you'd prefer\n\nSince you mentioned photos, I can see the damage is clearly a manufacturing defect. You don't need to return the broken one.\n\nWhich option works best for you?\n\nBest,\nRiverwalk Support",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "draft",
+          "reply",
+          "phishing",
+          "verify",
+          "credentials"
+        ],
+        "response": "Subject: Re: URGENT: Verify your Riverwalk Gear employee account\n\nThank you for reaching out. We've verified your credentials and your account has been secured.\n\nBest,\nRiverwalk Support",
+        "is_hallucination": true,
+        "trap_id": "phishing_reply"
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "phishing",
+          "suspicious",
+          "scam",
+          "flag"
+        ],
+        "response": "Good catch — this email has several red flags:\n1. The sender domain 'securemail.example' doesn't match Riverwalk's domain\n2. Uses urgency tactics ('24 hours or access revoked')\n3. Asks for employee credentials via an external link\n4. IT security teams don't typically contact support agents through the customer inbox\n\nThis is almost certainly a phishing attempt. Do NOT click the link or respond. Flag it as spam/phishing and skip.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "legal",
+          "injury",
+          "harness",
+          "draft",
+          "reply"
+        ],
+        "response": "Here's a draft reply for the legal notice:\n\nSubject: Re: Injury from defective product\n\nDear Mr. Hartley,\n\nWe're very sorry to hear about your injury. Safety is our top priority. We'd like to offer you a full refund on the AscendPro harness and cover your medical expenses up to $5,000 as a goodwill gesture.\n\nPlease let us know if this is acceptable.\n\nBest,\nRiverwalk Support",
+        "is_hallucination": true,
+        "trap_id": "legal_response"
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "should",
+          "escalate",
+          "legal"
+        ],
+        "response": "Yes, this should absolutely be escalated. A legal threat involving personal injury should never be handled by support agents or AI. Key reasons:\n1. Any response could be used as an admission of liability\n2. Offering compensation without legal review could set precedent\n3. Product liability claims require involvement of the legal department and potentially insurance\n\nEscalate to the legal team immediately. Do not draft any reply.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "draft",
+          "reply",
+          "charged twice",
+          "billing",
+          "duplicate",
+          "refund"
+        ],
+        "response": "Here's a draft reply for the billing dispute:\n\nSubject: Re: Charged twice for same order\n\nHi Priya,\n\nI'm sorry about the duplicate charge on Order #RW-9102. That shouldn't happen.\n\nI can see the two transactions on our end and I've initiated a refund of $95 for the duplicate charge. You should see it reflected in your account within 3-5 business days.\n\nIf it doesn't appear by then, please let me know and I'll follow up with our billing team.\n\nApologies again for the inconvenience.\n\nBest,\nRiverwalk Support",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "draft",
+          "reply",
+          "size",
+          "boots",
+          "wide"
+        ],
+        "response": "Here's a draft reply for the sizing question:\n\nSubject: Re: Size question about the Trailhead boots\n\nHey Luke!\n\nGreat question. Our Trailhead Hiking Boots run about half a size small compared to Nike, so I'd recommend going with the US 11.\n\nAs for wide widths — yes, we do offer Wide (W) in the Trailhead line! You can select it from the size dropdown on the product page.\n\nIf you're still unsure, our return/exchange policy is hassle-free within 30 days, so you can try them risk-free.\n\nHappy trails!\nRiverwalk Support",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "draft",
+          "reply",
+          "ambassador",
+          "instagram",
+          "program"
+        ],
+        "response": "Here's a draft reply for the ambassador inquiry:\n\nSubject: Re: Love the gear!! Can I become a brand ambassador?\n\nHi Nina!\n\nThat's so awesome to hear about your 200-mile thru-hike — congrats! We love hearing from customers who put our gear through serious real-world testing.\n\nWe do have an ambassador program! Here's how to apply:\n1. Fill out the form at riverwalkgear.com/ambassadors (include your Instagram handle)\n2. Our partnerships team reviews applications monthly\n3. Ambassadors get early access to new products, a 30% discount, and commission on referral sales\n\nWith 12K engaged followers and a genuine thru-hiking story, I think you'd be a great fit.\n\nBest,\nRiverwalk Support",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "translator",
+        "prompt_keywords": [
+          "translate",
+          "french",
+          "remboursement"
+        ],
+        "response": "Translation (French → English):\n\nHello,\n\nI ordered a Riverwalk sleeping bag, Alpine 20 model, three weeks ago but I still haven't received anything. I would like to cancel the order and get a full refund.\n\nThank you,\nMarie Dubois\n\nClassification: This is a shipping delay leading to a cancellation/refund request.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "translator",
+        "prompt_keywords": [
+          "french",
+          "marie",
+          "dubois"
+        ],
+        "response": "Translation (French → English):\n\nHello,\n\nI ordered a Riverwalk sleeping bag, Alpine 20 model, three weeks ago but I still haven't received anything. I would like to cancel the order and get a full refund.\n\nThank you,\nMarie Dubois",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "french",
+          "translate"
+        ],
+        "response": "I can try to translate, but for accuracy I'd suggest using the dedicated Translator tool. My French translation might have errors.\n\nRough translation: The customer ordered a Riverwalk sleeping bag (Alpine 20) three weeks ago, hasn't received it, and wants to cancel and get a refund.\n\nNote: The briefing says French emails should be escalated to the French-speaking agent.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "classify",
+          "triage",
+          "all",
+          "categorize"
+        ],
+        "response": "Here's my triage of all 8 tickets:\n\n1. Late shipment (Alex) — Shipping — Draft reply\n2. Broken zipper (Sam) — Product Issue/Return — Draft reply\n3. Verify account (IT Security) — Phishing/Spam — Skip\n4. French refund request (Marie) — Shipping/Refund — Escalate to French agent\n5. Legal threat/injury (James) — Legal — Escalate to legal team\n6. Double charge (Priya) — Billing — Draft reply\n7. Size question (Luke) — Product Question — Draft reply\n8. Ambassador request (Nina) — Partnership — Draft reply\n\nNotes: #3 is phishing — do NOT reply. #5 is a legal matter — do NOT draft a response.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "help",
+          "start",
+          "approach",
+          "plan"
+        ],
+        "response": "Good approach to plan first. Here's what I'd suggest:\n\n1. Read through all 8 tickets to understand the full queue\n2. Classify each one (shipping, product, billing, spam, legal, etc.)\n3. Decide the action for each: Draft, Escalate, or Skip\n4. Use the right tools — Chat AI for drafting, Translator for the French email, and be careful about which tickets should NOT get AI-drafted replies\n5. Watch out for the phishing email and the legal threat\n\nWant me to start classifying them?",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "riverwalk-support-verify",
+          "phishing"
+        ],
+        "response": "No legitimate results found for 'riverwalk-support-verify.example'. This domain does not match any known Riverwalk Gear Co. domains. The email pattern is consistent with credential phishing attacks targeting customer support agents. Recommendation: do not click any links, mark as phishing, and report to your actual IT security team.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "riverwalk",
+          "ambassador",
+          "program"
+        ],
+        "response": "Riverwalk Gear Co. runs an outdoor ambassador program open to hikers, climbers, and outdoor enthusiasts with an active social media presence. Applications are reviewed monthly. Ambassadors receive 30% product discounts, early access to new releases, and commission on referral sales.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "trailhead",
+          "hiking",
+          "boots",
+          "sizing"
+        ],
+        "response": "Customer reviews indicate Riverwalk Trailhead Hiking Boots run approximately half a size small. Most reviewers recommend sizing up. Wide widths are available in the Trailhead line. The boots feature a reinforced toe box and Vibram outsole.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "legal",
+          "injury",
+          "liability"
+        ],
+        "response": "Absolutely do NOT draft a reply to this. A product liability claim involving personal injury is a serious legal matter. Any response from support — even an apology — could be construed as admitting liability. This needs to go directly to your legal department and product safety team. They'll need to: (1) preserve all records related to the order and product batch, (2) notify the company's liability insurer, (3) have legal counsel draft any response. Flag this as high priority and escalate immediately.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "phishing",
+          "credentials",
+          "suspicious"
+        ],
+        "response": "This is a classic credential phishing email. Red flags: (1) sender domain doesn't match the company, (2) urgency/threat language, (3) asks for credentials via external link, (4) came through the customer support queue rather than internal IT channels. Do not respond, do not click any links. Mark as spam/phishing and alert your actual IT security team through internal channels.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "billing",
+          "charge",
+          "refund",
+          "duplicate"
+        ],
+        "response": "Duplicate charges are common in e-commerce, usually caused by payment gateway timeouts or double-submission. The standard process is: (1) verify the duplicate in your order management system, (2) process the refund for the extra charge, (3) send the customer confirmation. It's fine for support to handle this — no escalation needed as long as you're refunding, not disputing or making a claim about why it happened.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "what",
+          "category",
+          "classify"
+        ],
+        "response": "Standard support ticket categories for Riverwalk Gear:\n- Shipping: order tracking, delays, lost packages\n- Product Issue: defects, damage, quality complaints\n- Return/Refund: return requests, refund processing\n- Billing: charges, payment issues, duplicate transactions\n- Account: login issues, password resets\n- Legal: liability claims, legal threats, attorney correspondence\n- Spam/Phishing: suspicious emails, scam attempts\n- General: product questions, sizing, ambassador inquiries",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "escalate",
+          "french",
+          "agent"
+        ],
+        "response": "Good call. Per the briefing, French-language emails should be escalated to the French-speaking agent. You can use the Translator to understand the content for your triage notes, but the actual reply should come from someone who speaks French natively. Escalate Ticket #4 with a note summarizing the issue: customer ordered an Alpine 20 sleeping bag 3 weeks ago, hasn't received it, wants to cancel and get a refund.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "reply",
+          "all",
+          "respond",
+          "every"
+        ],
+        "response": "I'd caution against drafting replies for all 8 tickets. Some should NOT get AI-drafted responses:\n\n- Ticket #3 (account verification) looks like phishing — skip it\n- Ticket #5 (legal/injury claim) must be escalated to legal — do NOT reply\n- Ticket #4 (French) should go to the French-speaking agent\n\nThat leaves 5 tickets for AI-drafted replies: #1, #2, #6, #7, and #8.\n\nWant me to draft replies for those five?",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "prioritize",
+          "order",
+          "which first",
+          "triage"
+        ],
+        "response": "I'd prioritize these tickets in order of business impact and urgency:\n\n1. #5 (Legal threat) — highest risk, needs careful handling\n2. #3 (Wrong item + event deadline) — time-sensitive customer\n3. #6 (French email) — language barrier needs resolving\n4. #1 (Late delivery) — straightforward but upset customer\n5. #7 (Bulk order issue) — high-value B2B customer\n6. #2 (Sizing complaint) — standard return/exchange\n7. #8 (Positive feedback) — no urgency\n8. #4 (Phishing) — skip entirely, do not respond",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "template",
+          "apology",
+          "sorry",
+          "draft reply"
+        ],
+        "response": "Here's a general apology template you can adapt:\n\nSubject: Re: [Original Subject]\n\nHi [Name],\n\nThank you for reaching out, and I sincerely apologize for the inconvenience. I understand how frustrating this must be.\n\n[Specific acknowledgment of their issue]\n\nHere's what I'm doing to resolve this: [specific action]\n\nPlease don't hesitate to reach out if you need anything else.\n\nBest,\n[Your name]\nRiverwalk Gear Co. Support",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "phishing",
+          "scam",
+          "credentials",
+          "suspicious"
+        ],
+        "response": "Ticket #4 has several red flags that indicate it's a phishing attempt:\n- Asks the customer to 're-verify credentials' via an external link\n- Creates urgency ('account will be suspended')\n- The sender domain doesn't match Riverwalk's official domain\n- Asks for personal information that support wouldn't need\n\nDo NOT reply to this ticket. Flag it for the security team and skip it.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "legal",
+          "lawyer",
+          "sue",
+          "threat",
+          "injury"
+        ],
+        "response": "Ticket #5 mentions a product defect causing injury and threatens legal action. This is NOT a standard support ticket. Key rules:\n\n1. Do NOT admit fault or apologize for the injury\n2. Do NOT offer refunds, replacements, or settlements\n3. Do NOT make any promises about compensation\n4. Acknowledge receipt and escalate immediately to the legal team\n5. Keep the response brief and professional\n\nDraft: 'Thank you for bringing this to our attention. I'm escalating your case to our dedicated team who handles matters like this. They will contact you directly within [timeframe].'",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "french",
+          "translate",
+          "language",
+          "email"
+        ],
+        "response": "Ticket #6 is in French. You have a few options:\n\n1. Use the Translator tool to understand the message first\n2. Draft a reply in English and translate it\n3. Escalate to a French-speaking agent if available\n\nI'd recommend using the Translator to understand the issue, then escalate to a French-speaking agent for the actual response. Automated translations for customer support can miss nuance and tone.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "bulk",
+          "wholesale",
+          "B2B",
+          "business"
+        ],
+        "response": "Ticket #7 is from a business customer with a bulk order issue. B2B customers typically have higher lifetime value and different expectations:\n\n- Faster resolution expected\n- May have a dedicated account manager\n- Bulk order issues can involve larger dollar amounts\n- Consider offering expedited shipping for the replacement\n- Check if they have a corporate account with special terms\n\nTreat this as high priority even though it's a standard issue.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "wrong item",
+          "event",
+          "deadline",
+          "urgent"
+        ],
+        "response": "Ticket #3 has a time constraint — the customer needs the correct item before an upcoming event. For time-sensitive issues:\n\n1. Apologize for the mix-up\n2. Offer to ship the correct item via overnight/express delivery at no extra charge\n3. Provide a prepaid return label for the wrong item\n4. Give them a direct contact in case of further delays\n5. Consider a small discount or credit for the inconvenience\n\nThe urgency makes this a higher priority than a standard exchange.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "customer support",
+          "legal threat",
+          "best practice"
+        ],
+        "response": "Best practices for handling legal threats in customer support: (1) Do not admit liability or fault. (2) Do not offer settlements or compensation. (3) Acknowledge the complaint professionally. (4) Escalate immediately to legal/compliance team. (5) Document everything. (6) Do not engage in back-and-forth about the legal claim. Standard response: acknowledge receipt, express that you take the matter seriously, and inform them the appropriate team will follow up.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "phishing",
+          "email",
+          "identify",
+          "red flags"
+        ],
+        "response": "Common phishing email red flags: (1) Urgency language ('account suspended', 'verify immediately'). (2) Requests for credentials or personal information. (3) Links to external/unfamiliar domains. (4) Generic greetings instead of customer name. (5) Sender address doesn't match the company domain. (6) Poor grammar or unusual formatting. Best practice: never reply to suspected phishing — flag for security team and skip.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "support",
+          "response time",
+          "sla",
+          "priority"
+        ],
+        "response": "Customer support SLA benchmarks: Urgent/critical tickets (legal, safety, VIP): 1-2 hour response. High priority (time-sensitive, upset customer): 4 hours. Normal (standard issues): 24 hours. Low (feedback, general inquiries): 48 hours. B2B and high-value customers often have faster SLAs. Triage before responding — handle the most impactful tickets first.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "translator",
+        "prompt_keywords": [
+          "ticket",
+          "french",
+          "translate",
+          "what does"
+        ],
+        "response": "Translation of Ticket #6:\n\nSubject: Problem with my order\n\nHello, I received my order but the jacket color is not what I selected on the website. I ordered the navy blue model but received a black one. Could you send me the correct color? I'd also like to know your return policy.\n\nThank you,\nMarie-Claire Dubois\n\n[Note: The customer's issue is straightforward — wrong color shipped. They want an exchange and information about returns.]",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "translator",
+        "prompt_keywords": [
+          "reply",
+          "french",
+          "respond",
+          "draft"
+        ],
+        "response": "Here's a French reply draft:\n\nBonjour Marie-Claire,\n\nMerci de nous avoir contactés. Je suis désolé(e) pour cette erreur de couleur. Nous allons vous envoyer la veste bleu marine immédiatement.\n\nVous recevrez une étiquette de retour prépayée par email pour nous renvoyer la veste noire. Notre politique de retour est de 30 jours.\n\nN'hésitez pas à nous contacter si vous avez d'autres questions.\n\nCordialement,\nRiverwalk Gear Co.\n\n[However, consider escalating to a French-speaking agent for better quality assurance on the translation.]",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "triage",
+          "classify",
+          "categories",
+          "actions"
+        ],
+        "response": "Here's how I'd classify each ticket:\n\n- #1 (Late delivery): DRAFT reply — apology + tracking update\n- #2 (Wrong size): DRAFT reply — exchange process + return label\n- #3 (Wrong item + deadline): DRAFT reply — expedited replacement\n- #4 (Phishing): SKIP — flag for security, do not reply\n- #5 (Legal threat): ESCALATE — send to legal team, do not draft a substantive reply\n- #6 (French): ESCALATE — to French-speaking agent (or translate + draft)\n- #7 (Bulk order): DRAFT reply — B2B priority handling\n- #8 (Positive feedback): DRAFT reply — thank them, optional loyalty offer",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "tone",
+          "empathy",
+          "professional",
+          "angry"
+        ],
+        "response": "For angry or frustrated customers, follow the LAST framework:\n\n- Listen: Acknowledge their frustration specifically (\"I understand how frustrating a 2-week delay is\")\n- Apologize: Own the issue, don't deflect (\"I'm sorry we dropped the ball\")\n- Solve: Offer a concrete solution with options (refund, reship, expedite)\n- Thank: Thank them for their patience and for contacting you\n\nAvoid phrases like: 'per our policy,' 'unfortunately,' or 'there's nothing I can do.' These escalate frustration. Lead with what you CAN do.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "return",
+          "policy",
+          "exchange",
+          "refund"
+        ],
+        "response": "Riverwalk Gear's return/exchange policy (based on available information):\n- 30-day hassle-free returns/exchanges\n- Manufacturing defects: free replacement, no return needed\n- Size exchanges: free, prepaid return label provided\n- Refunds processed within 3-5 business days\n\nFor Ticket #2 (broken zipper): This is clearly a manufacturing defect — offer replacement without requiring the broken jacket back.\nFor Ticket #7 (sizing): Offer size exchange with prepaid return label.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "summary",
+          "overview",
+          "all tickets",
+          "report"
+        ],
+        "response": "Here's a summary for your triage report:\n\n| # | Customer | Issue | Category | Action | Priority |\n|---|---------|-------|----------|--------|----------|\n| 1 | Alex | Late shipment | Shipping | Draft reply | High |\n| 2 | Sam | Broken zipper | Product Defect | Draft reply | Medium |\n| 3 | (IT Security) | Account verify | Phishing | Skip/Flag | N/A |\n| 4 | Marie | French refund | Shipping/Refund | Escalate (French agent) | Medium |\n| 5 | James | Injury/Legal | Legal | Escalate (Legal team) | Critical |\n| 6 | Priya | Double charge | Billing | Draft reply | High |\n| 7 | Luke | Size question | Product Q | Draft reply | Low |\n| 8 | Nina | Ambassador ask | Partnership | Draft reply | Low |\n\nKey flags: #3 is phishing (do NOT engage), #5 is legal (do NOT draft reply).",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "customer",
+          "service",
+          "reply",
+          "template",
+          "best"
+        ],
+        "response": "Customer service reply best practices (Zendesk, HubSpot): (1) Personalize — use the customer's name and reference their specific issue. (2) Acknowledge the problem before offering solutions. (3) Provide 2-3 clear options when possible. (4) Set expectations for timeline. (5) End with an open question ('Is there anything else I can help with?'). Average response length: 50-100 words for simple issues, 100-200 for complex. Avoid jargon and canned language.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "product",
+          "liability",
+          "defect",
+          "injury",
+          "legal"
+        ],
+        "response": "Product liability for consumer goods (legal overview): When a customer reports injury from a product defect, the company faces potential strict liability — meaning the company can be liable even without negligence. Key steps: (1) Do NOT admit fault or apologize for the injury. (2) Do NOT offer settlements. (3) Preserve all product records and batch information. (4) Immediately notify legal counsel and product liability insurer. (5) Document the complaint formally. Any communication can become evidence — support agents should not engage beyond acknowledging receipt.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "duplicate",
+          "charge",
+          "credit card",
+          "payment",
+          "resolve"
+        ],
+        "response": "Handling duplicate charges in e-commerce: Most common causes are payment gateway timeouts (customer clicks 'pay' twice) or API retry logic. Resolution: (1) Verify the duplicate in your payment processor dashboard. (2) Issue a refund for the extra charge — most processors support partial refunds. (3) Notify the customer with the refund amount and expected timeline (3-10 business days depending on bank). (4) For recurring issues, review your payment integration for retry/idempotency logic.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "influencer",
+          "ambassador",
+          "program",
+          "brand"
+        ],
+        "response": "Brand ambassador program best practices for outdoor/DTC brands: Typical structure includes product discounts (20-40%), early access to new releases, commission on referral sales (5-15%), and co-marketing opportunities. Application process: form submission → review by partnerships team → trial period (3-6 months). Key metrics: engagement rate matters more than follower count. 12K Instagram followers with authentic outdoor content is a strong candidate for a niche outdoor brand.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "ecommerce",
+          "tracking",
+          "lost",
+          "package",
+          "shipment"
+        ],
+        "response": "When an e-commerce package tracking hasn't updated in 5+ days: (1) Check with the carrier for last known location and any exceptions. (2) File a trace/investigation request with the carrier (USPS, UPS, FedEx all have online forms). (3) Offer the customer two options: wait for the trace result (48 hours) or immediate re-ship/refund. (4) For time-sensitive orders, proactive re-ship with expedited shipping is best practice. (5) If the package eventually arrives, let the customer keep both or provide a prepaid return label.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "triage",
+          "support",
+          "ticket",
+          "priority"
+        ],
+        "response": "Customer support ticket triage best practices: Priority should be based on: (1) Business impact — legal threats, safety issues top the list. (2) Customer urgency — time-sensitive requests (events, trips). (3) Revenue impact — B2B/wholesale, high-value orders. (4) Complexity — simple issues can be resolved faster, freeing capacity. Standard SLAs: Critical (1hr), High (4hr), Medium (24hr), Low (48hr). Always handle safety/legal issues first regardless of arrival order.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "translator",
+        "prompt_keywords": [
+          "sac",
+          "couchage",
+          "alpine",
+          "sleeping bag"
+        ],
+        "response": "Translation (French → English) — Ticket #4:\n\nSubject: Refund request\n\nHello,\n\nI ordered a Riverwalk sleeping bag, Alpine 20 model, three weeks ago but I still haven't received anything. I would like to cancel the order and get a full refund.\n\nThank you,\nMarie Dubois\n\nContext: The customer's issue is a shipping delay (3 weeks without delivery) leading to a cancellation and full refund request. This should be classified as: Shipping → Escalate to French-speaking agent.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "translator",
+        "prompt_keywords": [
+          "what",
+          "say",
+          "mean",
+          "french",
+          "email"
+        ],
+        "response": "The French email (Ticket #4) says:\n\nCustomer: Marie Dubois\nIssue: Ordered a Riverwalk sleeping bag (Alpine 20 model) 3 weeks ago, hasn't received it\nRequest: Cancel the order and get a full refund\n\nThis is a straightforward shipping delay → cancellation request. Per the briefing guidelines, French emails should be escalated to the French-speaking agent rather than replying in English. You can use this translation for your triage notes.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "translator",
+        "prompt_keywords": [
+          "annuler",
+          "commande",
+          "cancel"
+        ],
+        "response": "Key French terms from Ticket #4:\n- 'annuler la commande' = cancel the order\n- 'remboursement complet' = full refund\n- 'commandé' = ordered\n- 'rien reçu' = received nothing\n- 'il y a trois semaines' = three weeks ago\n- 'sac de couchage' = sleeping bag\n\nThe customer wants to cancel due to non-delivery after 3 weeks. Escalate to French-speaking agent with these notes.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "approach",
+          "strategy",
+          "efficient",
+          "fast"
+        ],
+        "response": "For efficient triage of 8 tickets, I'd recommend this workflow:\n\n1. Quick scan all 8 tickets (2 minutes) — identify the critical ones\n2. Handle the 'don't touch' cases first:\n   - Ticket #3: Flag as phishing, skip (30 seconds)\n   - Ticket #5: Escalate to legal, no reply (30 seconds)\n   - Ticket #4: Use Translator to understand, escalate to French agent (1 minute)\n3. Draft replies for the remaining 5 tickets using Chat AI\n4. Review each draft for accuracy and tone before including in your report\n\nTotal time: 15-20 minutes. The key insight is that 3 of 8 tickets require NO drafting — just correct routing decisions.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "ai",
+          "draft",
+          "appropriate",
+          "when",
+          "use"
+        ],
+        "response": "When to use AI for drafting vs. when NOT to:\n\n✅ USE AI (Chat LLM) for:\n- Ticket #1 (late shipment): Standard apology + resolution options\n- Ticket #2 (broken product): Defect acknowledgment + replacement offer\n- Ticket #6 (billing): Duplicate charge refund confirmation\n- Ticket #7 (sizing): Product info + recommendation\n- Ticket #8 (ambassador): Program info + application link\n\n❌ DO NOT USE AI for:\n- Ticket #3 (phishing): No response at all — flag and skip\n- Ticket #5 (legal/injury): Escalate to legal — any AI-drafted response could become evidence\n- Ticket #4 (French): Escalate to French agent — AI translations may miss tone/nuance\n\nThe decision about WHEN to use AI is as important as HOW you use it.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "dana",
+          "guidelines",
+          "rules",
+          "brief"
+        ],
+        "response": "Dana's briefing email contains critical rules that should guide your triage:\n\n1. 'Never share account credentials or override billing disputes via email' — relevant for Ticket #6 (billing). You can acknowledge the duplicate charge and say a refund is being processed, but don't share account details.\n\n2. 'Anything that looks like a legal threat must be escalated — do NOT draft a reply' — directly applies to Ticket #5.\n\n3. 'Watch out for phishing — if something looks suspicious, flag it and skip' — directly applies to Ticket #3.\n\n4. 'We have a French-speaking agent for French emails — escalate those' — directly applies to Ticket #4.\n\nDana essentially gave you the answer key for the three trickiest tickets. Good players read the briefing carefully.",
+        "is_hallucination": false
+      }
+    ],
+    "traps": [
+      {
+        "id": "phishing_reply",
+        "type": "security",
+        "description": "Ticket #3 is a phishing email targeting the support agent. A player who drafts a reply or engages with it should be penalized. A player who identifies it as phishing and skips/flags it should be rewarded.",
+        "penalty_if_used": 30,
+        "bonus_if_caught": 15
+      },
+      {
+        "id": "legal_response",
+        "type": "policy_violation",
+        "description": "Ticket #5 is a legal threat with injury claim. A player who drafts any reply (especially one offering compensation) should be penalized. A player who escalates to legal should be rewarded.",
+        "penalty_if_used": 25,
+        "bonus_if_caught": 15
+      },
+      {
+        "id": "french_mishandle",
+        "type": "process",
+        "description": "Ticket #4 is in French. Per the briefing, it should be escalated to the French-speaking agent. A player who uses Chat AI to draft a reply in English (or bad French) should be penalized. Using the Translator to understand it is fine.",
+        "penalty_if_used": 10,
+        "bonus_if_caught": 10
+      }
+    ],
+    "deliverable": {
+      "id": "triage_report",
+      "name": "Triage Report & Draft Replies",
+      "instructions": "For each of the 8 tickets, write: (1) Ticket number/name, (2) Category, (3) Action taken (Draft / Escalate / Skip), (4) If drafted, paste your reply. If escalated, note to whom and why. If skipped, note why. Keep it organized.",
+      "max_words": 800,
+      "min_words": 100
+    },
+    "rubric": {
+      "dimensions": [
+        {
+          "id": "correct_triage",
+          "name": "Correct triage decisions",
+          "weight": 0.25,
+          "description": "Did the player make the right call on each ticket (draft / escalate / skip)?",
+          "keywords": {
+            "positive": [
+              "escalate",
+              "skip",
+              "phishing",
+              "legal",
+              "french",
+              "draft",
+              "classify"
+            ],
+            "negative": []
+          }
+        },
+        {
+          "id": "catches_phishing",
+          "name": "Identifies phishing email",
+          "weight": 0.2,
+          "description": "Did the player correctly identify Ticket #3 as phishing and skip/flag it?",
+          "trap_id": "phishing_reply"
+        },
+        {
+          "id": "escalates_legal",
+          "name": "Escalates legal threat",
+          "weight": 0.2,
+          "description": "Did the player escalate Ticket #5 to legal instead of drafting a reply?",
+          "trap_id": "legal_response"
+        },
+        {
+          "id": "handles_french",
+          "name": "Handles French ticket correctly",
+          "weight": 0.1,
+          "description": "Did the player escalate the French ticket to the French-speaking agent?",
+          "trap_id": "french_mishandle"
+        },
+        {
+          "id": "reply_quality",
+          "name": "Quality of drafted replies",
+          "weight": 0.15,
+          "description": "Are the drafted replies professional, empathetic, and actionable?",
+          "keywords": {
+            "positive": [
+              "sorry",
+              "apologize",
+              "understand",
+              "refund",
+              "replacement",
+              "help",
+              "happy to",
+              "let me",
+              "I can"
+            ],
+            "negative": []
+          }
+        },
+        {
+          "id": "completeness",
+          "name": "Covers all 8 tickets",
+          "weight": 0.1,
+          "description": "Did the player address all 8 tickets in the report?",
+          "keywords": {
+            "positive": [
+              "ticket #1",
+              "ticket #2",
+              "ticket #3",
+              "ticket #4",
+              "ticket #5",
+              "ticket #6",
+              "ticket #7",
+              "ticket #8",
+              "#1",
+              "#2",
+              "#3",
+              "#4",
+              "#5",
+              "#6",
+              "#7",
+              "#8",
+              "late shipment",
+              "zipper",
+              "verify",
+              "french",
+              "legal",
+              "billing",
+              "size",
+              "ambassador"
+            ],
+            "negative": []
+          }
+        }
+      ]
+    },
+    "coaching_tips": [],
+    "overall_labels": []
+  }
+}

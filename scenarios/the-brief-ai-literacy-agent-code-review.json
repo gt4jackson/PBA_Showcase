@@ -1,0 +1,802 @@
+{
+  "construct_id": "agent_code_review",
+  "construct_name": "AI Agent Code Review",
+  "construct_description": "The ability to review AI-generated or agentic code for correctness, security, and alignment with requirements — using AI tools appropriately in the review process.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "Medium (formative / demonstration)",
+    "temporal": "Single-session, 20-25 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated workplace)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "critical_evaluation",
+      "name": "Critical Evaluation",
+      "icon": "🔍",
+      "description": "Spotting hallucinations, bias, errors, and unreliable outputs.",
+      "color": "#f43f5e",
+      "weight": 0.4
+    },
+    {
+      "id": "prompt_engineering",
+      "name": "Prompt Engineering",
+      "icon": "✏️",
+      "description": "Writing clear, specific prompts that get useful results from AI tools.",
+      "color": "#3b82f6",
+      "weight": 0.25
+    },
+    {
+      "id": "tool_selection",
+      "name": "Tool Selection",
+      "icon": "🛠️",
+      "description": "Picking the right tool for each subtask (chat, search, calc, expert).",
+      "color": "#f59e0b",
+      "weight": 0.25
+    },
+    {
+      "id": "task_decomposition",
+      "name": "Task Decomposition",
+      "icon": "🧩",
+      "description": "Breaking a messy problem into logical, AI-solvable subtasks.",
+      "color": "#10b981",
+      "weight": 0.1
+    }
+  ],
+  "scenario": {
+    "id": "agent_code_review",
+    "title": "The Agent Code Review",
+    "client": "Nexus DevTools",
+    "estimated_minutes": 25,
+    "budget_tokens": 120,
+    "briefing": "Nexus DevTools uses an AI coding agent (\"Nexus Copilot\") to generate pull requests overnight. Three PRs landed this morning and need senior review before merge. Your job: review each PR, catch any issues the agent introduced, and write a code review document with your verdicts. The Copilot writes clean-looking code but sometimes introduces subtle bugs, security issues, or uses outdated patterns. Don't trust it just because it looks right.",
+    "inbox": [
+      {
+        "id": "pr_247_email",
+        "from": "Nexus CI <ci@nexus.example>",
+        "subject": "PR #247: Add rate limiting middleware",
+        "body": "Copilot opened PR #247 on branch copilot/rate-limiter.\n\nSummary: Adds IP-based rate limiting middleware that tracks request counts in PostgreSQL with a 1-minute sliding window. Fails open (allows requests) if the rate limiter errors.\n\nFiles changed: src/middleware/rateLimit.js (new), src/app.js\nSee: pr_247_rate_limiter.txt in your files."
+      },
+      {
+        "id": "pr_248_email",
+        "from": "Nexus CI <ci@nexus.example>",
+        "subject": "PR #248: Migrate user search to ElasticSearch",
+        "body": "Copilot opened PR #248 on branch copilot/es-search.\n\nSummary: Implements user search using ElasticSearch with fuzzy matching, field boosting, and filtering. Adds @elastic/elasticsearch v7.17 as a dependency.\n\nFiles changed: src/services/userSearch.js (new), package.json\nSee: pr_248_search_migration.txt in your files.\n\nNote: This is part of our ongoing ES 8 upgrade initiative."
+      },
+      {
+        "id": "pr_249_email",
+        "from": "Nexus CI <ci@nexus.example>",
+        "subject": "PR #249: Fix pagination in /api/projects",
+        "body": "Copilot opened PR #249 on branch copilot/fix-pagination.\n\nSummary: Replaces the unpaginated projects endpoint with proper page/limit pagination, adds total count and pagination metadata to the response.\n\nFiles changed: src/routes/projects.js\nSee: pr_249_pagination_fix.txt in your files."
+      },
+      {
+        "id": "sarah_email",
+        "from": "Sarah Chen <sarah@nexus.example>",
+        "subject": "Review priority for today",
+        "body": "Hey — these three Copilot PRs need review before the 3pm deploy window. The rate limiter is highest priority since we've been getting hammered by scrapers.\n\nQuick heads up: Copilot has been mostly great but it occasionally misses things that matter — security edge cases, version compatibility, that kind of thing. Don't just skim the diffs; actually think about whether the code does what it claims.\n\nAlso, make sure to check against our coding standards doc. Thanks!"
+      }
+    ],
+    "files": [
+      {
+        "id": "file_pr247",
+        "name": "pr_247_rate_limiter.txt",
+        "type": "diff",
+        "reliability": "review_needed",
+        "content": "PR #247: Add rate limiting middleware\nAuthor: Nexus Copilot | Branch: copilot/rate-limiter\n\n--- a/src/middleware/rateLimit.js\n+++ b/src/middleware/rateLimit.js\n@@ -0,0 +1,42 @@\n+const db = require('../db/connection');\n+\n+async function rateLimitMiddleware(req, res, next) {\n+  const clientIP = req.headers['x-forwarded-for'] || req.ip;\n+  const endpoint = req.originalUrl;\n+  const windowMs = 60 * 1000; // 1 minute window\n+  const maxRequests = 100;\n+\n+  try {\n+    // Check current request count for this client\n+    const query = `SELECT count FROM rate_limits\n+      WHERE ip_address = '${clientIP}'\n+      AND endpoint = '${endpoint}'\n+      AND window_start > NOW() - INTERVAL '1 minute'`;\n+\n+    const result = await db.query(query);\n+\n+    if (result.rows.length > 0 && result.rows[0].count >= maxRequests) {\n+      return res.status(429).json({\n+        error: 'Too many requests',\n+        retryAfter: Math.ceil(windowMs / 1000)\n+      });\n+    }\n+\n+    // Upsert the counter\n+    const upsert = `INSERT INTO rate_limits (ip_address, endpoint, count, window_start)\n+      VALUES ('${clientIP}', '${endpoint}', 1, NOW())\n+      ON CONFLICT (ip_address, endpoint)\n+      DO UPDATE SET count = rate_limits.count + 1`;\n+\n+    await db.query(upsert);\n+    next();\n+  } catch (err) {\n+    console.error('Rate limit error:', err);\n+    next(); // fail open\n+  }\n+}\n+\n+module.exports = rateLimitMiddleware;\n\n--- a/src/app.js\n+++ b/src/app.js\n@@ -12,6 +12,8 @@\n+const rateLimitMiddleware = require('./middleware/rateLimit');\n+app.use(rateLimitMiddleware);"
+      },
+      {
+        "id": "file_pr248",
+        "name": "pr_248_search_migration.txt",
+        "type": "diff",
+        "reliability": "review_needed",
+        "content": "PR #248: Migrate user search to ElasticSearch\nAuthor: Nexus Copilot | Branch: copilot/es-search\n\n--- a/src/services/userSearch.js (new file)\n+++ b/src/services/userSearch.js\n@@ -0,0 +1,58 @@\n+const { Client } = require('@elastic/elasticsearch');\n+\n+const esClient = new Client({\n+  node: process.env.ES_HOST || 'http://localhost:9200'\n+});\n+\n+async function searchUsers(queryText, filters = {}) {\n+  const must = [\n+    { multi_match: {\n+        query: queryText,\n+        fields: ['name^3', 'email^2', 'bio'],\n+        fuzziness: 'AUTO'\n+    }}\n+  ];\n+\n+  if (filters.role) {\n+    must.push({ term: { role: filters.role } });\n+  }\n+  if (filters.active !== undefined) {\n+    must.push({ term: { is_active: filters.active } });\n+  }\n+\n+  const response = await esClient.search({\n+    index: 'users',\n+    body: {\n+      query: { bool: { must } },\n+      size: filters.limit || 20,\n+      from: filters.offset || 0,\n+      sort: [{ _score: 'desc' }, { created_at: 'desc' }]\n+    }\n+  });\n+\n+  return {\n+    total: response.body.hits.total.value,\n+    users: response.body.hits.hits.map(hit => ({\n+      id: hit._id,\n+      score: hit._score,\n+      ...hit._source\n+    }))\n+  };\n+}\n+\n+async function indexUser(user) {\n+  await esClient.index({\n+    index: 'users',\n+    id: user.id,\n+    body: {\n+      name: user.name,\n+      email: user.email,\n+      bio: user.bio || '',\n+      role: user.role,\n+      is_active: user.is_active,\n+      created_at: user.created_at\n+    }\n+  });\n+}\n+\n+module.exports = { searchUsers, indexUser };\n\n--- a/package.json\n+++ b/package.json\n@@ -15,6 +15,7 @@\n+    \"@elastic/elasticsearch\": \"^7.17.0\","
+      },
+      {
+        "id": "file_pr249",
+        "name": "pr_249_pagination_fix.txt",
+        "type": "diff",
+        "reliability": "review_needed",
+        "content": "PR #249: Fix pagination in /api/projects\nAuthor: Nexus Copilot | Branch: copilot/fix-pagination\n\n--- a/src/routes/projects.js\n+++ b/src/routes/projects.js\n@@ -22,12 +22,20 @@\n router.get('/api/projects', authenticate, async (req, res) => {\n   try {\n-    const projects = await Project.find({ orgId: req.user.orgId });\n-    res.json(projects);\n+    const page = parseInt(req.query.page) || 1;\n+    const limit = parseInt(req.query.limit) || 25;\n+    const offset = page * limit;\n+\n+    const [projects, totalCount] = await Promise.all([\n+      Project.find({ orgId: req.user.orgId })\n+        .skip(offset)\n+        .limit(limit)\n+        .sort({ updatedAt: -1 }),\n+      Project.countDocuments({ orgId: req.user.orgId })\n+    ]);\n+\n+    res.json({\n+      data: projects,\n+      pagination: {\n+        page,\n+        limit,\n+        total: totalCount,\n+        pages: Math.ceil(totalCount / limit)\n+      }\n+    });\n   } catch (err) {\n     res.status(500).json({ error: 'Failed to fetch projects' });\n   }\n });"
+      },
+      {
+        "id": "file_standards",
+        "name": "coding_standards.md",
+        "type": "reference",
+        "reliability": "reliable",
+        "content": "NEXUS DEVTOOLS — CODING STANDARDS (v3.1)\n\nSecurity:\n- All database queries MUST use parameterized queries / prepared statements. Never concatenate user input into SQL strings.\n- Validate and sanitize all user input at the API boundary.\n- Use environment variables for all configuration. Never hardcode secrets.\n\nCode Quality:\n- All new functions must include JSDoc comments.\n- Error handling: always log errors with context. Use structured logging.\n- Prefer async/await over raw promises.\n\nDependencies:\n- Pin major versions. Review changelogs before upgrading.\n- NOTE: We are upgrading to ElasticSearch 8.x this quarter. New code should be compatible with the ES 8 client.\n\nTesting:\n- All new endpoints require integration tests.\n- All security-sensitive code requires explicit test coverage for edge cases.\n- Pagination endpoints must be tested with page=1 to verify first-page results."
+      }
+    ],
+    "workbench_tools": [
+      {
+        "id": "chat_llm",
+        "name": "Chat AI",
+        "description": "General-purpose chat assistant. Good for explaining code, brainstorming, and summarization. Can miss subtle bugs.",
+        "cost_per_use": 5,
+        "reliability": 0.7,
+        "best_for": [
+          "explanation",
+          "brainstorming",
+          "summarization"
+        ]
+      },
+      {
+        "id": "web_search",
+        "name": "Web Search",
+        "description": "Searches for documentation, API references, and security advisories. Good for verifying patterns and checking version compatibility.",
+        "cost_per_use": 8,
+        "reliability": 0.9,
+        "best_for": [
+          "documentation",
+          "security_advisories",
+          "version_info"
+        ]
+      },
+      {
+        "id": "code_analyzer",
+        "name": "Code Analyzer",
+        "description": "Runs static analysis on code. Good for catching security vulnerabilities, style issues, and common bugs. Describe or paste the code to analyze.",
+        "cost_per_use": 3,
+        "reliability": 0.85,
+        "best_for": [
+          "security",
+          "bugs",
+          "style"
+        ]
+      },
+      {
+        "id": "expert",
+        "name": "Human Expert",
+        "description": "Consult a senior engineer. Expensive but catches things automated tools miss.",
+        "cost_per_use": 25,
+        "reliability": 0.98,
+        "best_for": [
+          "judgment",
+          "architecture",
+          "edge_cases"
+        ]
+      }
+    ],
+    "scripted_responses": [
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "review",
+          "rate limit",
+          "pr 247"
+        ],
+        "response": "The rate limiting middleware in PR #247 looks well-structured. It implements a sliding window approach with IP-based tracking and proper fail-open behavior. The code handles edge cases like missing headers and database errors gracefully. I'd suggest adding JSDoc comments and perhaps making the window size configurable, but overall this is clean, production-ready code.",
+        "is_hallucination": true,
+        "trap_id": "sql_injection"
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "sql injection",
+          "parameterized",
+          "security"
+        ],
+        "response": "Looking at the code more carefully, the SQL queries use string interpolation to insert clientIP and endpoint values directly into the query string. This is a SQL injection vulnerability — an attacker could craft a malicious X-Forwarded-For header to inject arbitrary SQL. The fix is to use parameterized queries: db.query(sql, [clientIP, endpoint]) instead of template literals.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "review",
+          "search",
+          "pr 248",
+          "elasticsearch"
+        ],
+        "response": "PR #248 implements a clean ElasticSearch integration with proper query construction using bool/must, fuzzy matching with AUTO fuzziness, and field boosting. The search function handles filters well and the indexing function is straightforward. I'd add error handling for connection failures, but otherwise this looks good to approve.",
+        "is_hallucination": true,
+        "trap_id": "deprecated_api"
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "deprecated",
+          "v8",
+          "elasticsearch",
+          "breaking",
+          "body"
+        ],
+        "response": "Good catch — the @elastic/elasticsearch v7 client uses response.body to access results, but in v8, the response object IS the body directly. Similarly, the body parameter in search/index calls is removed in v8. Since your coding standards note you're upgrading to ES 8, this code will break after the upgrade.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "review",
+          "pagination",
+          "pr 249"
+        ],
+        "response": "PR #249 adds proper pagination to the projects endpoint with page/limit parameters, total count, and metadata. The Promise.all pattern for parallel queries is efficient. The response format with pagination metadata is clean and follows REST conventions. Looks good to approve.",
+        "is_hallucination": true,
+        "trap_id": "off_by_one"
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "off by one",
+          "offset",
+          "page"
+        ],
+        "response": "You're right — offset = page * limit means page 1 starts at position 25, skipping the first 25 results entirely. The correct formula is offset = (page - 1) * limit so page 1 maps to offset 0. This is a classic off-by-one error that would cause the first page of results to be unreachable.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "review all",
+          "review three",
+          "all prs"
+        ],
+        "response": "Here's my quick assessment of all three PRs:\n\n• PR #247 (Rate Limiter): Solid implementation with fail-open behavior. Could use JSDoc comments. Approve.\n• PR #248 (ES Search): Clean search integration with good query structure. Approve.\n• PR #249 (Pagination): Proper pagination pattern with metadata. Approve.\n\nAll three look production-ready.",
+        "is_hallucination": true
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "sql injection",
+          "node",
+          "express"
+        ],
+        "response": "OWASP: SQL injection remains a top-10 web vulnerability. In Node.js, always use parameterized queries with your database driver (e.g., db.query('SELECT * FROM users WHERE id = $1', [userId])). String concatenation or template literals to build SQL queries is never safe, even for values that appear controlled (like IP addresses — X-Forwarded-For headers can be spoofed).",
+        "is_hallucination": false,
+        "trap_id": "sql_injection"
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "elasticsearch",
+          "v8",
+          "breaking changes",
+          "migration"
+        ],
+        "response": "ElasticSearch JS Client v8 Migration Guide — Key breaking changes from v7:\n• response.body removed — the response IS the body directly\n• body parameter in API calls removed — pass query/options at top level\n• Example: v7 client.search({ index: 'users', body: { query } }) becomes v8 client.search({ index: 'users', query })\n• TypeScript-first rewrite with stricter types\nSource: elastic.co/guide/en/elasticsearch/client/javascript-api",
+        "is_hallucination": false,
+        "trap_id": "deprecated_api"
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "elasticsearch",
+          "v7",
+          "v8",
+          "client"
+        ],
+        "response": "Elastic.co documentation confirms significant breaking changes between the v7 and v8 JavaScript clients. Code written for the v7 client will not work with v8 without modification. Key areas affected: response structure (no more .body wrapper), request body format, and some removed/renamed methods.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "pagination",
+          "offset",
+          "best practice"
+        ],
+        "response": "Standard pagination formula: offset = (page - 1) * pageSize. Page 1 → offset 0, Page 2 → offset pageSize, etc. Common mistake: using page * pageSize, which skips the first page of results. Also consider cursor-based pagination for large datasets to avoid performance issues with high SKIP values.",
+        "is_hallucination": false,
+        "trap_id": "off_by_one"
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "x-forwarded-for",
+          "spoofing",
+          "ip",
+          "header"
+        ],
+        "response": "The X-Forwarded-For header is trivially spoofable by any client. It should never be trusted for security decisions without additional validation. When building rate limiters, always sanitize the IP value and never use it in raw SQL queries. Most frameworks provide req.ip with proxy trust configuration.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "rate limit",
+          "express",
+          "best practice"
+        ],
+        "response": "For Express.js rate limiting, consider established packages like express-rate-limit or rate-limiter-flexible rather than custom middleware. These handle distributed environments, Redis backends, and proper headers (X-RateLimit-Remaining, Retry-After). If building custom, always use parameterized database queries and never trust client headers without validation.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "pr 247",
+          "rate limit",
+          "security",
+          "analyze"
+        ],
+        "response": "STATIC ANALYSIS — src/middleware/rateLimit.js:\n\n⚠ HIGH: SQL Injection vulnerability (lines 12-14, 27-29)\n  String interpolation used in SQL queries: '${clientIP}' and '${endpoint}'\n  User-controlled values (X-Forwarded-For header) inserted directly into SQL.\n  Fix: Use parameterized queries — db.query(sql, [clientIP, endpoint])\n\n⚠ MEDIUM: No input validation on clientIP\n  X-Forwarded-For can contain arbitrary strings.\n\nℹ INFO: Missing JSDoc comments on exported function.\nℹ INFO: Magic numbers (60000, 100) should be constants or config values.",
+        "is_hallucination": false,
+        "trap_id": "sql_injection"
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "pr 248",
+          "search",
+          "elasticsearch",
+          "analyze"
+        ],
+        "response": "STATIC ANALYSIS — src/services/userSearch.js:\n\nℹ INFO: Package @elastic/elasticsearch@^7.17.0 detected.\n  Note: Caret range pins to v7.x.\n\nℹ INFO: Missing JSDoc comments on exported functions.\nℹ INFO: No error handling — database connection failures will throw unhandled.\nℹ INFO: No input validation on queryText parameter.\n\nNo critical security issues detected.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "pr 249",
+          "pagination",
+          "analyze"
+        ],
+        "response": "STATIC ANALYSIS — src/routes/projects.js:\n\nℹ INFO: parseInt without radix parameter — consider parseInt(value, 10).\nℹ INFO: No upper bound on limit parameter — clients could request unlimited results.\n⚠ LOW: Potential logic issue — offset calculation page * limit may not match standard pagination convention (typically (page - 1) * limit).\n\nNo security issues detected.",
+        "is_hallucination": false,
+        "trap_id": "off_by_one"
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "security",
+          "scan",
+          "all"
+        ],
+        "response": "SECURITY SCAN SUMMARY:\n\n⚠ HIGH: 1 SQL injection vulnerability in src/middleware/rateLimit.js\n  Lines 12-14, 27-29: User input interpolated in SQL strings.\n⚠ LOW: No input validation on search query (userSearch.js)\nℹ No hardcoded secrets detected.\nℹ No known dependency vulnerabilities (npm audit clean).",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "pr 247",
+          "rate limit",
+          "approve"
+        ],
+        "response": "Do NOT approve PR #247 as-is. The SQL injection is a showstopper — the code builds queries with string interpolation using X-Forwarded-For, which is trivially spoofable. This is the kind of vulnerability that gets you on the news. Parameterized queries are non-negotiable. Also, consider using express-rate-limit instead of rolling your own.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "pr 248",
+          "elasticsearch",
+          "version"
+        ],
+        "response": "Flag the version mismatch. You're upgrading to ES 8 and this PR pins the v7 client. The code uses response.body.hits and the body parameter — both are breaking changes in v8. If you merge this, it breaks as soon as the ES upgrade finishes. Either write it for v8 now or add a TODO with a tracking ticket.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "pagination",
+          "offset",
+          "off by one"
+        ],
+        "response": "Classic off-by-one. page * limit means page 1 starts at offset 25, so the first 25 records are unreachable. Should be (page - 1) * limit. This is exactly the kind of subtle bug AI agents produce — the code looks clean and well-structured, but the math is wrong. Always test pagination with page=1.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "all three",
+          "summary",
+          "review all",
+          "verdict"
+        ],
+        "response": "My take: Reject #247 (SQL injection — security blocker), Request Changes on #248 (ES version incompatibility — will break on upgrade), Request Changes on #249 (off-by-one in offset calc — first page missing). The Copilot produced readable code in all three cases, but each has a different class of defect: security flaw, compatibility issue, logic bug. Good reminder that AI agents are great at structure but unreliable on correctness.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "x-forwarded-for",
+          "ip",
+          "header",
+          "spoof"
+        ],
+        "response": "X-Forwarded-For is a client-provided header — it can contain anything. An attacker could set it to a SQL payload like:\n  X-Forwarded-For: '; DROP TABLE rate_limits; --\n\nSince the rate limiter interpolates this directly into SQL queries, this is a critical SQL injection vector. The IP should be sanitized and the query must use parameterized statements.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "fail open",
+          "rate limit",
+          "error"
+        ],
+        "response": "The rate limiter's fail-open behavior (line 36: catch block calls next()) is actually a reasonable design choice — you generally don't want a rate limiter bug to block all legitimate requests. However, it should be logged and monitored so you know when the rate limiter is failing. The bigger issue is the SQL injection, which makes the fail-open behavior moot.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "response.body",
+          "hits",
+          "elasticsearch",
+          "v8"
+        ],
+        "response": "In the ES v7 client, search results are accessed as:\n  response.body.hits.total.value\n  response.body.hits.hits\n\nIn v8, the 'body' wrapper is removed:\n  response.hits.total.value\n  response.hits.hits\n\nSimilarly, the 'body' parameter in search() and index() calls is removed in v8 — you pass query options at the top level. PR #248 uses v7 patterns throughout, so it will break when the ES upgrade completes.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "parseInt",
+          "radix",
+          "limit",
+          "validation"
+        ],
+        "response": "A few additional notes on PR #249:\n\n1. parseInt without radix — should be parseInt(value, 10) to be explicit\n2. No upper bound on the 'limit' parameter — a client could request limit=10000 and overload the database\n3. No validation that page >= 1 — page=0 or negative values would produce weird results\n\nThese are minor compared to the off-by-one, but worth flagging in the review.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "approve",
+          "merge",
+          "ready",
+          "ship"
+        ],
+        "response": "Based on my review:\n- PR #247: The rate limiting logic is sound and the fail-open pattern is correct. I'd approve with a suggestion to add JSDoc comments and make the window/max configurable.\n- PR #248: Clean ElasticSearch integration. Approve.\n- PR #249: Good pagination implementation. Approve.\n\nAll three are well-structured and follow Express conventions. I'd merge.",
+        "is_hallucination": true
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "coding standards",
+          "checklist",
+          "standards doc"
+        ],
+        "response": "Checking against your coding standards doc (v3.1):\n\n- Parameterized queries: PR #247 uses string interpolation ❌, PR #248 uses ES client (N/A), PR #249 uses Mongoose (N/A)\n- JSDoc comments: All 3 PRs are missing them ❌\n- Error handling: Present in all 3 ✓\n- Dependency versions: PR #248 adds ES v7 but standards note upgrading to v8 ⚠\n- Testing: No tests included in any PR ❌\n- Pagination testing: Standards say test with page=1 — PR #249 should verify this ⚠",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "express-rate-limit",
+          "alternative",
+          "library",
+          "package"
+        ],
+        "response": "Instead of a custom rate limiter, the team could use express-rate-limit (40K+ weekly npm downloads). Benefits:\n- Well-tested, battle-hardened code\n- Redis/Memcached stores for distributed environments\n- Proper Retry-After headers\n- No risk of SQL injection\n- Configurable per-route limits\n\nIf the custom approach is needed for specific requirements, the SQL must be parameterized at minimum.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "owasp",
+          "sql injection",
+          "top 10",
+          "2024"
+        ],
+        "response": "OWASP Top 10 (2024): Injection (including SQL injection) remains in the top 3 most critical web application security risks. SQL injection allows attackers to execute arbitrary database commands. Prevention: use parameterized queries / prepared statements exclusively. Never construct SQL from user input via string concatenation, template literals, or format strings, regardless of how 'safe' the input appears.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "elasticsearch",
+          "index",
+          "v8",
+          "body parameter"
+        ],
+        "response": "Elastic v8 client migration — index() changes:\n\nv7: await client.index({ index: 'users', id: doc.id, body: { name: doc.name, ... } })\nv8: await client.index({ index: 'users', id: doc.id, document: { name: doc.name, ... } })\n\nThe 'body' parameter is removed. Use 'document' for indexing operations and pass query options directly for search operations. The v8 client will throw a ConfigurationError if you pass 'body'.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "off by one",
+          "common",
+          "bug",
+          "pagination"
+        ],
+        "response": "Off-by-one errors are among the most common software bugs (MITRE CWE-193). In pagination, the standard formula is offset = (page - 1) * limit. Using page * limit causes page 1 to skip the first batch of results. This bug is particularly insidious because: (1) it's not caught by simple tests that only check 'does pagination return results,' and (2) users may not notice the first page is wrong if they don't know what should be there.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "cursor",
+          "pagination",
+          "vs offset",
+          "performance"
+        ],
+        "response": "Cursor-based vs offset-based pagination: Offset pagination (SKIP/LIMIT) is simple but performs poorly at high page numbers — the database must scan and discard all skipped rows. Cursor-based pagination (WHERE id > last_seen_id) performs consistently regardless of page depth. For a projects endpoint that might have thousands of records, consider cursor-based pagination. Either way, the offset formula must be correct.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "all three",
+          "all prs",
+          "full scan"
+        ],
+        "response": "FULL SECURITY SCAN — All 3 PRs:\n\nPR #247 (rateLimit.js):\n  ⚠ HIGH: SQL injection — string interpolation with user input (X-Forwarded-For)\n  ⚠ MEDIUM: No input validation on IP\n  ℹ Missing JSDoc, magic numbers\n\nPR #248 (userSearch.js):\n  ⚠ LOW: No error handling for ES connection failures\n  ℹ Missing JSDoc, no input validation on queryText\n  ℹ Package pins to v7.x — verify compatibility with ES 8 upgrade\n\nPR #249 (projects.js):\n  ⚠ LOW: Offset calculation may not match standard convention\n  ⚠ LOW: No upper bound on limit parameter\n  ℹ parseInt without radix\n\nCritical issues: 1 (SQL injection in PR #247)",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "dependency",
+          "npm",
+          "package",
+          "vulnerability"
+        ],
+        "response": "DEPENDENCY SCAN:\n\nPR #248 adds: @elastic/elasticsearch@^7.17.0\n  Known vulnerabilities: None in 7.17.x\n  Note: ^7.17.0 allows patches within v7 but won't auto-upgrade to v8.\n  Compatibility concern: Project is migrating to ES 8 per coding standards.\n\nNo other dependency changes detected across the 3 PRs.\nRecommendation: If targeting ES 8, install @elastic/elasticsearch@^8.0.0 from the start.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "how to write",
+          "review",
+          "format",
+          "structure"
+        ],
+        "response": "For a code review document, I'd structure each PR like this:\n\n### PR #NNN: [Title]\n**Verdict**: Approve / Request Changes / Reject\n**Summary**: 1-2 sentence overview\n**Issues Found**:\n- [SEVERITY] Description — file:line if applicable — suggested fix\n**What's Good**: Acknowledge what works (important for team morale)\n**Required Before Merge**: Specific action items\n\nStart with the most critical PR first. Be direct — reviewers who hedge waste everyone's time.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "copilot",
+          "trust",
+          "ai",
+          "generated code"
+        ],
+        "response": "General guidance on reviewing AI-generated code:\n\n1. Never trust it just because it looks clean. AI agents are great at producing well-structured, readable code that passes the 'glance test.' The bugs hide in the details.\n2. Check the boundaries: input validation, error paths, edge cases, security — these are where agents cut corners.\n3. Verify assumptions: does the code actually do what the PR description says? (PR #249 says 'fix pagination' but introduces a new bug.)\n4. Cross-reference requirements: check against coding standards and existing patterns.\n5. Run the tests (or note their absence).\n\nAI agents produce 'approximately correct' code. Your job is to close the gap.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "jsdoc",
+          "comments",
+          "documentation",
+          "missing"
+        ],
+        "response": "The coding standards (v3.1) require JSDoc comments on all new functions. None of the three PRs include them. For each PR, the exported functions should have:\n\n/**\n * @description Brief description\n * @param {type} paramName - description\n * @returns {type} description\n * @throws {Error} when...\n */\n\nThis is a minor issue compared to the security and logic bugs, but worth noting in your review as a general 'all PRs' comment.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "testing",
+          "test",
+          "coverage",
+          "no tests"
+        ],
+        "response": "All three PRs are missing tests, which violates the coding standards:\n- 'All new endpoints require integration tests'\n- 'All security-sensitive code requires explicit test coverage for edge cases'\n- 'Pagination endpoints must be tested with page=1 to verify first-page results'\n\nPR #247 (rate limiter): Needs security edge case tests, especially SQL injection via X-Forwarded-For\nPR #248 (search): Needs integration tests with ES\nPR #249 (pagination): Must test with page=1 — this would have caught the off-by-one\n\nRequesting tests isn't just process — the page=1 test requirement exists precisely because off-by-one errors in pagination are common.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "structured",
+          "logging",
+          "error",
+          "context"
+        ],
+        "response": "The coding standards require structured logging with context. Looking at the PRs:\n\nPR #247: console.error('Rate limit error:', err) — this is unstructured. Should use structured format:\n  logger.error({ component: 'rateLimit', clientIP, endpoint, error: err.message })\n\nPR #248: No error handling at all — ES connection failures will throw unhandled\nPR #249: res.status(500).json({ error: 'Failed to fetch projects' }) — generic error, no logging\n\nAll three PRs should add structured error logging with request context (request ID, endpoint, relevant parameters).",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "chat_llm",
+        "prompt_keywords": [
+          "sarah",
+          "priority",
+          "deploy",
+          "3pm"
+        ],
+        "response": "Sarah's email gives important context:\n- 3pm deploy window today — there's time pressure\n- Rate limiter is highest priority (scrapers attacking)\n- She warns Copilot 'occasionally misses things that matter — security edge cases, version compatibility'\n\nShe's essentially telling you where to look: security and version compatibility. Given the deploy window, you need to be efficient but thorough. I'd recommend:\n1. Review all three PRs with focused attention on Sarah's warnings\n2. Use the Code Analyzer for automated security scanning\n3. Check the coding standards doc for compliance\n4. Write clear verdicts so the team can act quickly",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "express",
+          "rate limit",
+          "redis",
+          "distributed"
+        ],
+        "response": "For production rate limiting in Express.js, the express-rate-limit package is the standard choice. For distributed deployments (multiple server instances), use a shared store:\n- rate-limit-redis: Redis-backed store (most popular)\n- rate-limit-memcached: Memcached-backed\n- rate-limit-mongo: MongoDB-backed\n\nThe custom PostgreSQL-based rate limiter in PR #247 has performance concerns — it adds a DB query to every request. Redis is preferred because it's in-memory and purpose-built for counters and expiry. Even with the SQL injection fixed, the PostgreSQL approach is suboptimal at scale.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "mongoose",
+          "skip",
+          "limit",
+          "performance",
+          "large"
+        ],
+        "response": "MongoDB performance with skip/limit pagination: MongoDB's skip() operation scans and discards documents, making it O(n) where n is the skip value. For large collections (100K+ documents), page 1000 would require scanning 25,000 documents (at limit=25) before returning results.\n\nAlternatives for large collections:\n- Cursor-based pagination: WHERE _id > last_seen_id (O(1) regardless of page)\n- Range-based queries: filter by indexed field like updatedAt\n\nFor the projects endpoint in PR #249, offset pagination is fine if the total project count is manageable (< 10K). For larger datasets, flag it for future cursor-based migration.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "web_search",
+        "prompt_keywords": [
+          "ai",
+          "code",
+          "review",
+          "common",
+          "bugs"
+        ],
+        "response": "Research on AI-generated code quality (Stanford, 2024): AI coding assistants produce syntactically correct code 92% of the time but introduce subtle bugs in 15-25% of generated functions. Most common bug categories:\n1. Off-by-one errors in loops/pagination (19% of bugs)\n2. Security anti-patterns — hardcoded credentials, missing input validation (17%)\n3. API version mismatches — using deprecated patterns (14%)\n4. Missing error handling in async code (12%)\n5. Incorrect boundary conditions (11%)\n\nAll three bug types in these PRs (SQL injection, version mismatch, off-by-one) are in the top 5 most common AI code bugs.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "rate limit",
+          "performance",
+          "scalability"
+        ],
+        "response": "PERFORMANCE ANALYSIS — src/middleware/rateLimit.js:\n\n⚠ CONCERN: PostgreSQL for rate limiting\n  Every HTTP request triggers:\n  1. SELECT query to check current count\n  2. INSERT/UPDATE to increment counter\n  = 2 database round trips per request\n\n  At 1000 req/sec: 2000 DB queries/sec just for rate limiting\n  This adds latency and load to the primary database.\n\n  Recommendation: Use Redis (in-memory, built for counters) or a proven library like express-rate-limit with a Redis store.\n\n⚠ CONCERN: No cleanup of expired entries\n  The sliding window query filters by timestamp, but old rows are never deleted.\n  The rate_limits table will grow indefinitely.\n  Add a scheduled cleanup job or use Redis with TTL.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "fuzzy",
+          "search",
+          "match",
+          "boost"
+        ],
+        "response": "ANALYSIS — ElasticSearch query structure (PR #248):\n\n✓ multi_match with field boosting (name^3, email^2, bio) — good prioritization\n✓ fuzziness: 'AUTO' — handles typos appropriately\n✓ bool/must query structure — correct for AND semantics\n✓ Pagination via size/from parameters — correct\n✓ Sorting by score then date — sensible default\n\n⚠ INFO: No input sanitization on queryText\n  → ElasticSearch handles query escaping, but consider validating length/format\n\n⚠ INFO: No timeout on the search query\n  → Large result sets or complex queries could hang\n  → Add timeout: '5s' to the search options\n\nThe query design is solid — the ES v7/v8 incompatibility is the main issue.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "code_analyzer",
+        "prompt_keywords": [
+          "limit",
+          "validation",
+          "bound",
+          "max"
+        ],
+        "response": "INPUT VALIDATION ANALYSIS — PR #249:\n\n  const page = parseInt(req.query.page) || 1;\n  const limit = parseInt(req.query.limit) || 25;\n\n⚠ No upper bound on limit:\n  A client could request /api/projects?limit=100000\n  This would attempt to load 100K records in one query.\n  Fix: const limit = Math.min(parseInt(req.query.limit) || 25, 100);\n\n⚠ No lower bound on page:\n  page=0 → offset = 0 (works by accident with the off-by-one bug)\n  page=-1 → offset = -25 (undefined behavior)\n  Fix: const page = Math.max(parseInt(req.query.page) || 1, 1);\n\n⚠ parseInt without radix:\n  parseInt(value) can misparse strings starting with '0'\n  Fix: parseInt(value, 10)",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "sarah",
+          "hint",
+          "security",
+          "version",
+          "pattern"
+        ],
+        "response": "Sarah's email is practically a roadmap for the review. She says the Copilot 'misses security edge cases and version compatibility.' Let's map that to the PRs:\n\n- Security edge case: PR #247's SQL injection via X-Forwarded-For. The code looks clean, the rate-limiting logic is correct, but the query construction is insecure. Classic 'looks right, isn't safe.'\n\n- Version compatibility: PR #248 uses the ES v7 client API, but the team is migrating to v8. The coding standards doc even flags the ES 8 upgrade. The Copilot generated working code for the wrong version.\n\n- There's also an implicit third category — logic correctness: PR #249's offset calculation. Sarah doesn't call this out specifically, but 'misses things that matter' covers it.\n\nGood reviewers read between the lines of the context they're given.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "deploy",
+          "block",
+          "which",
+          "merge",
+          "safe"
+        ],
+        "response": "For the 3pm deploy window, here's my triage:\n\n**PR #247 (Rate Limiter) — REJECT**\n- SQL injection is a security blocker. Cannot ship to production.\n- The fix (parameterized queries) is straightforward but needs implementation + testing.\n- Ironic: a security feature (rate limiter) that introduces a security hole.\n\n**PR #248 (ES Search) — REQUEST CHANGES**\n- Not a security issue, but it'll break on the ES 8 upgrade.\n- Could merge if the ES 8 upgrade is weeks away, but add a tracking ticket.\n- Better: rewrite for v8 now to avoid tech debt.\n\n**PR #249 (Pagination) — REQUEST CHANGES**\n- Off-by-one means page 1 returns page 2's results. Users will notice.\n- The fix is one character: (page - 1) * limit instead of page * limit.\n- Could quick-fix and merge today.\n\nPR #249 is the easiest to unblock. PR #247 is the most urgent (scrapers) but needs the most work.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "copilot",
+          "agent",
+          "overall",
+          "quality"
+        ],
+        "response": "Here's my assessment of the Copilot's code quality across all three PRs:\n\n**What it does well:**\n- Clean code structure and readability\n- Follows Express.js conventions\n- Reasonable architectural decisions (async/await, error handling, modular design)\n- Good variable naming\n\n**Where it falls short:**\n- Security fundamentals: SQL injection is a basic security mistake\n- Context awareness: Didn't check coding standards for ES v8 requirement\n- Mathematical correctness: Off-by-one in a standard formula\n- Missing non-functional requirements: no tests, no JSDoc, no input validation\n\n**Pattern:** The Copilot produces 'approximately correct' code — it looks right at a glance and gets the high-level architecture correct, but fails on details that require domain expertise (security, version compatibility) or careful verification (math). This is consistent with what Sarah warned about.",
+        "is_hallucination": false
+      },
+      {
+        "tool_id": "expert",
+        "prompt_keywords": [
+          "review",
+          "format",
+          "write",
+          "document"
+        ],
+        "response": "For a code review document targeting the 3pm deploy window, I'd structure it as:\n\n## Code Review — Copilot PRs #247, #248, #249\nReviewer: [name] | Date: [date] | Deploy window: 3pm\n\n### PR #247: Rate Limiter — ❌ REJECT\n- **Blocker**: SQL injection via string interpolation (lines 12-14, 27-29)\n- **Fix required**: Parameterized queries: db.query(sql, [clientIP, endpoint])\n- **Additional**: No tests, no JSDoc, consider express-rate-limit instead\n\n### PR #248: ES Search — 🔄 REQUEST CHANGES\n- **Issue**: Uses ES v7 API (response.body, body param) — breaks on v8 upgrade\n- **Fix required**: Rewrite for v8 or add TODO with tracking ticket\n- **Additional**: No error handling for ES connection failures\n\n### PR #249: Pagination — 🔄 REQUEST CHANGES\n- **Issue**: offset = page * limit → should be (page - 1) * limit\n- **Fix required**: One-line change + add page=1 test\n- **Additional**: No limit cap, missing parseInt radix\n\nDirect and specific. The team can act on this immediately.",
+        "is_hallucination": false
+      }
+    ],
+    "traps": [
+      {
+        "id": "sql_injection",
+        "type": "security_vulnerability",
+        "description": "PR #247 constructs SQL queries using string interpolation with user-controlled values (X-Forwarded-For header). This is a textbook SQL injection vulnerability. The AI agent wrote clean-looking code with an insecure pattern.",
+        "planted_in": "pr_247_rate_limiter.txt"
+      },
+      {
+        "id": "deprecated_api",
+        "type": "compatibility_issue",
+        "description": "PR #248 uses the ElasticSearch v7 client API (response.body, body parameter) but the team is upgrading to ES v8, which removes these patterns. The coding standards doc explicitly notes the ES 8 upgrade.",
+        "planted_in": "pr_248_search_migration.txt"
+      },
+      {
+        "id": "off_by_one",
+        "type": "logic_bug",
+        "description": "PR #249 calculates offset as page * limit instead of (page - 1) * limit. Page 1 would skip the first 25 results. Classic off-by-one that the AI agent produced with otherwise clean pagination code.",
+        "planted_in": "pr_249_pagination_fix.txt"
+      }
+    ],
+    "deliverable": {
+      "id": "code_review_doc",
+      "name": "Code Review Document",
+      "instructions": "Write a code review in markdown format. For each PR: state your verdict (Approve / Request Changes / Reject), list specific issues found, and explain your reasoning. Flag any security, compatibility, or correctness concerns.",
+      "min_words": 200,
+      "max_words": 800
+    },
+    "rubric": {
+      "dimensions": [
+        {
+          "id": "catches_sql_injection",
+          "name": "Catches SQL injection in PR #247",
+          "weight": 0.25,
+          "description": "The rate limiter uses string interpolation for SQL queries with user-controlled input — a textbook SQL injection.",
+          "trap_id": "sql_injection"
+        },
+        {
+          "id": "catches_deprecated_api",
+          "name": "Catches ES v8 incompatibility in PR #248",
+          "weight": 0.2,
+          "description": "The code uses ES v7 client patterns (response.body, body param) that break in v8, which the team is upgrading to.",
+          "trap_id": "deprecated_api"
+        },
+        {
+          "id": "catches_off_by_one",
+          "name": "Catches off-by-one in PR #249",
+          "weight": 0.2,
+          "description": "Offset is calculated as page * limit instead of (page - 1) * limit, skipping the first page of results.",
+          "trap_id": "off_by_one"
+        },
+        {
+          "id": "review_structure",
+          "name": "Review is well-structured with clear verdicts",
+          "weight": 0.15,
+          "description": "Does the review have per-PR sections with explicit verdicts?"
+        },
+        {
+          "id": "actionable_feedback",
+          "name": "Provides specific, actionable feedback",
+          "weight": 0.2,
+          "description": "Does the review cite specific lines/patterns and suggest concrete fixes?",
+          "keywords": {
+            "positive": [
+              "parameterized",
+              "fix",
+              "change",
+              "replace",
+              "should use",
+              "instead of",
+              "recommend",
+              "update",
+              "refactor",
+              "line",
+              "query",
+              "offset",
+              "page - 1",
+              "v8",
+              "breaking change",
+              "vulnerability",
+              "injection"
+            ],
+            "negative": []
+          }
+        }
+      ]
+    },
+    "coaching_tips": [],
+    "overall_labels": []
+  }
+}
