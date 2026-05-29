@@ -87,5 +87,12 @@
         "text": "That's what I'd take to the medical director: limited adoption (pain + post-intubation sedation), standing orders for trained paramedics, online medical control for any behavioral emergency use until we revisit, and a 4–6 hour competency module as a prerequisite. That's a recommendation he can sign. What's the group's final position?"
       }
     ]
-  }
+  },
+  "coaching_tips": [
+    "Reference what teammates said by name — 'Chen's point about the liability gap' is stronger than a general restatement.",
+    "Push back with evidence, not just opinion. When you disagree, cite the NAEMSP position or neighboring agency data.",
+    "The hardest move in collaborative tasks is narrowing toward a decision. Move from debate to synthesis in Round 3.",
+    "Conditional adoption is often the most defensible answer — it acknowledges both the evidence and the risk.",
+    "Behavioral emergency indications are the contested territory here. Engaging that tension specifically shows clinical depth."
+  ]
 }

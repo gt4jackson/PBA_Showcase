@@ -1091,7 +1091,7 @@ function renderResults(r) {
   }).join('');
 
   const feedbackHtml = r.feedback.map(f => `<div class="feedback-item"><span class="feedback-icon ${f.good?'feedback-good':'feedback-bad'}">${f.good?'✓':'✗'}</span><div><div class="feedback-dim">${f.dim}</div><div class="feedback-note">${esc(f.note)}</div></div></div>`).join('');
-  const tipsHtml = PACK.coaching_tips.map(t => `<li>${esc(t)}</li>`).join('');
+  const tipsHtml = (PACK.coaching_tips || []).map(t => `<li>${esc(t)}</li>`).join('');
 
   document.getElementById('results-container').innerHTML = `
     <div class="results-header">
@@ -1139,7 +1139,7 @@ function renderInfo() {
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;margin:8px 0">${domainRows}</div>
     <h4>Collaboration Scoring</h4>
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;margin:8px 0">${collabRows}</div>
-    <h4>Tips</h4><ul style="padding-left:16px">${PACK.coaching_tips.slice(0,3).map(t => `<li style="font-size:12px;margin-bottom:4px">${esc(t)}</li>`).join('')}</ul>
+    <h4>Tips</h4><ul style="padding-left:16px">${(PACK.coaching_tips||[]).slice(0,3).map(t => `<li style="font-size:12px;margin-bottom:4px">${esc(t)}</li>`).join('')}</ul>
   `;
   const _jsonStr = JSON.stringify(PACK, null, 2).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   document.getElementById('info-body').innerHTML = `<div class="info-tabs"><button class="info-tab active" onclick="switchInfoTab('overview',this)">Overview</button><button class="info-tab" onclick="switchInfoTab('json',this)">Construct JSON</button></div><div class="info-tab-pane active" id="info-pane-overview">${_overview}</div><div class="info-tab-pane" id="info-pane-json"><pre class="json-viewer">${_jsonStr}</pre></div>`;

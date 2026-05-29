@@ -1553,6 +1553,7 @@ async function loadPack() {
 }
 
 function showPicker(construct, versions) {
+  document.getElementById('screen-landing').style.display = 'none';
   document.getElementById('screen-picker').style.display = 'flex';
   document.getElementById('picker-tag').textContent = 'The Brief — ' + construct.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   document.getElementById('picker-title').textContent = 'Available versions';
