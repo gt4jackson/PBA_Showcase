@@ -962,6 +962,47 @@ body {
 
 .btn-ghost:hover { background: var(--surface-hover); color: var(--text); }
 
+/* ── VERSION PICKER ──────────────────────────── */
+.picker-screen {
+  flex: 1; display: flex; align-items: flex-start; justify-content: center;
+  padding: 40px; overflow-y: auto;
+}
+.picker-inner { max-width: 680px; width: 100%; }
+.picker-tag {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--accent); margin-bottom: 8px;
+}
+.picker-title {
+  font-family: 'Speckless', Georgia, serif; font-size: 26px; font-weight: 400;
+  margin-bottom: 6px; line-height: 1.3;
+}
+.picker-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 28px; line-height: 1.5; }
+.picker-cards { display: grid; gap: 12px; }
+.picker-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px 22px; cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.picker-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+.picker-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; gap: 12px; }
+.picker-card-num { font-size: 24px; font-weight: 700; color: rgba(242,233,216,0.12); line-height: 1; flex-shrink: 0; }
+.picker-card-name { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.picker-card-meta { font-size: 12px; color: var(--text-tertiary); }
+.picker-card-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin: 10px 0 12px; }
+.picker-skill-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+.picker-skill-tag {
+  font-size: 11px; padding: 3px 9px; border-radius: 4px;
+  background: rgba(242,233,216,0.06); color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.picker-skill-tag.hi { background: rgba(77,211,254,0.1); color: var(--accent); border-color: rgba(77,211,254,0.2); }
+.picker-accept-btn {
+  padding: 8px 20px; background: var(--accent); color: var(--bg);
+  border: none; border-radius: 6px; font-family: inherit; font-size: 13px;
+  font-weight: 600; cursor: pointer; transition: background 0.15s;
+}
+.picker-accept-btn:hover { background: #3bbde5; }
+
 /* ── LANDING SCREEN ──────────────────────────── */
 .landing-screen {
   flex: 1;
@@ -1246,6 +1287,19 @@ const CONSTRUCT_PACK_INLINE = {
 <!-- ══════════════════════════════════════════════ -->
 
 <!-- LANDING SCREEN -->
+<div id="screen-picker" class="picker-screen" style="display:none">
+  <div class="picker-inner">
+    <a href="/" class="splash-back" style="position:static;margin-bottom:24px;display:inline-flex">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to hub
+    </a>
+    <div class="picker-tag" id="picker-tag">The Brief</div>
+    <div class="picker-title" id="picker-title">Available versions</div>
+    <div class="picker-sub" id="picker-sub">Each version covers the same core skills with a different scenario and emphasis. Choose the one that best fits your learning focus.</div>
+    <div class="picker-cards" id="picker-cards"></div>
+  </div>
+</div>
+
 <div id="screen-landing" class="landing-screen">
   <a href="index.html" class="splash-back">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -1414,9 +1468,54 @@ const CONSTRUCT_PACK_INLINE = {
 'use strict';
 
 // ── PACK LOADER ────────────────────────────────
-async function loadPack() {
-  const params = new URLSearchParams(window.location.search);
-  const url = params.get('scenario') || DEFAULT_SCENARIO;
+// ── SCENARIO VERSION MAP ────────────────────
+// Add entries here when new scenario versions are created for a construct.
+// Each entry: { file, label, client, minutes, description, skills }
+// skills: array of { name, weight } — top 2-3 by weight
+const SCENARIO_VERSIONS = {
+  'ai-literacy': [
+    { file: 'scenarios/the-brief-critical-thinking.json', label: 'AI Fluency Brief', client: 'Athos Capital', minutes: 20,
+      description: 'Review a market entry analysis, catch AI hallucinations, and deliver a crisp investment recommendation — with limited AI budget.',
+      skills: [{ name: 'Critical Evaluation', weight: 0.40 }, { name: 'Evidence Synthesis', weight: 0.25 }, { name: 'Prompt Engineering', weight: 0.25 }] },
+    { file: 'scenarios/the-brief-ai-literacy-v2.json', label: 'AI Governance Brief', client: 'Meridian Financial Services', minutes: 20,
+      description: 'HR has been using an AI writing tool for 3 months without a security review. Assess the data risk and recommend a governance policy before Monday.',
+      skills: [{ name: 'Critical Evaluation', weight: 0.40 }, { name: 'Risk Assessment', weight: 0.30 }, { name: 'Communication', weight: 0.20 }] },
+  ],
+  'financial-literacy': [
+    { file: 'scenarios/the-brief-financial-literacy.json', label: 'Investment Brief', client: 'Meridian Capital Partners', minutes: 20,
+      description: 'Evaluate a gym chain acquisition. Review the financials, benchmark comps, and make a clear invest/pass/conditional recommendation.',
+      skills: [{ name: 'Financial Analysis', weight: 0.35 }, { name: 'Risk Assessment', weight: 0.25 }, { name: 'Critical Evaluation', weight: 0.25 }] },
+    { file: 'scenarios/the-brief-financial-literacy-v2.json', label: 'Budget Variance Brief', client: 'Northgate Health System', minutes: 18,
+      description: 'A department is $218K over budget with 5 months left. Find the root causes, flag a data discrepancy, and brief the CFO before the board meeting.',
+      skills: [{ name: 'Financial Analysis', weight: 0.40 }, { name: 'Communication', weight: 0.30 }, { name: 'Critical Evaluation', weight: 0.20 }] },
+  ],
+  'project-management': [
+    { file: 'scenarios/the-brief-project-management.json', label: 'Project Recovery Brief', client: 'Meridian PM Consulting', minutes: 20,
+      description: 'A digital transformation is 3 weeks behind. Diagnose the root causes, evaluate recovery options, and write a brief the sponsor can act on.',
+      skills: [{ name: 'Evidence Synthesis', weight: 0.30 }, { name: 'Critical Evaluation', weight: 0.30 }, { name: 'Risk Assessment', weight: 0.25 }] },
+    { file: 'scenarios/the-brief-project-management-v2.json', label: 'Scope Change Brief', client: 'Cascade Ventures', minutes: 18,
+      description: 'Three new features land mid-sprint with a +6 week estimate — and a penalty clause if the go-live slips. Brief the VP on the best path forward.',
+      skills: [{ name: 'Risk Assessment', weight: 0.35 }, { name: 'Communication', weight: 0.30 }, { name: 'Evidence Synthesis', weight: 0.25 }] },
+  ],
+  'emt': [
+    { file: 'scenarios/the-brief-emt.json', label: 'Ketamine Protocol Brief', client: 'Tri-County EMS Committee', minutes: 20,
+      description: 'Evaluate whether to add ketamine to the paramedic formulary. Weigh clinical evidence, neighboring agency data, and contested indications.',
+      skills: [{ name: 'Evidence Synthesis', weight: 0.30 }, { name: 'Risk Assessment', weight: 0.25 }, { name: 'Critical Evaluation', weight: 0.25 }] },
+    { file: 'scenarios/the-brief-emt-v2.json', label: 'Community Paramedicine Brief', client: 'Tri-County EMS Committee', minutes: 18,
+      description: 'Should the agency launch a community paramedicine program for frequent 911 callers? Mixed results from neighboring agencies and contested reimbursement data.',
+      skills: [{ name: 'Evidence Synthesis', weight: 0.35 }, { name: 'Risk Assessment', weight: 0.30 }, { name: 'Communication', weight: 0.25 }] },
+  ],
+  'pharmacy-tech': [
+    { file: 'scenarios/the-brief-pharmacy-tech.json', label: 'Formulary Review Brief', client: 'Cascade Health Plan', minutes: 20,
+      description: 'Should semaglutide (Wegovy) be added to the preferred formulary tier? Weigh clinical evidence, cost projections, and rebate structure.',
+      skills: [{ name: 'Clinical Analysis', weight: 0.30 }, { name: 'Cost-Benefit', weight: 0.25 }, { name: 'Critical Evaluation', weight: 0.25 }] },
+    { file: 'scenarios/the-brief-pharmacy-tech-v2.json', label: 'Drug Shortage Brief', client: 'Meridian Pharmacy Group', minutes: 18,
+      description: 'Augmentin IV is in a national shortage for 6-10 weeks. Evaluate three substitution options and brief the P&T committee — a planted AI error obscures the right answer.',
+      skills: [{ name: 'Clinical Analysis', weight: 0.35 }, { name: 'Risk Assessment', weight: 0.25 }, { name: 'Communication', weight: 0.30 }] },
+  ],
+};
+
+async function fetchScenario(url) {
   try {
     const resp = await fetch(url);
     if (!resp.ok) throw new Error(resp.status);
@@ -1425,6 +1524,66 @@ async function loadPack() {
     console.warn('Could not fetch scenario JSON (' + url + '), using inline fallback:', e.message);
     return CONSTRUCT_PACK_INLINE;
   }
+}
+
+async function loadPack() {
+  const params = new URLSearchParams(window.location.search);
+
+  // Direct scenario load (existing behavior, backward compat)
+  if (params.get('scenario')) {
+    return fetchScenario(params.get('scenario'));
+  }
+
+  // Construct-based routing — check for multiple versions
+  const construct = params.get('construct');
+  if (construct && SCENARIO_VERSIONS[construct]) {
+    const versions = SCENARIO_VERSIONS[construct];
+    if (versions.length > 1) {
+      // Show picker — return null to signal picker mode
+      showPicker(construct, versions);
+      return null;
+    } else {
+      // Single version — load directly
+      return fetchScenario(versions[0].file);
+    }
+  }
+
+  // Default fallback
+  return fetchScenario(DEFAULT_SCENARIO);
+}
+
+function showPicker(construct, versions) {
+  document.getElementById('screen-picker').style.display = 'flex';
+  document.getElementById('picker-tag').textContent = 'The Brief — ' + construct.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  document.getElementById('picker-title').textContent = 'Available versions';
+
+  const container = document.getElementById('picker-cards');
+  container.innerHTML = versions.map((v, i) => {
+    const topSkills = [...v.skills].sort((a,b) => b.weight - a.weight);
+    const skillTags = topSkills.map(s =>
+      `<span class="picker-skill-tag ${s.weight >= 0.30 ? 'hi' : ''}">${s.name} ${Math.round(s.weight*100)}%</span>`
+    ).join('');
+    return `<div class="picker-card">
+      <div class="picker-card-top">
+        <div style="flex:1">
+          <div class="picker-card-name">${v.label}</div>
+          <div class="picker-card-meta">${v.client} · ~${v.minutes} min</div>
+        </div>
+        <div class="picker-card-num">${i + 1}</div>
+      </div>
+      <div class="picker-card-desc">${v.description}</div>
+      <div class="picker-skill-tags">${skillTags}</div>
+      <button class="picker-accept-btn" onclick="acceptVersion('${v.file}')">Accept →</button>
+    </div>`;
+  }).join('');
+}
+
+async function acceptVersion(file) {
+  document.getElementById('screen-picker').style.display = 'none';
+  PACK = await fetchScenario(file);
+  SC = PACK.scenario;
+  initFromPack();
+  document.getElementById('screen-landing').style.display = 'flex';
 }
 
 // ── STATE ──────────────────────────────────────
@@ -2198,6 +2357,7 @@ document.addEventListener('keydown', e => {
 // ── BOOT ─────────────────────────────────────
 (async () => {
   PACK = await loadPack();
+  if (PACK === null) return; // Picker mode — picker handles the rest
   SC = PACK.scenario;
   initFromPack();
 })();

@@ -1,0 +1,129 @@
+{
+  "construct_id": "budget_variance_analysis",
+  "construct_name": "Budget Variance Analysis & Communication",
+  "construct_description": "The ability to investigate a mid-year budget overrun, identify root causes with quantified impact, spot data inconsistencies, and communicate a credible corrective action recommendation to a CFO — a core competency for finance analysts, department controllers, and healthcare finance professionals.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "High (board-level financial accountability)",
+    "temporal": "Single-session, 20 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated health system finance scenario)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "financial_analysis",
+      "name": "Financial Analysis",
+      "icon": "📊",
+      "description": "Interpreting budget vs. actuals data, identifying root causes, and quantifying variance accurately — including spotting data inconsistencies.",
+      "color": "#10b981",
+      "weight": 0.40
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "icon": "✍️",
+      "description": "Structuring a clear, credible brief for a CFO that explains the variance and recommends a corrective path with supporting evidence.",
+      "color": "#9e9eff",
+      "weight": 0.30
+    },
+    {
+      "id": "critical_evaluation",
+      "name": "Critical Evaluation",
+      "icon": "🔍",
+      "description": "Identifying a data inconsistency between two source documents, evaluating AI recommendations against clinical realities, and flagging unsupported conclusions.",
+      "color": "#f59e0b",
+      "weight": 0.20
+    },
+    {
+      "id": "risk_assessment",
+      "name": "Risk Assessment",
+      "icon": "⚠️",
+      "description": "Recognizing downstream risks of corrective options — including clinical impact of deferring capital projects.",
+      "color": "#f43f5e",
+      "weight": 0.10
+    }
+  ],
+  "scenario": {
+    "id": "northgate_budget_variance",
+    "title": "The Budget Variance Brief",
+    "client": "Northgate Health System — Finance Division",
+    "estimated_minutes": 20,
+    "budget_tokens": 120,
+    "briefing": "The Clinical Technology department at Northgate Health System is $218,000 over budget with 5 months remaining in the fiscal year. The CFO, Dr. Patricia Lam, is presenting to the board next Tuesday and needs a brief that clearly explains what happened and recommends a corrective action path.\n\nThree candidate root causes have been surfaced by the department head: (1) an unplanned expansion of a vendor contract renewal that was processed without a budget amendment, (2) two emergency software licenses purchased outside the capital plan, and (3) a contractor rate increase mid-year that was not reflected in the original headcount budget.\n\nThree corrective options are on the table: reallocate budget from the Administrative Technology reserve, request a supplemental budget from the CFO reserve fund, or defer two capital projects to the next fiscal year.\n\nYour job is to write a one-page brief for Dr. Lam before the board meeting. The AI Workbench has been loaded with the budget data and supporting documents. Review the materials carefully — there is a numeric discrepancy between two documents that needs to be flagged.",
+    "inbox": [
+      {
+        "id": "email_1",
+        "from": "Dr. Patricia Lam <p.lam@northgatehealth.example>",
+        "subject": "Clinical Tech variance — need brief before board meeting",
+        "body": "I need a one-pager before Tuesday's board meeting.\n\nClinical Tech is $218K over budget with 5 months left in the year. I need to walk the board through: (1) what caused this — real root causes, not 'unexpected costs', (2) how much each cause contributed, and (3) what we're going to do about it.\n\nI've looked at three corrective options — reallocation from Admin Tech reserve, supplemental budget request, or capital project deferral. I need a recommendation, not just a list of options. If you recommend deferral, you need to tell me which projects and flag any downstream risk.\n\nOne more thing: my team thinks there's a number that doesn't add up between the actuals report and the vendor contract email. Find it and flag it. I don't want to quote a wrong number in front of the board.\n\n— Dr. Patricia Lam\nCFO, Northgate Health System"
+      },
+      {
+        "id": "email_2",
+        "from": "Kevin Strauss <k.strauss@northgatehealth.example>",
+        "subject": "RE: Clinical Tech Budget — department head context",
+        "body": "Dr. Lam asked me to give you background.\n\nHere's my read on what happened:\n\n1. The Medivance EHR support contract renewal: our vendor proposed an expanded scope (added 24/7 on-call coverage, we needed it after the March outage) and the renewal was processed at the new rate before finance got the budget amendment paperwork in. The difference is somewhere between $89K and $94K depending on which number you believe — there's a discrepancy I can't explain.\n\n2. Emergency software licenses: we had two situations. First, a ransomware incident in April forced us to purchase Endpoint Detection & Response (EDR) software on an emergency basis for $41,200. Second, we brought in a temporary telehealth overflow platform for 60 days during the staffing shortage ($28,600). Neither was in the capital plan.\n\n3. Contractor rate increase: we have 3 IT contractors whose hourly rate went from $95 to $118/hr effective March 1st, per their contract escalation clause. Our budget was built on the old rate. The overrun on that line for the year (full year impact) will be $54,000 — with roughly $36,750 of that in the rear-view already.\n\nFor the corrective path: I want to flag that one of the two capital projects on the deferral list is the medical imaging archive migration. Deferring that has real clinical risk — we're still storing legacy DICOM files on a system past end-of-life. The other project (facilities management software upgrade) has no patient safety implications.\n\n— Kevin Strauss\nDirector, Clinical Technology, Northgate Health System"
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_actuals",
+        "tab_label": "Budget vs. Actuals",
+        "type": "Financial Report",
+        "reliability": "high",
+        "title": "Clinical Technology Department — YTD Budget vs. Actuals Report",
+        "author": "Northgate Health System Finance",
+        "publication": "Internal Report — Month 7 of Fiscal Year (5 months remaining)",
+        "content_html": "<h3>Clinical Technology — YTD Budget vs. Actuals (Month 7)</h3><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Line Item</th><th>Annual Budget</th><th>YTD Budget (7/12)</th><th>YTD Actual</th><th>YTD Variance</th><th>Projected Year-End Variance</th></tr></thead><tbody><tr style='background:#fff3f3'><td>Medivance EHR Support Contract</td><td>$312,000</td><td>$182,000</td><td>$276,000</td><td><strong>($94,000)</strong></td><td>($94,000) — contract fixed</td></tr><tr style='background:#fff3f3'><td>Emergency Software Licenses</td><td>$0</td><td>$0</td><td>$69,800</td><td><strong>($69,800)</strong></td><td>($69,800) — one-time</td></tr><tr style='background:#fff3f3'><td>IT Contractor — Labor</td><td>$285,000</td><td>$166,250</td><td>$203,000</td><td><strong>($36,750)</strong></td><td>($54,000) — rate increase continues</td></tr><tr><td>Internal FTE — IT Staff</td><td>$580,000</td><td>$338,333</td><td>$335,100</td><td>$3,233 favorable</td><td>$5,543 favorable</td></tr><tr><td>Hardware Maintenance</td><td>$94,000</td><td>$54,833</td><td>$52,400</td><td>$2,433 favorable</td><td>$4,171 favorable</td></tr><tr><td>Software Licenses (planned)</td><td>$178,000</td><td>$103,833</td><td>$101,200</td><td>$2,633 favorable</td><td>$4,514 favorable</td></tr><tr><td>Training & Development</td><td>$42,000</td><td>$24,500</td><td>$21,750</td><td>$2,750 favorable</td><td>$4,714 favorable</td></tr></tbody></table><p><strong>Total YTD variance: ($218,550) unfavorable</strong> &nbsp;|&nbsp; <strong>Projected year-end variance: ($236,057) unfavorable</strong></p><p><em>Note: Emergency Software Licenses line was not in the original budget. It has been added to this report post-hoc for visibility.</em></p>"
+      },
+      {
+        "id": "src_vendor_contract",
+        "tab_label": "Vendor Contract Email",
+        "type": "Email Chain",
+        "reliability": "high",
+        "title": "Medivance EHR Support — Contract Renewal Email Chain",
+        "author": "Kevin Strauss / Medivance Account Team",
+        "publication": "Internal email archive — March of this fiscal year",
+        "content_html": "<h3>Medivance EHR Support Contract Renewal — Email Chain</h3><hr/><p><strong>From:</strong> Jordan Park, Account Executive &lt;j.park@medivance.example&gt;<br/><strong>To:</strong> Kevin Strauss &lt;k.strauss@northgatehealth.example&gt;<br/><strong>Date:</strong> March 4<br/><strong>Subject:</strong> Contract Renewal — Expanded Support Scope Proposal</p><p>Kevin,</p><p>Per our conversation last week, here is the formal proposal for expanding your support tier from Standard to Premium Plus, which includes 24/7 on-call engineering coverage, a dedicated account manager, and quarterly system health reviews.</p><p>Standard annual support (current): $312,000/year<br/>Premium Plus annual support (proposed): <strong>$401,000/year</strong><br/>Incremental annual increase: <strong>$89,000</strong></p><p>This price is locked for a 2-year renewal term. Happy to schedule a call to walk through the added services.</p><p>— Jordan Park, Medivance</p><hr/><p><strong>From:</strong> Kevin Strauss &lt;k.strauss@northgatehealth.example&gt;<br/><strong>To:</strong> Jordan Park<br/><strong>Date:</strong> March 6<br/><strong>Subject:</strong> RE: Contract Renewal</p><p>Jordan — we're proceeding with Premium Plus. I'll get the PO to you by end of week. I've flagged to our finance team that the annual cost is going up by $89K. They'll process a budget amendment.</p><p>— Kevin</p><hr/><p><strong>From:</strong> Jordan Park<br/><strong>To:</strong> Kevin Strauss<br/><strong>Date:</strong> March 8<br/><strong>Subject:</strong> RE: RE: Contract Renewal — Signed Agreement Attached</p><p>Kevin — great, signed agreement attached. Note that billing cycles to the new rate effective April 1. Looking forward to the expanded partnership.</p><p>— Jordan</p><p><em>[Attachment: Medivance_NorthgateHS_PremiumPlus_Renewal_Signed.pdf]</em></p>"
+      },
+      {
+        "id": "src_contractor",
+        "tab_label": "Contractor Rate Notice",
+        "type": "Contract Addendum",
+        "reliability": "high",
+        "title": "IT Contractor Rate Escalation — Formal Notice",
+        "author": "TechForce Staffing Solutions",
+        "publication": "Contract addendum, effective March 1",
+        "content_html": "<h3>TechForce Staffing Solutions — Rate Escalation Notice</h3><p><strong>To:</strong> Northgate Health System — Clinical Technology<br/><strong>Re:</strong> Annual Rate Adjustment per Contract Section 8.3<br/><strong>Effective:</strong> March 1 of current fiscal year</p><p>Pursuant to Section 8.3 of the Master Staffing Agreement (annual CPI-based rate adjustment), TechForce is implementing the following rate change for all active IT contractors placed at Northgate Health System:</p><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Contractor</th><th>Role</th><th>Prior Rate</th><th>New Rate</th><th>Adjustment</th></tr></thead><tbody><tr><td>Marcus Obi</td><td>Sr. Systems Analyst</td><td>$95/hr</td><td>$118/hr</td><td>+$23/hr (+24.2%)</td></tr><tr><td>Fatima Al-Rashid</td><td>Network Infrastructure Specialist</td><td>$95/hr</td><td>$118/hr</td><td>+$23/hr (+24.2%)</td></tr><tr><td>David Park</td><td>EHR Integration Analyst</td><td>$95/hr</td><td>$118/hr</td><td>+$23/hr (+24.2%)</td></tr></tbody></table><p><strong>Basis for adjustment:</strong> 2024 CPI-W (All Urban Wage Earners) = 4.1%. Contract Section 8.3 allows adjustment up to CPI + 20 percentage points at TechForce's discretion. This adjustment reflects current market rates for specialized healthcare IT contractors.</p><p><strong>Assumed hours per contractor (FY budget basis):</strong> 2,000 hours/year (full-time equivalent)</p><p><strong>Incremental cost per contractor per year:</strong> $23 × 2,000 hrs = $46,000</p><p><strong>Combined incremental cost (3 contractors):</strong> $138,000/year — however, effective for only 10 months of the current FY (March through December): <strong>$115,000 FY impact</strong></p><p><em>Note: The rate adjustment notice was received on February 22. Northgate's budget for the current year was finalized on December 15 of the prior year and did not include this rate change.</em></p>"
+      },
+      {
+        "id": "src_capital_projects",
+        "tab_label": "Capital Project Schedule",
+        "type": "Capital Plan",
+        "reliability": "high",
+        "title": "Clinical Technology — FY Capital Project Schedule",
+        "author": "Northgate Health System Finance / Clinical Technology",
+        "publication": "Approved Capital Plan, current fiscal year",
+        "content_html": "<h3>Clinical Technology — Approved Capital Projects (Current FY)</h3><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Project</th><th>Budget</th><th>Status</th><th>Completion Target</th><th>Clinical Risk if Deferred</th></tr></thead><tbody><tr><td>Medical Imaging Archive Migration (DICOM)</td><td>$187,000</td><td>Planning phase — not yet started</td><td>Q4 this FY</td><td><strong>HIGH</strong> — legacy storage system is past end-of-life; vendor support expired 8 months ago. System failure would make archived imaging studies inaccessible. HIPAA audit risk.</td></tr><tr><td>Facilities Management Software Upgrade (CMMS)</td><td>$94,000</td><td>Vendor selected — contract not yet signed</td><td>Q4 this FY</td><td><strong>LOW</strong> — current CMMS is functional; upgrade adds preventive maintenance scheduling and compliance reporting features. No patient safety dependency.</td></tr><tr><td>Nurse Call System Expansion (Floor 4 West)</td><td>$62,000</td><td>Installation 70% complete</td><td>Q3 this FY (imminent)</td><td><strong>HIGH</strong> — cannot be deferred; construction already underway. Partial installation would be a safety hazard.</td></tr></tbody></table><h4>Admin Technology Reserve (Separate Budget)</h4><p>The Administrative Technology department carries an unencumbered reserve of $310,000 designated for \"technology infrastructure contingencies.\" Use of this reserve requires CFO approval and a documented business case. The reserve has not been drawn against in the past 3 years.</p><p><em>Note: Deferring only the CMMS upgrade would free up $94,000. Deferring only the DICOM migration would free up $187,000. Deferring both would free up $281,000 — which, combined with favorable variances in other lines (~$20K), would approximately close the projected year-end gap of $236K.</em></p>"
+      }
+    ],
+    "ai_workbench": {
+      "enabled": true,
+      "persona": "Healthcare Finance AI Assistant — has been loaded with the budget vs. actuals report, vendor emails, contractor rate notice, and capital project schedule",
+      "known_limitation": "The AI correctly identifies the three root causes but recommends deferring capital projects as the primary corrective path without weighing the clinical risk of deferring the DICOM imaging archive migration. It also does not flag the numeric discrepancy between the vendor contract email and the actuals report.",
+      "seed_response": "Here's my analysis of the Northgate Clinical Tech budget variance:\n\n**Root Cause Summary:**\n1. Medivance contract expansion: ~$94K unfavorable (per the actuals report)\n2. Emergency software licenses: $69,800 unfavorable (EDR $41,200 + telehealth platform $28,600)\n3. Contractor rate increase: $54,000 projected year-end impact ($36,750 incurred YTD)\n\n**Total root cause accounted: ~$217,800** — consistent with the $218,550 YTD variance.\n\n**Recommended corrective path:** Deferring the two remaining capital projects (DICOM migration and CMMS upgrade) would free up $281,000 — more than enough to offset the projected year-end overrun of $236K with a small buffer. This approach avoids a supplemental budget request (which requires board approval) and preserves the Admin Tech reserve for true emergencies.\n\n**My recommendation:** Defer both capital projects and apply the freed budget against the operating overrun. This is the cleanest accounting solution and avoids escalating to the board for additional funds."
+    },
+    "rubric": {
+      "root_cause_accuracy": "Correctly identifies all three root causes with quantified amounts — vendor contract ~$89-94K, emergency licenses $69,800, contractor rate increase $54K (projected) / $36,750 (YTD)",
+      "data_inconsistency_flagged": "Identifies and flags the discrepancy between the actuals report ($94,000 vendor variance) and the vendor contract email chain ($89,000 incremental cost per Jordan Park's proposal and Kevin's confirmation) — the $5,000 difference needs to be reconciled before the CFO quotes a number to the board",
+      "clinical_risk_acknowledged": "Does not recommend deferring the DICOM imaging archive migration without explicitly flagging the clinical and HIPAA risk — the AI's recommendation to defer both projects omits this critical caveat",
+      "recommendation_specificity": "Makes a clear corrective path recommendation with specific dollar amounts and source — not a generic 'explore options'",
+      "contractor_math": "Correctly notes that the contractor rate increase's full-year impact is different from the actuals report number — the rate change was effective March 1, meaning 10 months of impact in this FY, and the actuals report shows only 7/12 of that"
+    }
+  }
+}

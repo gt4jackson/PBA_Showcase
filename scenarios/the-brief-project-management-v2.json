@@ -1,0 +1,135 @@
+{
+  "construct_id": "pm_scope_analysis",
+  "construct_name": "Project Scope Management",
+  "construct_description": "The ability to evaluate a mid-project scope change request, weigh schedule, cost, and contractual risks, and deliver a clear, evidence-backed recommendation to executive leadership — a core competency for project advisors, PMO leads, and delivery managers.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "High (contractual / financial)",
+    "temporal": "Single-session, 20 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated product delivery decision)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "risk_assessment",
+      "name": "Risk Assessment",
+      "icon": "⚠️",
+      "description": "Identifying and weighing schedule, financial, and contractual risks across each scope option.",
+      "color": "#f43f5e",
+      "weight": 0.35
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "icon": "✍️",
+      "description": "Presenting options and a clear recommendation that a VP can act on before a client call.",
+      "color": "#9e9eff",
+      "weight": 0.30
+    },
+    {
+      "id": "evidence_synthesis",
+      "name": "Evidence Synthesis",
+      "icon": "🔬",
+      "description": "Integrating data from the change request, contract, velocity reports, and market signals to support a recommendation.",
+      "color": "#10b981",
+      "weight": 0.25
+    },
+    {
+      "id": "critical_evaluation",
+      "name": "Critical Evaluation",
+      "icon": "🔍",
+      "description": "Catching errors or unsupported assumptions in AI-generated recommendations.",
+      "color": "#f59e0b",
+      "weight": 0.10
+    }
+  ],
+  "scenario": {
+    "id": "cascade_crm_scope_change",
+    "title": "The Scope Change Decision",
+    "client": "Cascade Ventures Portfolio Team",
+    "estimated_minutes": 20,
+    "budget_tokens": 120,
+    "briefing": "Cascade CRM — a SaaS product built for Cascade Ventures' portfolio companies — is 10 weeks into a 20-week development sprint. The product team has submitted a formal change request (CR-007) adding three new features: Salesforce integration, bulk email campaigns, and a mobile app companion. The combined engineering estimate is +6 weeks and +$85,000.\n\nThe problem: you have a committed go-live date with Thornwood Corp, a marquee enterprise customer, written into a signed contract. A delay beyond the agreed date triggers a $40,000 penalty clause.\n\nVP of Product Delivery Renata Solís needs a one-page brief before her 3pm call with the Thornwood account team. She wants three options laid out — Absorb (delay go-live and accept the penalty risk), Defer (push all three features to v1.1), or Split (include Salesforce integration only, defer the other two) — with a clear recommendation and top three rationale points.\n\nThe AI Workbench is available. Use it carefully — it has access to your velocity data and change request details, but its assumptions about team capacity may not account for the full picture.",
+    "inbox": [
+      {
+        "id": "email_1",
+        "from": "Renata Solís <r.solis@cascadeventures.example>",
+        "subject": "CR-007 — I need your recommendation before 3pm",
+        "body": "We have a decision to make on CR-007 before I get on the phone with Thornwood.\n\nEngineering submitted the change request this morning — three features, +6 weeks, +$85K. The timing is terrible. We're at the halfway mark and Thornwood has a signed contract with a go-live date. The penalty clause is $40K if we slip.\n\nI've asked for three options to be laid out — Absorb, Defer, or Split (Salesforce only). I want a clear recommendation, not a menu. Give me the top three reasons why you're recommending what you recommend, and flag the risks.\n\nThe velocity data, the change request, the Thornwood contract excerpt, and the competitor analysis are all in your workspace. The AI Workbench has been loaded with the project data.\n\n— Renata\nVP of Product Delivery, Cascade Ventures"
+      },
+      {
+        "id": "email_2",
+        "from": "Dev Bhattacharya <d.bhattacharya@cascadeventures.example>",
+        "subject": "CR-007 Engineering Estimate — read the footnote",
+        "body": "Renata looped me in.\n\nThe +6 week / +$85K estimate in CR-007 is for all three features built sequentially. Here's the breakdown:\n- Salesforce integration: 3.5 weeks, ~$42K (API work, field mapping, sync logic)\n- Bulk email campaigns: 1.5 weeks, ~$20K (relatively straightforward)\n- Mobile app companion: 1 week, ~$23K (MVP only; full feature parity would be later)\n\nI want to flag one thing that's NOT in the formal estimate: if we try to build Salesforce integration while also wrapping up the core CRM features, we will context-switch the same two engineers. My informal estimate for that friction cost is another 0.5–1 week. The formal CR doesn't include that.\n\nAlso — Salesforce integration was the #1 feature request in our last NPS survey (67 responses). Just saying.\n\n— Dev\nEngineering Lead, Cascade CRM"
+      },
+      {
+        "id": "email_3",
+        "from": "Priya Mehta <p.mehta@thornwoodcorp.example>",
+        "subject": "RE: Cascade CRM Implementation Timeline",
+        "body": "Hi Renata — wanted to give you a heads up before the call today.\n\nOur procurement team has flagged the contract go-live date. Legal reminded us that the penalty clause activates if we don't receive production access by October 18th. That's firm — we have a board reporting cycle that requires the system to be live by that date.\n\nWe're very excited about the Salesforce sync feature if it's coming — several of our ops leads asked about it last week. But not at the cost of the go-live date. We can't flex on October 18th.\n\n— Priya\nDirector of Operations, Thornwood Corp"
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_cr007",
+        "tab_label": "Change Request CR-007",
+        "type": "Change Request",
+        "reliability": "high",
+        "title": "CR-007: Feature Addition Request — Cascade CRM Sprint 2",
+        "author": "Dev Bhattacharya, Engineering Lead",
+        "publication": "Cascade Ventures Internal — Submitted Week 10",
+        "content_html": "<h3>Change Request CR-007</h3><p><strong>Submitted by:</strong> Dev Bhattacharya, Engineering Lead &nbsp;|&nbsp; <strong>Date:</strong> Week 10 of Sprint &nbsp;|&nbsp; <strong>Priority:</strong> High</p><h4>Requested Features</h4><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Feature</th><th>Description</th><th>Engineering Weeks</th><th>Estimated Cost</th><th>Dependencies</th></tr></thead><tbody><tr><td>Salesforce Integration</td><td>Bi-directional sync between Cascade CRM and Salesforce via REST API. Includes contact sync, deal pipeline mapping, and activity logging.</td><td>3.5 weeks</td><td>$42,000</td><td>Salesforce sandbox access from client; field mapping sign-off</td></tr><tr><td>Bulk Email Campaigns</td><td>In-app email campaign builder with list segmentation, scheduling, and basic analytics (open rate, click rate).</td><td>1.5 weeks</td><td>$20,000</td><td>Email service provider (ESP) API key; GDPR/CAN-SPAM compliance review</td></tr><tr><td>Mobile App Companion</td><td>iOS/Android app (MVP) — contact lookup, recent activity, note entry. No full feature parity with web app.</td><td>1.0 week</td><td>$23,000</td><td>App store developer accounts; MDM policy review for enterprise deployment</td></tr></tbody></table><p><strong>Total estimate (sequential build):</strong> 6.0 weeks / $85,000</p><p><em>Note: Estimate assumes sequential development. Parallel development is not feasible given current team composition — Salesforce and mobile features require the same two senior engineers.</em></p><h4>Justification</h4><p>All three features appeared in the top 10 of the Q2 customer feedback survey. Salesforce integration was the single most-requested feature (cited by 67% of NPS respondents). Competitor analysis (see Competitor Tab) shows that 4 of 5 direct competitors offer Salesforce sync as a standard feature.</p>"
+      },
+      {
+        "id": "src_contract",
+        "tab_label": "Thornwood Contract Excerpt",
+        "type": "Contract Excerpt",
+        "reliability": "high",
+        "title": "Cascade CRM — Thornwood Corp Master Services Agreement (Excerpt)",
+        "author": "Cascade Ventures Legal",
+        "publication": "Signed MSA, Effective Date: Week 0 of Sprint",
+        "content_html": "<h3>Master Services Agreement — Relevant Clauses</h3><p><strong>Parties:</strong> Cascade Ventures (\"Provider\") and Thornwood Corp (\"Customer\")</p><h4>Section 4.2 — Delivery Timeline</h4><p>Provider agrees to deliver production access to Cascade CRM, including all features listed in Exhibit A, no later than <strong>October 18th (Week 20 of the agreed sprint schedule)</strong>. Customer acknowledges that the October 18th date is a hard requirement tied to Customer's fiscal reporting cycle.</p><h4>Section 4.4 — Delay Penalty</h4><p>In the event that production access is not delivered by the date specified in Section 4.2, Provider shall owe Customer a <strong>service credit of $40,000</strong>, applied against the Customer's next annual invoice. If delivery is delayed by more than 30 days beyond the Section 4.2 date, Customer reserves the right to terminate this Agreement with a full refund of fees paid to date.</p><h4>Section 6.1 — Change Orders</h4><p>Any changes to the scope of work defined in Exhibit A must be documented in a written Change Order signed by both parties. Change Orders that affect the delivery timeline defined in Section 4.2 require Customer's written consent to an amended delivery date prior to implementation.</p><h4>Exhibit A — Contracted Feature Set (Summary)</h4><ul><li>Contact and account management (core CRM)</li><li>Pipeline and deal tracking</li><li>Task and activity logging</li><li>Reporting dashboard (standard templates)</li><li>Single sign-on (SSO) integration</li><li>API access for Customer's internal tools</li></ul><p><em>Note: Salesforce integration, bulk email, and mobile app are NOT included in Exhibit A. They are additive scope under CR-007.</em></p>"
+      },
+      {
+        "id": "src_velocity",
+        "tab_label": "Sprint Velocity Data",
+        "type": "Performance Report",
+        "reliability": "high",
+        "title": "Cascade CRM — Sprint Velocity Report (Weeks 1–9)",
+        "author": "Dev Bhattacharya, Engineering Lead",
+        "publication": "Cascade Ventures Internal — Week 10",
+        "content_html": "<h3>Sprint Velocity Report — Weeks 1–9</h3><p>The team has completed Sprints 1–4 (Weeks 1–8) and is midway through Sprint 5 (Week 9–10).</p><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Sprint</th><th>Weeks</th><th>Points Planned</th><th>Points Completed</th><th>Velocity %</th><th>Notes</th></tr></thead><tbody><tr><td>Sprint 1</td><td>1–2</td><td>42</td><td>38</td><td>90%</td><td>Onboarding overhead; slightly below plan</td></tr><tr><td>Sprint 2</td><td>3–4</td><td>44</td><td>44</td><td>100%</td><td>Clean sprint; no blockers</td></tr><tr><td>Sprint 3</td><td>5–6</td><td>46</td><td>40</td><td>87%</td><td>One engineer out sick for 3 days; integration dependency delay</td></tr><tr><td>Sprint 4</td><td>7–8</td><td>44</td><td>46</td><td>105%</td><td>Caught up from Sprint 3; strong execution</td></tr><tr><td>Sprint 5 (partial)</td><td>9–10</td><td>44</td><td>22 (midpoint)</td><td>~100% pace</td><td>On track; core feature set 85% complete</td></tr></tbody></table><p><strong>Average velocity (Sprints 1–4):</strong> 95.5% of planned capacity</p><p><strong>Remaining work estimate (core CRM, no CR-007):</strong> ~10 weeks at current velocity — on track for Week 20 go-live.</p><h4>Capacity Note</h4><p>The team currently has 4 engineers. The two senior engineers (Yusra and Tom) are the owners of both the Salesforce API integration work AND the mobile app build. Any feature work involving those two engineers creates a resource bottleneck. Adding CR-007 scope mid-sprint will require them to context-switch between feature work and integration/mobile development.</p>"
+      },
+      {
+        "id": "src_competitor",
+        "tab_label": "Competitor Analysis",
+        "type": "Market Research",
+        "reliability": "moderate",
+        "title": "CRM Competitive Landscape — Feature Gap Analysis",
+        "author": "Cascade Ventures Product Team",
+        "publication": "Internal Research Report, Q2",
+        "content_html": "<h3>CRM Competitive Feature Analysis</h3><p>Analysis of five direct competitors to Cascade CRM in the SMB/mid-market segment.</p><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Feature</th><th>HubSpot Starter</th><th>Pipedrive</th><th>Zoho CRM</th><th>Freshsales</th><th>Close.io</th><th>Cascade CRM (current)</th></tr></thead><tbody><tr><td>Salesforce Integration</td><td>✅ Native</td><td>✅ Native</td><td>✅ Native</td><td>✅ Native</td><td>✅ Native</td><td>❌ Not available</td></tr><tr><td>Bulk Email Campaigns</td><td>✅ Native</td><td>❌ Third-party</td><td>✅ Native</td><td>✅ Native</td><td>✅ Native</td><td>❌ Not available</td></tr><tr><td>Mobile App</td><td>✅ Full</td><td>✅ Full</td><td>✅ Full</td><td>✅ Full</td><td>⚠️ Limited</td><td>❌ Not available</td></tr></tbody></table><p><strong>Key finding:</strong> Salesforce integration is the only feature where Cascade CRM is at a disadvantage relative to <em>all five</em> competitors. Bulk email and mobile app have one comparable gap (Pipedrive/Close.io respectively) but are otherwise standard across the market.</p><p><strong>Caveat:</strong> This analysis reflects feature availability as of Q2. Competitor feature sets change frequently — this report has not been updated since May and may not reflect recent releases. Treat as directional, not definitive.</p><p><strong>Customer signal:</strong> In the most recent NPS survey (67 respondents), feature requests ranked as follows: (1) Salesforce sync — 45 mentions, (2) Mobile app — 31 mentions, (3) Bulk email — 28 mentions, (4) Better reporting — 22 mentions.</p>"
+      }
+    ],
+    "ai_workbench": {
+      "enabled": true,
+      "persona": "Project Delivery AI Assistant — has been loaded with the sprint velocity data, change request, and contract details",
+      "known_limitation": "The AI tends to overestimate team velocity when recommending timelines and does not account for the context-switching cost flagged in the engineering lead's email. It also does not factor in the contractual penalty when evaluating the 'Absorb' option.",
+      "seed_response": "Based on the velocity data and change request, here's a quick summary of your three options:\n\n**Option 1 — Absorb (add all 3 features, delay go-live):** The team has been running at ~95% velocity, which is strong. Adding 6 weeks of scope to a 10-week remaining sprint means a new go-live around Week 16, roughly 4 weeks late. That's within a manageable delay range.\n\n**Option 2 — Defer (keep original scope, hit Week 20):** Cleanest path to the contracted delivery date. All three features move to v1.1. No contractual risk. Downside: customers who've asked for Salesforce integration will have to wait another quarter.\n\n**Option 3 — Split (Salesforce only, defer email + mobile):** Adds 3.5 weeks. Team would need to go-live around Week 13.5, which is still ahead of the Week 20 contract date. This appears to be the best of both worlds — you capture the most-requested feature without missing the contract date.\n\nRecommendation: I'd lean toward Option 3 (Split). The Salesforce integration is the highest-value feature and the team has capacity to absorb it without missing the Thornwood deadline."
+    },
+    "rubric": {
+      "recommendation_clarity": "Makes a clear Absorb / Defer / Split recommendation (not a list of trade-offs without a conclusion)",
+      "contract_risk_identification": "Correctly identifies the $40K penalty clause and the October 18th hard deadline as the primary constraint; does not recommend Absorb without explicitly acknowledging the penalty",
+      "ai_error_detection": "Catches that the AI's 'Option 1' estimate of ~4 weeks delay is based on the formal CR estimate (+6 weeks) but ignores (a) context-switching friction flagged by Dev (+0.5–1 week) and (b) the actual formal CR estimate of +6 weeks — the AI stated 'Week 16' which implies only +4 weeks delay from Week 10, not +6",
+      "evidence_integration": "Draws on at least two sources (e.g., contract + velocity data, or competitor analysis + change request) to support the recommendation",
+      "rationale_quality": "Provides at least 3 specific rationale points — not generic ('it saves time') but tied to the evidence (e.g., Salesforce is cited by 67% of NPS respondents; contract penalty is $40K; context-switching adds risk)"
+    }
+  }
+}

@@ -1498,7 +1498,7 @@ const TASK_CONSTRUCT_MAP = {
   },
   'ai-literacy': {
     'signal-check':   { scenario: 'scenarios/signal-check-ai-literacy.json', construct: 'AI Literacy', dims: ['AI Foundations','Responsible AI','Prompting & Interaction','Workflow & Application'] },
-    'the-brief':      { scenario: 'scenarios/the-brief-critical-thinking.json', construct: 'AI Fluency', dims: ['Prompt Engineering','Critical Evaluation','Task Decomposition','Tool Selection'] },
+    'the-brief':      { scenario: 'construct:ai-literacy', construct: 'AI Fluency', dims: ['Prompt Engineering','Critical Evaluation','Task Decomposition','Tool Selection'] },
     'data-detective': null,
     'the-take':       { scenario: 'scenarios/the-take-argumentation.json', construct: 'Argumentation on AI Policy', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
     'the-forum':      { scenario: 'scenarios/the-forum-ai-literacy.json', construct: 'AI Tool Adoption', dims: ['AI Evaluation','Risk-Benefit','Evidence Use','Decision Quality'] },
@@ -1509,7 +1509,7 @@ const TASK_CONSTRUCT_MAP = {
   },
   'financial-literacy': {
     'signal-check':   { scenario: 'scenarios/signal-check-financial-literacy.json', construct: 'Financial Literacy', dims: ['Budgeting','Saving & Investing','Debt & Credit','Risk & Protection'] },
-    'the-brief':      { scenario: 'scenarios/the-brief-financial-literacy.json', construct: 'Financial Analysis', dims: ['Financial Analysis','Risk Assessment','Critical Evaluation','Communication'] },
+    'the-brief':      { scenario: 'construct:financial-literacy', construct: 'Financial Analysis', dims: ['Financial Analysis','Risk Assessment','Critical Evaluation','Communication'] },
     'data-detective': { scenario: 'scenarios/data-detective-financial-literacy.json', construct: 'Financial Data Reasoning', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
     'the-take':       { scenario: 'scenarios/the-take-financial-literacy.json', construct: 'Financial Policy Argumentation', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
     'the-forum':      null,
@@ -1520,7 +1520,7 @@ const TASK_CONSTRUCT_MAP = {
   },
   'project-management': {
     'signal-check':   { scenario: 'scenarios/signal-check-project-management.json', construct: 'Project Management', dims: ['Planning','Risk Management','Stakeholder Comms','Execution & Control'] },
-    'the-brief':      { scenario: 'scenarios/the-brief-project-management.json', construct: 'Project Recovery', dims: ['Diagnosis','Planning','Stakeholder Mgmt','Risk Mitigation'] },
+    'the-brief':      { scenario: 'construct:project-management', construct: 'Project Recovery', dims: ['Diagnosis','Planning','Stakeholder Mgmt','Risk Mitigation'] },
     'data-detective': { scenario: 'scenarios/data-detective-project-management.json', construct: 'Project Metrics Analysis', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
     'the-take':       null,
     'the-forum':      { scenario: 'scenarios/the-forum-project-prioritization.json', construct: 'Project Prioritization', dims: ['Trade-off Analysis','Evidence Use','Engagement','Synthesizing'] },
@@ -1531,7 +1531,7 @@ const TASK_CONSTRUCT_MAP = {
   },
   'emt': {
     'signal-check':   { scenario: 'scenarios/signal-check-emt.json', construct: 'Pre-Hospital Emergency Care (NREMT)', dims: ['Bystander & Scene Safety','Airway & Circulation','Trauma & Triage','Protocols & Scope'] },
-    'the-brief':      { scenario: 'scenarios/the-brief-emt.json', construct: 'EMS Protocol Analysis', dims: ['Evidence Synthesis','Risk Assessment','Critical Evaluation','Communication'] },
+    'the-brief':      { scenario: 'construct:emt', construct: 'EMS Protocol Analysis', dims: ['Evidence Synthesis','Risk Assessment','Critical Evaluation','Communication'] },
     'data-detective': { scenario: 'scenarios/data-detective-emt.json', construct: 'EMS Operations Data Reasoning', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
     'the-take':       { scenario: 'scenarios/the-take-emt.json', construct: 'EMS Policy Argumentation', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
     'the-forum':      { scenario: 'scenarios/the-forum-emt.json', construct: 'EMS Team Decision-Making', dims: ['Clinical Reasoning','Risk Assessment','Evidence Use','Decision Quality'] },
@@ -1542,7 +1542,7 @@ const TASK_CONSTRUCT_MAP = {
   },
   'pharmacy-tech': {
     'signal-check':   { scenario: 'scenarios/signal-check-pharmacy-tech.json', construct: 'Pharmaceutical Knowledge (ExCPT/PTCE)', dims: ['Medication Safety','Drug Interactions','Dispensing Accuracy','Patient Education & Scope'] },
-    'the-brief':      { scenario: 'scenarios/the-brief-pharmacy-tech.json', construct: 'Formulary & Drug Utilization Analysis', dims: ['Clinical Analysis','Cost-Benefit','Critical Evaluation','Communication'] },
+    'the-brief':      { scenario: 'construct:pharmacy-tech', construct: 'Formulary & Drug Utilization Analysis', dims: ['Clinical Analysis','Cost-Benefit','Critical Evaluation','Communication'] },
     'data-detective': { scenario: 'scenarios/data-detective-pharmacy-tech.json', construct: 'Pharmacy Operations & Error Analysis', dims: ['Exploration','Pattern Recognition','Hypothesis Testing','Interpretation'] },
     'the-take':       { scenario: 'scenarios/the-take-pharmacy-tech.json', construct: 'Pharmacy Policy Argumentation', dims: ['Claim Clarity','Evidence Use','Source Evaluation','Counterargument'] },
     'the-forum':      { scenario: 'scenarios/the-forum-pharmacy-tech.json', construct: 'Pharmacy Workflow Decision-Making', dims: ['Safety Reasoning','Operational Fit','Evidence Use','Decision Quality'] },
@@ -1594,13 +1594,25 @@ function setConstruct(val) {
         dimsEl.innerHTML = config.dims.map(d => `<span class="dim-tag">${d}</span>`).join('');
       }
 
-      // Build URL with scenario param if needed
+      // Build URL — support 'construct:X' marker for multi-version picker routing
       const base = TASK_BASE_URLS[taskId];
       const modeUrl = base[currentMode] || base.desktop;
-      const url = config.scenario ? `${modeUrl}?scenario=${config.scenario}` : modeUrl;
+      let url, desktopUrl, mobileUrl;
+      if (config.scenario && config.scenario.startsWith('construct:')) {
+        const constructId = config.scenario.replace('construct:', '');
+        url        = `${modeUrl}?construct=${constructId}`;
+        desktopUrl = `${base.desktop}?construct=${constructId}`;
+        mobileUrl  = `${base.mobile}?construct=${constructId}`;
+      } else if (config.scenario) {
+        url        = `${modeUrl}?scenario=${config.scenario}`;
+        desktopUrl = `${base.desktop}?scenario=${config.scenario}`;
+        mobileUrl  = `${base.mobile}?scenario=${config.scenario}`;
+      } else {
+        url = desktopUrl = mobileUrl = modeUrl;
+      }
       if (action) action.href = url;
-      card.dataset.desktop = config.scenario ? `${base.desktop}?scenario=${config.scenario}` : base.desktop;
-      card.dataset.mobile  = config.scenario ? `${base.mobile}?scenario=${config.scenario}`  : base.mobile;
+      card.dataset.desktop = desktopUrl;
+      card.dataset.mobile  = mobileUrl;
     }
   });
 

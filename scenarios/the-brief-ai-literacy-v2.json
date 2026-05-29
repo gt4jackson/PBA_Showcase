@@ -1,0 +1,135 @@
+{
+  "construct_id": "ai_governance_brief",
+  "construct_name": "AI Governance & Risk Communication",
+  "construct_description": "The ability to assess data handling risks from unsanctioned AI tool use, weigh productivity benefits against security exposure, and produce a clear governance brief with a policy recommendation — a core competency for digital transformation leads, compliance analysts, and IT risk professionals.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "High (regulatory / data security)",
+    "temporal": "Single-session, 20 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated enterprise compliance scenario)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "critical_evaluation",
+      "name": "Critical Evaluation",
+      "icon": "🔍",
+      "description": "Assessing source quality, identifying gaps between a vendor's stated policy and actual risk, and catching AI overstatements.",
+      "color": "#f59e0b",
+      "weight": 0.40
+    },
+    {
+      "id": "risk_assessment",
+      "name": "Risk Assessment",
+      "icon": "⚠️",
+      "description": "Identifying and communicating data handling, regulatory, and reputational risks from unsanctioned AI tool use.",
+      "color": "#f43f5e",
+      "weight": 0.30
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "icon": "✍️",
+      "description": "Writing a concise, actionable governance brief that a VP can act on by Monday.",
+      "color": "#9e9eff",
+      "weight": 0.20
+    },
+    {
+      "id": "prompt_engineering",
+      "name": "AI Tool Literacy",
+      "icon": "🤖",
+      "description": "Demonstrating awareness of how AI tools handle data and what 'compliance certifications' actually guarantee.",
+      "color": "#3b82f6",
+      "weight": 0.10
+    }
+  ],
+  "scenario": {
+    "id": "meridian_ai_governance",
+    "title": "The Governance Brief",
+    "client": "Meridian Financial Services",
+    "estimated_minutes": 20,
+    "budget_tokens": 120,
+    "briefing": "Meridian Financial Services is a mid-size investment advisory firm regulated by FINRA and subject to SEC Rule 17a-4 records retention requirements. Three months ago, Meridian's HR department began using an AI writing tool — \"Compose Pro\" — for drafting job postings, performance reviews, offer letters, and employee communications. No IT security review was conducted. No data handling policy was in place.\n\nThe CISO flagged the tool last week after a routine software audit. HR reports that employees have been pasting text from performance reviews, compensation data, and in some cases partial employee records into the tool's chat interface to get drafting assistance.\n\nThe VP of Digital Transformation, Marcus Webb, needs a governance brief by Monday morning. He needs to know: (1) what data risks exist from the past three months of use, (2) whether to formalize the tool, restrict it, or prohibit it, and (3) what a minimal viable AI use policy would include.\n\nThe AI Workbench is available to help you research and synthesize. Use it carefully — it tends to focus on vendor-stated protections rather than the gap between policy and practice.",
+    "inbox": [
+      {
+        "id": "email_1",
+        "from": "Marcus Webb <m.webb@meridianfs.example>",
+        "subject": "Compose Pro — need governance brief by Monday 8am",
+        "body": "Team —\n\nOur CISO, Diane Kowalski, flagged that HR has been using Compose Pro for three months without a security review or a data policy. I need a brief on my desk before our Monday leadership call.\n\nI need three things from you:\n1. What is the actual risk exposure from the past 90 days of use? Be specific — what data types, what regulatory implications.\n2. A recommendation: do we formalize use with guardrails, restrict to non-sensitive tasks, or prohibit entirely?\n3. If we formalize, what does a minimal viable AI use policy look like for our firm?\n\nHR is going to push back hard on any restriction — they say this tool saves each person 4 hours a week. I need you to factor that in but not let it override the risk picture.\n\n— Marcus\nVP of Digital Transformation, Meridian Financial Services"
+      },
+      {
+        "id": "email_2",
+        "from": "Diane Kowalski <d.kowalski@meridianfs.example>",
+        "subject": "RE: Compose Pro — security concerns",
+        "body": "Here is what my team found:\n\nCompose Pro is a third-party SaaS AI writing tool. Their public data policy (see attached) states that user-submitted content 'may be used to improve model performance' unless enterprise customers opt out via a DPA addendum. Meridian does not have a DPA in place — we are on the free tier.\n\nWhat HR staff have been inputting into the tool, based on a spot audit of five workstations:\n- Performance review draft language (including manager commentary on named employees)\n- Compensation increase justification text (including salary figures)\n- Offer letter templates with candidate names and compensation offers\n- At least one partial HRIS data export pasted into the chat window for 'formatting help'\n\nFrom a regulatory standpoint: FINRA Rule 4370 (business continuity) and SEC 17a-4 (records retention) don't directly prohibit AI tool use, but they do require that we know where regulated records are stored and how they're handled. If employee data has been sent to Compose Pro's servers without a data processing agreement, we have a gap.\n\nI'm not saying prohibit — I'm saying we need to decide with our eyes open.\n\n— Diane\nCISO, Meridian Financial Services"
+      },
+      {
+        "id": "email_3",
+        "from": "Anika Sharma <a.sharma@meridianfs.example>",
+        "subject": "RE: Compose Pro — HR perspective",
+        "body": "I want to be on record: this tool has been transformative for our team.\n\nWe drafted 14 job postings, 38 performance reviews, 11 offer letters, and a full onboarding communication series in the past quarter. My estimate is that each HR generalist saves 3.5–4 hours per week. With a team of 6, that's 21–24 hours per week of recovered capacity.\n\nI understand there are security questions to resolve. But the answer cannot simply be 'turn it off.' We do not have headcount to absorb that work manually, and our hiring plan requires us to open 22 more requisitions in Q3.\n\nIf you restrict use, please define clearly what we CAN use it for. We can work with guardrails. We cannot work with a blanket prohibition.\n\n— Anika Sharma\nHR Director, Meridian Financial Services"
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_tool_policy",
+        "tab_label": "Compose Pro Data Policy",
+        "type": "Vendor Policy",
+        "reliability": "low",
+        "title": "Compose Pro — Privacy & Data Handling Policy (Public)",
+        "author": "Compose Pro Inc.",
+        "publication": "Compose Pro website, retrieved this week",
+        "content_html": "<h3>Compose Pro — Privacy & Data Handling Policy</h3><p><em>Last updated: 4 months ago</em></p><h4>Data Use</h4><p>Compose Pro may use content submitted by users to improve and train our AI models, subject to the following:</p><ul><li>Free and Pro tier users: content may be used for model training by default. Users may opt out by submitting a request to privacy@composepro.example.</li><li>Enterprise tier customers: content is excluded from model training by default, subject to a signed Data Processing Agreement (DPA).</li></ul><h4>Data Storage</h4><p>All content submitted to Compose Pro is stored on servers located in the United States and the European Union. Content is retained for up to 90 days for service improvement and debugging purposes, after which it is deleted from active systems.</p><h4>Security Certifications</h4><p>Compose Pro maintains the following certifications:</p><ul><li><strong>SOC 2 Type I</strong> — attested as of 14 months ago</li><li>Encryption in transit (TLS 1.2+) and at rest (AES-256)</li></ul><p><em>Note: Compose Pro is currently pursuing SOC 2 Type II certification. Expected completion: Q4 of this year.</em></p><h4>Third-Party Sharing</h4><p>Compose Pro does not sell user data to third parties. Content may be shared with subprocessors (AI infrastructure providers) for compute purposes, subject to confidentiality agreements.</p><p><strong>Important:</strong> Customers in regulated industries (financial services, healthcare, legal) should review their compliance obligations before submitting regulated data. Compose Pro recommends executing a DPA before use.</p>"
+      },
+      {
+        "id": "src_finra",
+        "tab_label": "FINRA AI Guidance",
+        "type": "Regulatory Guidance",
+        "reliability": "high",
+        "title": "FINRA Regulatory Notice 24-09: AI Tools in Financial Services — Compliance Considerations",
+        "author": "Financial Industry Regulatory Authority",
+        "publication": "FINRA.org, 2024",
+        "content_html": "<h3>FINRA Regulatory Notice 24-09</h3><p><em>AI Tools in Member Firms: Supervisory, Records, and Customer Data Obligations</em></p><h4>Key Guidance</h4><p>FINRA has observed an increase in member firm use of third-party AI writing and analysis tools. This Notice summarizes key compliance obligations that apply when member firms use AI tools that process firm or customer data.</p><h4>Records Retention (SEC Rule 17a-4)</h4><p>Communications and records generated using AI tools that relate to a member firm's business are subject to the same retention requirements as other business records. <strong>If an AI tool generates or stores versions of business communications, the firm must ensure those records are retrievable and tamper-evident for the required retention period.</strong> This may require contractual provisions with the vendor or alternative archiving solutions.</p><h4>Supervisory Obligations (FINRA Rule 3110)</h4><p>Member firms must establish, maintain, and enforce written supervisory procedures (WSPs) that address the use of AI tools by associated persons. At minimum, WSPs should:</p><ul><li>Define which AI tools are approved for use and for what purposes</li><li>Prohibit the entry of material non-public information (MNPI), customer PII, or confidential firm data into unapproved AI tools</li><li>Include a review process for AI-generated communications before distribution</li></ul><h4>Data Privacy</h4><p>Where AI tools process personally identifiable information (PII) of employees or customers, firms should ensure a data processing agreement (DPA) is in place that covers: data minimization, purpose limitation, subprocessor disclosures, and breach notification timelines.</p><h4>Vendor Risk Management</h4><p>FINRA recommends that member firms conduct a vendor risk assessment before deploying any third-party AI tool that handles firm or client data. A SOC 2 Type II report is the industry standard for evaluating a vendor's operational security controls over time. <strong>SOC 2 Type I reports attest only to the design of controls at a single point in time — they do not attest to the operational effectiveness of those controls over a period.</strong></p>"
+      },
+      {
+        "id": "src_hr_data",
+        "tab_label": "HR Productivity Analysis",
+        "type": "Internal Report",
+        "reliability": "moderate",
+        "title": "Compose Pro Usage & Productivity Impact — HR Self-Assessment",
+        "author": "Anika Sharma, HR Director",
+        "publication": "Internal memo, submitted this week",
+        "content_html": "<h3>HR Productivity Impact — Compose Pro (90-Day Assessment)</h3><p><strong>Prepared by:</strong> Anika Sharma, HR Director &nbsp;|&nbsp; <strong>Period:</strong> Past 3 months</p><h4>Volume of Work Completed Using Compose Pro</h4><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Document Type</th><th>Volume (90 days)</th><th>Avg. Time Saved Per Doc</th><th>Total Hours Saved</th></tr></thead><tbody><tr><td>Job postings</td><td>14</td><td>1.5 hrs</td><td>21 hrs</td></tr><tr><td>Performance reviews (draft assist)</td><td>38</td><td>2.0 hrs</td><td>76 hrs</td></tr><tr><td>Offer letters</td><td>11</td><td>0.5 hrs</td><td>5.5 hrs</td></tr><tr><td>Onboarding communications</td><td>1 series (~12 docs)</td><td>1.0 hrs avg</td><td>12 hrs</td></tr><tr><td>Other HR communications</td><td>~40 misc</td><td>0.5 hrs avg</td><td>20 hrs</td></tr></tbody></table><p><strong>Total estimated hours saved: ~134.5 hours over 90 days</strong> (approx. 4.5 hrs/week across team of 6, or 0.75 hrs/week per person — though distribution is uneven; two HR generalists account for ~60% of tool usage).</p><h4>Data Handling Practices (Self-Reported)</h4><p>When asked about what data types have been entered into the tool, HR staff reported:</p><ul><li>Job description templates and requirements: <strong>all 6 staff</strong></li><li>Performance review draft language referencing named employees: <strong>4 of 6 staff</strong></li><li>Compensation data (salary ranges, increase amounts): <strong>2 of 6 staff</strong></li><li>Candidate names and offer details: <strong>3 of 6 staff</strong></li><li>Any HRIS export data: <strong>1 staff member</strong> (acknowledged; stated it was \"just formatting help\")</li></ul><p><em>Note: This is self-reported data. Actual usage may be broader. The CISO's spot audit of 5 workstations found evidence consistent with these reports, with one additional instance not captured here.</em></p>"
+      },
+      {
+        "id": "src_benchmark",
+        "tab_label": "Peer Firm AI Policy",
+        "type": "Benchmark Report",
+        "reliability": "moderate",
+        "title": "AI Governance Benchmarks: Financial Services Mid-Market (N=34 Firms)",
+        "author": "Promontory Risk Advisory",
+        "publication": "Promontory Group, Q1 Industry Report",
+        "content_html": "<h3>AI Governance in Mid-Market Financial Services — Benchmark Summary</h3><p><em>Based on survey of 34 member firms with 200–2,500 employees, Q1 of this year</em></p><h4>Tool Approval Processes</h4><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Practice</th><th>% of Firms</th></tr></thead><tbody><tr><td>Formal AI tool approval process before deployment</td><td>61%</td></tr><tr><td>Approved AI tool list (\"allowlist\")</td><td>44%</td></tr><tr><td>Written AI use policy covering employee obligations</td><td>38%</td></tr><tr><td>DPA requirement before any AI tool processes firm data</td><td>29%</td></tr><tr><td>No formal AI governance in place</td><td>27%</td></tr></tbody></table><h4>Common Policy Elements Among Firms With Written AI Policies</h4><ul><li><strong>Data classification rules:</strong> 89% of firms with policies define which data tiers (public, internal, confidential, regulated) may be used with AI tools</li><li><strong>Approved tool lists:</strong> 78% maintain a list of approved tools and prohibited categories</li><li><strong>Training requirement:</strong> 56% require basic AI literacy training before tool access</li><li><strong>Incident reporting:</strong> 67% include a process for reporting suspected data exposure via AI tools</li></ul><h4>Enforcement Approaches</h4><p>Among firms that have restricted or prohibited AI tool use after unsanctioned deployment, the most common approach was a tiered restriction: allowing low-risk uses (drafting from non-sensitive inputs) to continue while prohibiting high-risk inputs (PII, compensation data, regulated records). Outright prohibition was rare and associated with higher compliance burden.</p><p><em>Caveat: This benchmark covers a snapshot of policies as filed — actual enforcement practices may vary. Survey methodology relied on self-reporting by compliance officers.</em></p>"
+      }
+    ],
+    "ai_workbench": {
+      "enabled": true,
+      "persona": "AI Governance Research Assistant — has access to the vendor policy, FINRA guidance, HR data, and benchmark report",
+      "known_limitation": "The AI tends to focus on the tool vendor's stated protections and downplays the gap between those protections and Meridian's actual usage. It does not clearly distinguish between SOC 2 Type I and Type II certifications, and may overstate the protection that certifications provide.",
+      "seed_response": "Here's my initial read on the Meridian / Compose Pro situation:\n\n**Risk Level:** Moderate-to-high. The core issue is that Meridian is on the free tier with no DPA, which means employee-submitted content — including performance review language and compensation data — may be used for model training under the default policy terms.\n\n**On the security certification:** Compose Pro holds a SOC 2 certification, which means Meridian's data is protected under a recognized security framework. The encryption standards (TLS 1.2, AES-256) are industry-standard.\n\n**Recommendation I'd lean toward:** Conditional formalization. The productivity gains are real (130+ hours saved in 90 days), and an outright ban would be disruptive. The practical path is to (1) execute a DPA to opt out of model training, (2) define which data types are prohibited from entering the tool, and (3) require a basic training on data handling before HR staff continue use.\n\n**FINRA exposure:** The FINRA guidance covers customer data and MNPI primarily — employee HR data sits in a grayer area, but the records retention obligations under SEC 17a-4 may apply to AI-generated communications that become business records."
+    },
+    "rubric": {
+      "risk_accuracy": "Correctly identifies the specific risks: (1) no DPA = data likely used for model training, (2) employee PII and compensation data entered into an uncontrolled third-party system, (3) potential SEC 17a-4 records retention gap for AI-generated business communications",
+      "soc2_distinction": "Catches that the AI's claim about SOC 2 protection is overstated — Compose Pro holds only SOC 2 Type I (design of controls at a point in time), not Type II (operational effectiveness over time), which is the standard FINRA guidance recommends for vendor evaluation",
+      "recommendation_specificity": "Makes a clear recommendation (formalize / restrict / prohibit) with specific conditions — not just 'it depends'",
+      "policy_elements": "If recommending formalization, proposes at least 3 specific policy elements (e.g., DPA execution, data classification rules prohibiting PII/compensation entry, approved use cases, training requirement)",
+      "productivity_balance": "Acknowledges HR productivity gains without letting them override the risk picture — brief does not simply validate HR's preferred outcome"
+    }
+  }
+}

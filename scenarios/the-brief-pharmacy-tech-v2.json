@@ -1,0 +1,135 @@
+{
+  "construct_id": "pharmacy_drug_shortage",
+  "construct_name": "Drug Shortage Management & Communication",
+  "construct_description": "The ability to evaluate therapeutic substitution options during a national drug shortage, weigh clinical appropriateness against cost and stewardship principles, identify AI overstatements about spectrum coverage, and communicate a clear P&T committee recommendation with monitoring requirements.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "High (patient safety / antimicrobial stewardship)",
+    "temporal": "Single-session, 20 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated hospital pharmacy P&T decision)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "clinical_analysis",
+      "name": "Clinical Analysis",
+      "icon": "💊",
+      "description": "Evaluating antimicrobial substitution options based on spectrum, clinical indication, and patient population — and identifying where substitutions are not clinically equivalent.",
+      "color": "#10b981",
+      "weight": 0.35
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "icon": "✍️",
+      "description": "Writing a concise P&T brief that gives the committee an actionable substitution strategy with conditions and monitoring requirements.",
+      "color": "#9e9eff",
+      "weight": 0.30
+    },
+    {
+      "id": "risk_assessment",
+      "name": "Risk Assessment",
+      "icon": "⚠️",
+      "description": "Weighing the risks of spectrum creep, adverse effects, and cost against the clinical needs of specific patient populations on each ward.",
+      "color": "#f43f5e",
+      "weight": 0.25
+    },
+    {
+      "id": "cost_benefit",
+      "name": "Cost-Benefit Analysis",
+      "icon": "📊",
+      "description": "Quantifying the cost implications of substitution options across the estimated shortage volume and flagging the stewardship trade-off of broad-spectrum overuse.",
+      "color": "#f59e0b",
+      "weight": 0.10
+    }
+  ],
+  "scenario": {
+    "id": "augmentin_iv_shortage",
+    "title": "The Shortage Brief",
+    "client": "Meridian Pharmacy Group — Clinical Operations",
+    "estimated_minutes": 20,
+    "budget_tokens": 120,
+    "briefing": "The FDA has announced a nationwide shortage of IV amoxicillin-clavulanate (Augmentin IV), affecting all major wholesalers. Meridian Pharmacy Group's four hospital-affiliated pharmacies dispense approximately 140 IV Augmentin doses per month combined. Current on-hand inventory will support approximately 3 weeks of use at current dispensing rates. The FDA's estimated shortage duration is 6–10 weeks.\n\nThe Pharmacy & Therapeutics (P&T) Committee meets tomorrow morning. Committee Chair Dr. Yolanda Osei needs a brief today with a recommended substitution strategy. Three options are under consideration: (1) switch to IV ampicillin-sulbactam (Unasyn) — same beta-lactam/inhibitor class, similar but not identical coverage; (2) switch to IV piperacillin-tazobactam (Zosyn) — broader spectrum, higher cost, more adverse effect burden; or (3) a hybrid strategy: transition eligible patients to oral amoxicillin-clavulanate while substituting IV patients with the most appropriate agent based on indication.\n\nThe AI Workbench has been loaded with the FDA notice, stewardship guidelines, cost data, and patient acuity breakdown. Use it carefully — it recommends Zosyn as the first-line substitute and understates the spectrum coverage difference between Unasyn and Augmentin IV.",
+    "inbox": [
+      {
+        "id": "email_1",
+        "from": "Dr. Yolanda Osei <y.osei@meridianpharmacy.example>",
+        "subject": "Augmentin IV shortage — P&T brief needed by 5pm today",
+        "body": "The committee meets at 8am tomorrow. I need a brief by 5pm today.\n\nFDA confirmed the nationwide shortage this morning. We have about 3 weeks of inventory across all four sites. The shortage duration estimate is 6–10 weeks, so we need a substitution plan now.\n\nHere's what I need in the brief:\n1. Recommended substitution strategy — which agent(s), for which patients, with what conditions\n2. Explicit discussion of the spectrum difference between Unasyn and Augmentin IV — I've heard conflicting things and I want this addressed directly\n3. Stewardship implications — we cannot use this shortage as an excuse to escalate everyone to Zosyn\n4. Cost impact estimate for the shortage duration\n5. Any monitoring requirements we should attach to the substitution\n\nOur antimicrobial stewardship pharmacist, Rahim Chaudhry, has strong opinions about Zosyn overuse. Make sure your brief accounts for the stewardship lens.\n\n— Dr. Yolanda Osei\nP&T Committee Chair, Meridian Pharmacy Group"
+      },
+      {
+        "id": "email_2",
+        "from": "Rahim Chaudhry <r.chaudhry@meridianpharmacy.example>",
+        "subject": "RE: Augmentin IV shortage — stewardship concerns",
+        "body": "Please pass this context to whoever is drafting the brief.\n\nMy concern with defaulting to Zosyn (pip-tazo) is straightforward: it's a broad-spectrum antipseudomonal beta-lactam/beta-lactamase inhibitor. Augmentin IV is typically used for mild-to-moderate infections where Pseudomonas coverage is NOT needed — community-acquired pneumonia, skin and soft tissue infections, intra-abdominal infections without high-risk features. Switching those patients to Zosyn is spectrum creep. We'd be using a last-line-adjacent agent for infections that don't require it.\n\nEvery time we use Zosyn for an indication that doesn't need its breadth, we're burning resistance currency. That's a long-term patient safety harm, even if it's invisible on a single admission.\n\nUnasyn (ampicillin-sulbactam) is the right first-line substitute for most of our Augmentin IV patients. The one gap that matters clinically: Unasyn has weaker activity against H. influenzae compared to Augmentin IV, and against some strains of Moraxella catarrhalis. For most of our inpatient indications that's not a concern — but for respiratory infections in patients with known H. influenzae colonization or risk factors, we should be careful.\n\nOral step-down is appropriate for patients who are clinically improving and can absorb oral medications. Let's not keep people on IV just because we have inventory anxiety.\n\n— Rahim Chaudhry, PharmD\nAntimicrobial Stewardship Pharmacist, Meridian Pharmacy Group"
+      },
+      {
+        "id": "email_3",
+        "from": "Sandra Voigt <s.voigt@meridianpharmacy.example>",
+        "subject": "RE: Augmentin IV shortage — supply chain update",
+        "body": "Quick update from supply chain:\n\nI've contacted our three primary wholesalers — Cardinal, McKesson, and AmerisourceBergen. All three have confirmed allocation restrictions effective today. They cannot commit to restocking timelines.\n\nWe do have one alternative source: a regional specialty pharmacy distributor (MedSource) that has approximately 400 doses available, but at a 40% premium above our current contract price. That would be $14.20 × 1.40 = $19.88/dose. At 140 doses/month that's an additional $798/month in cost versus standard pricing — and their supply will not last the full shortage window.\n\nMy recommendation: we should not rely on MedSource as a bridge — the premium is not worth it when we have two clinically acceptable substitutes available. But the committee should be aware of the option.\n\n— Sandra Voigt\nDirector of Pharmacy Supply Chain, Meridian Pharmacy Group"
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_fda_notice",
+        "tab_label": "FDA Shortage Notice",
+        "type": "Regulatory Notice",
+        "reliability": "high",
+        "title": "FDA Drug Shortage: Amoxicillin and Clavulanate Potassium for Injection (Augmentin IV)",
+        "author": "U.S. Food and Drug Administration — Drug Shortages Staff",
+        "publication": "FDA.gov Drug Shortages Database",
+        "content_html": "<h3>FDA Drug Shortage Notice</h3><p><strong>Drug:</strong> Amoxicillin and Clavulanate Potassium for Injection (Augmentin IV, and generics)<br/><strong>Status:</strong> Current Shortage<br/><strong>Shortage Onset:</strong> This week<br/><strong>Estimated Duration:</strong> 6–10 weeks (subject to change)</p><h4>Cause of Shortage</h4><p>The shortage is attributed to manufacturing capacity constraints at the primary API (active pharmaceutical ingredient) supplier, combined with increased post-viral respiratory season demand. Two of three major U.S. distributors have implemented allocation restrictions.</p><h4>Available Alternatives (per FDA)</h4><p>The FDA notes that several therapeutic alternatives exist for most indications where IV amoxicillin-clavulanate is used. Institutions should consult with their pharmacy and therapeutics committees and antimicrobial stewardship programs to identify appropriate substitution strategies based on patient population and indication.</p><p>FDA does not recommend a specific substitute — therapeutic substitution decisions should be made at the institutional level based on local resistance patterns, formulary, and patient acuity.</p><h4>Conservation Recommendations</h4><ul><li>Assess all current IV patients for eligibility to transition to oral amoxicillin-clavulanate (where clinically appropriate)</li><li>Implement indication-based allocation for remaining IV supply</li><li>Avoid blanket substitution to broader-spectrum agents when narrower alternatives are clinically appropriate (antimicrobial stewardship principle)</li></ul>"
+      },
+      {
+        "id": "src_stewardship",
+        "tab_label": "Stewardship Guidelines",
+        "type": "Clinical Guidance",
+        "reliability": "high",
+        "title": "ASHP/IDSA/SIDP Drug Shortage Guidance: Antimicrobial Stewardship Considerations",
+        "author": "American Society of Health-System Pharmacists / IDSA / SIDP",
+        "publication": "American Journal of Health-System Pharmacy, current edition",
+        "content_html": "<h3>Antimicrobial Stewardship During Drug Shortages — Summary Guidance</h3><h4>Core Stewardship Principles for Shortage Management</h4><ul><li><strong>Preserve spectrum:</strong> During shortages, the instinct to substitute with broader-spectrum agents must be balanced against the long-term harms of antimicrobial resistance. Use the narrowest clinically appropriate agent at all times.</li><li><strong>Indication-based substitution:</strong> Substitution decisions should be made based on the clinical indication, not just drug class. Two agents in the same class may have meaningfully different spectrums for specific pathogens.</li><li><strong>IV-to-oral transition:</strong> Drug shortages are an appropriate trigger to aggressively review all IV antibiotic patients for oral step-down eligibility. Criteria: clinical improvement, functional GI tract, no indication requiring IV-specific pharmacokinetics.</li></ul><h4>Amoxicillin-Clavulanate IV Substitution Guidance</h4><p><strong>Ampicillin-sulbactam (Unasyn):</strong> Appropriate first-line substitute for most indications. Same beta-lactam/beta-lactamase inhibitor mechanism. Comparable activity against most gram-positive organisms, anaerobes, and Enterobacteriaceae. <strong>Key difference: Unasyn demonstrates reduced in vitro activity against H. influenzae and Moraxella catarrhalis compared to amoxicillin-clavulanate.</strong> This distinction is clinically relevant for respiratory tract infections in patients with risk factors for H. influenzae disease (COPD, structural lung disease, prior colonization).</p><p><strong>Piperacillin-tazobactam (Zosyn):</strong> Provides broader gram-negative coverage including Pseudomonas aeruginosa. This breadth is not needed for most indications where Augmentin IV is used. Reserve for patients with documented or suspected Pseudomonas risk, or where Unasyn coverage is insufficient based on culture data. Adverse effect considerations: higher rates of electrolyte disturbance (hypokalemia), neurotoxicity in elderly/renal-impaired patients at extended dosing intervals.</p><h4>Spectrum Summary</h4><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Organism / Category</th><th>Augmentin IV</th><th>Unasyn</th><th>Zosyn</th></tr></thead><tbody><tr><td>Streptococcus spp.</td><td>✅ Good</td><td>✅ Good</td><td>✅ Good</td></tr><tr><td>MSSA (Staph aureus)</td><td>✅ Good</td><td>✅ Good</td><td>✅ Good</td></tr><tr><td>Enterobacteriaceae (non-ESBL)</td><td>✅ Good</td><td>✅ Good</td><td>✅ Good</td></tr><tr><td>Anaerobes</td><td>✅ Good</td><td>✅ Good</td><td>✅ Good</td></tr><tr><td>H. influenzae</td><td>✅ Good</td><td>⚠️ Reduced (clinically relevant for respiratory)</td><td>✅ Good</td></tr><tr><td>Moraxella catarrhalis</td><td>✅ Good</td><td>⚠️ Variable</td><td>✅ Good</td></tr><tr><td>Pseudomonas aeruginosa</td><td>❌ No coverage</td><td>❌ No coverage</td><td>✅ Coverage (key differentiator)</td></tr><tr><td>ESBL-producing Enterobacteriaceae</td><td>❌ Not reliable</td><td>❌ Not reliable</td><td>❌ Not reliable</td></tr></tbody></table>"
+      },
+      {
+        "id": "src_costs",
+        "tab_label": "Cost Comparison",
+        "type": "Financial Data",
+        "reliability": "high",
+        "title": "Meridian Pharmacy Group — IV Antibiotic Unit Cost Table (Current Contract Pricing)",
+        "author": "Meridian Pharmacy Supply Chain",
+        "publication": "Internal formulary pricing, current quarter",
+        "content_html": "<h3>IV Antibiotic Unit Cost Comparison</h3><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Agent</th><th>Standard Dose/Vial</th><th>Contracted Unit Cost</th><th>Typical Dosing Frequency</th><th>Daily Drug Cost (typical)</th><th>Notes</th></tr></thead><tbody><tr><td>Amoxicillin-Clavulanate IV (Augmentin) — <em>shortage</em></td><td>1g/200mg vial</td><td>$14.20/dose</td><td>Q8H (3x/day)</td><td>$42.60/day</td><td>Current shortage</td></tr><tr><td>Ampicillin-Sulbactam IV (Unasyn)</td><td>3g vial</td><td>$16.80/dose</td><td>Q6H (4x/day)</td><td>$67.20/day</td><td>More frequent dosing required</td></tr><tr><td>Piperacillin-Tazobactam IV (Zosyn)</td><td>3.375g vial</td><td>$22.40/dose</td><td>Q6H or Q8H extended infusion</td><td>$67.20–$89.60/day</td><td>Q6H standard; extended infusion Q8H for serious infections</td></tr><tr><td>Amoxicillin-Clavulanate ORAL (Augmentin 875/125mg)</td><td>875/125mg tablet</td><td>$1.40/dose</td><td>Q12H (2x/day)</td><td>$2.80/day</td><td>Appropriate for step-down in eligible patients</td></tr></tbody></table><h4>Cost Impact Estimate — 8-Week Shortage Scenario</h4><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Strategy</th><th>Assumed Volume</th><th>Estimated 8-Week Drug Cost</th><th>vs. Augmentin IV Baseline</th></tr></thead><tbody><tr><td>Augmentin IV (baseline — if available)</td><td>280 doses (8 weeks × 140/month × 2)</td><td>$3,976</td><td>—</td></tr><tr><td>100% substitution to Unasyn</td><td>280 doses (4x/day dosing: ~373 doses)</td><td>$6,268</td><td>+$2,292 (+58%)</td></tr><tr><td>100% substitution to Zosyn</td><td>280 doses (4x/day dosing: ~373 doses)</td><td>$8,355</td><td>+$4,379 (+110%)</td></tr><tr><td>Hybrid: 60% oral step-down, 40% Unasyn IV</td><td>56 IV doses/mo (Unasyn) + oral for rest</td><td>$2,986</td><td>-$990 (-25%)</td></tr></tbody></table><p><em>Note: Cost estimates are drug acquisition cost only. Administration and nursing time costs are not included. Oral step-down eliminates IV preparation and administration labor, which is a meaningful secondary savings not reflected here.</em></p>"
+      },
+      {
+        "id": "src_patient_acuity",
+        "tab_label": "Patient Acuity Breakdown",
+        "type": "Clinical Data",
+        "reliability": "high",
+        "title": "Augmentin IV Current Patients — Ward and Indication Breakdown",
+        "author": "Meridian Pharmacy Clinical Informatics",
+        "publication": "Internal pharmacy report — current month",
+        "content_html": "<h3>Current Augmentin IV Patients — Breakdown by Ward and Indication</h3><p><em>Based on current month dispensing data across 4 Meridian hospital sites</em></p><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Ward / Service</th><th>Est. Monthly Patients</th><th>Primary Indications</th><th>IV-to-Oral Eligible (Est.)</th><th>H. influenzae Risk?</th></tr></thead><tbody><tr><td>Medical-Surgical (general)</td><td>22 patients</td><td>SSTI, UTI complications, mild intra-abdominal</td><td>~70% (most improving, PO tolerant)</td><td>Low</td></tr><tr><td>Pulmonary / Respiratory</td><td>18 patients</td><td>CAP, COPD exacerbation with secondary infection, aspiration pneumonia</td><td>~40% (more acutely ill)</td><td><strong>HIGH — COPD patients, prior H. flu history</strong></td></tr><tr><td>Internal Medicine</td><td>14 patients</td><td>Mixed — CAP, UTI, SSTI, some post-surgical</td><td>~55%</td><td>Moderate</td></tr><tr><td>Surgical Services</td><td>11 patients</td><td>Post-operative prophylaxis / treatment (abdominal, orthopedic)</td><td>~30% (post-op, early recovery)</td><td>Low</td></tr><tr><td>ED / Observation</td><td>18 patients/month (transient)</td><td>SSTI, mild-moderate CAP, UTI — most short-stay</td><td>~80% (short-stay, stable)</td><td>Low-moderate</td></tr></tbody></table><h4>Key Finding</h4><p>Approximately <strong>60% of current Augmentin IV patients are estimated to be eligible for oral step-down</strong> using standard clinical criteria (afebrile × 24 hours, improving WBC, tolerating oral intake, no indication requiring IV-specific pharmacokinetics). The Pulmonary service patients are the most clinically complex and least likely to be step-down eligible — and are also the population where the Unasyn/H. influenzae coverage gap is most clinically relevant.</p>"
+      }
+    ],
+    "ai_workbench": {
+      "enabled": true,
+      "persona": "Clinical Pharmacy AI Assistant — has been loaded with the FDA notice, stewardship guidelines, cost table, and patient acuity breakdown",
+      "known_limitation": "The AI recommends Zosyn as the first-line substitute without adequately weighing the antimicrobial stewardship concern about spectrum creep. It also states that Unasyn and Augmentin IV have 'identical spectrums of coverage,' which is incorrect — Unasyn has reduced activity against H. influenzae, a clinically meaningful difference for respiratory patients.",
+      "seed_response": "Here's my analysis of the Augmentin IV shortage substitution options:\n\n**Option 1 — Unasyn (ampicillin-sulbactam):** Good alternative for most patients. Same beta-lactam/inhibitor class. Unasyn and Augmentin IV have essentially identical spectrums of coverage, so clinical outcomes should be comparable. Main drawback is the dosing frequency — Q6H vs. Q8H for Augmentin IV — which adds nursing administration time.\n\n**Option 2 — Zosyn (piperacillin-tazobactam):** My recommendation for the primary substitution agent. Zosyn covers everything Augmentin IV covers and more — you get Pseudomonas coverage as a bonus. The cost is higher ($22.40 vs. $16.80/dose) but the clinical security of broader coverage during a shortage period justifies it. Adverse effects are manageable with monitoring.\n\n**Option 3 — Oral step-down:** Appropriate for some patients, but shouldn't be the primary strategy — IV patients are IV for a reason.\n\n**Recommendation:** Switch all current IV Augmentin patients to Zosyn. Evaluate oral step-down candidates as a secondary measure to reduce overall IV antibiotic volume. This gives you the broadest clinical coverage and eliminates concerns about gaps during the shortage period."
+    },
+    "rubric": {
+      "spectrum_accuracy": "Correctly identifies that Unasyn does NOT have identical coverage to Augmentin IV — specifically, Unasyn has reduced activity against H. influenzae, which is clinically relevant for respiratory patients on the Pulmonary service; the AI's claim of 'identical spectrums' is wrong and should be flagged",
+      "stewardship_principle": "Explicitly addresses the stewardship concern about spectrum creep — does not recommend blanket Zosyn substitution for indications that do not require its broader spectrum (Pseudomonas coverage is unnecessary for most current Augmentin IV indications)",
+      "tiered_strategy": "Recommends a differentiated strategy rather than a single agent for all patients — e.g., oral step-down for ~60% of eligible patients, Unasyn for most IV patients, with Zosyn reserved for patients where Unasyn coverage is insufficient or Pseudomonas is a concern",
+      "pulmonary_service_flagged": "Identifies the Pulmonary service patients as the population where the Unasyn H. influenzae gap matters most, and proposes a specific approach for that group (e.g., case-by-case review, culture-guided therapy, or Zosyn for COPD patients with H. flu risk)",
+      "cost_impact_included": "Includes a quantified cost estimate for the recommended strategy, referencing the cost table data"
+    }
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "construct_id": "ems_community_paramedicine",
+  "construct_name": "EMS Program Recommendation",
+  "construct_description": "The ability to evaluate a proposed community paramedicine program against clinical outcome data, operational feasibility, and reimbursement realities — and deliver a clear, evidence-backed recommendation to a medical direction committee.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "High (patient outcomes / system resource allocation)",
+    "temporal": "Single-session, 20 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated EMS medical direction decision)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "evidence_synthesis",
+      "name": "Evidence Synthesis",
+      "icon": "🔬",
+      "description": "Interpreting mixed outcome data from neighboring agencies and CMS guidance to draw defensible conclusions about program viability.",
+      "color": "#f43f5e",
+      "weight": 0.35
+    },
+    {
+      "id": "risk_assessment",
+      "name": "Risk Assessment",
+      "icon": "🛡️",
+      "description": "Weighing the operational, financial, and patient safety risks of adopting, conditionally adopting, or not adopting a CP program.",
+      "color": "#4dd3fe",
+      "weight": 0.30
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "icon": "✍️",
+      "description": "Writing a clear, concise brief that gives the committee a recommendation they can act on and defend.",
+      "color": "#9e9eff",
+      "weight": 0.25
+    },
+    {
+      "id": "critical_evaluation",
+      "name": "Critical Evaluation",
+      "icon": "🔍",
+      "description": "Identifying the AI's overstatement of Medicare reimbursement availability for CP services and distinguishing between CMMI pilot results and general policy.",
+      "color": "#f59e0b",
+      "weight": 0.10
+    }
+  ],
+  "scenario": {
+    "id": "tricounty_community_paramedicine",
+    "title": "The Community Paramedicine Brief",
+    "client": "Tri-County EMS Medical Direction Committee",
+    "estimated_minutes": 20,
+    "budget_tokens": 120,
+    "briefing": "Tri-County EMS serves a three-county rural and suburban region with a single 9-1-1 dispatch center and 12 paramedic units. Over the past 18 months, the agency has identified 47 'frequent fliers' — patients who account for 12% of total call volume (roughly 1 call every 9 days per patient on average). These patients typically have one or more chronic conditions (CHF, COPD, diabetes, mental health) that drive repeat emergency calls, most of which result in non-emergency transport or refusal of transport.\n\nThree neighboring EMS agencies have launched community paramedicine (CP) programs — sending paramedics to frequent fliers' homes for scheduled preventive care visits rather than waiting for the next emergency call. Tri-County's Medical Director, Dr. Solange Ferreira, wants to evaluate whether to adopt a similar program.\n\nYou've been asked to brief the Medical Direction Committee: Adopt, Do Not Adopt, or Adopt with Conditions. The committee meets Friday. The AI Workbench has been loaded with the source materials — use it carefully, as it has a known tendency to oversell the reimbursement picture for CP services.",
+    "inbox": [
+      {
+        "id": "email_1",
+        "from": "Dr. Solange Ferreira <s.ferreira@tricountyems.example>",
+        "subject": "CP Program Evaluation — brief needed by Thursday EOD",
+        "body": "The committee meets Friday morning. I need a one-page brief with a clear recommendation: Adopt, Do Not Adopt, or Adopt with Conditions.\n\nHere's what I want addressed:\n1. What does the outcome data from the neighboring agencies actually show? Be honest about the mixed results.\n2. Can we realistically sustain this financially? The reimbursement question is murky and I don't want to launch a program we can't fund.\n3. If you're recommending conditional adoption, tell me exactly what conditions — not vague guardrails, specific ones.\n\nThe materials from Ridgeline EMS and Valley EMS are in your workspace, along with our own frequent flier data and the CMS guidance. I've also included the NAEMSP position statement.\n\nOne flag: someone on my staff told me the AI assistant says Medicare Part B covers CP services. That doesn't match what I've heard from our billing team. Please verify before you put anything about reimbursement in the brief.\n\n— Dr. Ferreira\nEMS Medical Director, Tri-County EMS"
+      },
+      {
+        "id": "email_2",
+        "from": "Capt. Denise Mbeki <d.mbeki@tricountyems.example>",
+        "subject": "RE: CP Program — field perspective",
+        "body": "Dr. Ferreira asked me to give you the operational view.\n\nOur paramedics want this program. We all know who the frequent fliers are — we run to the same addresses week after week. Half the time there's no true emergency and the patient refuses transport. We're burning unit hours, our crews are frustrated, and the patients aren't getting better.\n\nThat said, I have two concerns:\n\n1. Staffing: We're already short two paramedic positions. Adding CP visits on top of 9-1-1 response without dedicated CP staff will burn out our existing crews. Ridgeline EMS told me they tried to run CP as a 'collateral duty' and it lasted 4 months before they had to pause. They only made it work when they hired a dedicated CP paramedic.\n\n2. Medical oversight: Some of our frequent fliers have complex medication regimens and home situations that are genuinely complicated. A CP paramedic making home visits needs clear protocols and physician backup — this isn't just a 'check in and take vitals' situation.\n\n— Capt. Mbeki\nOperations Captain, Tri-County EMS"
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_ridgeline",
+        "tab_label": "Ridgeline EMS Outcomes",
+        "type": "Agency Report",
+        "reliability": "moderate",
+        "title": "Community Paramedicine Program — 18-Month Outcomes Report",
+        "author": "Ridgeline EMS Quality Improvement Division",
+        "publication": "Internal Report — Ridgeline Emergency Medical Services",
+        "content_html": "<h3>Ridgeline EMS — Community Paramedicine Outcomes (18 Months)</h3><p><strong>Program launch:</strong> Month 0 with 1 dedicated CP paramedic (0.5 FTE + on-call) serving a cohort of 38 enrolled patients (frequent fliers with 3+ calls in prior 6 months).</p><h4>Call Volume Outcomes</h4><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Metric</th><th>Pre-Program (18 mo)</th><th>Post-Program (18 mo)</th><th>Change</th></tr></thead><tbody><tr><td>Emergency calls from enrolled patients</td><td>412 calls</td><td>272 calls</td><td><strong>-34% reduction</strong></td></tr><tr><td>Emergency transports (enrolled patients)</td><td>218 transports</td><td>141 transports</td><td>-35% reduction</td></tr><tr><td>ED visits (enrolled patients, self-reported)</td><td>186 visits</td><td>129 visits</td><td>-31% reduction</td></tr><tr><td>CP home visits conducted</td><td>—</td><td>614 visits</td><td>—</td></tr></tbody></table><h4>Patient Outcome Notes</h4><ul><li>11 of 38 enrolled patients were successfully connected to primary care during the program period and were subsequently removed from the frequent flier list.</li><li>4 enrolled patients died during the program period — all deaths were consistent with documented end-stage chronic illness; none were attributed to CP visits.</li><li>3 patients declined enrollment after initial outreach; they were not included in the outcome cohort.</li></ul><h4>Financial Summary</h4><p><strong>Program cost (18 months):</strong> $127,400 (salary, equipment, vehicle fuel for CP paramedic)</p><p><strong>Revenue recovered:</strong> $22,400 (limited to 2 states with Medicaid CP billing codes; not applicable in Tri-County's state)</p><p><strong>Net cost to agency:</strong> ~$105,000 over 18 months (~$70,000/year)</p><p><strong>Estimated avoided transport costs (agency):</strong> 77 avoided transports × ~$340 avg. cost/transport = ~$26,180. This partially offsets program cost but does not fully fund it.</p><p><em>Funding note: Ridgeline secured a HRSA Rural Health grant ($85,000/year for 3 years) to fund the program. Without this grant, the program would have operated at a net loss.</em></p>"
+      },
+      {
+        "id": "src_valley",
+        "tab_label": "Valley EMS Outcomes",
+        "type": "Agency Report",
+        "reliability": "moderate",
+        "title": "Community Paramedicine Pilot — End-of-Pilot Evaluation",
+        "author": "Valley Area Emergency Services",
+        "publication": "Valley EMS Quality Committee Report",
+        "content_html": "<h3>Valley EMS — Community Paramedicine Pilot Evaluation</h3><p><strong>Pilot duration:</strong> 12 months &nbsp;|&nbsp; <strong>Model:</strong> CP duties assigned to existing paramedics as collateral duty (no dedicated FTE) &nbsp;|&nbsp; <strong>Cohort:</strong> 22 patients (frequent fliers)</p><h4>Outcomes Summary</h4><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Metric</th><th>Finding</th></tr></thead><tbody><tr><td>Reduction in 9-1-1 calls (enrolled cohort)</td><td>11% reduction — below the 25% target set at program launch</td></tr><tr><td>CP visits completed vs. planned</td><td>186 completed / 312 planned — 60% completion rate</td></tr><tr><td>Reason for missed visits</td><td>Unit unavailability (43%), patient refusal (28%), visit de-prioritized during high call volume (29%)</td></tr><tr><td>Paramedic feedback</td><td>Mixed — 6 of 12 paramedics surveyed reported the collateral duty increased workload stress</td></tr></tbody></table><h4>Key Takeaways from Valley EMS Quality Committee</h4><ul><li>The program showed only modest call reduction because visit completion was inconsistent. Frequent fliers who received 3+ CP visits in a month showed a 28% call reduction; those receiving fewer than 1 visit/month showed no statistically significant change.</li><li>The collateral duty model is not viable at Valley's current staffing levels. The committee voted to suspend the program pending a funding source for a dedicated CP FTE.</li><li>One adverse event occurred during the pilot: a CP paramedic identified a patient in acute respiratory distress during a scheduled wellness visit and initiated ALS intervention. The patient was transported and survived — this was considered a program success case by the committee.</li></ul><h4>Lesson Shared with Tri-County</h4><p>Valley EMS Operations Director to Tri-County leadership: <em>\"Don't start a CP program without dedicated staffing. We tried the collateral model and it fails the patients who need the most consistent contact. You need at least one paramedic whose entire job is CP, especially in the first year.\"</em></p>"
+      },
+      {
+        "id": "src_frequent_flier",
+        "tab_label": "Tri-County FF Data",
+        "type": "Internal Analysis",
+        "reliability": "high",
+        "title": "Tri-County EMS — Frequent Flier Analysis (18-Month Lookback)",
+        "author": "Tri-County EMS Quality Division",
+        "publication": "Internal QI Report",
+        "content_html": "<h3>Tri-County EMS — Frequent Flier Patient Analysis</h3><p><strong>Definition used:</strong> Patients with 6 or more 9-1-1 activations in the prior 12 months</p><p><strong>Total frequent flier patients identified:</strong> 47</p><h4>Call Volume Impact</h4><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody><tr><td>Total calls from frequent flier cohort (18 months)</td><td>1,847 calls</td></tr><tr><td>As % of total agency call volume</td><td>12.3%</td></tr><tr><td>Average calls per frequent flier patient (18 months)</td><td>39.3 calls (~2.2/month)</td></tr><tr><td>Calls resulting in emergency transport</td><td>54% (997 transports)</td></tr><tr><td>Calls resulting in refusal of transport</td><td>31% (572 calls)</td></tr><tr><td>Calls resulting in treat-and-release on scene</td><td>15% (278 calls)</td></tr></tbody></table><h4>Primary Diagnoses / Conditions (Self-Reported or Chart Review)</h4><ul><li>Congestive heart failure (CHF): 13 patients (28%)</li><li>COPD / chronic respiratory disease: 9 patients (19%)</li><li>Diabetes with complications: 8 patients (17%)</li><li>Mental health / substance use: 11 patients (23%)</li><li>Other chronic conditions / fall risk / frailty: 6 patients (13%)</li></ul><h4>Connection to Primary Care</h4><p>Of the 47 frequent flier patients: <strong>19 (40%) have no documented primary care relationship</strong>. Of those with a documented PCP, only 11 have had a primary care visit in the prior 6 months.</p><h4>Resource Cost Estimate</h4><p>At Tri-County's average cost per transport ($412) and average cost per non-transport call ($187), the 47 frequent fliers represent approximately <strong>$518,000 in annualized agency cost</strong>. A 30% reduction in call volume from this cohort would save approximately $155,400/year.</p>"
+      },
+      {
+        "id": "src_cms",
+        "tab_label": "CMS Reimbursement Guidance",
+        "type": "Regulatory Guidance",
+        "reliability": "high",
+        "title": "CMS Community Paramedicine Reimbursement — FAQ and Current Policy Summary",
+        "author": "Centers for Medicare & Medicaid Services",
+        "publication": "CMS.gov, updated this year",
+        "content_html": "<h3>CMS Community Paramedicine Reimbursement — Current Policy</h3><h4>The Short Answer</h4><p><strong>Community paramedicine services are not covered as a standard Medicare Part B benefit.</strong> Under current CMS policy, Medicare reimbursement for EMS services is limited to emergency ambulance transport. Wellness visits and preventive care visits conducted by paramedics in patients' homes do not qualify for Medicare reimbursement under Part A or Part B outside of specific pilot programs.</p><h4>CMMI Pilot Programs</h4><p>The Centers for Medicare and Medicaid Innovation (CMMI) funded an <em>ET3 (Emergency Triage, Treat, and Transport) model</em> pilot from 2021–2025, which allowed participating EMS agencies in approved markets to bill Medicare for treat-in-place and alternative destination services. Key limitations:</p><ul><li>The ET3 pilot was limited to approved geographic markets — participation required an approved application and CMS partnership agreement</li><li>CP-style home wellness visits were not the primary focus of ET3 — the model focused on alternatives to ED transport for 9-1-1 calls, not proactive scheduled visits</li><li>The ET3 pilot concluded in January 2025; permanent policy adoption has not been finalized as of this document's publication</li></ul><h4>State Medicaid Programs</h4><p>A limited number of states have created Medicaid billing codes for community paramedicine services. As of this year, approximately 12 states have CP-specific Medicaid reimbursement pathways. Eligibility, billing codes, and rates vary significantly by state. <strong>EMS agencies should contact their state Medicaid office to determine whether CP billing codes are available in their state.</strong></p><h4>Typical Funding Sources for Sustainable CP Programs</h4><ul><li>HRSA Rural Health grants (most common for rural agencies)</li><li>State EMS grants and demonstration programs</li><li>Hospital partnership agreements (hospitals pay EMS to reduce unnecessary ED utilization)</li><li>Local government appropriations</li><li>In a small number of cases: commercial insurer agreements (not standard)</li></ul><p><strong>Bottom line for program planners:</strong> Do not build a CP program budget around Medicare Part B reimbursement. It does not currently exist as a general benefit. Sustainable programs either operate at agency cost, secure grant funding, or negotiate hospital partnership payments.</p>"
+      },
+      {
+        "id": "src_naemsp",
+        "tab_label": "NAEMSP Position",
+        "type": "Professional Guidance",
+        "reliability": "high",
+        "title": "NAEMSP Position Statement: Community Paramedicine and Mobile Integrated Healthcare",
+        "author": "National Association of EMS Physicians",
+        "publication": "Prehospital Emergency Care, updated 2024",
+        "content_html": "<h3>NAEMSP Position Statement: Community Paramedicine</h3><p>The National Association of EMS Physicians supports the development of community paramedicine (CP) and mobile integrated healthcare (MIH) programs where evidence supports their benefit to patients and communities. The following conditions should be met for NAEMSP to consider a CP program well-designed:</p><h4>Core Requirements for Program Quality</h4><ul><li><strong>Medical director oversight:</strong> A licensed physician must provide medical direction for all CP activities. Protocols must define scope of practice, medication administration authority, and criteria for escalation to emergency care.</li><li><strong>Dedicated or protected time:</strong> CP paramedics must have protected time for visits. Programs assigning CP as a collateral duty to 9-1-1 responders have shown lower completion rates and higher staff burnout.</li><li><strong>Care coordination partnerships:</strong> CP programs show the best outcomes when connected to primary care, behavioral health, and social services. An isolated CP program that makes home visits but cannot connect patients to community resources has limited long-term impact.</li><li><strong>Quality improvement:</strong> Programs should collect call volume, transport rate, patient connection-to-care, and adverse event data from the start.</li></ul><h4>Evidence Assessment</h4><p>The evidence base for CP programs is growing but remains limited by small cohort sizes and variable program designs. Studies with dedicated CP staffing and strong care coordination partnerships consistently show 25–40% reductions in repeat call volume. Programs using the collateral duty model show more modest and inconsistent results (5–15% reduction).</p><h4>Financial Sustainability</h4><p>NAEMSP notes that financial sustainability is one of the primary barriers to CP program expansion. The absence of a universal Medicare reimbursement pathway means most programs depend on grants or alternative funding. Agencies considering CP adoption should have a realistic 3-year funding plan before launch.</p>"
+      }
+    ],
+    "ai_workbench": {
+      "enabled": true,
+      "persona": "EMS Research AI Assistant — has been loaded with the agency outcome reports, Tri-County frequent flier data, CMS guidance, and NAEMSP position statement",
+      "known_limitation": "The AI oversells the reimbursement potential of CP programs. It conflates results from the CMMI ET3 pilot (a limited, now-concluded CMS demonstration program) with general Medicare Part B reimbursement availability. It also tends to weight the positive Ridgeline EMS results more heavily than the mixed Valley EMS results without adequately noting the difference in program model (dedicated FTE vs. collateral duty).",
+      "seed_response": "Here's my initial read on the community paramedicine question for Tri-County:\n\n**Evidence picture:** Neighboring agency data is encouraging. Ridgeline EMS showed a 34% reduction in repeat calls with a dedicated CP paramedic. Valley EMS showed more modest results with the collateral duty model — but that's likely a staffing design issue, not a problem with CP itself.\n\n**Reimbursement:** This is actually better than you might think. Community paramedicine services are reimbursable under Medicare Part B in participating markets, and several states have added Medicaid billing codes. If Tri-County is in an eligible area, you could offset meaningful program costs through billing revenue. Worth checking with your billing team on the ET3 program specifically.\n\n**Recommendation:** I'd lean toward conditional adoption — launch with a dedicated 0.5 FTE CP paramedic, start with 20 of your highest-frequency patients, and build in a 12-month outcomes review. The financial case gets stronger once you factor in both billing revenue and avoided transport costs.\n\n**Conditions I'd suggest:** dedicated staffing (don't go collateral duty), medical director protocols for each diagnosis category in your cohort, and a care coordination MOU with at least one primary care partner."
+    },
+    "rubric": {
+      "recommendation_clarity": "Makes a clear Adopt / Do Not Adopt / Adopt with Conditions recommendation — not an open-ended list of considerations",
+      "evidence_interpretation": "Correctly notes that the Ridgeline positive results (34% reduction) are associated with a dedicated FTE model, while Valley's mixed results (11% reduction) reflect a collateral duty model — recommendation should account for which model Tri-County would implement",
+      "reimbursement_accuracy": "Catches the AI's error — Medicare Part B does not currently cover CP services as a standard benefit; the ET3 pilot is concluded and was geographically limited; sustainable funding depends on grants or hospital partnerships, not billing revenue",
+      "staffing_risk_acknowledged": "Addresses the staffing constraint raised by Capt. Mbeki — does not recommend a collateral duty model without acknowledging the Valley EMS failure case",
+      "condition_specificity": "If recommending conditional adoption, specifies at least 3 concrete conditions (e.g., dedicated CP FTE, physician protocol development, care coordination partnership, 12-month outcomes review, grant funding confirmation before launch)"
+    }
+  }
+}
