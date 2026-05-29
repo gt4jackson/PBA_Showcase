@@ -979,7 +979,17 @@ const TUTORIAL_STEPS = [
   { target: '#submit-btn',    title: 'Submit When Ready', text: 'When you\'ve hit the word target and addressed each section, submit for scoring across all rubric dimensions.' },
 ];
 const TUT = { step: 0, steps: [], done: null };
-function tutStart(steps, onDone) { TUT.steps = steps; TUT.done = onDone; TUT.step = 0; document.getElementById('tut-overlay').classList.add('active'); tutShow(0); }
+function tutStart(steps, onDone) {
+  TUT.steps = steps; TUT.done = onDone; TUT.step = 0;
+  const overlay = document.getElementById('tut-overlay');
+  overlay.classList.add('active');
+  // Click on any dim panel to skip the tutorial (escape hatch if card renders empty)
+  ['tut-dim-top','tut-dim-bottom','tut-dim-left','tut-dim-right'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', tutSkip, { once: true });
+  });
+  tutShow(0);
+}
 function tutShow(i) {
   const s = TUT.steps[i], n = TUT.steps.length, PAD = 8, VW = window.innerWidth, VH = window.innerHeight;
   document.getElementById('tut-step-count').textContent = `${i+1} of ${n}`;
@@ -1029,7 +1039,7 @@ function renderWelcome() {
       You'll read 5 source documents on the left and write a structured position memo on the right.
       Target: ${SCENARIO.word_range[0]}–${SCENARIO.word_range[1]} words · ~15–20 minutes
     </p>
-    <label class="tut-toggle-row" for="tut-enabled"><span class="tut-toggle-label">🎓 Guided tutorial</span><span class="tut-switch"><input type="checkbox" id="tut-enabled" checked><span class="tut-track"></span></span></label>
+    <label class="tut-toggle-row" for="tut-enabled"><span class="tut-toggle-label">🎓 Guided tutorial</span><span class="tut-switch"><input type="checkbox" id="tut-enabled"><span class="tut-track"></span></span></label>
     <button class="welcome-start-btn" onclick="beginTask()">Begin Task</button>
   `;
 }
