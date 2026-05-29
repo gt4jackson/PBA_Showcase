@@ -324,6 +324,20 @@ details[open] .dea-teaching-box summary::before { content: "▼"; }
 
 /* ── Hidden ── */
 .hidden { display: none !important; }
+
+/* ── Version indicator ── */
+.version-badge {
+  font-size: 10px;
+  color: rgba(242,233,216,0.3);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.05em;
+  position: fixed;
+  bottom: 8px;
+  right: 12px;
+  z-index: 100;
+  pointer-events: none;
+  user-select: none;
+}
 </style>
 </head>
 <body>
@@ -439,6 +453,7 @@ details[open] .dea-teaching-box summary::before { content: "▼"; }
   <button class="try-again-btn" id="try-again-btn">Try Again</button>
 </div>
 
+<div class="version-badge">v1.100</div>
 <script src="feedback.js"></script>
 <script>
 // ── State ──
