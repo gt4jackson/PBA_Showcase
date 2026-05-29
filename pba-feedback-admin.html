@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback Admin — PBA Showcase</title>
+<style>
+  :root {
+    --bg: #1a212b;
+    --surface: #242e3d;
+    --accent: #4dd3fe;
+    --text: #f2e9d8;
+    --border: rgba(242,233,216,0.08);
+    --border-strong: rgba(242,233,216,0.15);
+    --muted: rgba(242,233,216,0.45);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    padding: 32px 24px;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  header .back-link {
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  header .back-link:hover { color: var(--text); }
+
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    min-width: 130px;
+    flex: 1;
+  }
+  .stat-card .stat-val {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-card .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+  .filters select, .filters input {
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+  }
+  .filters select:focus, .filters input:focus {
+    border-color: rgba(77,211,254,0.4);
+  }
+  .filters select option { background: #1a212b; }
+  .filters label { font-size: 12px; color: var(--muted); }
+  #refresh-btn {
+    padding: 8px 16px;
+    background: rgba(77,211,254,0.1);
+    border: 1px solid rgba(77,211,254,0.25);
+    border-radius: 8px;
+    color: var(--accent);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  #refresh-btn:hover { background: rgba(77,211,254,0.18); }
+
+  #entries-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .entry-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 12px;
+    align-items: start;
+    transition: border-color 0.15s;
+  }
+  .entry-card:hover { border-color: var(--border-strong); }
+
+  .entry-emoji {
+    font-size: 36px;
+    text-align: center;
+    line-height: 1.1;
+  }
+  .entry-emoji .emoji-label {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 2px;
+  }
+
+  .entry-body .page-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .entry-body .comment {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+  .entry-body .comment.empty {
+    color: var(--muted);
+    font-style: italic;
+  }
+  .entry-meta {
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .entry-meta span {
+    background: rgba(242,233,216,0.06);
+    border-radius: 4px;
+    padding: 2px 7px;
+  }
+
+  .entry-time {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  #loading {
+    text-align: center;
+    padding: 60px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  #empty {
+    display: none;
+    text-align: center;
+    padding: 60px;
+    color: var(--muted);
+  }
+  #empty .big { font-size: 42px; margin-bottom: 12px; }
+  #error-msg {
+    display: none;
+    background: rgba(239,68,68,0.12);
+    border: 1px solid rgba(239,68,68,0.25);
+    border-radius: 8px;
+    padding: 14px 18px;
+    color: #fca5a5;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Feedback Admin</h1>
+    <div style="font-size:12px;color:var(--muted);margin-top:3px;">PBA Showcase — response viewer</div>
+  </div>
+  <a href="/" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back to showcase
+  </a>
+</header>
+
+<div id="error-msg"></div>
+
+<div class="stats-row" id="stats-row">
+  <div class="stat-card"><div class="stat-val" id="stat-total">—</div><div class="stat-label">Total responses</div></div>
+  <div class="stat-card"><div class="stat-val" id="stat-avg">—</div><div class="stat-label">Avg. rating</div></div>
+  <div class="stat-card"><div class="stat-val" id="stat-pages">—</div><div class="stat-label">Pages covered</div></div>
+  <div class="stat-card"><div class="stat-val" id="stat-comments">—</div><div class="stat-label">With comments</div></div>
+</div>
+
+<div class="filters">
+  <label>Filter by page:</label>
+  <select id="filter-page"><option value="">All pages</option></select>
+  <label>Min rating:</label>
+  <select id="filter-rating">
+    <option value="0">All ratings</option>
+    <option value="3">3+ (Good)</option>
+    <option value="4">4+ (Nice)</option>
+    <option value="5">5 (Wow only)</option>
+  </select>
+  <button id="refresh-btn">↻ Refresh</button>
+  <span id="count-label" style="font-size:12px;color:var(--muted);margin-left:4px;"></span>
+</div>
+
+<div id="loading">Loading feedback…</div>
+<div id="empty"><div class="big">💬</div>No feedback yet — share the prototypes!</div>
+<div id="entries-grid"></div>
+
+<script>
+  let allEntries = [];
+
+  async function load() {
+    document.getElementById('loading').style.display = '';
+    document.getElementById('empty').style.display = 'none';
+    document.getElementById('entries-grid').innerHTML = '';
+    document.getElementById('error-msg').style.display = 'none';
+
+    try {
+      const res = await fetch('/api/feedback-list');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      allEntries = data.entries || [];
+      populatePageFilter();
+      updateStats(allEntries);
+      render();
+    } catch (err) {
+      const el = document.getElementById('error-msg');
+      el.style.display = '';
+      el.textContent = `Could not load feedback: ${err.message}. Make sure FEEDBACK_KV is bound in Cloudflare Pages settings.`;
+      document.getElementById('loading').style.display = 'none';
+    }
+  }
+
+  function populatePageFilter() {
+    const pages = [...new Set(allEntries.map(e => e.page))].sort();
+    const sel = document.getElementById('filter-page');
+    sel.innerHTML = '<option value="">All pages</option>';
+    pages.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p; o.textContent = p;
+      sel.appendChild(o);
+    });
+  }
+
+  function updateStats(entries) {
+    document.getElementById('stat-total').textContent = entries.length;
+    const avg = entries.length
+      ? (entries.reduce((s, e) => s + (e.emojiValue || 0), 0) / entries.length).toFixed(1)
+      : '—';
+    document.getElementById('stat-avg').textContent = avg;
+    document.getElementById('stat-pages').textContent = new Set(entries.map(e => e.page)).size;
+    document.getElementById('stat-comments').textContent = entries.filter(e => e.comment?.trim()).length;
+  }
+
+  function render() {
+    const pageFlt = document.getElementById('filter-page').value;
+    const ratingFlt = parseInt(document.getElementById('filter-rating').value) || 0;
+
+    const filtered = allEntries.filter(e => {
+      if (pageFlt && e.page !== pageFlt) return false;
+      if (ratingFlt && (e.emojiValue || 0) < ratingFlt) return false;
+      return true;
+    });
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('count-label').textContent =
+      filtered.length !== allEntries.length ? `${filtered.length} of ${allEntries.length} shown` : `${allEntries.length} responses`;
+
+    if (filtered.length === 0) {
+      document.getElementById('empty').style.display = '';
+      document.getElementById('entries-grid').innerHTML = '';
+      return;
+    }
+    document.getElementById('empty').style.display = 'none';
+
+    const grid = document.getElementById('entries-grid');
+    grid.innerHTML = filtered.map(e => {
+      const dt = new Date(e.timestamp);
+      const timeStr = dt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })
+        + ' · ' + dt.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+      const comment = e.comment?.trim();
+      const metaTags = [
+        e.role ? e.role : null,
+      ].filter(Boolean);
+
+      return `
+        <div class="entry-card">
+          <div class="entry-emoji">
+            ${e.emoji || '?'}
+            <span class="emoji-label">${e.emojiLabel || ''}</span>
+          </div>
+          <div class="entry-body">
+            <div class="page-name">${escHtml(e.page || 'Unknown')}</div>
+            <div class="comment ${comment ? '' : 'empty'}">${comment ? escHtml(comment) : 'No comment'}</div>
+            ${metaTags.length ? `<div class="entry-meta">${metaTags.map(t => `<span>${escHtml(t)}</span>`).join('')}</div>` : ''}
+          </div>
+          <div class="entry-time">${timeStr}</div>
+        </div>`;
+    }).join('');
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  document.getElementById('filter-page').addEventListener('change', render);
+  document.getElementById('filter-rating').addEventListener('change', render);
+  document.getElementById('refresh-btn').addEventListener('click', load);
+
+  load();
+</script>
+</body>
+</html>
