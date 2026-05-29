@@ -1,0 +1,91 @@
+{
+  "construct_id": "pharmacy_workflow_decision",
+  "construct_name": "Pharmacy Workflow & Safety Decision-Making",
+  "construct_description": "The ability to evaluate competing operational and patient safety perspectives, engage constructively with team members, and drive toward a sound process improvement recommendation — a core competency for pharmacy technicians and supervisors involved in workflow design and medication safety.",
+
+  "collaboration_construct": {
+    "id": "collaboration",
+    "name": "Collaboration Quality",
+    "description": "How effectively the participant engages with teammates — building on ideas, challenging constructively, and synthesizing toward consensus.",
+    "dimensions": [
+      { "id": "engagement",   "name": "Engagement",   "icon": "💬", "description": "Actively participates and responds to teammates",       "max_score": 25 },
+      { "id": "building",     "name": "Building",     "icon": "🧱", "description": "References, quotes, and extends others' ideas",           "max_score": 25 },
+      { "id": "challenging",  "name": "Challenging",  "icon": "⚡", "description": "Pushes back constructively with safety reasoning",        "max_score": 25 },
+      { "id": "synthesizing", "name": "Synthesizing", "icon": "🔗", "description": "Combines viewpoints and moves toward a decision",         "max_score": 25 }
+    ]
+  },
+
+  "domain_dimensions": [
+    { "id": "safety_reasoning",  "name": "Safety Reasoning",    "icon": "💊", "description": "Applies medication safety principles to the workflow decision",                    "max_score": 25 },
+    { "id": "operational_fit",   "name": "Operational Fit",     "icon": "⚙️", "description": "Evaluates whether the proposed change is feasible given staffing and volume",      "max_score": 25 },
+    { "id": "evidence_use",      "name": "Evidence Use",        "icon": "📊", "description": "References error rate data, benchmarks, or safety research in arguments",          "max_score": 25 },
+    { "id": "decision_quality",  "name": "Decision Quality",    "icon": "🎯", "description": "Final recommendation is well-justified, patient-centered, and implementable",      "max_score": 25 }
+  ],
+
+  "scenario": {
+    "title": "The Verification Workflow Question",
+    "channel_name": "quality-improvement",
+    "prompt": "Your pharmacy quality team must decide whether to implement a new two-pharmacist final verification requirement for all high-alert medications before dispensing. The change was proposed after a near-miss error at a sister location. You need a recommendation for the pharmacy director by end of day.",
+    "user_role": { "name": "You", "title": "Senior Pharmacy Technician / QI Team", "color": "#4dd3fe" },
+
+    "teammates": [
+      { "id": "patel",   "name": "Patel",   "title": "Staff Pharmacist",              "color": "#f43f5e", "avatar": "⚕️",  "trait": "Patient safety first — supports the change strongly, but acknowledges workflow realities. Tends to underweight operational burden on the team." },
+      { "id": "marcus",  "name": "Marcus",  "title": "Lead Pharmacy Technician",      "color": "#f59e0b", "avatar": "💊",  "trait": "On the floor every day — deeply skeptical about adding steps to an already stretched workflow. Has seen change proposals fail before because they ignored volume realities." },
+      { "id": "lin",     "name": "Lin",     "title": "Pharmacy Quality Coordinator",  "color": "#9e9eff", "avatar": "📋",  "trait": "Data-driven and pragmatic — wants the right answer but needs evidence and a realistic implementation path before committing." }
+    ],
+
+    "decision_options": [
+      { "id": "full_implement",   "name": "Full Implementation — All High-Alert Meds, All Shifts",       "cost_k": 0, "desc": "Two-pharmacist verification required for all ISMP high-alert medications at all locations, all shifts. No exceptions." },
+      { "id": "limited",          "name": "Limited Implementation — High-Volume High-Alert Meds Only",    "cost_k": 0, "desc": "Two-pharmacist verification for the top-5 highest-error-rate high-alert medications only (insulin, heparin, concentrated electrolytes, opioids, chemotherapy)." },
+      { "id": "tech_check_tech",  "name": "Tech-Check-Tech Program for Routine Fills",                   "cost_k": 0, "desc": "Implement a certified Tech-Check-Tech (TCT) program for routine fills, freeing pharmacist time for high-alert final verification without adding total verification burden." },
+      { "id": "defer",            "name": "Defer — Pilot at One Location First",                         "cost_k": 0, "desc": "Run a 60-day pilot at the highest-volume location, measure wait time and error rate impact, then decide on system-wide implementation." }
+    ],
+
+    "reference_data_html": "<h4>High-Alert Medication Error Data — Meridian Pharmacy Group (Last 12 Months)</h4><table><tr><th>Medication Class</th><th>Error Events</th><th>Near-Misses</th><th>% of Total Errors</th></tr><tr><td>Insulin (all types)</td><td>4</td><td>11</td><td>34%</td></tr><tr><td>Anticoagulants (heparin, warfarin)</td><td>3</td><td>7</td><td>24%</td></tr><tr><td>Concentrated Electrolytes</td><td>1</td><td>4</td><td>11%</td></tr><tr><td>Opioids (high-dose, pediatric)</td><td>2</td><td>3</td><td>11%</td></tr><tr><td>Oral Chemotherapy</td><td>0</td><td>2</td><td>5%</td></tr><tr><td>All other high-alert meds</td><td>1</td><td>3</td><td>9%</td></tr></table><p>The near-miss that prompted this discussion: insulin 10 units/mL vial dispensed when 100 units/mL was prescribed — caught by nurse at bedside, not at pharmacy. Near-miss, not a harm event.</p><h4>Benchmarks</h4><ul><li>ISMP recommends two-pharmacist independent double-check for high-alert medications — endorsed but 'not always operationally feasible'</li><li>Hospitals with double-check programs: 73% report reduction in high-alert medication errors</li><li>Average wait time increase with two-pharmacist verification: <strong>+4.2 minutes</strong> per prescription (ASHP study, 2023)</li><li>Tech-Check-Tech programs (15 states authorized): average error detection rate equivalent to pharmacist check for routine fills; not authorized for high-alert medications in most states</li></ul><h4>Staffing Reality — Meridian Pharmacy Group</h4><ul><li>Average pharmacist coverage: 1.4 pharmacists per shift</li><li>Peak hours with only 1 pharmacist on duty: ~35% of operating hours</li><li>Current fill volume: approximately 280–340 prescriptions per shift at high-volume locations</li><li>Staff satisfaction survey: 68% of technicians cited 'time pressure' as top safety concern</li></ul>",
+
+    "agenda": [
+      { "id": "a1", "label": "Round 1", "title": "Understand the Risk",      "desc": "What does the near-miss tell us and what problem are we actually solving?" },
+      { "id": "a2", "label": "Round 2", "title": "Debate the Options",       "desc": "What are the real tradeoffs? Who bears the burden of each choice?" },
+      { "id": "a3", "label": "Round 3", "title": "Land the Recommendation",  "desc": "What can the pharmacy director actually implement and defend?" }
+    ],
+
+    "message_schedule": [
+      {
+        "id": "m1", "from": "patel", "round": 1, "delay": 0,
+        "text": "I want to be direct about what the near-miss tells us: a 10-fold insulin dosing error was caught at the bedside, not at our verification step. That means our current single-pharmacist final check didn't catch it. Two-pharmacist independent double-check is the ISMP standard and it exists exactly for cases like this. The question isn't whether to add the check — it's how."
+      },
+      {
+        "id": "m2", "from": "marcus", "round": 1, "delay": 4000,
+        "text": "I hear Patel, but I need us to be honest about what 1.4 pharmacists per shift means in practice. On a busy Saturday afternoon with 300 fills, requiring a second pharmacist sign-off on every insulin prescription means that second pharmacist doesn't exist 35% of our operating hours. We're not creating a safety net — we're creating a policy that gets ignored under pressure, which is worse than not having the policy."
+      },
+      {
+        "id": "m3", "from": "lin", "round": 1, "delay": 8000,
+        "text": "The data tells me the risk is concentrated. Insulin and anticoagulants are 58% of our errors and near-misses. If we scope this correctly — high-alert meds, not every prescription — the volume burden drops significantly. And the 4.2-minute average wait time increase from the ASHP study is for every prescription. Scoped to insulin and anticoagulants specifically, we're talking maybe 15–20 verification events per shift, not 300."
+      },
+      {
+        "id": "m4", "from": "patel", "round": 2, "delay": 3000,
+        "text": "Lin's point on scoping is valid — I'd accept a limited implementation over a full implementation that gets abandoned at 2pm on a Friday. But I want to push back on the pilot option. We already know from 73% of hospital programs that double-checks reduce high-alert errors. We're not learning anything new from a 60-day pilot — we're just delaying a decision we already have the evidence to make."
+      },
+      {
+        "id": "m5", "from": "marcus", "round": 2, "delay": 7000,
+        "text": "Patel, the hospital data doesn't transfer directly to a retail pharmacy workflow — hospital pharmacists have different staff ratios and they're not also triaging walk-in patients and answering phones. That context matters. That said, I'd actually be most interested in the Tech-Check-Tech option — if we get TCT certified for routine fills, that frees pharmacist time for high-alert verification without adding overall burden. Has anyone looked at whether our state authorizes it?"
+      },
+      {
+        "id": "m6", "from": "lin", "round": 2, "delay": 11000,
+        "text": "Our state does authorize TCT for routine fills but not for high-alert medications — which is actually the right carve-out. So TCT plus limited double-check for the top-5 high-alert classes is operationally compatible. That's potentially the path: TCT frees pharmacist bandwidth, double-check absorbs it for high-alert meds. Does that math work, Marcus?"
+      },
+      {
+        "id": "m7", "from": "patel", "round": 3, "delay": 2000,
+        "text": "I could support that combination. It's not everything I'd want — full ISMP double-check for all high-alert meds — but it targets the actual risk concentration and it's actually implementable. If we're going to protect patients, a policy that's followed matters more than a perfect policy that's ignored."
+      },
+      {
+        "id": "m8", "from": "marcus", "round": 3, "delay": 6000,
+        "text": "That works for me if we're specific: TCT certification for routine fills, mandatory independent double-check for insulin/anticoagulants/concentrated electrolytes, and a 90-day review to assess wait time impact. I also want a clear protocol for when the second pharmacist genuinely isn't available — not 'find one somehow,' an actual documented exception process."
+      },
+      {
+        "id": "m9", "from": "lin", "round": 3, "delay": 10000,
+        "text": "Agreed on the exception process — that's what turns this from a policy into a system. I'd summarize our recommendation as: TCT program for routine fills, two-pharmacist independent double-check for top-5 high-alert medication classes, documented exception protocol for single-coverage shifts, and 90-day QI review. What's the group's final position?"
+      }
+    ]
+  }
+}

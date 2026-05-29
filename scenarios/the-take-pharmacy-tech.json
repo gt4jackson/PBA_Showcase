@@ -1,0 +1,90 @@
+{
+  "construct_id": "pharmacy_policy_argumentation",
+  "construct_name": "Pharmacy Policy Argumentation",
+  "construct_description": "The ability to formulate clear claims on contested pharmacy access and scope-of-practice policy questions, select and evaluate evidence from multiple sources, address counterarguments, and communicate a well-reasoned position — a core skill for pharmacy technicians and pharmacists engaging in advocacy, policy review, and professional development.",
+  "dimensions": [
+    {
+      "id": "claim_clarity",
+      "name": "Claim Clarity",
+      "icon": "🎯",
+      "description": "States a clear, specific position that directly addresses the prompt",
+      "max_score": 20
+    },
+    {
+      "id": "evidence_use",
+      "name": "Evidence Use",
+      "icon": "📊",
+      "description": "Selects relevant evidence from provided sources and integrates it effectively",
+      "max_score": 25
+    },
+    {
+      "id": "source_evaluation",
+      "name": "Source Evaluation",
+      "icon": "🔍",
+      "description": "Distinguishes stronger from weaker sources and addresses credibility",
+      "max_score": 20
+    },
+    {
+      "id": "counterargument",
+      "name": "Counterargument",
+      "icon": "⚖️",
+      "description": "Acknowledges opposing viewpoints and responds substantively",
+      "max_score": 20
+    },
+    {
+      "id": "writing_quality",
+      "name": "Writing Quality",
+      "icon": "✍️",
+      "description": "Organized, clear, professional tone appropriate for a pharmacy policy audience",
+      "max_score": 15
+    }
+  ],
+  "scenario": {
+    "title": "The Naloxone Access Question",
+    "audience": "State Board of Pharmacy",
+    "prompt": "A state legislature is considering a bill that would allow pharmacy technicians — under pharmacist supervision — to dispense naloxone (Narcan) without a prescription and provide brief overdose response education to patients. Proponents argue this expands critical access in a public health crisis. Critics argue it expands tech scope beyond current training standards and creates liability exposure. As a policy analyst, write a position memo recommending whether the state board should support, oppose, or conditionally support the bill. Support your position with evidence from the provided sources.",
+    "word_range": [300, 500],
+    "sources": [
+      {
+        "id": "src_research",
+        "tab_label": "Public Health Research",
+        "type": "Systematic Review",
+        "reliability": "high",
+        "title": "Pharmacy-Based Naloxone Distribution and Opioid Overdose Outcomes",
+        "author": "Xu, Larson & Baggett",
+        "publication": "American Journal of Public Health, 2024",
+        "content_html": "<p>This systematic review of 22 studies examined the impact of pharmacy-based naloxone access programs on opioid overdose mortality and reversal rates (N = 14 states with varying access policies).</p><p><strong>Key findings:</strong></p><ul><li>States with standing order naloxone laws (allowing pharmacist dispensing without individual prescription) had <strong>24% lower opioid overdose mortality rates</strong> compared to states requiring individual prescriptions.</li><li>Community-based naloxone distribution (including pharmacy point-of-care) was associated with <strong>3.1 reversals per kit distributed</strong> at 12 months.</li><li>Barriers to pharmacy naloxone access most frequently cited: <em>cost, stigma, and patient not knowing it's available without appointment</em>. In low-traffic community pharmacies, availability gaps occurred when only the pharmacist was authorized to initiate the conversation.</li><li>Brief overdose response education (under 5 minutes) significantly improved bystander response competency in studies using pharmacy staff as educators.</li></ul><p><strong>Limitations:</strong> Attribution of mortality changes to naloxone access specifically is difficult — states with progressive drug policies may have lower overdose rates for multiple reasons. Technician-specific outcomes have not been separately studied.</p>"
+      },
+      {
+        "id": "src_policy",
+        "tab_label": "Practice Data",
+        "type": "State Program Report",
+        "reliability": "high",
+        "title": "Oregon Pharmacy Tech Naloxone Pilot Program — Year 1 Outcomes",
+        "author": "Oregon Board of Pharmacy",
+        "publication": "Oregon BOP Annual Report, 2024",
+        "content_html": "<p>Oregon authorized pharmacy technicians to dispense naloxone under collaborative drug therapy agreements in 2023. This report covers the first 12 months of implementation.</p><p><strong>Program outcomes:</strong></p><ul><li>Total naloxone kits dispensed by techs (under supervision): <strong>6,840</strong></li><li>Time from patient request to dispensing: average <strong>4.1 minutes</strong> with tech vs. 9.8 minutes requiring pharmacist availability</li><li>Documented patient education incidents (brief overdose response): <strong>5,200</strong></li><li>Pharmacist supervision compliance rate: <strong>98.6%</strong> per audit</li><li>Adverse events or complaints related to tech dispensing: <strong>0</strong></li></ul><p><strong>Training required:</strong> 2-hour naloxone certification module plus competency demonstration. 94% of participating technicians completed training in under one week. Training was provided free through the state health department.</p><p><strong>Key limitation:</strong> Oregon's program operated under collaborative agreements with strong pharmacist oversight — results may not generalize to states with weaker supervision infrastructure.</p>"
+      },
+      {
+        "id": "src_concern",
+        "tab_label": "Opposing View",
+        "type": "Professional Association Statement",
+        "reliability": "moderate",
+        "title": "Statement on Pharmacy Technician Scope Expansion",
+        "author": "State Medical Association",
+        "publication": "Submitted to State Board of Pharmacy, 2025",
+        "content_html": "<p>The State Medical Association raises the following concerns about the proposed expansion of pharmacy technician scope to include naloxone education and dispensing:</p><ul><li><strong>Training standards:</strong> Existing pharmacy technician certification does not include clinical assessment skills. Naloxone education — even 'brief' — requires recognizing overdose symptoms, which is a clinical skill beyond current tech scope.</li><li><strong>Liability:</strong> Technicians are not licensed practitioners. If a patient receives incorrect information about naloxone use and an adverse outcome results, the liability chain is unclear — creating risk for pharmacies and the patients they serve.</li><li><strong>Quality variation:</strong> The proposed bill does not specify minimum training requirements — a technician could provide education after any amount of training. This creates a quality floor problem.</li><li><strong>Alternatives:</strong> Rather than expanding tech scope, the Medical Association recommends standing order enhancement (allowing pharmacists to dispense without individual Rx) and telehealth bridges for patients in underserved areas.</li></ul><p><strong>Note:</strong> The Medical Association has not reviewed the Oregon pilot program data. Their concerns may be partially addressed by that evidence, which should be weighted accordingly.</p>"
+      },
+      {
+        "id": "src_advocacy",
+        "tab_label": "Patient Advocacy",
+        "type": "Advocacy Letter",
+        "reliability": "low",
+        "title": "Letter from Opioid Families Coalition",
+        "author": "Opioid Families Coalition",
+        "publication": "Submitted to State Legislature, 2025",
+        "content_html": "<p>Our organization represents families who have lost members to opioid overdose. We urge the legislature to pass the naloxone access bill without additional restrictions.</p><p>Our position:</p><ul><li>We are tired of watching access be blocked by professional turf battles. This is a public health emergency.</li><li>Naloxone has no abuse potential and is completely safe — there is no clinical justification for limiting who can hand it out.</li><li>Every hour of delay in passing this bill is a preventable death.</li><li>The training requirements proposed by the Medical Association are designed to delay, not protect.</li></ul><p><em>Note: The claim that 'naloxone has no abuse potential and is completely safe' is accurate for naloxone itself. However, the advocacy letter conflates the safety of the drug with the safety of the education process — the policy question being debated is about education quality, not naloxone pharmacology. These are separate questions.</em></p>"
+      }
+    ]
+  }
+}

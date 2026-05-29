@@ -1,0 +1,90 @@
+{
+  "construct_id": "ems_policy_argumentation",
+  "construct_name": "EMS Policy Argumentation",
+  "construct_description": "The ability to formulate clear claims on contested EMS and pre-hospital care policy questions, select and evaluate evidence from multiple sources, address counterarguments, and communicate a well-reasoned position — a core skill for EMS professionals engaging in protocol review, advocacy, and system improvement.",
+  "dimensions": [
+    {
+      "id": "claim_clarity",
+      "name": "Claim Clarity",
+      "icon": "🎯",
+      "description": "States a clear, specific position that directly addresses the prompt",
+      "max_score": 20
+    },
+    {
+      "id": "evidence_use",
+      "name": "Evidence Use",
+      "icon": "📊",
+      "description": "Selects relevant evidence from provided sources and integrates it effectively",
+      "max_score": 25
+    },
+    {
+      "id": "source_evaluation",
+      "name": "Source Evaluation",
+      "icon": "🔍",
+      "description": "Distinguishes stronger from weaker sources and addresses credibility",
+      "max_score": 20
+    },
+    {
+      "id": "counterargument",
+      "name": "Counterargument",
+      "icon": "⚖️",
+      "description": "Acknowledges opposing viewpoints and responds substantively",
+      "max_score": 20
+    },
+    {
+      "id": "writing_quality",
+      "name": "Writing Quality",
+      "icon": "✍️",
+      "description": "Organized, clear, professional tone appropriate for an EMS policy audience",
+      "max_score": 15
+    }
+  ],
+  "scenario": {
+    "title": "The Bystander Tourniquet Question",
+    "audience": "National EMS Advisory Council",
+    "prompt": "The National EMS Advisory Council is evaluating whether to formally recommend that bystander tourniquet training be integrated into standard CPR/first aid certification programs nationwide. Proponents argue that widespread tourniquet access and training would save thousands of lives annually from traumatic hemorrhage. Critics argue it introduces liability risks, training complexity, and potential for misuse. As an EMS policy analyst, write a position memo recommending whether to approve, modify, or reject the proposal. Support your position with evidence from the provided sources.",
+    "word_range": [300, 500],
+    "sources": [
+      {
+        "id": "src_research",
+        "tab_label": "Clinical Research",
+        "type": "Systematic Review",
+        "reliability": "high",
+        "title": "Bystander Tourniquet Application and Hemorrhage Mortality: A Systematic Review",
+        "author": "Kragh, Mann & Jacobs",
+        "publication": "Journal of Trauma and Acute Care Surgery, 2023",
+        "content_html": "<p>This systematic review analyzed 19 studies examining outcomes from bystander-applied tourniquets in civilian mass casualty, trauma, and interpersonal violence scenarios (N = 3,140 patients).</p><p><strong>Key findings:</strong></p><ul><li>Bystander tourniquet application was associated with a <strong>37% reduction in hemorrhage mortality</strong> in cases of extremity trauma compared to no tourniquet or delayed tourniquet application.</li><li>The average time from injury to EMS arrival in rural settings is 11–18 minutes — well within the window where uncontrolled hemorrhage becomes fatal (typically 3–5 minutes for arterial bleeds).</li><li>Studies of mass shooting events found that bystander tourniquet use was highest where Stop the Bleed® training had been implemented — and correlated with improved survival.</li><li>Rates of tourniquet-related complications (compartment syndrome, limb loss) from bystander-applied devices were low: <strong>0.9%</strong> in cases with appropriate training versus 3.2% without training context.</li></ul><p><strong>Limitations:</strong> Most studies were observational. Selection effects likely — bystanders who apply tourniquets may self-select for training and readiness. Rural-urban generalizability varies.</p>"
+      },
+      {
+        "id": "src_policy",
+        "tab_label": "Policy Analysis",
+        "type": "Federal Program Evaluation",
+        "reliability": "high",
+        "title": "Stop the Bleed Program Evaluation: Five-Year Outcomes Report",
+        "author": "FEMA / DHS Office of Health Affairs",
+        "publication": "U.S. Department of Homeland Security, 2024",
+        "content_html": "<p>The Stop the Bleed® program, launched in 2015 by the White House and DHS following the Sandy Hook massacre, has trained over <strong>3.2 million Americans</strong> in hemorrhage control including tourniquet application, wound packing, and pressure techniques.</p><p><strong>Outcomes data:</strong></p><ul><li>Documented cases where trained civilians applied tourniquets prior to EMS arrival: <strong>1,847 cases</strong> over five years</li><li>EMS assessment of tourniquet application quality: <strong>91% rated 'appropriate'</strong> — including correct placement, adequate tightness, and time marking</li><li>No documented cases of tourniquet-related fatality from civilian application in the program database</li><li>Program implementation cost: approximately <strong>$18 per trainee</strong> at scale</li></ul><p><strong>Gaps:</strong> Tracking relies on voluntary EMS reporting — actual utilization is likely higher. Outcomes beyond EMS arrival are not systematically tracked. Program reaches schools and workplaces but has low penetration in rural communities.</p>"
+      },
+      {
+        "id": "src_concern",
+        "tab_label": "Opposing View",
+        "type": "Commentary",
+        "reliability": "moderate",
+        "title": "Bystander Tourniquet Training: Risks and Unintended Consequences",
+        "author": "Finley & Horowitz",
+        "publication": "Prehospital Emergency Care, 2023",
+        "content_html": "<p>While we support hemorrhage control education in principle, we raise several concerns about mandating tourniquet training in standard CPR programs.</p><p><strong>Concerns raised:</strong></p><ul><li><strong>Training quality variability:</strong> CPR instructors are not uniformly trained to teach tourniquet application — mandatory inclusion without instructor credentialing could result in poor technique being taught at scale.</li><li><strong>Cognitive load:</strong> Adding tourniquet skills to certification programs may dilute CPR training retention — studies on multi-skill first aid courses suggest skills decay faster when more skills are included per session.</li><li><strong>Misuse scenarios:</strong> Three documented cases exist of tourniquet application in non-hemorrhagic emergencies (e.g., suspected fractures without arterial bleeding) — though no adverse outcomes resulted.</li><li><strong>Liability concerns:</strong> Unclear Good Samaritan law coverage in some states for tourniquet application specifically (vs. CPR, which is broadly covered).</li></ul><p><strong>Recommendation:</strong> The authors recommend expanding Stop the Bleed® as a standalone certification rather than integrating into CPR programs, preserving training integrity for both skills.</p>"
+      },
+      {
+        "id": "src_advocate",
+        "tab_label": "Advocacy Position",
+        "type": "Advocacy Letter",
+        "reliability": "low",
+        "title": "Statement from Gun Violence Survivors Network",
+        "author": "Gun Violence Survivors Network",
+        "publication": "Submitted to National EMS Advisory Council, 2025",
+        "content_html": "<p>Our organization represents survivors and families affected by gun violence. We strongly support mandatory tourniquet training in all first aid programs.</p><p>Our position:</p><ul><li>Our members have seen firsthand that untrained bystanders stood by while loved ones bled out — training saves lives.</li><li>The argument that 'CPR instructors aren't ready' is a stalling tactic — train the instructors.</li><li>Over 45,000 Americans die from gun violence annually — tourniquets could prevent a meaningful fraction of these deaths.</li><li>This is not a complicated policy question. Save lives first.</li></ul><p><em>Note: The 45,000 annual gun violence death figure includes suicides (approximately 54% of gun deaths). The proportion preventable by tourniquet (extremity hemorrhage in homicides) is significantly smaller — estimates range from 3–7% of gun violence fatalities. This figure should not be used without qualification.</em></p>"
+      }
+    ]
+  }
+}

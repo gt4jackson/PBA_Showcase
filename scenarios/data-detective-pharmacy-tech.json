@@ -1,0 +1,100 @@
+{
+  "construct_id": "pharmacy_error_analysis",
+  "construct_name": "Pharmacy Operations & Error Analysis",
+  "construct_description": "The ability to explore, interpret, and draw sound conclusions from pharmacy dispensing and medication error data — including recognizing patterns in fill accuracy and error rates, questioning operational root causes, and translating analysis into actionable recommendations for patient safety improvement.",
+  "pba_category": {
+    "id": 3,
+    "name": "Process/Demonstration Assessment",
+    "description": "Tasks that assess the process of problem-solving, not just the final answer. The system observes and logs how you investigate."
+  },
+  "secondary_dimensions": {
+    "stakes": "High (patient safety / regulatory)",
+    "temporal": "Single-session, 12-15 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated pharmacy chain data)",
+    "scoring": "Hybrid (rule-based + process quality)"
+  },
+  "dimensions": [
+    {
+      "id": "exploration",
+      "name": "Exploration",
+      "icon": "🔍",
+      "description": "Do you examine the data broadly before jumping to conclusions?",
+      "color": "#4dd3fe",
+      "weight": 0.2
+    },
+    {
+      "id": "pattern_recognition",
+      "name": "Pattern Recognition",
+      "icon": "📊",
+      "description": "Can you identify error spikes, outliers, and meaningful patterns across locations?",
+      "color": "#f59e0b",
+      "weight": 0.25
+    },
+    {
+      "id": "hypothesis_testing",
+      "name": "Hypothesis Testing",
+      "icon": "🧪",
+      "description": "Do you test your ideas against the data rather than assuming?",
+      "color": "#9e9eff",
+      "weight": 0.25
+    },
+    {
+      "id": "interpretation",
+      "name": "Interpretation & Recommendation",
+      "icon": "💡",
+      "description": "Can you translate findings into clear, evidence-backed patient safety recommendations?",
+      "color": "#468254",
+      "weight": 0.3
+    }
+  ],
+  "dataset": {
+    "name": "Meridian Pharmacy Group — Dispensing Quality Report Q1–Q4",
+    "description": "Fill accuracy, medication error reports, and operational data across 4 pharmacy locations. One location had a significant error spike in Q2 — figure out which location, what likely caused it, and what to recommend.",
+    "columns": [
+      { "id": "location",         "label": "Location",                 "type": "text" },
+      { "id": "quarter",          "label": "Quarter",                  "type": "text" },
+      { "id": "fills",            "label": "Rx Fills (volume)",        "type": "number" },
+      { "id": "error_rate",       "label": "Error Rate (per 1,000)",   "type": "number" },
+      { "id": "accuracy_pct",     "label": "Fill Accuracy (%)",        "type": "number" },
+      { "id": "tech_hours",       "label": "Tech Hours Staffed",       "type": "number" },
+      { "id": "pharmacist_hours", "label": "Pharmacist Hours Staffed", "type": "number" },
+      { "id": "wait_time_min",    "label": "Avg Wait Time (min)",      "type": "number" }
+    ],
+    "rows": [
+      { "location": "Store 01 — Downtown",    "quarter": "Q1", "fills": 3820, "error_rate": 1.8, "accuracy_pct": 99.82, "tech_hours": 960, "pharmacist_hours": 480, "wait_time_min": 14 },
+      { "location": "Store 01 — Downtown",    "quarter": "Q2", "fills": 3940, "error_rate": 1.9, "accuracy_pct": 99.81, "tech_hours": 960, "pharmacist_hours": 480, "wait_time_min": 15 },
+      { "location": "Store 01 — Downtown",    "quarter": "Q3", "fills": 4010, "error_rate": 2.0, "accuracy_pct": 99.80, "tech_hours": 960, "pharmacist_hours": 480, "wait_time_min": 16 },
+      { "location": "Store 01 — Downtown",    "quarter": "Q4", "fills": 3890, "error_rate": 1.9, "accuracy_pct": 99.81, "tech_hours": 960, "pharmacist_hours": 480, "wait_time_min": 14 },
+      { "location": "Store 02 — Westside",    "quarter": "Q1", "fills": 2640, "error_rate": 2.1, "accuracy_pct": 99.79, "tech_hours": 720, "pharmacist_hours": 360, "wait_time_min": 12 },
+      { "location": "Store 02 — Westside",    "quarter": "Q2", "fills": 2890, "error_rate": 7.8, "accuracy_pct": 99.22, "tech_hours": 480, "pharmacist_hours": 240, "wait_time_min": 28 },
+      { "location": "Store 02 — Westside",    "quarter": "Q3", "fills": 2750, "error_rate": 2.4, "accuracy_pct": 99.76, "tech_hours": 720, "pharmacist_hours": 360, "wait_time_min": 13 },
+      { "location": "Store 02 — Westside",    "quarter": "Q4", "fills": 2710, "error_rate": 2.2, "accuracy_pct": 99.78, "tech_hours": 720, "pharmacist_hours": 360, "wait_time_min": 12 },
+      { "location": "Store 03 — Northgate",   "quarter": "Q1", "fills": 1980, "error_rate": 2.5, "accuracy_pct": 99.75, "tech_hours": 600, "pharmacist_hours": 300, "wait_time_min": 11 },
+      { "location": "Store 03 — Northgate",   "quarter": "Q2", "fills": 2040, "error_rate": 2.6, "accuracy_pct": 99.74, "tech_hours": 600, "pharmacist_hours": 300, "wait_time_min": 12 },
+      { "location": "Store 03 — Northgate",   "quarter": "Q3", "fills": 2110, "error_rate": 2.7, "accuracy_pct": 99.73, "tech_hours": 600, "pharmacist_hours": 300, "wait_time_min": 12 },
+      { "location": "Store 03 — Northgate",   "quarter": "Q4", "fills": 2020, "error_rate": 2.5, "accuracy_pct": 99.75, "tech_hours": 600, "pharmacist_hours": 300, "wait_time_min": 11 },
+      { "location": "Store 04 — Lakeview",    "quarter": "Q1", "fills": 3110, "error_rate": 3.1, "accuracy_pct": 99.69, "tech_hours": 840, "pharmacist_hours": 420, "wait_time_min": 18 },
+      { "location": "Store 04 — Lakeview",    "quarter": "Q2", "fills": 3240, "error_rate": 3.3, "accuracy_pct": 99.67, "tech_hours": 840, "pharmacist_hours": 420, "wait_time_min": 19 },
+      { "location": "Store 04 — Lakeview",    "quarter": "Q3", "fills": 3300, "error_rate": 3.4, "accuracy_pct": 99.66, "tech_hours": 840, "pharmacist_hours": 420, "wait_time_min": 20 },
+      { "location": "Store 04 — Lakeview",    "quarter": "Q4", "fills": 3190, "error_rate": 3.2, "accuracy_pct": 99.68, "tech_hours": 840, "pharmacist_hours": 420, "wait_time_min": 18 }
+    ],
+    "insight_hints": [
+      "Store 02 Westside had a dramatic Q2 spike: error rate jumped from 2.1 to 7.8 per 1,000 fills",
+      "Store 02 Q2 tech hours dropped from 720 to 480 — a 33% staffing reduction",
+      "Store 02 Q2 pharmacist hours also dropped by 33% (360 to 240)",
+      "Store 02 Q2 wait time nearly doubled (12 to 28 min) — patients waiting longer than usual",
+      "Store 02 Q3 staffing and error rate returned to near-baseline — suggesting the Q2 issue was temporary",
+      "Store 04 Lakeview has consistently elevated error rates (~3.1–3.4) and wait times — a structural capacity issue, not a spike",
+      "The staffing-to-error-rate correlation is strong: the only major error spike coincides exactly with major staffing reduction",
+      "Fill volume at Store 02 actually increased slightly in Q2 despite the staffing cut — amplifying the error risk"
+    ]
+  },
+  "task": {
+    "title": "Meridian Pharmacy Group — Q2 Quality Review",
+    "briefing": "Meridian Pharmacy Group's Quality & Compliance team is reviewing dispensing accuracy data across its four locations after receiving a flagged incident report from Q2. Leadership knows something went wrong in Q2 — but they want your analysis to confirm which location, identify the likely operational cause, and recommend corrective action before the state board audit.\n\nYour job: explore the dispensing data, identify the Q2 quality breakdown, determine what the data suggests caused it, and write a brief recommendation.",
+    "writing_prompt": "Based on your analysis, write a 150–250 word memo to Meridian Pharmacy Group leadership identifying: (1) which location had the most significant Q2 quality issue, (2) what the data suggests caused it, (3) the patient safety impact, and (4) your recommended corrective action.",
+    "word_range": [150, 250]
+  }
+}

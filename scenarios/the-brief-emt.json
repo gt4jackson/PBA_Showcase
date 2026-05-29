@@ -1,0 +1,129 @@
+{
+  "construct_id": "ems_protocol_analysis",
+  "construct_name": "EMS Protocol Analysis & Recommendation",
+  "construct_description": "The ability to analyze clinical evidence, operational data, and stakeholder perspectives to produce a clear, evidence-based protocol recommendation — a core competency for EMS supervisors, medical directors, and advanced paramedics involved in system-level decisions.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "High (patient safety / protocol)",
+    "temporal": "Single-session, 20 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated EMS agency decision)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "evidence_synthesis",
+      "name": "Evidence Synthesis",
+      "icon": "🔬",
+      "description": "Interpreting clinical research and operational data to draw valid conclusions.",
+      "color": "#f43f5e",
+      "weight": 0.30
+    },
+    {
+      "id": "risk_assessment",
+      "name": "Risk Assessment",
+      "icon": "🛡️",
+      "description": "Identifying and weighing clinical, operational, and liability risks in protocol adoption.",
+      "color": "#4dd3fe",
+      "weight": 0.25
+    },
+    {
+      "id": "critical_evaluation",
+      "name": "Critical Evaluation",
+      "icon": "🔍",
+      "description": "Catching limitations in evidence, catching AI hallucinations, and assessing source quality.",
+      "color": "#f59e0b",
+      "weight": 0.25
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "icon": "✍️",
+      "description": "Presenting a concise, evidence-backed recommendation that a medical director can act on.",
+      "color": "#9e9eff",
+      "weight": 0.20
+    }
+  ],
+  "scenario": {
+    "id": "ketamine_protocol",
+    "title": "The Protocol Brief",
+    "client": "Tri-County EMS Medical Direction Committee",
+    "estimated_minutes": 20,
+    "budget_tokens": 120,
+    "briefing": "Tri-County EMS is evaluating whether to add ketamine to its paramedic formulary for pre-hospital pain management and sedation. Several neighboring agencies have adopted it; others have not.\n\nYou've been asked to review the available clinical evidence, operational considerations, and risk factors, then write a one-page Protocol Brief with a clear recommendation: Adopt, Do Not Adopt, or Adopt with Conditions.\n\nYour reference materials are in the workspace. The AI Workbench is available — but use it carefully. At least one claim in the materials is contested, and the AI tools have known limitations.",
+    "inbox": [
+      {
+        "id": "email_1",
+        "from": "Dr. Reyes, EMS Medical Director",
+        "subject": "Ketamine Protocol Review — Need Your Brief by EOD",
+        "body": "The committee meets Thursday. I need a one-page brief with a recommendation — Adopt, Do Not Adopt, or Adopt with Conditions. Review the materials in your workspace and make a call. Be specific about what the evidence actually supports and where the gaps are. I don't need a literature review — I need a recommendation I can defend."
+      },
+      {
+        "id": "email_2",
+        "from": "Lt. Torres, Field Operations",
+        "subject": "Re: Ketamine Discussion",
+        "body": "For context: three of our neighboring agencies have adopted ketamine protocols in the last 18 months. Our paramedics have been asking about it. The primary use cases they're citing are: (1) major trauma pain management when morphine is insufficient, (2) excited delirium cases where we've had crew safety incidents, and (3) post-intubation sedation. I'm supportive but I want to make sure the training burden is realistic."
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_clinical",
+        "tab_label": "Clinical Evidence",
+        "type": "Meta-Analysis",
+        "reliability": "high",
+        "title": "Ketamine for Pre-Hospital Pain Management: A Systematic Review",
+        "author": "Kowalski, Brennan & Osei",
+        "publication": "Prehospital Emergency Care, 2024",
+        "content_html": "<p>This systematic review analyzed 24 prospective studies (N = 6,840 patients) examining ketamine use in pre-hospital and emergency department settings for pain management and procedural sedation.</p><p><strong>Key findings:</strong></p><ul><li>Ketamine achieved clinically meaningful pain reduction (NRS ≥ 3 points) in <strong>82% of patients</strong> within 15 minutes when given IV at 0.1–0.3 mg/kg.</li><li>Adverse events were reported in 18% of cases — the most common being <strong>emergence reactions</strong> (dysphoria, hallucinations: 8%), <strong>laryngospasm</strong> (2%), and <strong>excessive secretions</strong> (4%).</li><li>Serious adverse events requiring intervention occurred in <strong>1.4%</strong> of cases — most in high-dose or rapid-administration scenarios.</li><li>Studies comparing ketamine to morphine found equivalent analgesia with <strong>superior hemodynamic stability</strong> in hypotensive trauma patients.</li><li>Evidence for excited delirium indications was more limited — only 3 studies met inclusion criteria, with mixed outcomes on safety.</li></ul><p><strong>Limitations:</strong> Most studies were conducted in systems with strong medical oversight. Protocols and dosing varied significantly across studies. Pre-hospital-specific data is limited compared to ED literature.</p>"
+      },
+      {
+        "id": "src_operational",
+        "tab_label": "Operational Data",
+        "type": "Agency Comparison",
+        "reliability": "moderate",
+        "title": "Ketamine Adoption: Outcomes from Three Neighboring EMS Agencies",
+        "author": "Tri-County Regional EMS Consortium",
+        "publication": "Internal Report, 2025",
+        "content_html": "<p>Summary of ketamine protocol outcomes from three agencies that adopted the medication in 2023–2024.</p><table><tr><th>Agency</th><th>Adoptions</th><th>Uses (12 mo)</th><th>Adverse Events</th><th>Notable Findings</th></tr><tr><td>Metro Fire EMS</td><td>2023</td><td>214</td><td>6 (2.8%)</td><td>2 laryngospasm events; both resolved on scene. Strong paramedic satisfaction.</td></tr><tr><td>Valley Ambulance</td><td>2023</td><td>88</td><td>2 (2.3%)</td><td>One excited delirium case resulted in hospitalization — causality unclear.</td></tr><tr><td>Northside EMS</td><td>2024</td><td>41</td><td>0</td><td>Very early data; limited to trauma pain only. Excluded excited delirium protocol.</td></tr></table><p><strong>Training investment:</strong> All three agencies required 4–6 hours of initial training plus simulation. Annual recertification added approximately 2 hours. All agencies reported the training burden as 'manageable.'</p><p><strong>Medical oversight structure:</strong> All three agencies require direct online medical control for ketamine administration in excited delirium cases. Trauma pain management is available under standing orders at two of the three agencies.</p>"
+      },
+      {
+        "id": "src_risk",
+        "tab_label": "Risk & Liability",
+        "type": "Regulatory Guidance",
+        "reliability": "high",
+        "title": "NAEMSP Position Statement: Ketamine in Pre-Hospital Emergency Care",
+        "author": "National Association of EMS Physicians",
+        "publication": "Prehospital Emergency Care, 2023",
+        "content_html": "<p>The National Association of EMS Physicians (NAEMSP) issued formal guidance on pre-hospital ketamine use based on a review of existing evidence and practice patterns.</p><p><strong>Endorsed indications:</strong></p><ul><li>Severe acute pain in trauma patients — <em>strong evidence</em></li><li>Procedural sedation (e.g., cardioversion, fracture reduction) — <em>moderate evidence</em></li><li>Post-intubation sedation — <em>moderate evidence</em></li><li>Excited delirium/behavioral emergencies — <em>controversial; conditional endorsement with medical oversight required</em></li></ul><p><strong>Key conditions for adoption:</strong></p><ul><li>Formal training protocol required — minimum 4 hours including simulation</li><li>Medical director must establish written protocols with dosing guidelines</li><li>Quality improvement tracking required (adverse event documentation)</li><li>Excited delirium indication should require online medical control for initial adoptions</li></ul><p><strong>Liability note:</strong> Agencies that adopt ketamine without adequate training and QI infrastructure face elevated liability exposure, particularly in excited delirium cases where causality questions have arisen in litigation.</p>"
+      },
+      {
+        "id": "src_concern",
+        "tab_label": "Concern Letter",
+        "type": "Stakeholder Input",
+        "reliability": "low",
+        "title": "Letter from Community Advocacy Group",
+        "author": "Families for Accountable EMS",
+        "publication": "Submitted to Tri-County EMS Board, 2025",
+        "content_html": "<p>We write on behalf of families who have raised concerns about ketamine use in pre-hospital settings, particularly in behavioral health emergencies.</p><p>Our concerns:</p><ul><li>Multiple wrongful death lawsuits have been filed nationally involving ketamine administration in excited delirium cases, including the widely-covered Elijah McClain case in Aurora, Colorado.</li><li>The <strong>excited delirium</strong> diagnosis itself is contested — the American Medical Association and American Psychiatric Association have raised concerns about its use as a justification for restraint and chemical sedation.</li><li>We are concerned about community trust impacts, particularly in communities of color where use-of-force concerns are already elevated.</li><li>We ask the committee to defer adoption until a formal community input process has been completed.</li></ul><p><em>Note: This letter represents the views of a community advocacy group and is not a clinical document. Claims should be evaluated against primary sources.</em></p>"
+      }
+    ],
+    "ai_workbench": {
+      "enabled": true,
+      "persona": "EMS Research Assistant",
+      "known_limitation": "The AI workbench may overstate the strength of evidence for excited delirium indications — this is a contested area and the primary literature is thinner than the AI may suggest.",
+      "seed_response": "Ketamine has strong evidence for trauma pain management and moderate evidence for procedural sedation in pre-hospital settings. For excited delirium, the evidence is more mixed — several agencies have adopted it but adverse event rates in that indication are higher. NAEMSP endorses adoption with conditions. The key questions are training infrastructure and which indications to include in the initial protocol."
+    },
+    "rubric": {
+      "claim_clarity": "Makes a clear Adopt / Do Not Adopt / Adopt with Conditions recommendation",
+      "evidence_use": "Cites specific findings from the clinical review and/or operational data",
+      "risk_awareness": "Addresses the excited delirium controversy and/or liability conditions",
+      "condition_specificity": "If recommending conditional adoption, specifies which conditions (training, indications, oversight)",
+      "source_discrimination": "Does not treat the advocacy letter as equivalent to clinical evidence"
+    }
+  }
+}

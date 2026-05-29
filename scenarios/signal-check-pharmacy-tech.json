@@ -1,0 +1,689 @@
+{
+  "construct_id": "pharmacy_tech_knowledge",
+  "construct_name": "Pharmaceutical Knowledge & Medication Safety (ExCPT/PTCE)",
+  "construct_description": "Core knowledge assessed in pharmacy technician certification — covering medication safety, drug interactions, dispensing accuracy, prescription processing, and common patient misconceptions that contribute to medication errors and adverse events.",
+  "pba_category": 4,
+  "pba_category_name": "Simulation-Based",
+  "pba_subtype": "Conversation-Based Assessment (CBA)",
+  "secondary_dimensions": {
+    "stakes": "High (licensure / patient safety)",
+    "temporal": "On-Demand",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-Structured",
+    "authenticity": "Proximal",
+    "scoring": "Hybrid (rule-based + optional LLM)"
+  },
+  "dimensions": [
+    {
+      "id": "medication_safety",
+      "name": "Medication Safety",
+      "icon": "💊",
+      "description": "Correct medication use, dosing, and common errors — myths that cause real patient harm",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#4dd3fe"
+    },
+    {
+      "id": "drug_interactions",
+      "name": "Drug Interactions & Contraindications",
+      "icon": "⚠️",
+      "description": "Understanding interaction risks, contraindications, and when to flag concerns to a pharmacist",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#f43f5e"
+    },
+    {
+      "id": "dispensing_accuracy",
+      "name": "Dispensing & Processing",
+      "icon": "🏥",
+      "description": "Prescription interpretation, generic substitution, fill accuracy, and tech scope of practice",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#f59e0b"
+    },
+    {
+      "id": "patient_counseling",
+      "name": "Patient Education & Scope",
+      "icon": "🗣️",
+      "description": "What pharmacy techs can and cannot counsel on, and when to escalate to the pharmacist",
+      "max_questions": 2,
+      "max_points_per": 2,
+      "color": "#9e9eff"
+    }
+  ],
+  "persona": {
+    "name": "Maya",
+    "avatar_letter": "M",
+    "role": "Your friend who asks you all their medication questions",
+    "tone": "Curious and a little anxious — texting you because they trust you more than Googling"
+  },
+  "intro_messages": [
+    "okay you are literally my personal pharmacist friend and i have so many questions 😭 i keep reading things online and i genuinely don't know what's real",
+    "hey!! i know you know all this stuff — can i just run some medication questions by you? i've been getting conflicting info and it's stressing me out",
+    "okay real talk: i have some medication questions i'm embarrassed to ask my actual pharmacist. you cool if i ask you? 👀"
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "dimension": "medication_safety",
+      "messages": [
+        "okay first one: i got prescribed antibiotics for a sinus thing and i feel way better after 4 days. can i just stop taking them or do i need to finish the whole course?",
+        "real question: does it actually matter if you stop antibiotics early once you feel better? my mom said finish them but my friend said it's fine to stop",
+        "i hate taking pills so i stopped my antibiotics when i started feeling better. my friend said that's totally fine — is she right?"
+      ],
+      "acknowledgments": [
+        "okay so it's not just a 'suggestion' to finish — got it",
+        "right, the resistance thing is bigger than just my personal situation",
+        "makes sense — i'll finish them. also slightly worried i've been doing this wrong forever 😬"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "finish",
+          "complete the course",
+          "full course",
+          "antibiotic resistance",
+          "resistant",
+          "resistant bacteria",
+          "not fully cleared",
+          "infection returns",
+          "recurrence",
+          "bacterial",
+          "sub-therapeutic",
+          "selective pressure",
+          "stronger bacteria",
+          "don't stop early",
+          "prescribed duration",
+          "prescriber"
+        ],
+        "mid": [
+          "don't stop",
+          "keep taking",
+          "finish them",
+          "complete",
+          "take all of them",
+          "as prescribed"
+        ],
+        "low": [
+          "stop when better",
+          "fine to stop",
+          "doesn't matter",
+          "once you feel better",
+          "just stop"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 2,
+      "dimension": "medication_safety",
+      "messages": [
+        "okay this is embarrassing: i accidentally forgot my morning dose and it's now afternoon. should i just take two at my next scheduled dose to catch up?",
+        "i missed a dose of my blood pressure med this morning and someone told me to double up at my next dose. is that okay?",
+        "real question: if you miss a medication dose, is double-dosing at the next time actually an acceptable way to catch up?"
+      ],
+      "acknowledgments": [
+        "okay so 'catch up dosing' is actually not the move — noted",
+        "right, it depends on the med and the timing but generally don't just double up",
+        "makes sense — i'll check the specific instructions next time instead of improvising"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "don't double",
+          "do not double",
+          "skip the missed",
+          "resume normal",
+          "depends on medication",
+          "depends on drug",
+          "timing matters",
+          "check instructions",
+          "package insert",
+          "ask pharmacist",
+          "dangerous",
+          "too much",
+          "overdose",
+          "half-life",
+          "blood levels",
+          "narrow therapeutic index",
+          "take as soon as"
+        ],
+        "mid": [
+          "it depends",
+          "usually skip",
+          "don't catch up",
+          "ask first",
+          "check with",
+          "varies"
+        ],
+        "low": [
+          "double up",
+          "take two",
+          "catch up",
+          "take extra",
+          "fine to double"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 3,
+      "dimension": "medication_safety",
+      "messages": [
+        "i found some old prescription painkillers in my medicine cabinet from like 3 years ago. are they safe to take if they're just a little expired?",
+        "question: is it actually a big deal if medication is expired? like a year past the date — it's just weaker right, not harmful?",
+        "real talk: expired medications — are they fine to take or is the expiration date actually important? asking for my dad who never throws anything away 😅"
+      ],
+      "acknowledgments": [
+        "okay so it's not just a 'suggestion' date — got it, throwing them out",
+        "right — the 'just weaker' assumption isn't always safe",
+        "the storage conditions point is one i'd never thought about — makes sense"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "don't take",
+          "do not use",
+          "dispose",
+          "discard",
+          "degradation",
+          "chemical breakdown",
+          "toxic",
+          "harmful",
+          "potency",
+          "decreased effectiveness",
+          "unpredictable",
+          "storage conditions",
+          "humidity",
+          "heat",
+          "medication take-back",
+          "drug take-back",
+          "DEA",
+          "controlled substance",
+          "pain meds",
+          "opioid"
+        ],
+        "mid": [
+          "throw away",
+          "get rid of",
+          "not ideal",
+          "risky",
+          "check with pharmacist",
+          "not safe to assume"
+        ],
+        "low": [
+          "fine to take",
+          "just weaker",
+          "still works",
+          "probably okay",
+          "the date is just a suggestion",
+          "not a big deal"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 4,
+      "dimension": "drug_interactions",
+      "messages": [
+        "okay my friend takes a bunch of supplements — fish oil, melatonin, st john's wort, vitamin E — and says they can't interact with her prescriptions because they're 'natural.' is that right?",
+        "genuine question: can supplements and vitamins actually interact with prescriptions? my mom thinks natural = safe to mix with anything",
+        "real talk: should i be worried about supplements interacting with medications? my coworker said since they're not drugs, there's no risk"
+      ],
+      "acknowledgments": [
+        "okay so 'natural' definitely does not mean 'safe to mix' — i'll tell my friend",
+        "right — st john's wort is the one i've heard about before, it's wild how potent that one is",
+        "makes sense — the body doesn't really care if something came from a plant or a lab"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "yes they can",
+          "interactions",
+          "drug interaction",
+          "herbal",
+          "natural doesn't mean safe",
+          "st. john's wort",
+          "fish oil",
+          "blood thinning",
+          "warfarin",
+          "CYP450",
+          "enzyme",
+          "metabolism",
+          "disclose",
+          "tell your pharmacist",
+          "inform",
+          "serotonin syndrome",
+          "bleeding risk",
+          "natural doesn't mean no risk"
+        ],
+        "mid": [
+          "can interact",
+          "possible interaction",
+          "check with pharmacist",
+          "risky",
+          "not always safe",
+          "depends"
+        ],
+        "low": [
+          "no interaction",
+          "safe to mix",
+          "natural is fine",
+          "no risk",
+          "can't interact",
+          "not a problem"
+        ],
+        "length_mid": 30
+      }
+    },
+    {
+      "id": 5,
+      "dimension": "drug_interactions",
+      "messages": [
+        "my friend drinks wine pretty regularly and takes ibuprofen for headaches all the time. she says it's no big deal because ibuprofen is OTC. is she right?",
+        "real question: mixing alcohol with over-the-counter pain relievers — specifically ibuprofen or acetaminophen — is it actually risky or overstated?",
+        "honest take: how bad is it to drink while taking OTC pain meds? i feel like everyone does it and nothing happens 🤷"
+      ],
+      "acknowledgments": [
+        "okay so it's actually differentiated by which one — that's helpful context",
+        "right — the acetaminophen liver thing is one i knew vaguely but the specific risk is higher than i thought",
+        "the GI bleeding from ibuprofen + alcohol is not something i'd heard before — noted"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "risky",
+          "dangerous",
+          "acetaminophen",
+          "liver damage",
+          "hepatotoxicity",
+          "ibuprofen",
+          "GI",
+          "gastric",
+          "stomach",
+          "bleeding",
+          "ulcer",
+          "alcohol",
+          "avoid",
+          "don't mix",
+          "blood thinning",
+          "depends on the drug",
+          "not OTC safe just because",
+          "over-the-counter doesn't mean safe"
+        ],
+        "mid": [
+          "not a good idea",
+          "risky",
+          "depends how much",
+          "be careful",
+          "some risk",
+          "not nothing"
+        ],
+        "low": [
+          "fine",
+          "no big deal",
+          "everyone does it",
+          "not risky",
+          "totally safe",
+          "OTC so fine"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 6,
+      "dimension": "drug_interactions",
+      "messages": [
+        "my friend sees two different doctors and neither knows about the other's prescriptions. she says as long as she doesn't feel weird, she's fine. how worried should i be?",
+        "real scenario: someone takes meds from a cardiologist and also from their psychiatrist and they haven't told either doctor about the other. should they be concerned?",
+        "genuine worry: how bad is it to have prescriptions from multiple providers who don't communicate with each other? is the pharmacist the only one who catches that?"
+      ],
+      "acknowledgments": [
+        "okay so the pharmacist as the central checkpoint is something i'd never thought about",
+        "right — the 'i feel fine' logic doesn't catch interactions that build up slowly",
+        "i'm going to tell her to use one pharmacy for everything — that's a concrete action"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "one pharmacy",
+          "single pharmacy",
+          "pharmacist",
+          "medication reconciliation",
+          "drug interaction",
+          "interaction check",
+          "tell both doctors",
+          "inform",
+          "medication list",
+          "complete list",
+          "disclosure",
+          "interaction",
+          "contraindication",
+          "polypharmacy",
+          "doesn't feel weird doesn't mean safe",
+          "cumulative",
+          "delayed effect",
+          "serious risk"
+        ],
+        "mid": [
+          "risky",
+          "should tell doctors",
+          "pharmacist should know",
+          "use same pharmacy",
+          "disclose",
+          "important"
+        ],
+        "low": [
+          "fine if she feels okay",
+          "not a problem",
+          "doctors don't need to know",
+          "she can manage",
+          "not their business"
+        ],
+        "length_mid": 30
+      }
+    },
+    {
+      "id": 7,
+      "dimension": "dispensing_accuracy",
+      "messages": [
+        "okay quick one: are generic drugs actually the same as brand name? my grandma refuses to take generics because she says they're a watered-down version",
+        "my grandpa insists brand name medication is stronger and better than generics. how would you explain why that's not true — or is it?",
+        "genuine question: what's actually the difference between a generic and a brand name medication? is there any legitimate reason to prefer one?"
+      ],
+      "acknowledgments": [
+        "okay so the 'same active ingredient' thing is actually FDA-verified — that's more official than i expected",
+        "right, the bioequivalence testing point is what i was missing",
+        "the formulation/delivery mechanism exception is a good nuance — so it's not *always* identical"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "same active ingredient",
+          "bioequivalent",
+          "bioequivalence",
+          "FDA",
+          "approved",
+          "same strength",
+          "same dosage form",
+          "inactive ingredients",
+          "excipients",
+          "fillers",
+          "can differ",
+          "extended release",
+          "delivery mechanism",
+          "therapeutic equivalent",
+          "not weaker",
+          "not watered down",
+          "AB rated"
+        ],
+        "mid": [
+          "same drug",
+          "same effect",
+          "equivalent",
+          "equally effective",
+          "same",
+          "not weaker"
+        ],
+        "low": [
+          "weaker",
+          "different",
+          "brand is better",
+          "generic is inferior",
+          "watered down",
+          "not the same"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 8,
+      "dimension": "dispensing_accuracy",
+      "messages": [
+        "okay hypothetical: if a pharmacy gets a prescription and they're not sure if the handwriting says '10mg' or '100mg' — what should happen next?",
+        "what's the right thing to do when a prescription has something that's ambiguous — unclear dose, unclear frequency, something that could be interpreted two ways?",
+        "if a prescription has something that doesn't look right — weird dose, possible transcription error — what should a pharmacy tech actually do?"
+      ],
+      "acknowledgments": [
+        "okay so clarifying with the prescriber is literally part of the job — not optional",
+        "right — guessing wrong on a dose isn't a small thing, that's patient safety",
+        "the 'tech flags, pharmacist verifies, prescriber confirms' chain makes sense"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "contact prescriber",
+          "call the doctor",
+          "verify",
+          "clarify",
+          "pharmacist",
+          "do not fill",
+          "hold the prescription",
+          "flag",
+          "escalate",
+          "don't guess",
+          "never assume",
+          "confirm",
+          "medication error",
+          "patient safety",
+          "call back",
+          "prescribing error",
+          "tech role",
+          "pharmacist review"
+        ],
+        "mid": [
+          "check with pharmacist",
+          "ask",
+          "clarify first",
+          "get confirmation",
+          "verify before filling"
+        ],
+        "low": [
+          "just fill it",
+          "guess",
+          "assume",
+          "pick the lower dose",
+          "figure it out",
+          "doesn't matter"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 9,
+      "dimension": "dispensing_accuracy",
+      "messages": [
+        "what's the difference between what a pharmacy tech can tell a patient vs. what only a pharmacist can do? i feel like i see techs doing everything",
+        "can a pharmacy tech actually counsel patients on their medications — like explain how to take something, side effects, interactions?",
+        "scope question: when a patient has a question about their medication, what's the tech's role vs. the pharmacist's role?"
+      ],
+      "acknowledgments": [
+        "right so the tech handles the logistics and the pharmacist handles the clinical — that makes sense",
+        "okay so patient counseling is strictly a pharmacist function — good to know",
+        "the 'refer to pharmacist' move is more important than i realized"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "pharmacist",
+          "counsel",
+          "counseling",
+          "clinical",
+          "refers to pharmacist",
+          "pharmacist must",
+          "scope of practice",
+          "not the tech's role",
+          "drug therapy",
+          "clinical advice",
+          "side effects counseling",
+          "tech handles logistics",
+          "administrative",
+          "insurance",
+          "refill",
+          "data entry",
+          "escalate",
+          "refer"
+        ],
+        "mid": [
+          "tech can't counsel",
+          "need pharmacist",
+          "ask the pharmacist",
+          "different roles",
+          "tech does admin"
+        ],
+        "low": [
+          "tech can do everything",
+          "same role",
+          "tech can counsel",
+          "no real difference",
+          "tech handles it all"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 10,
+      "dimension": "patient_counseling",
+      "messages": [
+        "if a patient asks a pharmacy tech a clinical question — like 'is this safe with my heart condition' — what's the right response?",
+        "my friend who's a tech said she just answers patients' drug questions herself because the pharmacist is always too busy. is that okay?",
+        "real scenario: patient asks the tech a question that's clearly clinical — drug-condition interaction. the pharmacist is slammed. what should the tech do?"
+      ],
+      "acknowledgments": [
+        "right — 'too busy' isn't a legal exception to scope of practice",
+        "okay so there's real liability here, not just an informal suggestion",
+        "the 'i'll get the pharmacist' phrase is the actual skill — defaulting to that is professionalism"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "refer to pharmacist",
+          "get the pharmacist",
+          "not the tech's role",
+          "scope",
+          "liability",
+          "legal",
+          "must not",
+          "can't provide clinical",
+          "clinical decision",
+          "pharmacist must answer",
+          "escalate",
+          "patient safety",
+          "not authorized",
+          "pharmacy technician cannot counsel",
+          "always refer"
+        ],
+        "mid": [
+          "ask pharmacist",
+          "not your role",
+          "get help",
+          "refer",
+          "pharmacist should answer"
+        ],
+        "low": [
+          "answer herself",
+          "fine to answer",
+          "tech can do it",
+          "doesn't need pharmacist",
+          "just tell the patient"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 11,
+      "dimension": "patient_counseling",
+      "messages": [
+        "okay last real question: does it actually matter which pharmacy you use, or is it just about price and convenience?",
+        "genuine question: is there any clinical reason to use just one pharmacy versus filling prescriptions at a bunch of different ones?",
+        "my friend picks whatever pharmacy is cheapest for each prescription. from a medication safety standpoint — is that smart or is there a reason to stick to one?"
+      ],
+      "acknowledgments": [
+        "okay so the 'one pharmacy checks all your meds' thing is more important than i realized",
+        "right — the interaction checking only works if they have your full picture",
+        "the medication history point is one i'd never thought about — makes sense"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "one pharmacy",
+          "single pharmacy",
+          "complete medication list",
+          "interaction checking",
+          "full picture",
+          "medication history",
+          "pharmacist review",
+          "all prescriptions",
+          "drug interaction screening",
+          "centralized",
+          "coordination",
+          "clinical reason",
+          "medication reconciliation",
+          "continuity of care",
+          "polypharmacy risk"
+        ],
+        "mid": [
+          "better to use one",
+          "important to have records",
+          "they see everything",
+          "consistent",
+          "stick to one"
+        ],
+        "low": [
+          "doesn't matter",
+          "just about price",
+          "no clinical reason",
+          "shop around",
+          "wherever is cheapest"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 12,
+      "dimension": null,
+      "messages": [
+        "okay LAST one i swear — on a scale of 1 to 10, how solid do you think your medication/pharmacy knowledge actually is? be honest 💊",
+        "alright final question: if you had to rate your pharmaceutical knowledge from 1 (i just grab whatever CVS recommends) to 10 (i could sit the PTCE tomorrow), what would you say?",
+        "okay last one for real: how confident are you in your knowledge of medication safety and how pharmacies work? 1 being 'i wing it' to 10 being 'i'd make a great pharmacy tech'"
+      ],
+      "acknowledgments": [
+        "okay noted! let me tally your score real quick...",
+        "alright, give me a sec to add this up 💊",
+        "interesting self-assessment! let me see what the results say..."
+      ],
+      "scorer": null
+    }
+  ],
+  "overall_labels": [
+    {
+      "min": 90,
+      "text": "excellent pharmaceutical knowledge — you're operating at a near-PTCE-ready level 💊"
+    },
+    {
+      "min": 75,
+      "text": "solid foundation — strong instincts with a few gaps to fill 👏"
+    },
+    {
+      "min": 60,
+      "text": "good awareness turning into real knowledge — above average for a non-tech 🏥"
+    },
+    {
+      "min": 45,
+      "text": "decent instincts with some important myths still in the mix — very fixable 📈"
+    },
+    {
+      "min": 30,
+      "text": "some of those WebMD deep dives might be steering you wrong 😅 — but totally fixable"
+    },
+    {
+      "min": 0,
+      "text": "okay we have some work to do 💀 — but honestly this is why pharmacy training exists. no judgment."
+    }
+  ],
+  "feedback_templates": {
+    "high": "Strong command of this area — you're demonstrating knowledge at a near-professional level.",
+    "mid": "Good instincts here. Reviewing current guidelines and medication safety best practices would sharpen your responses.",
+    "low": "This is a growth area — PTCE prep materials and current clinical guidelines cover this well and it's very learnable."
+  }
+}

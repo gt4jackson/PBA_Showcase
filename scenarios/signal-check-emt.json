@@ -1,0 +1,709 @@
+{
+  "construct_id": "emt_clinical_judgment",
+  "construct_name": "Pre-Hospital Emergency Care Knowledge (NREMT)",
+  "construct_description": "Core clinical judgment and evidence-based knowledge for EMT/Paramedic certification — covering bystander intervention accuracy, triage priorities, airway management, hemorrhage control, and common pre-hospital myths that affect patient outcomes.",
+  "pba_category": 4,
+  "pba_category_name": "Simulation-Based",
+  "pba_subtype": "Conversation-Based Assessment (CBA)",
+  "secondary_dimensions": {
+    "stakes": "High (licensure / patient safety)",
+    "temporal": "On-Demand",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-Structured",
+    "authenticity": "Proximal",
+    "scoring": "Hybrid (rule-based + optional LLM)"
+  },
+  "dimensions": [
+    {
+      "id": "bystander_intervention",
+      "name": "Bystander & Scene Safety",
+      "icon": "🚨",
+      "description": "Correct bystander actions, scene assessment, and common myths that delay or harm patients",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#f43f5e"
+    },
+    {
+      "id": "airway_circulation",
+      "name": "Airway & Circulation",
+      "icon": "💓",
+      "description": "CPR, AED use, airway management, and hemorrhage control fundamentals",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#4dd3fe"
+    },
+    {
+      "id": "trauma_triage",
+      "name": "Trauma & Triage",
+      "icon": "🩹",
+      "description": "Tourniquet application, burns, overdose response, and priority decisions",
+      "max_questions": 3,
+      "max_points_per": 2,
+      "color": "#f59e0b"
+    },
+    {
+      "id": "protocols",
+      "name": "Protocols & Scope",
+      "icon": "📋",
+      "description": "What EMTs can and cannot do, medication authority, online vs. offline protocols",
+      "max_questions": 2,
+      "max_points_per": 2,
+      "color": "#9e9eff"
+    }
+  ],
+  "persona": {
+    "name": "Jordan",
+    "avatar_letter": "J",
+    "role": "Your friend who just took a first aid class",
+    "tone": "Curious, a little worried they learned wrong things — texting you like you're the expert friend"
+  },
+  "intro_messages": [
+    "okay so i just took this first aid class and now i'm second-guessing literally everything they told us 😬 can i run some scenarios by you?",
+    "hey you're my go-to for this stuff — i've been seeing so much conflicting info about emergencies online and i need a reality check",
+    "okay genuine question — my instructor said some things that i'm not sure about and you'd actually know the real answer. can i ask you?"
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "dimension": "bystander_intervention",
+      "messages": [
+        "okay first one: if someone gets in a car accident and they're unconscious — should you move them out of the car? my instructor said to leave them but my instinct is to get them out 😬",
+        "real scenario: car accident, person is unconscious, car isn't on fire. do you move them or leave them? my friend said always move them and i'm not sure",
+        "quick one: if there's a crash victim who isn't responding — is it actually dangerous to move them before EMS gets there? when does it matter?"
+      ],
+      "acknowledgments": [
+        "okay yeah that makes sense, i was overthinking the whole 'get them out' instinct",
+        "right — so it really is about the tradeoff between the crash danger vs. spinal risk",
+        "that actually clears up a lot, i was mixing up the advice for different situations"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "spinal",
+          "c-spine",
+          "cervical",
+          "spine",
+          "don't move",
+          "leave them",
+          "immobilize",
+          "unless danger",
+          "immediate danger",
+          "fire",
+          "seatbelt",
+          "log roll",
+          "in-line",
+          "stabilize",
+          "neutral",
+          "airway",
+          "scene safety",
+          "hazard"
+        ],
+        "mid": [
+          "careful",
+          "depends",
+          "be cautious",
+          "unless",
+          "danger",
+          "risk",
+          "injury",
+          "support",
+          "gently"
+        ],
+        "low": [
+          "always move",
+          "get them out",
+          "pull them",
+          "drag",
+          "doesn't matter",
+          "just move them"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 2,
+      "dimension": "bystander_intervention",
+      "messages": [
+        "okay what about this: if someone collapses from an opioid overdose, my friend said you shouldn't call 911 because the person might get in trouble legally. is that actually a thing?",
+        "genuine question — i heard that people are scared to call 911 for overdoses because of legal issues. how do you respond to that when you're trying to get someone to help?",
+        "real talk: should bystanders hesitate to call 911 for a suspected overdose because of legal consequences? what's the actual guidance there?"
+      ],
+      "acknowledgments": [
+        "okay that's actually really important context — i didn't know most states had those protections",
+        "right, i get why people are scared but that fear literally costs lives",
+        "yeah the legal stuff is way less of a risk than not calling — good to know"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "good samaritan",
+          "samaritan law",
+          "immunity",
+          "protection",
+          "call 911",
+          "always call",
+          "naloxone",
+          "narcan",
+          "legal protection",
+          "most states",
+          "overdose",
+          "minutes",
+          "brain damage",
+          "irreversible",
+          "time-sensitive",
+          "don't hesitate"
+        ],
+        "mid": [
+          "usually",
+          "most places",
+          "call anyway",
+          "depends on state",
+          "protection",
+          "risky",
+          "not worth"
+        ],
+        "low": [
+          "don't call",
+          "legal risk",
+          "arrest",
+          "get in trouble",
+          "avoid police",
+          "skip 911"
+        ],
+        "length_mid": 30
+      }
+    },
+    {
+      "id": 3,
+      "dimension": "bystander_intervention",
+      "messages": [
+        "my first aid class said to use the heimlich on a drowning victim to get water out before CPR — is that right? i feel like i've heard different things",
+        "okay this one might be embarrassing but — do you do the heimlich on a drowning person? like to drain the water first?",
+        "real question: what's the deal with trying to remove water from a drowning victim before starting CPR? heimlich maneuver — yes or no?"
+      ],
+      "acknowledgments": [
+        "oh wow okay so that's actually a myth that could cost someone their life — noted",
+        "right, that makes sense — the water in the lungs is kind of beside the point",
+        "i genuinely thought that's what you were supposed to do, glad i asked"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "no",
+          "don't",
+          "do not",
+          "myth",
+          "not recommended",
+          "airway obstruction only",
+          "start CPR",
+          "begin CPR",
+          "immediately",
+          "no evidence",
+          "water in lungs",
+          "not the priority",
+          "compressions first",
+          "current guidelines",
+          "AHA",
+          "rescue breaths",
+          "not effective",
+          "delay"
+        ],
+        "mid": [
+          "skip it",
+          "just do CPR",
+          "outdated",
+          "wrong",
+          "old advice",
+          "incorrect"
+        ],
+        "low": [
+          "yes",
+          "do the heimlich",
+          "remove water first",
+          "drain the water",
+          "get the water out"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 4,
+      "dimension": "airway_circulation",
+      "messages": [
+        "okay CPR question: i've heard people say 'don't do CPR on someone because you might break their ribs.' is that a real concern that should stop you?",
+        "my neighbor said they'd never do CPR on someone because of the rib thing. how do you actually respond to that argument?",
+        "real talk: should fear of breaking ribs stop a bystander from doing CPR? like is it a legitimate concern?"
+      ],
+      "acknowledgments": [
+        "okay yeah 'you can't make a dead person deader' is basically the vibe",
+        "right — the rib thing is real but it's also like... survivable compared to the alternative",
+        "that's actually really reassuring, i think a lot of people hold back because of this"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "no",
+          "don't stop",
+          "do it anyway",
+          "cardiac arrest",
+          "already dying",
+          "better than nothing",
+          "ribs can heal",
+          "broken ribs",
+          "survivable",
+          "brain death",
+          "4-6 minutes",
+          "oxygen",
+          "circulation",
+          "compress",
+          "2 inches",
+          "hard enough",
+          "effective",
+          "bystander CPR",
+          "survival rate",
+          "doubles"
+        ],
+        "mid": [
+          "do it",
+          "try",
+          "yes do CPR",
+          "risk worth it",
+          "rib issue",
+          "can heal",
+          "still try"
+        ],
+        "low": [
+          "don't do CPR",
+          "skip it",
+          "wait for EMS",
+          "ribs too risky",
+          "could hurt them",
+          "too dangerous"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 5,
+      "dimension": "airway_circulation",
+      "messages": [
+        "question about AEDs — my coworker said you should never use an AED on someone who has a pacemaker because it'll destroy it. true or false?",
+        "i saw someone hesitate to grab the AED at the gym because the person had a pacemaker. what's the actual guidance there?",
+        "real scenario: cardiac arrest, person has a visible pacemaker scar on their chest. do you use the AED or not?"
+      ],
+      "acknowledgments": [
+        "okay so the pacemaker thing is a myth that's actually costing lives — good to know",
+        "right, pad placement away from the device is the move, not skipping it entirely",
+        "that makes sense — the AED needs to do its job regardless of what's already implanted"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "yes",
+          "use it",
+          "still use",
+          "do not avoid",
+          "place pads",
+          "away from",
+          "avoid the device",
+          "2 inches",
+          "at least",
+          "adjust placement",
+          "still safe",
+          "still effective",
+          "use AED",
+          "ventricular fibrillation",
+          "shockable rhythm",
+          "cardiac arrest",
+          "defibrillate"
+        ],
+        "mid": [
+          "you can",
+          "it's fine",
+          "move the pads",
+          "be careful of placement",
+          "still works"
+        ],
+        "low": [
+          "don't use",
+          "avoid",
+          "skip AED",
+          "true",
+          "destroys",
+          "damages the pacemaker",
+          "won't work"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 6,
+      "dimension": "airway_circulation",
+      "messages": [
+        "okay mouth-to-mouth question: my instructor said you can skip rescue breaths if you're not trained and just do compressions. is that actually legit or a cop-out?",
+        "if you walked up to a cardiac arrest and you're not confident about rescue breaths — compression-only CPR, yay or nay?",
+        "i saw a 'hands only CPR' poster at my office and i'm like... is that actually as good as real CPR? or is it just for people too scared to do mouth-to-mouth?"
+      ],
+      "acknowledgments": [
+        "okay so hands-only is genuinely endorsed, i thought it was a shortcut",
+        "right — in the first few minutes especially, compressions are doing most of the work",
+        "that actually makes it way less intimidating to jump in"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "hands-only",
+          "compression-only",
+          "valid",
+          "endorsed",
+          "AHA",
+          "American Heart",
+          "recommended",
+          "adult",
+          "witnessed",
+          "cardiac",
+          "first few minutes",
+          "oxygenated blood",
+          "still circulating",
+          "do something",
+          "better than nothing",
+          "untrained",
+          "bystander",
+          "guidelines"
+        ],
+        "mid": [
+          "acceptable",
+          "okay",
+          "fine",
+          "yes do it",
+          "skip rescue breaths",
+          "just compress"
+        ],
+        "low": [
+          "not as good",
+          "cop-out",
+          "not effective",
+          "need rescue breaths",
+          "not real CPR",
+          "don't bother"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 7,
+      "dimension": "trauma_triage",
+      "messages": [
+        "okay this one's from a movie: someone gets stabbed and the other person yanks out the knife to help. good instinct or terrible idea?",
+        "i've seen people in shows pull out knives or objects from stab wounds — is that actually what you'd do or is it always wrong?",
+        "real question: if you come across someone with an impaled object — knife, glass, whatever — do you remove it or leave it?"
+      ],
+      "acknowledgments": [
+        "okay so the movies have been lying to us this whole time",
+        "right — the object is basically acting as a plug and pulling it is the worst move",
+        "that's so counterintuitive but it makes sense when you think about it"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "leave it",
+          "don't remove",
+          "do not pull",
+          "stabilize",
+          "impaled",
+          "tamponade",
+          "plug",
+          "bleeding",
+          "hemorrhage",
+          "pressure around",
+          "immobilize",
+          "leave in place",
+          "control bleeding",
+          "not remove",
+          "never remove",
+          "pack around"
+        ],
+        "mid": [
+          "usually leave",
+          "depends",
+          "keep in",
+          "don't touch",
+          "be careful",
+          "don't pull"
+        ],
+        "low": [
+          "pull it out",
+          "remove it",
+          "take it out",
+          "yank it",
+          "yes remove"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 8,
+      "dimension": "trauma_triage",
+      "messages": [
+        "tourniquet question: i've always heard that using a tourniquet means the person will lose the limb — is that actually true or is it a myth that stops people from using them?",
+        "my dad said 'never put a tourniquet on someone unless you want them to lose the arm' — is that still the medical consensus?",
+        "real talk: does applying a tourniquet in a field emergency actually cause limb loss? how do you handle that concern?"
+      ],
+      "acknowledgments": [
+        "okay so the tourniquet fear is basically killing people — that's important context",
+        "right, that's a big myth that comes from like... WWII era medicine being passed down",
+        "so the 'limb loss' worry is real but massively overstated compared to the bleeding out risk"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "myth",
+          "outdated",
+          "not true",
+          "use it",
+          "apply",
+          "life over limb",
+          "bleed out",
+          "exsanguination",
+          "arterial",
+          "hemorrhage",
+          "2 hours",
+          "time limit",
+          "military",
+          "TCCC",
+          "battlefield",
+          "high and tight",
+          "correct use",
+          "properly applied",
+          "direct pressure first",
+          "limb loss rare"
+        ],
+        "mid": [
+          "risk worth it",
+          "rarely lose limb",
+          "bleeding too dangerous",
+          "in an emergency",
+          "last resort",
+          "outdated advice"
+        ],
+        "low": [
+          "true",
+          "will lose limb",
+          "avoid",
+          "don't use",
+          "dangerous",
+          "never use tourniquet"
+        ],
+        "length_mid": 30
+      }
+    },
+    {
+      "id": 9,
+      "dimension": "trauma_triage",
+      "messages": [
+        "burn care question: if someone has a bad burn, my class said to put ice on it. that feels right — cold on hot — but you'd know better",
+        "okay first instinct for a burn is to put ice on it. my first aid card literally says that. is that actually correct?",
+        "someone in my office got a bad burn last month and people were debating — ice, cold water, butter? what's the right call?"
+      ],
+      "acknowledgments": [
+        "okay so ice is actually making things worse — i would not have guessed that",
+        "right, the cool running water thing is so simple but it's what actually works",
+        "glad i asked — i've definitely been in the 'grab the ice' camp my whole life"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "cool water",
+          "running water",
+          "cold water",
+          "not ice",
+          "no ice",
+          "avoid ice",
+          "no butter",
+          "no toothpaste",
+          "no cream",
+          "do not use ice",
+          "frostbite",
+          "vasoconstriction",
+          "tissue damage",
+          "20 minutes",
+          "lukewarm",
+          "cool not cold",
+          "cover loosely",
+          "wrap"
+        ],
+        "mid": [
+          "water not ice",
+          "rinse",
+          "cool it down",
+          "run under water",
+          "don't use ice"
+        ],
+        "low": [
+          "use ice",
+          "put ice",
+          "ice pack",
+          "butter",
+          "put butter",
+          "cool cream",
+          "toothpaste"
+        ],
+        "length_mid": 20
+      }
+    },
+    {
+      "id": 10,
+      "dimension": "protocols",
+      "messages": [
+        "okay scope of practice question: what's the actual difference between a basic EMT and a paramedic? like what can one do that the other can't?",
+        "genuine question from someone who doesn't know the system: EMT vs. paramedic — is it just experience level or are there actual legal differences in what they can do?",
+        "my cousin is an EMT and wants to be a paramedic — can you explain what actually changes when you move up? like medically, what's different?"
+      ],
+      "acknowledgments": [
+        "right, so paramedic is genuinely a different scope, not just 'more experienced EMT'",
+        "okay so the medication and ALS interventions are the big dividing line",
+        "that actually makes the career path make more sense — it's a real skill and scope jump"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "scope of practice",
+          "ALS",
+          "BLS",
+          "advanced life support",
+          "basic life support",
+          "medications",
+          "IV",
+          "intubate",
+          "intubation",
+          "drug administration",
+          "interpret",
+          "EKG",
+          "12-lead",
+          "cardiac monitoring",
+          "paramedic",
+          "invasive",
+          "needle decompression",
+          "surgical airway",
+          "state",
+          "medical director"
+        ],
+        "mid": [
+          "more training",
+          "more skills",
+          "advanced",
+          "more certifications",
+          "different level",
+          "more procedures"
+        ],
+        "low": [
+          "same thing",
+          "just experience",
+          "same skills",
+          "no real difference",
+          "just title",
+          "not much different"
+        ],
+        "length_mid": 30
+      }
+    },
+    {
+      "id": 11,
+      "dimension": "protocols",
+      "messages": [
+        "last actual question before the self-rate: if you're on scene and you're not sure what to do, can you just call medical control and ask? or is that not how it works?",
+        "i'm curious — in a real call, do EMTs have to follow a script or can they call a doctor for guidance on what to do?",
+        "real talk: what's medical direction actually mean in practice? like can you call for orders mid-call?"
+      ],
+      "acknowledgments": [
+        "okay so there's both a standing protocol layer AND a live consult option — more flexible than i thought",
+        "right, so medical control is a real lifeline when you're in a gray zone",
+        "that's actually really reassuring — it's not all on the EMT to know every answer"
+      ],
+      "scorer": {
+        "type": "keyword",
+        "high": [
+          "medical control",
+          "online medical direction",
+          "offline",
+          "standing orders",
+          "protocols",
+          "call for orders",
+          "physician",
+          "medical director",
+          "consult",
+          "base hospital",
+          "radio",
+          "can call",
+          "yes",
+          "online direction",
+          "contact",
+          "guidance"
+        ],
+        "mid": [
+          "yes you can",
+          "sometimes",
+          "depends",
+          "for complex",
+          "if unsure",
+          "guidelines"
+        ],
+        "low": [
+          "no",
+          "can't call",
+          "must follow script",
+          "no contact",
+          "on your own",
+          "no support"
+        ],
+        "length_mid": 25
+      }
+    },
+    {
+      "id": 12,
+      "dimension": null,
+      "messages": [
+        "LAST ONE i promise — okay honestly: how confident are you in your pre-hospital emergency knowledge? like 1-10, no ego 😬",
+        "okay final question, be real with me: if you had to rate your emergency response knowledge from 1 (learned everything from Grey's Anatomy) to 10 (could pass the NREMT tomorrow), where are you?",
+        "alright last one: how solid do you actually feel about emergency care knowledge — 1 being 'i panic and Google things' to 10 being 'i could teach this class'"
+      ],
+      "acknowledgments": [
+        "okay okay noted. let me add all this up real quick...",
+        "fair enough! give me a sec to tally your score...",
+        "got it — let me see how you did overall 🚑"
+      ],
+      "scorer": null
+    }
+  ],
+  "overall_labels": [
+    {
+      "min": 90,
+      "text": "excellent clinical knowledge — you're operating at a near-NREMT-ready level 🚑"
+    },
+    {
+      "min": 75,
+      "text": "solid foundation — strong instincts with a few gaps to close 💪"
+    },
+    {
+      "min": 60,
+      "text": "good awareness building into real knowledge — above average for a non-clinician 🩺"
+    },
+    {
+      "min": 45,
+      "text": "decent instincts, some important myths to unpack — very fixable 📈"
+    },
+    {
+      "min": 30,
+      "text": "some of those TV shows have been doing you dirty 😅 — but all fixable with the right training"
+    },
+    {
+      "min": 0,
+      "text": "okay we need to talk 💀 — but this is exactly why EMT training exists. seriously no judgment."
+    }
+  ],
+  "feedback_templates": {
+    "high": "Strong command of this clinical area — you're demonstrating knowledge at a near-professional level.",
+    "mid": "Good instincts here. A focused review of current guidelines would sharpen your responses.",
+    "low": "This is a growth area — pre-hospital care has evolved significantly and some common 'wisdom' is outdated. NREMT prep materials cover this well."
+  }
+}

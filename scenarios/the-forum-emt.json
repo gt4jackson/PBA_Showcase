@@ -1,0 +1,91 @@
+{
+  "construct_id": "ems_team_decision",
+  "construct_name": "EMS Team Decision-Making",
+  "construct_description": "The ability to evaluate competing clinical and operational perspectives, engage constructively with team members, and drive toward a sound protocol recommendation — a core competency for paramedics and EMS supervisors involved in quality improvement and system-level decisions.",
+
+  "collaboration_construct": {
+    "id": "collaboration",
+    "name": "Collaboration Quality",
+    "description": "How effectively the participant engages with teammates — building on ideas, challenging constructively, and synthesizing toward consensus.",
+    "dimensions": [
+      { "id": "engagement",   "name": "Engagement",   "icon": "💬", "description": "Actively participates and responds to teammates",         "max_score": 25 },
+      { "id": "building",     "name": "Building",     "icon": "🧱", "description": "References, quotes, and extends others' ideas",             "max_score": 25 },
+      { "id": "challenging",  "name": "Challenging",  "icon": "⚡", "description": "Pushes back constructively with clinical reasoning",        "max_score": 25 },
+      { "id": "synthesizing", "name": "Synthesizing", "icon": "🔗", "description": "Combines viewpoints and moves toward a decision",           "max_score": 25 }
+    ]
+  },
+
+  "domain_dimensions": [
+    { "id": "clinical_reasoning",  "name": "Clinical Reasoning",   "icon": "🩺", "description": "Applies clinical evidence and protocol knowledge to the decision",           "max_score": 25 },
+    { "id": "risk_assessment",     "name": "Risk Assessment",      "icon": "🛡️", "description": "Identifies operational, patient safety, and liability risks in the options",  "max_score": 25 },
+    { "id": "evidence_use",        "name": "Evidence Use",         "icon": "📊", "description": "References outcome data, protocols, or guidelines in arguments",             "max_score": 25 },
+    { "id": "decision_quality",    "name": "Decision Quality",     "icon": "🎯", "description": "Final recommendation is well-justified, clinically sound, and operational",   "max_score": 25 }
+  ],
+
+  "scenario": {
+    "title": "The Field Sedation Decision",
+    "channel_name": "protocol-review",
+    "prompt": "Your EMS quality team must decide whether to recommend that the medical director formally add ketamine to the paramedic formulary for pre-hospital sedation. The agency has been operating under informal 'permission' for select paramedics — but three recent incidents have made it clear the agency needs a formal, consistent protocol. You need a recommendation for the medical director by end of shift.",
+    "user_role": { "name": "You", "title": "Paramedic / QI Team Member", "color": "#f43f5e" },
+
+    "teammates": [
+      { "id": "chen",    "name": "Chen",    "title": "Field Supervisor / Senior Paramedic", "color": "#4dd3fe", "avatar": "🚑", "trait": "Clinically confident and protocol-focused — skeptical of anything that adds liability without clear patient benefit, but respects strong evidence" },
+      { "id": "torres",  "name": "Torres",  "title": "EMS Educator / Training Officer",     "color": "#f59e0b", "avatar": "📋", "trait": "Focused on training feasibility and crew competency — wants to say yes but needs to know the training infrastructure can support it" },
+      { "id": "reeves",  "name": "Reeves",  "title": "EMS Medical Director's Liaison",      "color": "#9e9eff", "avatar": "⚕️",  "trait": "Pragmatic and policy-minded — needs a recommendation the medical director can actually sign off on and defend" }
+    ],
+
+    "decision_options": [
+      { "id": "full_adopt",      "name": "Full Adoption — All Paramedics, All Indications",       "cost_k": 0, "desc": "Ketamine added to formulary for pain management, sedation, and behavioral emergencies. All certified paramedics. Standing orders for pain; online medical control for behavioral indications." },
+      { "id": "limited_adopt",   "name": "Limited Adoption — Trauma/Pain Only, No Behavioral",   "cost_k": 0, "desc": "Ketamine approved for pain management and post-intubation sedation only. Behavioral emergency indication excluded pending further evidence review." },
+      { "id": "pilot",           "name": "Pilot Program — Selected Paramedics, 90 Days",          "cost_k": 0, "desc": "Approve 8–10 senior paramedics for a 90-day pilot with mandatory QI tracking. Expand based on outcomes." },
+      { "id": "defer",           "name": "Defer — Complete Training Infrastructure First",        "cost_k": 0, "desc": "No formal adoption until a full training module and competency evaluation is completed. Estimated timeline: 60–90 days." }
+    ],
+
+    "reference_data_html": "<h4>Ketamine Pre-Hospital Evidence Summary</h4><table><tr><th>Indication</th><th>Evidence Level</th><th>NAEMSP Position</th><th>Notable Risk</th></tr><tr><td>Trauma pain management</td><td>Strong (meta-analysis, RCTs)</td><td>Endorsed</td><td>Low at correct dosing</td></tr><tr><td>Post-intubation sedation</td><td>Moderate</td><td>Endorsed</td><td>Emergence reactions (8%)</td></tr><tr><td>Behavioral emergencies</td><td>Limited / Mixed</td><td>Conditional (online MD control)</td><td>Elevated AE rate, litigation history</td></tr><tr><td>Procedural sedation</td><td>Moderate</td><td>Endorsed</td><td>Laryngospasm (2%)</td></tr></table><h4>Neighboring Agency Outcomes (12 months)</h4><table><tr><th>Agency</th><th>Uses</th><th>Adverse Events</th><th>Medical Control Activations</th></tr><tr><td>Metro Fire EMS</td><td>214</td><td>6 (2.8%)</td><td>41 (behavioral indication)</td></tr><tr><td>Valley Ambulance</td><td>88</td><td>2 (2.3%)</td><td>18</td></tr></table><h4>Training Requirements (Based on Regional Precedent)</h4><ul><li>Initial training: 4–6 hours (didactic + simulation)</li><li>Annual recertification: ~2 hours</li><li>Instructor qualification: requires paramedic + ketamine clinical experience</li><li>All neighboring agencies: 'manageable' training burden</li></ul><h4>Recent Agency Incidents (Catalyst for this Discussion)</h4><ul><li>Incident 1: Paramedic used ketamine for excited delirium — appropriate outcome, but no documentation of medical control contact</li><li>Incident 2: Ketamine administered for pain — dosing was correct but there was no standing order authorizing it</li><li>Incident 3: Paramedic declined to use ketamine for significant trauma pain — patient arrived in severe distress. Paramedic cited 'no protocol' as reason for withholding.</li></ul>",
+
+    "agenda": [
+      { "id": "a1", "label": "Round 1", "title": "Assess the Incidents",  "desc": "Understand what the three incidents reveal about the current gap." },
+      { "id": "a2", "label": "Round 2", "title": "Debate the Options",    "desc": "Surface the tradeoffs. What are we actually deciding and who bears the risk?" },
+      { "id": "a3", "label": "Round 3", "title": "Land the Recommendation", "desc": "Converge on what the medical director can sign." }
+    ],
+
+    "message_schedule": [
+      {
+        "id": "m1", "from": "chen", "round": 1, "delay": 0,
+        "text": "The three incidents say the same thing: we have paramedics using ketamine without a protocol, paramedics not using it when they should, and no consistent documentation when it does happen. That's a liability problem regardless of where we land on the clinical question. We can't keep operating in this gray zone."
+      },
+      {
+        "id": "m2", "from": "torres", "round": 1, "delay": 4000,
+        "text": "I want to be honest about where our crew stands on training. We have strong paramedics who've been using ketamine informally — they're already competent. But we also have newer paramedics who've never touched it. Any protocol we adopt has to account for that gap, or we're creating a different kind of inconsistency problem."
+      },
+      {
+        "id": "m3", "from": "reeves", "round": 1, "delay": 8000,
+        "text": "From a medical director standpoint, the ask is: give me something I can sign and defend. The NAEMSP position gives us cover on pain management and post-intubation sedation — that's a strong endorsement. The behavioral emergency indication is where I'm cautious. There's litigation history nationally on that one and our medical director is going to ask about it specifically."
+      },
+      {
+        "id": "m4", "from": "chen", "round": 2, "delay": 3000,
+        "text": "I want to push on the pilot option. We're not a research agency — a 90-day pilot with 8 paramedics doesn't give us enough data to change anything meaningful, and in the meantime we still have the same protocol gap for the other 40 paramedics. The pilot feels like a way to delay the decision rather than make it."
+      },
+      {
+        "id": "m5", "from": "torres", "round": 2, "delay": 7000,
+        "text": "Chen's right that a full pilot is probably overkill — but I don't think we can do 'full adoption, all paramedics' without the training module. Incident 3 tells me some of our crew genuinely doesn't know when to use this. A protocol without training just means the wrong people use it confidently and the right people still hesitate."
+      },
+      {
+        "id": "m6", "from": "reeves", "round": 2, "delay": 11000,
+        "text": "Here's what I keep coming back to: the limited adoption option — pain and post-intubation only, no behavioral — is actually defensible with strong evidence and keeps us out of the contested territory. We can always add behavioral later once we have our own QI data. Does anyone have a clinical argument for why we *need* behavioral in the first protocol?"
+      },
+      {
+        "id": "m7", "from": "chen", "round": 3, "delay": 2000,
+        "text": "I'm landing on limited adoption with a mandatory training requirement before any paramedic uses it independently. Not a 90-day pilot — full adoption, but conditioned on completing the module. That solves the 'paramedics hesitating because no protocol' problem immediately for those who are trained, and gives Torres the training runway for everyone else."
+      },
+      {
+        "id": "m8", "from": "torres", "round": 3, "delay": 6000,
+        "text": "That works for me if we're specific about what 'training complete' means — written competency, simulation pass, not just hours logged. And we need someone accountable for tracking who's cleared. I can build the module in 3 weeks if we decide today."
+      },
+      {
+        "id": "m9", "from": "reeves", "round": 3, "delay": 10000,
+        "text": "That's what I'd take to the medical director: limited adoption (pain + post-intubation sedation), standing orders for trained paramedics, online medical control for any behavioral emergency use until we revisit, and a 4–6 hour competency module as a prerequisite. That's a recommendation he can sign. What's the group's final position?"
+      }
+    ]
+  }
+}

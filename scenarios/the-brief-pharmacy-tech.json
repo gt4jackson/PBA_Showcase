@@ -1,0 +1,129 @@
+{
+  "construct_id": "pharmacy_formulary_analysis",
+  "construct_name": "Formulary & Drug Utilization Analysis",
+  "construct_description": "The ability to evaluate clinical evidence, cost data, and dispensing patterns to produce a clear, evidence-based formulary recommendation — a core competency for pharmacy technicians working in formulary management, health plan administration, or institutional pharmacy settings.",
+  "pba_category": {
+    "id": 7,
+    "name": "AI-Augmented Performance Tasks",
+    "description": "Tasks where the test-taker uses AI tools as part of their workflow. Assessment focuses on how well they leverage and evaluate AI, not just the final output."
+  },
+  "secondary_dimensions": {
+    "stakes": "High (patient access / cost / safety)",
+    "temporal": "Single-session, 20 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated PBM/formulary committee scenario)",
+    "scoring": "Hybrid (rule-based + optional LLM judge)"
+  },
+  "skills": [
+    {
+      "id": "clinical_analysis",
+      "name": "Clinical Analysis",
+      "icon": "🔬",
+      "description": "Interpreting therapeutic equivalence data, efficacy studies, and safety profiles.",
+      "color": "#4dd3fe",
+      "weight": 0.30
+    },
+    {
+      "id": "cost_benefit",
+      "name": "Cost-Benefit Assessment",
+      "icon": "💰",
+      "description": "Weighing drug cost, member impact, and formulary tier strategy.",
+      "color": "#f59e0b",
+      "weight": 0.25
+    },
+    {
+      "id": "critical_evaluation",
+      "name": "Critical Evaluation",
+      "icon": "🔍",
+      "description": "Identifying sponsor bias in studies, catching AI hallucinations, and assessing source quality.",
+      "color": "#f43f5e",
+      "weight": 0.25
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "icon": "✍️",
+      "description": "Writing a concise, evidence-backed recommendation a P&T committee can act on.",
+      "color": "#9e9eff",
+      "weight": 0.20
+    }
+  ],
+  "scenario": {
+    "id": "formulary_brief",
+    "title": "The Formulary Brief",
+    "client": "Cascade Health Plan — Pharmacy & Therapeutics Committee",
+    "estimated_minutes": 20,
+    "budget_tokens": 120,
+    "briefing": "Cascade Health Plan's Pharmacy & Therapeutics (P&T) Committee is evaluating whether to add a new GLP-1 receptor agonist, semaglutide injection (Wegovy), to the preferred formulary tier for obesity management. Currently, the plan covers an older GLP-1 agent (liraglutide/Saxenda) at Tier 2.\n\nYou've been asked to review the clinical evidence, utilization data, and cost projections, then write a one-page Formulary Brief with a clear recommendation: Add to Preferred Tier, Add with Conditions (prior auth, quantity limits), or Do Not Add at this time.\n\nYour reference materials are in the workspace. The AI Workbench is available — but use it carefully. One figure in the materials has been disputed, and AI tools have known limitations.",
+    "inbox": [
+      {
+        "id": "email_1",
+        "from": "Dr. Chen, Pharmacy Director",
+        "subject": "Wegovy Formulary Brief — P&T Meeting Thursday",
+        "body": "The committee needs a brief by EOD Wednesday. The core question: does the clinical benefit of semaglutide justify the cost delta over our current preferred GLP-1 agent? There's been a lot of noise about GLP-1s lately — member requests are up significantly. I need a recommendation that's grounded in the actual evidence, not the hype. Watch for sponsor-funded studies and flag any data quality concerns."
+      },
+      {
+        "id": "email_2",
+        "from": "Utilization Management Team",
+        "subject": "FYI — Current GLP-1 Utilization",
+        "body": "For context: we currently have approximately 2,400 members on liraglutide (Saxenda). Projected demand for semaglutide (Wegovy) if added to preferred tier: 4,000–6,000 members in year 1 based on benchmark plans. Novo Nordisk has offered a rebate structure contingent on preferred placement — details in the cost documents. Prior auth for BMI ≥ 30 (or ≥ 27 with comorbidity) is standard across comparable plans."
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_clinical",
+        "tab_label": "Clinical Evidence",
+        "type": "Randomized Controlled Trial",
+        "reliability": "high",
+        "title": "Semaglutide 2.4 mg vs. Liraglutide 3.0 mg for Weight Loss: STEP 8 Trial",
+        "author": "Rubino, Davies et al.",
+        "publication": "JAMA, 2022",
+        "content_html": "<p>This head-to-head randomized controlled trial (N = 338) compared once-weekly semaglutide 2.4 mg (Wegovy) to once-daily liraglutide 3.0 mg (Saxenda) in adults with obesity over 68 weeks.</p><p><strong>Key findings:</strong></p><ul><li>Mean weight loss with semaglutide: <strong>15.8% of body weight</strong></li><li>Mean weight loss with liraglutide: <strong>6.4% of body weight</strong></li><li>Semaglutide participants were more likely to achieve ≥10% weight loss: <strong>70.9% vs. 25.6%</strong></li><li>Adverse event profile was comparable — most common: nausea, vomiting, diarrhea (both agents). Serious adverse events: 9.9% semaglutide vs. 5.9% liraglutide.</li><li>Semaglutide requires once-weekly injection; liraglutide requires once-daily — adherence implications favored semaglutide.</li></ul><p><strong>Limitations:</strong> Trial was <em>funded by Novo Nordisk</em> (manufacturer of Wegovy). Sample size relatively small. 68-week follow-up doesn't capture long-term weight maintenance.</p>"
+      },
+      {
+        "id": "src_cost",
+        "tab_label": "Cost Analysis",
+        "type": "Plan Actuarial Data",
+        "reliability": "moderate",
+        "title": "GLP-1 Formulary Cost Projection — Cascade Health Plan",
+        "author": "Cascade Health Plan Actuarial Team",
+        "publication": "Internal Report, 2025",
+        "content_html": "<table><tr><th>Drug</th><th>WAC/month</th><th>Net cost after rebate</th><th>Projected members Y1</th><th>Projected annual spend</th></tr><tr><td>Liraglutide (Saxenda) — current Tier 2</td><td>$1,340</td><td>$880</td><td>2,400</td><td>$25.3M</td></tr><tr><td>Semaglutide (Wegovy) — preferred tier option</td><td>$1,650</td><td>$940 (with rebate)</td><td>4,000–6,000</td><td>$45.1M–$67.7M</td></tr></table><p><strong>Notes:</strong></p><ul><li>Rebate from Novo Nordisk is contingent on preferred tier placement — if not preferred, net cost rises to approximately $1,420/month</li><li>Prior auth with BMI criteria would limit utilization to clinically eligible members</li><li>Potential medical cost offset (reduced cardiovascular events, diabetes progression): estimated $180–$340/member/year based on SELECT trial cardiovascular outcomes data — <em>this figure is contested; the SELECT trial studied a subset with established cardiovascular disease, not general obesity population</em></li><li>Competitor benchmark: 67% of comparable plans have added semaglutide to preferred tier as of Q4 2025</li></ul>"
+      },
+      {
+        "id": "src_safety",
+        "tab_label": "Safety & Guidelines",
+        "type": "Clinical Guideline",
+        "reliability": "high",
+        "title": "AACE/ACE Obesity Clinical Practice Guidelines — GLP-1 Receptor Agonists",
+        "author": "American Association of Clinical Endocrinology",
+        "publication": "Endocrine Practice, 2023",
+        "content_html": "<p>The AACE/ACE guidelines endorse GLP-1 receptor agonists as first-line pharmacotherapy for obesity in appropriate candidates.</p><p><strong>Endorsed indications:</strong> BMI ≥ 30, or BMI ≥ 27 with weight-related comorbidity (T2DM, hypertension, dyslipidemia, OSA)</p><p><strong>Drug selection guidance:</strong> Semaglutide 2.4 mg is listed as a preferred agent based on superior weight loss efficacy in head-to-head data. Liraglutide remains a guideline-endorsed alternative.</p><p><strong>Safety considerations:</strong></p><ul><li>Contraindicated: personal/family history of medullary thyroid carcinoma or MEN2 syndrome</li><li>Pancreatitis risk: elevated — requires counseling</li><li>GI adverse events common in first weeks — mitigated by dose escalation protocol</li><li>Semaglutide's once-weekly dosing is associated with better adherence in real-world data vs. once-daily liraglutide</li></ul><p><strong>P&T recommendation:</strong> Prior authorization criteria and quantity limits are appropriate and aligned with clinical eligibility standards.</p>"
+      },
+      {
+        "id": "src_advocacy",
+        "tab_label": "Member Advocacy Letter",
+        "type": "Stakeholder Input",
+        "reliability": "low",
+        "title": "Letter from Member Advocacy Coalition",
+        "author": "Patient Access Now Coalition",
+        "publication": "Submitted to Cascade Health Plan Board, 2025",
+        "content_html": "<p>We represent members who are currently unable to access semaglutide due to formulary tier restrictions. We urge the P&T committee to add Wegovy to the preferred tier without prior authorization requirements.</p><p>Our concerns:</p><ul><li>Prior authorization creates access barriers for lower-income members who cannot navigate the approval process</li><li>Obesity is a disease — restricting effective treatment is discriminatory</li><li>Semaglutide has been shown to reduce cardiovascular mortality by 20% — all members deserve access to this benefit</li><li>Plans that have added semaglutide to preferred tier have seen improved member satisfaction scores</li></ul><p><em>Note: The '20% cardiovascular mortality reduction' figure is drawn from the SELECT trial, which studied patients with pre-existing cardiovascular disease — it does not apply to the general obesity population. This figure should not be used to justify unrestricted formulary access.</em></p>"
+      }
+    ],
+    "ai_workbench": {
+      "enabled": true,
+      "persona": "Formulary Research Assistant",
+      "known_limitation": "The AI may present the SELECT trial cardiovascular benefit data as applying broadly to obesity patients — this is inaccurate. The SELECT trial studied patients with established cardiovascular disease; the benefit does not generalize to all patients with obesity.",
+      "seed_response": "Semaglutide shows meaningfully superior weight loss efficacy vs. liraglutide in head-to-head data. The cost delta is significant but partially offset by a rebate structure and potential downstream medical savings. AACE guidelines list it as a preferred agent. The main considerations are the utilization volume risk and whether prior auth criteria are structured correctly to control spend while ensuring clinical access."
+    },
+    "rubric": {
+      "claim_clarity": "Makes a clear Add / Add with Conditions / Do Not Add recommendation",
+      "evidence_use": "References specific efficacy, safety, or cost data from the materials",
+      "cost_awareness": "Addresses the utilization volume risk and/or rebate structure",
+      "condition_specificity": "If recommending conditional add, specifies prior auth criteria or quantity limits",
+      "source_discrimination": "Does not treat the advocacy letter's cardiovascular mortality claim as valid evidence without qualification"
+    }
+  }
+}

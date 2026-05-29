@@ -1,0 +1,100 @@
+{
+  "construct_id": "ems_data_reasoning",
+  "construct_name": "EMS Operations Data Reasoning",
+  "construct_description": "The ability to explore, interpret, and draw sound conclusions from emergency medical services performance data — including recognizing patterns in response times and patient outcomes, questioning operational root causes, and translating analysis into actionable recommendations for EMS system improvement.",
+  "pba_category": {
+    "id": 3,
+    "name": "Process/Demonstration Assessment",
+    "description": "Tasks that assess the process of problem-solving, not just the final answer. The system observes and logs how you investigate."
+  },
+  "secondary_dimensions": {
+    "stakes": "High (patient outcomes / operations)",
+    "temporal": "Single-session, 12-15 min",
+    "collaboration": "Individual",
+    "problem_structure": "Ill-structured",
+    "authenticity": "Proximal (simulated regional EMS agency data)",
+    "scoring": "Hybrid (rule-based + process quality)"
+  },
+  "dimensions": [
+    {
+      "id": "exploration",
+      "name": "Exploration",
+      "icon": "🔍",
+      "description": "Do you examine the data broadly before jumping to conclusions?",
+      "color": "#f43f5e",
+      "weight": 0.2
+    },
+    {
+      "id": "pattern_recognition",
+      "name": "Pattern Recognition",
+      "icon": "📊",
+      "description": "Can you identify trends, outliers, and meaningful patterns across units and quarters?",
+      "color": "#4dd3fe",
+      "weight": 0.25
+    },
+    {
+      "id": "hypothesis_testing",
+      "name": "Hypothesis Testing",
+      "icon": "🧪",
+      "description": "Do you test your ideas against the data rather than assuming?",
+      "color": "#9e9eff",
+      "weight": 0.25
+    },
+    {
+      "id": "interpretation",
+      "name": "Interpretation & Recommendation",
+      "icon": "💡",
+      "description": "Can you translate findings into clear, evidence-backed operational recommendations?",
+      "color": "#468254",
+      "weight": 0.3
+    }
+  ],
+  "dataset": {
+    "name": "Tri-County EMS — Unit Performance Report Q1–Q4",
+    "description": "Response time and cardiac arrest survival data across 4 EMS district units. Average response times spiked in one district in Q3 — figure out which unit is underperforming, why survival rates correlate, and what to recommend.",
+    "columns": [
+      { "id": "unit",             "label": "Unit",                     "type": "text" },
+      { "id": "quarter",          "label": "Quarter",                  "type": "text" },
+      { "id": "avg_response_min", "label": "Avg Response Time (min)",  "type": "number" },
+      { "id": "call_volume",      "label": "Call Volume",              "type": "number" },
+      { "id": "cardiac_survival", "label": "Cardiac Arrest Survival (%)", "type": "number" },
+      { "id": "on_scene_min",     "label": "Avg On-Scene Time (min)",  "type": "number" },
+      { "id": "unit_availability","label": "Unit Availability (%)",    "type": "number" },
+      { "id": "crew_staffed",     "label": "Crew Hours Staffed",       "type": "number" }
+    ],
+    "rows": [
+      { "unit": "Unit A — Metro North",    "quarter": "Q1", "avg_response_min": 6.2, "call_volume": 412, "cardiac_survival": 34, "on_scene_min": 18.4, "unit_availability": 92, "crew_staffed": 1680 },
+      { "unit": "Unit A — Metro North",    "quarter": "Q2", "avg_response_min": 6.0, "call_volume": 438, "cardiac_survival": 36, "on_scene_min": 17.9, "unit_availability": 94, "crew_staffed": 1680 },
+      { "unit": "Unit A — Metro North",    "quarter": "Q3", "avg_response_min": 6.5, "call_volume": 461, "cardiac_survival": 33, "on_scene_min": 19.1, "unit_availability": 90, "crew_staffed": 1596 },
+      { "unit": "Unit A — Metro North",    "quarter": "Q4", "avg_response_min": 6.3, "call_volume": 429, "cardiac_survival": 35, "on_scene_min": 18.2, "unit_availability": 93, "crew_staffed": 1680 },
+      { "unit": "Unit B — Riverside",      "quarter": "Q1", "avg_response_min": 7.8, "call_volume": 289, "cardiac_survival": 28, "on_scene_min": 21.2, "unit_availability": 88, "crew_staffed": 1344 },
+      { "unit": "Unit B — Riverside",      "quarter": "Q2", "avg_response_min": 7.5, "call_volume": 301, "cardiac_survival": 29, "on_scene_min": 20.8, "unit_availability": 89, "crew_staffed": 1344 },
+      { "unit": "Unit B — Riverside",      "quarter": "Q3", "avg_response_min": 11.4, "call_volume": 334, "cardiac_survival": 18, "on_scene_min": 23.6, "unit_availability": 71, "crew_staffed": 1008 },
+      { "unit": "Unit B — Riverside",      "quarter": "Q4", "avg_response_min": 7.9, "call_volume": 298, "cardiac_survival": 27, "on_scene_min": 21.4, "unit_availability": 87, "crew_staffed": 1344 },
+      { "unit": "Unit C — East Valley",    "quarter": "Q1", "avg_response_min": 8.9, "call_volume": 198, "cardiac_survival": 24, "on_scene_min": 22.7, "unit_availability": 85, "crew_staffed": 1176 },
+      { "unit": "Unit C — East Valley",    "quarter": "Q2", "avg_response_min": 8.7, "call_volume": 204, "cardiac_survival": 25, "on_scene_min": 22.3, "unit_availability": 86, "crew_staffed": 1176 },
+      { "unit": "Unit C — East Valley",    "quarter": "Q3", "avg_response_min": 9.1, "call_volume": 211, "cardiac_survival": 23, "on_scene_min": 23.0, "unit_availability": 84, "crew_staffed": 1092 },
+      { "unit": "Unit C — East Valley",    "quarter": "Q4", "avg_response_min": 8.8, "call_volume": 206, "cardiac_survival": 24, "on_scene_min": 22.5, "unit_availability": 85, "crew_staffed": 1176 },
+      { "unit": "Unit D — Highland Rural", "quarter": "Q1", "avg_response_min": 12.1, "call_volume": 143, "cardiac_survival": 19, "on_scene_min": 24.8, "unit_availability": 82, "crew_staffed": 1008 },
+      { "unit": "Unit D — Highland Rural", "quarter": "Q2", "avg_response_min": 12.4, "call_volume": 151, "cardiac_survival": 18, "on_scene_min": 25.2, "unit_availability": 81, "crew_staffed": 1008 },
+      { "unit": "Unit D — Highland Rural", "quarter": "Q3", "avg_response_min": 13.0, "call_volume": 158, "cardiac_survival": 17, "on_scene_min": 25.9, "unit_availability": 79, "crew_staffed": 924 },
+      { "unit": "Unit D — Highland Rural", "quarter": "Q4", "avg_response_min": 12.3, "call_volume": 147, "cardiac_survival": 19, "on_scene_min": 24.6, "unit_availability": 83, "crew_staffed": 1008 }
+    ],
+    "insight_hints": [
+      "Unit B — Riverside had a dramatic Q3 spike: avg response time jumped from ~7.5 to 11.4 min",
+      "Unit B Q3 availability dropped to 71% — the lowest of any unit-quarter in the dataset",
+      "Unit B Q3 crew hours dropped from ~1344 to 1008 — suggesting a staffing reduction",
+      "Cardiac arrest survival in Unit B Q3 fell to 18% — lowest in the dataset",
+      "Response time and survival rate are strongly inversely correlated across the dataset",
+      "Unit D Highland Rural has persistently high response times — a structural geographic challenge, not a Q3 anomaly",
+      "Unit A Metro North is the best performer on response time and cardiac survival",
+      "Unit B recovered in Q4 — both response time and survival rate returned to near-baseline"
+    ]
+  },
+  "task": {
+    "title": "Tri-County EMS — Q3 Performance Review",
+    "briefing": "Tri-County Emergency Medical Services is reviewing Q3 performance across its four district units ahead of a county board presentation. Leadership has flagged that something happened in Q3 that affected response times and patient outcomes — but they don't know which unit, why, or how serious the impact was.\n\nYour job: explore the unit performance data, identify what went wrong and where, and write a brief recommendation for the board. Be specific — use the data.",
+    "writing_prompt": "Based on your analysis, write a 150–250 word memo to Tri-County EMS leadership identifying: (1) which unit had the most significant Q3 performance issue, (2) what the data suggests caused it, (3) the patient outcome impact, and (4) your recommended corrective action.",
+    "word_range": [150, 250]
+  }
+}
