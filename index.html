@@ -977,6 +977,37 @@ body {
       </div>
     </div>
 
+    <div class="task-card" id="card-augment" data-primary-cat="7" data-task-id="augment" data-desktop="augment.html" data-mobile="augment.html">
+      <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat7), var(--cat4));"></div>
+      <h3>Augment</h3>
+      <div class="task-card-badges">
+        <span class="task-card-badge cat-badge-7">Cat 7 — AI-Augmented</span>
+        <span class="task-card-badge cat-badge-4">Cat 4 — Simulation</span>
+      </div>
+      <p class="task-card-desc">Work through a queue of 5 real tasks and decide how AI should be involved in each — then execute. Scored on calibration: did you pick the right level of AI for the stakes?</p>
+      <div class="task-card-construct">
+        <div class="task-card-construct-label">Construct assessed</div>
+        <div class="task-card-construct-name">Human-AI Collaboration</div>
+        <div class="task-card-dims">
+          <span class="dim-tag">Calibration</span>
+          <span class="dim-tag">Prompt Quality</span>
+          <span class="dim-tag">Verification</span>
+          <span class="dim-tag">Judgment</span>
+        </div>
+      </div>
+      <div class="task-card-footer">
+        <span class="task-card-meta">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          ~15 min
+        </span>
+        <a class="task-card-action" id="action-augment" href="augment.html">
+          Start task
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <span class="construct-na-note">Not applicable for this construct</span>
+      </div>
+    </div>
+
     <div class="task-card" id="card-triage-sim" data-primary-cat="4" data-task-id="triage-sim" data-desktop="triage-sim.html" data-mobile="triage-sim.html">
       <div class="task-card-accent" style="background: linear-gradient(90deg, var(--cat4), #a78bfa);"></div>
       <h3>Triage Sim</h3><div class="task-card-badges">
@@ -1495,6 +1526,7 @@ const TASK_CONSTRUCT_MAP = {
     'rx-check':       { scenario: null, construct: 'Prescription Verification (ExCPT/PTCE)', dims: ['Allergy Screening','Drug Interactions','Duplicate Therapy','Pharmacist Communication'] },
     'soap-note':      { scenario: null, construct: 'Verbal Handoff', dims: ['Oral Communication','Clinical Completeness','Structured Reporting','Time Efficiency'] },
     'rx-verify':      { scenario: null, construct: 'Prescription Verification (ExCPT/PTCE)', dims: ['Prescription Validity','DEA Number Check','Sig Completeness','Dispensing Decision'] },
+    'augment':        { scenario: null, construct: 'Human-AI Collaboration', dims: ['Calibration','Prompt Quality','Verification','Judgment'] },
   },
   'ai-literacy': {
     'signal-check':   { scenario: 'scenarios/signal-check-ai-literacy.json', construct: 'AI Literacy', dims: ['AI Foundations','Responsible AI','Prompting & Interaction','Workflow & Application'] },
@@ -1506,6 +1538,7 @@ const TASK_CONSTRUCT_MAP = {
     'rx-check':       null,
     'soap-note':      null,
     'rx-verify':      null,
+    'augment':        { scenario: 'scenarios/augment-ai-literacy.json', construct: 'Human-AI Collaboration', dims: ['Calibration','Prompt Quality','Verification','Judgment'] },
   },
   'financial-literacy': {
     'signal-check':   { scenario: 'scenarios/signal-check-financial-literacy.json', construct: 'Financial Literacy', dims: ['Budgeting','Saving & Investing','Debt & Credit','Risk & Protection'] },
@@ -1517,6 +1550,7 @@ const TASK_CONSTRUCT_MAP = {
     'rx-check':       null,
     'soap-note':      { scenario: 'scenarios/soap-note-financial-literacy.json', construct: 'Client Situation Summary', dims: ['Oral Communication','Financial Completeness','Structured Reporting','Client Clarity'] },
     'rx-verify':      null,
+    'augment':        { scenario: 'scenarios/augment-financial-literacy.json', construct: 'Human-AI Collaboration', dims: ['Calibration','Prompt Quality','Verification','Judgment'] },
   },
   'project-management': {
     'signal-check':   { scenario: 'scenarios/signal-check-project-management.json', construct: 'Project Management', dims: ['Planning','Risk Management','Stakeholder Comms','Execution & Control'] },
@@ -1528,6 +1562,7 @@ const TASK_CONSTRUCT_MAP = {
     'rx-check':       null,
     'soap-note':      { scenario: 'scenarios/soap-note-project-management.json', construct: 'SBAR Status Briefing', dims: ['Oral Communication','Situation Clarity','Assessment Quality','Recommendation'] },
     'rx-verify':      null,
+    'augment':        { scenario: 'scenarios/augment-project-management.json', construct: 'Human-AI Collaboration', dims: ['Calibration','Prompt Quality','Verification','Judgment'] },
   },
   'emt': {
     'signal-check':   { scenario: 'scenarios/signal-check-emt.json', construct: 'Pre-Hospital Emergency Care (NREMT)', dims: ['Bystander & Scene Safety','Airway & Circulation','Trauma & Triage','Protocols & Scope'] },
@@ -1539,6 +1574,7 @@ const TASK_CONSTRUCT_MAP = {
     'rx-check':       null,
     'soap-note':      { scenario: 'scenarios/soap-note-emt.json', construct: 'EMS Patient Handoff (SOAP)', dims: ['Patient ID','Clinical Findings','Interventions','ETA Communication'] },
     'rx-verify':      null,
+    'augment':        { scenario: 'scenarios/augment-emt.json', construct: 'Human-AI Collaboration', dims: ['Calibration','Prompt Quality','Verification','Judgment'] },
   },
   'pharmacy-tech': {
     'signal-check':   { scenario: 'scenarios/signal-check-pharmacy-tech.json', construct: 'Pharmaceutical Knowledge (ExCPT/PTCE)', dims: ['Medication Safety','Drug Interactions','Dispensing Accuracy','Patient Education & Scope'] },
@@ -1550,6 +1586,7 @@ const TASK_CONSTRUCT_MAP = {
     'rx-check':       { scenario: 'scenarios/rx-check-pharmacy-tech.json', construct: 'Prescription Verification (ExCPT/PTCE)', dims: ['Allergy Screening','Drug Interactions','Duplicate Therapy','Pharmacist Communication'] },
     'soap-note':      { scenario: 'scenarios/soap-note-pharmacy-tech.json', construct: 'Medication Concern Escalation', dims: ['Patient ID','Drug Concern 1','Drug Concern 2','Pharmacist Ask'] },
     'rx-verify':      { scenario: 'scenarios/rx-verify-pharmacy-tech.json', construct: 'Prescription Verification (ExCPT/PTCE)', dims: ['Prescription Validity','DEA Number Check','Sig Completeness','Dispensing Decision'] },
+    'augment':        { scenario: 'scenarios/augment-pharmacy-tech.json', construct: 'Human-AI Collaboration', dims: ['Calibration','Prompt Quality','Verification','Judgment'] },
   }
 };
 
@@ -1563,7 +1600,8 @@ const TASK_BASE_URLS = {
   'triage-sim':     { desktop: 'triage-sim.html',      mobile: 'triage-sim.html' },
   'rx-check':       { desktop: 'rx-check.html',        mobile: 'rx-check.html' },
   'soap-note':      { desktop: 'soap-note.html',       mobile: 'soap-note.html' },
-  'rx-verify':      { desktop: 'rx-verify.html',       mobile: 'rx-verify.html' }
+  'rx-verify':      { desktop: 'rx-verify.html',       mobile: 'rx-verify.html' },
+  'augment':        { desktop: 'augment.html',         mobile: 'augment.html' }
 };
 
 let currentConstruct = 'all';

@@ -1,0 +1,74 @@
+{
+  "construct_id": "ai_augmentation",
+  "construct_name": "Human-AI Collaboration",
+  "construct_description": "Calibrate how much AI involvement is appropriate for each task given stakes, accountability, and context.",
+  "context": "You are a Project Manager at Cascade Digital Solutions. Work through your task queue for the day — each item requires you to decide how much AI involvement is appropriate.",
+  "tasks": [
+    {
+      "id": "t1",
+      "title": "Compile Sprint Velocity Metrics",
+      "briefing": "Engineering has shared raw data from the last 6 sprints in a spreadsheet — story points planned vs. completed, by team. You need to turn this into a clean metrics table for the weekly PM standup deck.",
+      "stakes": "low",
+      "stakes_reason": "Routine data compilation with no decisions attached — accuracy can be spot-checked quickly.",
+      "correct_ai_level": "ai-handles",
+      "correct_ai_reason": "Compiling structured data into a table is exactly what AI does reliably. A quick sanity check of the numbers is sufficient — you don't need to manually compile this.",
+      "ai_draft": "Sprint Velocity Summary (Sprints 1–6): Team Alpha averaged 42 points/sprint (87% completion rate). Team Beta averaged 38 points/sprint (79% completion rate). Team Gamma averaged 51 points/sprint (94% completion rate). Overall org velocity trend: +12% over the period. Notable variance: Sprint 4 saw a 31% dip across all teams coinciding with the infrastructure migration week.",
+      "teaching_point": "Data compilation and formatting tasks — especially from structured inputs — are low-risk, high-value AI candidates. Your job is to verify the output, not produce it.",
+      "writing_placeholder": "Compile the sprint velocity metrics table here..."
+    },
+    {
+      "id": "t2",
+      "title": "Vendor Performance Notice",
+      "briefing": "Your logistics vendor has missed four delivery windows in the past six weeks, causing project delays. You need to send a formal written notice that documents the failures, references the SLA terms, and signals potential contract consequences. This letter may be referenced in a contract dispute.",
+      "stakes": "high",
+      "stakes_reason": "A formal legal-adjacent document that may be used in a contract dispute — tone, accuracy, and specifics matter enormously.",
+      "correct_ai_level": "ai-assists",
+      "correct_ai_reason": "You need to author this directly because the specific facts, dates, and contract terms must be accurate — but AI can help you structure the letter professionally and ensure you hit all necessary components.",
+      "ai_draft": "Dear [Vendor Contact], This letter serves as formal notice of Cascade Digital Solutions' concerns regarding recurring delivery failures under Contract #[XXX]. Over the past six weeks, four scheduled delivery windows have been missed, resulting in documented project delays and additional costs to our team. Per Section 4.2 of our agreement, consistent SLA failures constitute a material breach and may trigger remediation provisions, including financial penalties or contract termination. We request a written remediation plan within 10 business days. Failure to respond satisfactorily may result in escalation to our legal team.",
+      "teaching_point": "Legal-adjacent documents require your direct authorship and verification of every factual claim — AI can scaffold the professional structure, but the substance and accuracy are your responsibility.",
+      "writing_placeholder": "Write the formal vendor performance notice here, referencing specific dates and SLA terms..."
+    },
+    {
+      "id": "t3",
+      "title": "Risk Register for Client Onboarding Project",
+      "briefing": "You're kicking off a new enterprise client onboarding project and need to build a risk register template that the team will use throughout the engagement. Standard format with risk descriptions, likelihood, impact, and mitigation strategies.",
+      "stakes": "medium",
+      "stakes_reason": "Important project management artifact, but a template that will be reviewed and refined by the team.",
+      "correct_ai_level": "ai-drafts",
+      "correct_ai_reason": "Risk registers follow a well-established format AI handles well. You'll need to review and customize for your specific project context, but AI can generate a strong first draft that saves significant time.",
+      "ai_draft": "Risk Register — Enterprise Client Onboarding. Risk 1: Delayed data migration from legacy system (Likelihood: High, Impact: High) — Mitigation: Establish data migration timeline with client IT by Week 2, identify fallback manual process. Risk 2: Key client stakeholder unavailability (Likelihood: Medium, Impact: High) — Mitigation: Identify backup decision-maker contacts at project kickoff. Risk 3: Scope creep from additional customization requests (Likelihood: High, Impact: Medium) — Mitigation: Document agreed scope in writing, implement formal change request process. Risk 4: Integration testing environment delays (Likelihood: Medium, Impact: Medium) — Mitigation: Provision test environment 3 weeks before integration phase begins.",
+      "teaching_point": "Structured templates with established formats — risk registers, project plans, meeting agendas — are excellent AI-drafts candidates. Customize for your specific context before using.",
+      "writing_placeholder": "Write or customize the risk register for the client onboarding project here..."
+    },
+    {
+      "id": "t4",
+      "title": "Continue or Cancel: Project Prometheus",
+      "briefing": "Project Prometheus is 40% over its $800K budget with unclear ROI — the original business case was based on assumptions that haven't held up. You've been asked to provide a formal recommendation to the executive leadership team: continue, pivot, or cancel. This recommendation will be presented under your name.",
+      "stakes": "human-decision",
+      "stakes_reason": "A high-stakes business decision with explicit leadership accountability — the judgment and reasoning must be yours.",
+      "correct_ai_level": "human-leads",
+      "correct_ai_reason": "When you're presenting a named recommendation to leadership on a significant business decision, the judgment, the reasoning, and the accountability are yours. AI cannot weigh the organizational factors and relationships involved.",
+      "ai_draft": "Based on the project's current trajectory — 40% over budget with original ROI assumptions invalidated — the data suggests a challenging path to value. Options include: (1) Cancel and reallocate remaining budget to higher-ROI initiatives, (2) Pivot scope to a narrower MVP that can demonstrate value within current remaining budget, or (3) Continue with revised success metrics and strict spending controls. The decision depends heavily on strategic priority weighting and stakeholder relationships that require leadership judgment.",
+      "teaching_point": "Named recommendations to leadership on strategic decisions cannot be delegated to AI. Your credibility and accountability are attached to this — think it through yourself.",
+      "writing_placeholder": "Write your recommendation on Project Prometheus here. State your position clearly and support it with your reasoning..."
+    },
+    {
+      "id": "t5",
+      "title": "Weekly Steering Committee Update",
+      "briefing": "It's Friday and you need to send the weekly status update to the project steering committee. Standard format: RAG status, accomplishments this week, blockers, next week's priorities. The committee includes the CFO, CTO, and two business sponsors.",
+      "stakes": "medium",
+      "stakes_reason": "Visible to senior stakeholders but a recurring standard-format communication.",
+      "correct_ai_level": "ai-drafts",
+      "correct_ai_reason": "Status updates follow a predictable format and AI can draft them quickly from your notes — but you need to verify the RAG status, ensure the blockers are accurately characterized, and add any nuance before sending to the C-suite.",
+      "ai_draft": "Project Status Update — Week of [Date]. Overall Status: YELLOW. This Week: Completed integration design phase and received client sign-off on data model. Onboarding workflow documentation is 80% complete. Blockers: Client IT team has not yet provisioned the test environment (now 5 days delayed) — escalation in progress. Next Week: Begin integration build, conduct user acceptance testing planning session, finalize training materials outline. Budget: On track. Schedule: 3-day slip projected if test environment delay continues.",
+      "teaching_point": "Recurring structured communications are strong AI-drafts candidates — especially when you have notes to work from. Always review before sending to senior stakeholders.",
+      "writing_placeholder": "Write or customize the steering committee status update here..."
+    }
+  ],
+  "performance_labels": [
+    { "min": 90, "text": "Expert Calibration" },
+    { "min": 70, "text": "Strong Calibration" },
+    { "min": 50, "text": "Developing Calibration" },
+    { "min": 0, "text": "Needs Calibration Work" }
+  ]
+}

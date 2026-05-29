@@ -1,0 +1,74 @@
+{
+  "construct_id": "ai_augmentation",
+  "construct_name": "Human-AI Collaboration",
+  "construct_description": "Calibrate how much AI involvement is appropriate for each task given stakes, accountability, and context.",
+  "context": "You are an AI Products Manager at a tech company. Work through your task queue for the day — each item requires you to decide how much AI involvement is appropriate.",
+  "tasks": [
+    {
+      "id": "t1",
+      "title": "Summarize Market Research Report",
+      "briefing": "Your VP needs a 5-bullet executive summary of the 40-page Q3 market research report before her 2pm board call. The report covers competitor landscape, user survey data, and pricing benchmarks — all factual synthesis, no editorial judgment needed.",
+      "stakes": "low",
+      "stakes_reason": "Pure synthesis of factual data with no decisions or accountability attached.",
+      "correct_ai_level": "ai-handles",
+      "correct_ai_reason": "This is a high-volume synthesis task with low stakes — exactly what AI excels at. You should skim the output for accuracy but don't need to author it yourself.",
+      "ai_draft": "Q3 Market Research Summary: (1) Competitor pricing has increased 8–12% YoY, creating margin opportunity. (2) 67% of surveyed users cite integration complexity as top friction point. (3) Enterprise segment grew 23% while SMB declined 4%. (4) Three emerging competitors have entered the mid-market tier since Q2. (5) User NPS improved from 34 to 41, driven by recent onboarding improvements.",
+      "teaching_point": "Routine synthesis tasks — compiling, summarizing, formatting — are prime candidates for AI handling. Reserve your cognitive bandwidth for tasks requiring judgment and accountability.",
+      "writing_placeholder": "Write your 5-bullet summary of the market research report here..."
+    },
+    {
+      "id": "t2",
+      "title": "Performance Review for Jordan",
+      "briefing": "You need to write Jordan's mid-year performance review. Jordan has missed three sprint deadlines this quarter but delivered exceptional work on the product launch and mentored two junior team members. This review will affect their raise and promotion eligibility.",
+      "stakes": "high",
+      "stakes_reason": "Directly affects an employee's career trajectory and compensation — requires your authentic voice and judgment.",
+      "correct_ai_level": "ai-assists",
+      "correct_ai_reason": "Performance reviews require your personal knowledge of the employee and your authentic voice — but AI can help you structure feedback and suggest phrasing. You write the actual content.",
+      "ai_draft": "Jordan demonstrated strong technical delivery on the Q3 product launch and made meaningful contributions to team development through peer mentoring. However, there were notable gaps in meeting sprint commitments, with three deadlines missed this quarter. Going forward, Jordan should focus on improving planning and communication around timeline risks while continuing to leverage their strengths in execution and collaboration.",
+      "teaching_point": "High-stakes interpersonal assessments need your authentic voice and direct knowledge. AI can scaffold the structure, but the substance — your observations, your judgment — must come from you.",
+      "writing_placeholder": "Write your performance review for Jordan here. Be specific about both strengths and areas for growth..."
+    },
+    {
+      "id": "t3",
+      "title": "Client Complaint Response",
+      "briefing": "A client emailed about unexpected billing charges on their invoice — $2,400 in overage fees they weren't warned about. They're frustrated but still a customer. You need to respond professionally, acknowledge the issue, and explain next steps.",
+      "stakes": "medium",
+      "stakes_reason": "Client relationship and trust are at stake, but this is a recoverable service situation with clear resolution steps.",
+      "correct_ai_level": "ai-drafts",
+      "correct_ai_reason": "AI can generate a professional, empathetic draft quickly, but you need to verify the specific billing details, personalize the tone, and confirm the resolution steps are accurate before sending.",
+      "ai_draft": "Dear [Client Name], Thank you for bringing this to our attention — I completely understand your frustration, and I apologize for the lack of advance notice about these overage charges. After reviewing your account, I can see that usage exceeded the contracted tier in the final week of the billing cycle. We should have alerted you proactively, and that's on us. I'd like to offer a one-time credit of $500 toward your next invoice and set up automatic usage alerts going forward. Can we schedule a brief call this week to walk through your usage patterns and ensure this doesn't happen again?",
+      "teaching_point": "Client-facing communications benefit from AI's tone and structure, but always verify the specific facts and proposed resolutions before sending — AI doesn't know your actual billing policies or account details.",
+      "writing_placeholder": "Draft your response to the client's billing complaint here..."
+    },
+    {
+      "id": "t4",
+      "title": "Vendor Contract Renewal Decision",
+      "briefing": "A $500K annual contract with your data infrastructure vendor is up for renewal. The vendor has had two major outages this year but claims they've resolved the root cause. Legal and Finance both want your recommendation by EOD. This decision will be attributed to you in the budget review.",
+      "stakes": "human-decision",
+      "stakes_reason": "A $500K business decision with named accountability — this judgment call must be yours.",
+      "correct_ai_level": "human-leads",
+      "correct_ai_reason": "High-stakes vendor decisions involving significant budget and business risk require human judgment and explicit accountability. AI can help you gather information, but the decision and rationale must be yours.",
+      "ai_draft": "Based on available information, the vendor has demonstrated two critical service disruptions this fiscal year, which represents elevated risk for renewal at current contract value. However, switching costs and migration complexity should be weighed against the documented remediation steps. A recommended path would be to negotiate a reduced-term renewal (6 months) with defined SLA penalties and a formal incident review.",
+      "teaching_point": "When a decision is explicitly attributed to you and involves significant financial or strategic risk, the reasoning and judgment must be yours — AI can inform you, but it cannot be accountable.",
+      "writing_placeholder": "Write your recommendation and rationale for the contract renewal decision here..."
+    },
+    {
+      "id": "t5",
+      "title": "Senior Data Analyst Job Description",
+      "briefing": "You need to post a job description for a Senior Data Analyst who will own product analytics and work closely with your PM team. HR has asked for it by end of week. You have a general sense of what the role needs but haven't written it all down yet.",
+      "stakes": "medium",
+      "stakes_reason": "Affects hiring quality and candidate pool, but standard format allows AI to add significant value.",
+      "correct_ai_level": "ai-drafts",
+      "correct_ai_reason": "Job descriptions follow standard formats AI handles well, but the specific responsibilities, team context, and requirements need your review and customization to accurately reflect the role.",
+      "ai_draft": "Senior Data Analyst — AI Products Team. We're looking for a Senior Data Analyst to own product analytics for our AI product suite. You'll partner directly with Product Management to instrument features, build dashboards, and surface insights that drive roadmap decisions. Responsibilities include: designing and maintaining our analytics infrastructure, building self-serve reporting for cross-functional stakeholders, conducting ad hoc analyses on user behavior and product performance, and owning our A/B testing framework. You bring 4+ years of experience with SQL and Python, strong data visualization skills, and a track record of translating data into product decisions.",
+      "teaching_point": "Standard-format documents like job descriptions are great AI-drafts candidates — the structure is familiar, but you still need to customize for your specific team context, culture, and accurate requirements.",
+      "writing_placeholder": "Write or edit the job description for the Senior Data Analyst role here..."
+    }
+  ],
+  "performance_labels": [
+    { "min": 90, "text": "Expert Calibration" },
+    { "min": 70, "text": "Strong Calibration" },
+    { "min": 50, "text": "Developing Calibration" },
+    { "min": 0, "text": "Needs Calibration Work" }
+  ]
+}

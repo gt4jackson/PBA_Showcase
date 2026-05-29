@@ -1,0 +1,74 @@
+{
+  "construct_id": "ai_augmentation",
+  "construct_name": "Human-AI Collaboration",
+  "construct_description": "Calibrate how much AI involvement is appropriate for each task given stakes, accountability, and context.",
+  "context": "You are a Financial Analyst at Westbrook Capital Advisors. Work through your task queue for the day — each item requires you to decide how much AI involvement is appropriate.",
+  "tasks": [
+    {
+      "id": "t1",
+      "title": "Annual Report Executive Brief",
+      "briefing": "Your managing director needs a one-page executive brief distilling the key metrics from an 80-page annual report for a target acquisition company. She needs it before her 3pm call with the investment committee — key financials, growth metrics, risk flags.",
+      "stakes": "low",
+      "stakes_reason": "Factual synthesis of public financial data — the MD will review and draw her own conclusions before any decisions are made.",
+      "correct_ai_level": "ai-handles",
+      "correct_ai_reason": "Extracting and summarizing key metrics from a structured financial document is high-value AI work. Verify the numbers against the source document, but don't manually compile what AI can handle in seconds.",
+      "ai_draft": "Executive Brief — [Company] Annual Report: Revenue: $847M (+14% YoY). Gross Margin: 42% (up from 38%). EBITDA: $124M (+22%). Debt-to-Equity: 1.8x (elevated; monitor covenant compliance). Key growth driver: Enterprise segment +31%, offsetting flat SMB. Risk flags: Two material weakness disclosures in internal controls; pending litigation (IP dispute, $40M exposure). Cash position: $210M; FCF positive for third consecutive year. Analyst note: Strong topline growth with margin improvement, but internal control weaknesses warrant due diligence scrutiny.",
+      "teaching_point": "Extracting and formatting key metrics from structured financial documents is prime AI territory. Your role is verification and judgment — not data entry.",
+      "writing_placeholder": "Write the one-page executive brief summarizing the annual report's key metrics, growth indicators, and risk flags here..."
+    },
+    {
+      "id": "t2",
+      "title": "Financial Plan for Divorce Client",
+      "briefing": "Margaret Chen, a 52-year-old client going through a divorce, needs a personalized financial planning recommendation. She has $1.2M in marital assets, a pension, and a mortgage. She's asked you to recommend how to structure her post-divorce financial life, including asset division approach and retirement planning.",
+      "stakes": "human-decision",
+      "stakes_reason": "A major life transition with significant financial consequences for a real person who trusts your judgment — requires your personal relationship and professional accountability.",
+      "correct_ai_level": "human-leads",
+      "correct_ai_reason": "Personalized financial advice during a major life transition requires your professional judgment, your knowledge of Margaret's full situation, and your fiduciary accountability. AI cannot carry the relationship or the responsibility.",
+      "ai_draft": "Financial Planning Framework — Divorce Transition: Asset Division Considerations: With $1.2M in marital assets, key factors include tax basis on investment accounts vs. retirement accounts, pension valuation (QDRO requirements), and home equity/mortgage assumption capacity. Recommend consulting a CDFA for formal asset division analysis. Retirement Planning: At 52 with a pension, focus on maximizing post-divorce contributions and adjusting beneficiary designations immediately. Cash Flow: Build 6-month emergency fund before making investment decisions. Immediate Actions: Update all beneficiary designations, establish individual credit history, review insurance coverage independently.",
+      "teaching_point": "Fiduciary financial advice for clients in vulnerable life situations carries legal and ethical weight that belongs to you. The relationship, the accountability, and the personalized judgment are non-delegable.",
+      "writing_placeholder": "Write your personalized financial planning recommendation for Margaret Chen here. Address her specific situation, priorities, and the key decisions she faces..."
+    },
+    {
+      "id": "t3",
+      "title": "Budget Variance Analysis Template",
+      "briefing": "The Operations team has been consistently overspending their budget by 15–20% for three consecutive quarters. Your director has asked you to create a budget variance analysis template the team can use monthly to track and explain variances by category.",
+      "stakes": "medium",
+      "stakes_reason": "A useful tool that will be reviewed by finance staff before use — the format matters, but it will be customized and validated.",
+      "correct_ai_level": "ai-drafts",
+      "correct_ai_reason": "Budget variance templates follow well-established financial formats AI handles confidently. You'll need to customize column structures and categories for the specific department, but AI gives you a strong starting framework.",
+      "ai_draft": "Budget Variance Analysis Template — [Department/Month]: Categories: Personnel (Salaries, Benefits, Overtime, Contractors), Operating Expenses (Travel, Software/Licenses, Office Supplies, Professional Services), Capital Expenditures. For each category: Budget (Current Month), Actual (Current Month), Variance ($), Variance (%), YTD Budget, YTD Actual, YTD Variance (%), Explanation (required if >5% variance). Summary Row: Total Budget vs. Actual, Overall Variance %. Trend Section: 3-Month Variance Chart. Action Required: Categories with consecutive 2+ month unfavorable variances trigger mandatory remediation plan.",
+      "teaching_point": "Financial templates with standard structures are strong AI-drafts candidates. Customize the category structure for the specific department's actual cost drivers before deploying.",
+      "writing_placeholder": "Write or customize the budget variance analysis template here. Include all relevant categories and a structure that makes variance explanations easy to capture..."
+    },
+    {
+      "id": "t4",
+      "title": "Loan Modification Request Decision",
+      "briefing": "Robert Nguyen has been a client for 11 years and has missed three mortgage payments following a medical emergency. He's requesting a 6-month loan modification (reduced payment, interest accrual). Your approval or denial will be documented and potentially reviewed by compliance. Westbrook policy allows but does not require modifications in hardship cases.",
+      "stakes": "human-decision",
+      "stakes_reason": "A discretionary decision affecting a long-standing client's housing stability, with documented accountability and compliance review.",
+      "correct_ai_level": "human-leads",
+      "correct_ai_reason": "Loan modification decisions involve discretionary judgment about a real person's circumstances, documented accountability, and relationship factors that only you can weigh. The decision is yours.",
+      "ai_draft": "Loan Modification Analysis — R. Nguyen: Account history shows 11 years of consistent payments with one prior hardship accommodation in 2019. Current arrears: $6,840 (3 payments). Medical hardship documentation: submitted and verified. Under proposed modification: reduced payment of $1,200/month for 6 months, deferred interest added to principal. Risk assessment: low re-default risk given long account history and documented temporary hardship. Comparable decisions in past 12 months: 7 of 9 similar requests approved under hardship policy.",
+      "teaching_point": "Decisions with your name attached that affect a client's financial wellbeing require your judgment. AI can provide analysis, but the decision — and the accountability — is yours to own.",
+      "writing_placeholder": "Write your decision and rationale for Robert Nguyen's loan modification request here. State your decision clearly and explain your reasoning..."
+    },
+    {
+      "id": "t5",
+      "title": "Quarterly Client Portfolio Performance Letters",
+      "briefing": "You need to draft the Q3 portfolio performance letters for your 40 clients. Each letter follows a standard format but is personalized with the client's name, account number, portfolio return, benchmark comparison, and a brief commentary on their specific allocation.",
+      "stakes": "medium",
+      "stakes_reason": "Client-facing communications that are reviewed before sending — standard format with high-volume personalization.",
+      "correct_ai_level": "ai-drafts",
+      "correct_ai_reason": "Quarterly performance letters follow a predictable format and are strong AI candidates — but you must verify the personalized data (returns, account numbers) and ensure the commentary accurately reflects each client's allocation.",
+      "ai_draft": "Dear [Client Name], I hope this finds you well. Enclosed is your Q3 2024 portfolio performance summary for Account #[XXXX]. Your portfolio returned [X]% for the quarter, compared to the [benchmark] return of [Y]%. [Above/Below]-benchmark performance was driven primarily by your [equity/fixed income/alternative] allocation, which [outperformed/underperformed] as [brief market context]. Your portfolio remains positioned for [client objective — growth/income/preservation]. Looking ahead to Q4, [1-2 sentences on outlook relevant to their allocation]. Please don't hesitate to reach out with any questions. I look forward to our annual review in [month].",
+      "teaching_point": "High-volume personalized communications with standard formats are ideal AI-drafts territory. Always verify the specific client data — returns, account numbers, allocation details — before sending.",
+      "writing_placeholder": "Write or customize the quarterly portfolio performance letter template here. Include the standard sections and appropriate personalization placeholders..."
+    }
+  ],
+  "performance_labels": [
+    { "min": 90, "text": "Expert Calibration" },
+    { "min": 70, "text": "Strong Calibration" },
+    { "min": 50, "text": "Developing Calibration" },
+    { "min": 0, "text": "Needs Calibration Work" }
+  ]
+}

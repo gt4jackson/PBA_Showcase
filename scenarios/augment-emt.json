@@ -1,0 +1,74 @@
+{
+  "construct_id": "ai_augmentation",
+  "construct_name": "Human-AI Collaboration",
+  "construct_description": "Calibrate how much AI involvement is appropriate for each task given stakes, accountability, and context.",
+  "context": "You are an EMS Supervisor at Tri-County Emergency Medical Services. Work through your task queue for the day — each item requires you to decide how much AI involvement is appropriate.",
+  "tasks": [
+    {
+      "id": "t1",
+      "title": "Monthly Incident Statistical Overview",
+      "briefing": "The county health board meets next Tuesday and needs a statistical overview of last month's 30 incident reports: call types, response times, outcomes, and geographic distribution. All the data is in the CAD system — it just needs to be compiled and summarized.",
+      "stakes": "low",
+      "stakes_reason": "Statistical compilation from existing records — informational, no clinical decisions involved.",
+      "correct_ai_level": "ai-handles",
+      "correct_ai_reason": "Statistical summarization of structured data is a routine AI task. Verify the numbers match your CAD export, but AI can produce this overview efficiently.",
+      "ai_draft": "Monthly EMS Activity Report — [Month]: Total incidents: 247. Cardiac/respiratory: 18% of calls. Trauma: 12%. Fall-related: 28%. Other medical: 42%. Average response time: 6.4 minutes (target: 8 min). 94% of calls met response time target. Geographic distribution: 61% urban zone, 39% rural. Patient outcomes: 89% transported, 7% treated/released, 4% no patient contact. Three critical incidents flagged for separate supervisor review.",
+      "teaching_point": "Compiling statistical reports from structured data is an ideal AI task — low risk, high efficiency. Your role is verification and interpretation, not compilation.",
+      "writing_placeholder": "Write the monthly incident statistical overview for the county health board here..."
+    },
+    {
+      "id": "t2",
+      "title": "Medication Error Critical Incident Report",
+      "briefing": "Last Thursday, a medication administration error occurred on a cardiac call — an EMT administered an incorrect epinephrine dose. The patient survived but required additional intervention. The medical director has requested a full critical incident report, and legal has flagged it may be used in potential proceedings.",
+      "stakes": "human-decision",
+      "stakes_reason": "A legal-adjacent document about a patient safety incident — accuracy, completeness, and your professional attestation are essential.",
+      "correct_ai_level": "human-leads",
+      "correct_ai_reason": "Incident reports involving patient safety errors that may be used in legal proceedings must be authored entirely by the responsible supervisor. Every word carries professional and legal weight.",
+      "ai_draft": "Critical Incident Report — Medication Administration Error. On [date] at [time], Unit [#] responded to a cardiac emergency. During patient care, [EMT name] administered [medication] at an incorrect dosage of [X] mg rather than the protocol-specified [Y] mg. The error was identified by [who] at [time]. Corrective interventions included [description]. Patient was transported to [facility] and is in stable condition. Contributing factors under review include [factors]. Corrective actions initiated: [actions].",
+      "teaching_point": "Any report with your professional signature that may be used in legal proceedings must be written by you, with your direct knowledge of the facts. AI should not author content you'll attest to under oath.",
+      "writing_placeholder": "Document the critical incident in full detail here. Include timeline, personnel involved, what occurred, corrective actions taken, and your professional assessment..."
+    },
+    {
+      "id": "t3",
+      "title": "New EMT Orientation Checklist",
+      "briefing": "You have two new EMTs starting next Monday and need to update the equipment check orientation checklist. It should cover apparatus check procedures, medication inventory, AED/monitor setup, and personal protective equipment. The current version is two years old.",
+      "stakes": "medium",
+      "stakes_reason": "Training materials affect patient safety indirectly — content must be accurate but will be reviewed by senior staff before use.",
+      "correct_ai_level": "ai-drafts",
+      "correct_ai_reason": "Checklists follow a predictable format AI handles well, but clinical accuracy requires your review — protocol updates, equipment changes, and agency-specific procedures must be verified before new EMTs rely on it.",
+      "ai_draft": "EMT Orientation Equipment Checklist: Apparatus Check — Verify fuel level (minimum ½ tank), check tire pressure and lights, inspect oxygen supply (minimum 500 PSI main, 200 PSI portable), confirm suction unit function. Medication Inventory — Count and verify expiration dates on: epinephrine auto-injectors (2), oral glucose, aspirin (324mg), activated charcoal, naloxone (2 doses). Monitor/AED — Power on, verify battery charge >80%, attach leads and confirm ECG display, test AED mode. PPE Station — Confirm gloves (multiple sizes), N95 masks (6), eye protection (2), gowns (4) are stocked and accessible.",
+      "teaching_point": "Training material drafts benefit from AI's ability to organize and structure content, but you must verify every clinical detail against current protocols — trainees will trust this checklist in the field.",
+      "writing_placeholder": "Write or customize the new EMT orientation checklist here, ensuring it reflects your current equipment and protocols..."
+    },
+    {
+      "id": "t4",
+      "title": "Community Paramedicine Protocol Recommendation",
+      "briefing": "Three pilot agencies have been testing a new community paramedicine protocol for frequent 911 callers with mental health and substance use needs. The data is mixed: two pilots showed 30% call reduction, one showed no change. Leadership wants your recommendation on whether Tri-County should adopt the protocol.",
+      "stakes": "human-decision",
+      "stakes_reason": "A policy decision with direct patient safety implications — mixed evidence requires professional judgment about your community's specific needs.",
+      "correct_ai_level": "human-leads",
+      "correct_ai_reason": "Clinical policy recommendations involving patient safety and mixed evidence require your professional judgment, knowledge of your community, and accountability. This isn't a data synthesis task — it's a judgment call.",
+      "ai_draft": "Analysis of the three pilot results reveals an inconsistent evidence base. The two successful pilots shared characteristics including [X and Y], while the unsuccessful pilot differed in [Z]. A conditional recommendation to pilot adoption could be structured around the success factors identified. However, local resource availability, community health partnerships, and crew training capacity are variables that require on-the-ground assessment before a recommendation can be made responsibly.",
+      "teaching_point": "When mixed evidence requires interpretation and your professional judgment will determine patient care policy, the reasoning and recommendation must be yours — AI can summarize the data but not weigh the local factors you understand.",
+      "writing_placeholder": "Write your recommendation on the community paramedicine protocol here. Acknowledge the mixed evidence and explain your reasoning for your position..."
+    },
+    {
+      "id": "t5",
+      "title": "Shift Handoff Briefing Report",
+      "briefing": "Your 12-hour shift ends in 30 minutes. The incoming supervisor needs a handoff briefing covering the three active patients still in transit, two units currently on scene, and two pending calls in the queue. You have all the information in your CAD system notes.",
+      "stakes": "medium",
+      "stakes_reason": "Operational handoff — time-sensitive and must be accurate, but you're reviewing before passing it on.",
+      "correct_ai_level": "ai-assists",
+      "correct_ai_reason": "Handoff briefings are time-pressured and structured — AI can help you organize your CAD notes into a clear format, but you need to verify every detail because the incoming supervisor will act on this information.",
+      "ai_draft": "Shift Handoff — [Date/Time]. Active Transports (3): Unit 12 — cardiac alert, ETA 4 min to Tri-County Regional. Unit 7 — fall/hip fracture, stable, ETA 12 min to Valley Medical. Unit 3 — pediatric respiratory, priority, ETA 8 min to Children's. Units On Scene (2): Unit 9 — MVA, scene control, police on site. Unit 15 — welfare check, no patient contact yet, 10 min on scene. Queue (2): Priority 2 chest pain, [address], assigned Unit 5 (available in 6 min). Non-emergency fall assist, [address], no unit assigned.",
+      "teaching_point": "Handoff briefings combine structured data (what AI organizes well) with operational judgment (what needs your verification). Use AI to structure your notes, but confirm every active patient detail before handing off.",
+      "writing_placeholder": "Write the shift handoff briefing here, covering all active transports, units on scene, and queued calls..."
+    }
+  ],
+  "performance_labels": [
+    { "min": 90, "text": "Expert Calibration" },
+    { "min": 70, "text": "Strong Calibration" },
+    { "min": 50, "text": "Developing Calibration" },
+    { "min": 0, "text": "Needs Calibration Work" }
+  ]
+}

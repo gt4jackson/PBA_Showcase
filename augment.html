@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Augment — PBA Showcase</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a212b;
+  --surface: #242e3d;
+  --surface2: #2d3a4f;
+  --accent: #4dd3fe;
+  --text: #f2e9d8;
+  --muted: rgba(242,233,216,0.45);
+  --border: rgba(242,233,216,0.08);
+  --border-strong: rgba(242,233,216,0.15);
+  --accent-bg: rgba(77,211,254,0.10);
+  --accent-border: rgba(77,211,254,0.35);
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.2); border-radius: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ── SCREENS ─────────────────────────── */
+.screen { display: none; flex-direction: column; height: 100%; }
+.screen.active { display: flex; }
+
+/* ── TOP BAR ─────────────────────────── */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  flex-shrink: 0;
+}
+.top-bar-left { display: flex; align-items: center; gap: 12px; }
+.top-bar-right { display: flex; align-items: center; gap: 10px; }
+
+.back-link {
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s;
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+}
+.back-link:hover { color: var(--text); background: var(--surface2); }
+
+.task-title-bar {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ── PROGRESS DOTS ─────────────────────── */
+.progress-dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--border-strong);
+  transition: all 0.2s;
+}
+.dot.done { background: var(--accent); opacity: 0.5; }
+.dot.current { width: 20px; background: var(--accent); }
+.dot.upcoming { background: var(--border-strong); }
+
+/* ── INTRO SCREEN ─────────────────────── */
+.intro-wrap {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--surface);
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 48px 40px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.intro-inner {
+  width: 100%;
+  max-width: 720px;
+}
+
+.intro-back {
+  margin-bottom: 28px;
+}
+
+.intro-heading {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.intro-desc {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  max-width: 560px;
+}
+
+.context-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 28px;
+  font-style: italic;
+}
+
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+/* Preview table */
+.queue-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.queue-table thead tr {
+  background: var(--surface2);
+}
+.queue-table th {
+  padding: 9px 14px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.queue-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.queue-table tr:last-child td { border-bottom: none; }
+.queue-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.task-num {
+  color: var(--muted);
+  font-size: 12px;
+  width: 32px;
+}
+
+.stakes-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+/* Legend */
+.legend-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.legend-chip {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+.legend-icon {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.legend-text {}
+.legend-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.legend-desc {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.start-btn {
+  background: var(--accent);
+  color: #0f1923;
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 13px 32px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.start-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ── WORK SCREEN ─────────────────────── */
+.work-body {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+  background: var(--bg);
+  padding: 8px;
+  overflow: hidden;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+/* LEFT PANEL */
+.left-panel {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.panel-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.panel-header {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--surface2);
+}
+.panel-body { padding: 12px; }
+
+.task-label {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.task-title-work {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text);
+  line-height: 1.3;
+}
+.task-briefing {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+
+/* AI Level Selector */
+.level-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 6px;
+  background: transparent;
+}
+.level-row:last-child { margin-bottom: 0; }
+.level-row:hover {
+  border-color: var(--border-strong);
+  background: rgba(255,255,255,0.02);
+}
+.level-row.selected {
+  border-color: var(--accent);
+  background: rgba(77,211,254,0.07);
+}
+.level-icon { font-size: 16px; line-height: 1; flex-shrink: 0; margin-top: 1px; }
+.level-text {}
+.level-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 1px;
+}
+.level-desc {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+/* Reasoning textarea */
+.reasoning-area {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 8px 10px;
+  resize: none;
+  outline: none;
+  transition: border-color 0.15s;
+  line-height: 1.45;
+}
+.reasoning-area:focus { border-color: var(--border-strong); }
+.reasoning-area::placeholder { color: var(--muted); }
+
+/* Balance meter */
+.balance-bar-wrap {
+  margin-top: 4px;
+}
+.balance-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.balance-track {
+  height: 6px;
+  background: var(--surface2);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+.balance-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease, background 0.4s;
+  background: var(--accent);
+}
+
+/* Submit button */
+.submit-btn {
+  width: 100%;
+  background: var(--accent);
+  color: #0f1923;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.submit-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.submit-btn:not(:disabled):hover { opacity: 0.88; }
+
+/* RIGHT PANEL */
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.work-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.work-card.flex-grow { flex: 1; min-height: 0; }
+
+.work-card-header {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.word-count {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.work-textarea {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 14px 16px;
+  resize: none;
+  outline: none;
+  line-height: 1.6;
+  min-height: 0;
+}
+.work-textarea::placeholder { color: var(--muted); }
+
+/* AI chat */
+.chat-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-bubble {
+  max-width: 85%;
+  padding: 10px 13px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.chat-bubble.ai {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  align-self: flex-start;
+}
+.chat-bubble.user {
+  background: rgba(77,211,254,0.12);
+  border: 1px solid var(--accent-border);
+  color: var(--text);
+  align-self: flex-end;
+}
+.chat-bubble .bubble-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  color: var(--muted);
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.chat-input {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 8px 11px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.chat-input:focus { border-color: var(--border-strong); }
+.chat-input::placeholder { color: var(--muted); }
+.chat-send {
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.chat-send:hover { background: rgba(77,211,254,0.18); }
+
+/* AI output box */
+.ai-output-box {
+  flex: 1;
+  padding: 14px 16px;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+/* Warning banner */
+.warning-banner {
+  background: rgba(245,158,11,0.12);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #f59e0b;
+  line-height: 1.5;
+  flex-shrink: 0;
+}
+
+/* Responsibility checkbox */
+.responsibility-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--surface2);
+  flex-shrink: 0;
+}
+.responsibility-row input[type="checkbox"] {
+  margin-top: 2px;
+  accent-color: var(--accent);
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.responsibility-row label {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+/* Empty state */
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 13px;
+  gap: 10px;
+  padding: 32px;
+  text-align: center;
+}
+.empty-icon { font-size: 32px; opacity: 0.4; }
+
+/* ── RESULTS SCREEN ─────────────────────── */
+.results-wrap {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--surface);
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.results-inner {
+  width: 100%;
+  max-width: 740px;
+}
+
+.score-circle-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.score-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--accent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  position: relative;
+}
+.score-circle::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) var(--pct, 0%), var(--surface2) 0%);
+  z-index: -1;
+}
+.score-circle-inner {
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.score-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+.score-denom {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.score-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+}
+
+/* Task breakdown */
+.breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.breakdown-row {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.breakdown-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.breakdown-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.breakdown-score {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.breakdown-chips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.choice-chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 4px;
+  border: 1px solid;
+}
+.choice-chip.yours {
+  background: rgba(77,211,254,0.1);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+.choice-chip.correct {
+  background: rgba(34,197,94,0.1);
+  border-color: rgba(34,197,94,0.35);
+  color: #22c55e;
+}
+.choice-chip.match {
+  background: rgba(34,197,94,0.1);
+  border-color: rgba(34,197,94,0.35);
+  color: #22c55e;
+}
+.chip-arrow { color: var(--muted); font-size: 12px; }
+.breakdown-teach {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* Coaching summary */
+.coaching-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 28px;
+}
+.coaching-heading {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.coaching-tally {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.tally-item {
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 8px;
+}
+.tally-icon { font-size: 18px; display: block; margin-bottom: 4px; }
+.tally-count {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent);
+  display: block;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+.tally-name {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.3;
+}
+.coaching-insight {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.restart-btn {
+  background: var(--accent);
+  color: #0f1923;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px 28px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.restart-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+/* ── LOADING ─────────────────────────── */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  font-size: 14px;
+  color: var(--muted);
+  gap: 12px;
+  flex-direction: column;
+}
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── ERROR ─────────────────────────── */
+#error-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  flex-direction: column;
+  gap: 16px;
+  padding: 40px;
+  text-align: center;
+  display: none;
+}
+#error-screen .err-icon { font-size: 40px; }
+#error-screen .err-msg { color: var(--muted); font-size: 13px; max-width: 400px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading-screen">
+  <div class="spinner"></div>
+  <span>Loading scenario…</span>
+</div>
+
+<!-- Error -->
+<div id="error-screen">
+  <div class="err-icon">⚠️</div>
+  <div style="font-size:18px;font-weight:700;color:var(--text)">Unable to load scenario</div>
+  <div class="err-msg" id="error-msg">Could not fetch the scenario JSON. Check the URL parameter or file path.</div>
+</div>
+
+<!-- INTRO SCREEN -->
+<div class="screen" id="screen-intro">
+  <div class="intro-wrap">
+    <div class="intro-inner">
+      <div class="intro-back">
+        <a href="index.html" class="back-link">← Back to Hub</a>
+      </div>
+      <div class="intro-heading" id="intro-heading">Human-AI Collaboration</div>
+      <div class="intro-desc" id="intro-desc">Calibrate how much AI involvement is appropriate for each task given stakes, accountability, and context.</div>
+      <div class="context-box" id="intro-context"></div>
+
+      <div class="section-label">Your queue — 5 tasks</div>
+      <table class="queue-table" id="queue-table">
+        <thead>
+          <tr>
+            <th style="width:32px">#</th>
+            <th>Task</th>
+            <th>Stakes</th>
+          </tr>
+        </thead>
+        <tbody id="queue-body"></tbody>
+      </table>
+
+      <div class="section-label">AI involvement levels</div>
+      <div class="legend-grid">
+        <div class="legend-chip">
+          <div class="legend-icon">✍️</div>
+          <div class="legend-text">
+            <div class="legend-name">Human leads</div>
+            <div class="legend-desc">Write entirely myself, no AI</div>
+          </div>
+        </div>
+        <div class="legend-chip">
+          <div class="legend-icon">🤝</div>
+          <div class="legend-text">
+            <div class="legend-name">AI assists, I write</div>
+            <div class="legend-desc">Use AI for ideas or structure, I write the draft</div>
+          </div>
+        </div>
+        <div class="legend-chip">
+          <div class="legend-icon">🔄</div>
+          <div class="legend-text">
+            <div class="legend-name">AI drafts, I review</div>
+            <div class="legend-desc">AI writes a draft, I edit substantially</div>
+          </div>
+        </div>
+        <div class="legend-chip">
+          <div class="legend-icon">🤖</div>
+          <div class="legend-text">
+            <div class="legend-name">AI handles</div>
+            <div class="legend-desc">AI produces the output, I approve</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="start-btn" id="start-btn">Start queue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- WORK SCREEN -->
+<div class="screen" id="screen-work">
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <a href="index.html" class="back-link">← Hub</a>
+      <div class="task-title-bar">Augment</div>
+    </div>
+    <div class="top-bar-right">
+      <div class="progress-dots" id="progress-dots"></div>
+    </div>
+  </div>
+  <div class="work-body">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+
+      <!-- Task brief -->
+      <div class="panel-card">
+        <div class="panel-header">Task Brief</div>
+        <div class="panel-body">
+          <div class="task-label" id="task-label">Task 1 of 5</div>
+          <div class="task-title-work" id="task-title-work"></div>
+          <div class="task-briefing" id="task-briefing"></div>
+          <span class="stakes-badge" id="stakes-badge"></span>
+        </div>
+      </div>
+
+      <!-- AI Involvement Selector -->
+      <div class="panel-card">
+        <div class="panel-header">AI Involvement</div>
+        <div class="panel-body" id="level-selector">
+          <div class="level-row" data-level="human-leads" onclick="selectLevel('human-leads')">
+            <div class="level-icon">✍️</div>
+            <div class="level-text">
+              <div class="level-name">Human leads</div>
+              <div class="level-desc">Write entirely myself, no AI</div>
+            </div>
+          </div>
+          <div class="level-row" data-level="ai-assists" onclick="selectLevel('ai-assists')">
+            <div class="level-icon">🤝</div>
+            <div class="level-text">
+              <div class="level-name">AI assists, I write</div>
+              <div class="level-desc">Use AI for ideas or structure, I write the draft</div>
+            </div>
+          </div>
+          <div class="level-row" data-level="ai-drafts" onclick="selectLevel('ai-drafts')">
+            <div class="level-icon">🔄</div>
+            <div class="level-text">
+              <div class="level-name">AI drafts, I review</div>
+              <div class="level-desc">AI writes a draft, I edit substantially</div>
+            </div>
+          </div>
+          <div class="level-row" data-level="ai-handles" onclick="selectLevel('ai-handles')">
+            <div class="level-icon">🤖</div>
+            <div class="level-text">
+              <div class="level-name">AI handles</div>
+              <div class="level-desc">AI produces the output, I approve</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reasoning -->
+      <div class="panel-card">
+        <div class="panel-header">Reasoning (optional)</div>
+        <div class="panel-body">
+          <textarea class="reasoning-area" id="reasoning-area" rows="2" placeholder="Why this level of AI involvement?"></textarea>
+        </div>
+      </div>
+
+      <!-- Balance meter -->
+      <div class="panel-card">
+        <div class="panel-header">Session Balance</div>
+        <div class="panel-body">
+          <div class="balance-bar-wrap">
+            <div class="balance-labels">
+              <span>Human</span>
+              <span>Balanced</span>
+              <span>AI-heavy</span>
+            </div>
+            <div class="balance-track">
+              <div class="balance-fill" id="balance-fill" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="panel-card">
+        <div class="panel-body">
+          <button class="submit-btn" id="submit-btn" disabled onclick="submitTask()">Submit task →</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel" id="right-panel">
+      <div class="work-card flex-grow">
+        <div class="empty-state">
+          <div class="empty-icon">👆</div>
+          <div>Select an AI involvement level to get started</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div class="screen" id="screen-results">
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <a href="index.html" class="back-link">← Hub</a>
+      <div class="task-title-bar">Augment — Results</div>
+    </div>
+  </div>
+  <div class="results-wrap">
+    <div class="results-inner">
+      <div class="score-circle-wrap">
+        <div class="score-circle">
+          <div class="score-circle-inner">
+            <div class="score-num" id="results-pct">—</div>
+            <div class="score-denom" id="results-pts"></div>
+          </div>
+        </div>
+        <div class="score-label" id="results-label"></div>
+      </div>
+
+      <div class="section-label" style="margin-bottom:12px">Per-task breakdown</div>
+      <div class="breakdown-list" id="breakdown-list"></div>
+
+      <div class="section-label" style="margin-bottom:12px">Coaching summary</div>
+      <div class="coaching-card" id="coaching-card"></div>
+
+      <button class="restart-btn" onclick="restartTask()">Try again →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ─────────────────────────────────
+let scenario = null;
+let currentTaskIdx = 0;
+let selectedLevel = null;
+let taskResponses = []; // {level, reasoning, work, confirmed}
+
+// Level metadata
+const LEVELS = [
+  { id: 'human-leads', icon: '✍️', name: 'Human leads',      desc: 'Write entirely myself, no AI' },
+  { id: 'ai-assists',  icon: '🤝', name: 'AI assists, I write', desc: 'Use AI for ideas or structure, I write the draft' },
+  { id: 'ai-drafts',   icon: '🔄', name: 'AI drafts, I review', desc: 'AI writes a draft, I edit substantially' },
+  { id: 'ai-handles',  icon: '🤖', name: 'AI handles',        desc: 'AI produces the output, I approve' },
+];
+const LEVEL_IDX = { 'human-leads': 0, 'ai-assists': 1, 'ai-drafts': 2, 'ai-handles': 3 };
+
+const STAKES_COLORS = {
+  low: { bg: 'rgba(34,197,94,0.12)', border: 'rgba(34,197,94,0.3)', text: '#22c55e', label: 'Low Stakes' },
+  medium: { bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.3)', text: '#f59e0b', label: 'Medium Stakes' },
+  high: { bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.3)', text: '#ef4444', label: 'High Stakes' },
+  'human-decision': { bg: 'rgba(158,158,255,0.12)', border: 'rgba(158,158,255,0.3)', text: '#9e9eff', label: 'Human Decision' }
+};
+
+// Balance weights per level (0=all human, 3=all AI)
+const BALANCE_WEIGHTS = { 'human-leads': 0, 'ai-assists': 1, 'ai-drafts': 2, 'ai-handles': 3 };
+
+// ── INIT ──────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  let scenarioUrl = params.get('scenario') || 'scenarios/augment-ai-literacy.json';
+  loadScenario(scenarioUrl);
+});
+
+async function loadScenario(url) {
+  document.getElementById('loading-screen').style.display = 'flex';
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    scenario = await resp.json();
+    initIntroScreen();
+    showScreen('intro');
+    document.getElementById('loading-screen').style.display = 'none';
+  } catch (e) {
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('error-msg').textContent = `Could not load "${url}". ${e.message}`;
+    document.getElementById('error-screen').style.display = 'flex';
+  }
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+}
+
+// ── INTRO ─────────────────────────────────
+function initIntroScreen() {
+  document.getElementById('intro-heading').textContent = scenario.construct_name;
+  document.getElementById('intro-desc').textContent = scenario.construct_description;
+  document.getElementById('intro-context').textContent = scenario.context;
+
+  const tbody = document.getElementById('queue-body');
+  tbody.innerHTML = '';
+  scenario.tasks.forEach((t, i) => {
+    const sc = STAKES_COLORS[t.stakes] || STAKES_COLORS.medium;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="task-num">${i+1}</td>
+      <td>${escHtml(t.title)}</td>
+      <td><span class="stakes-badge" style="background:${sc.bg};border:1px solid ${sc.border};color:${sc.text}">${sc.label}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('start-btn').onclick = startQueue;
+}
+
+// ── WORK FLOW ─────────────────────────────
+function startQueue() {
+  currentTaskIdx = 0;
+  taskResponses = [];
+  selectedLevel = null;
+  renderTask(0);
+  showScreen('work');
+}
+
+function renderTask(idx) {
+  const task = scenario.tasks[idx];
+  selectedLevel = null;
+
+  // Update label, title, briefing, stakes
+  document.getElementById('task-label').textContent = `Task ${idx+1} of ${scenario.tasks.length}`;
+  document.getElementById('task-title-work').textContent = task.title;
+  document.getElementById('task-briefing').textContent = task.briefing;
+  const sc = STAKES_COLORS[task.stakes] || STAKES_COLORS.medium;
+  const badge = document.getElementById('stakes-badge');
+  badge.textContent = sc.label;
+  badge.style.cssText = `background:${sc.bg};border:1px solid ${sc.border};color:${sc.text}`;
+
+  // Clear level selection
+  document.querySelectorAll('.level-row').forEach(r => r.classList.remove('selected'));
+
+  // Clear reasoning
+  document.getElementById('reasoning-area').value = '';
+
+  // Progress dots
+  renderProgressDots(idx);
+
+  // Balance meter
+  updateBalanceMeter();
+
+  // Reset right panel
+  renderRightPanel(null, task);
+
+  // Disable submit
+  document.getElementById('submit-btn').disabled = true;
+}
+
+function renderProgressDots(current) {
+  const container = document.getElementById('progress-dots');
+  container.innerHTML = '';
+  scenario.tasks.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot ' + (i < current ? 'done' : i === current ? 'current' : 'upcoming');
+    container.appendChild(d);
+  });
+}
+
+function updateBalanceMeter() {
+  const submitted = taskResponses.filter(r => r.level);
+  if (submitted.length === 0) {
+    document.getElementById('balance-fill').style.width = '0%';
+    document.getElementById('balance-fill').style.background = 'var(--accent)';
+    return;
+  }
+  const total = submitted.reduce((sum, r) => sum + BALANCE_WEIGHTS[r.level], 0);
+  const avg = total / submitted.length; // 0-3
+  const pct = Math.round((avg / 3) * 100);
+  const fill = document.getElementById('balance-fill');
+  fill.style.width = pct + '%';
+  // Color: green if balanced (40-60), amber if heavy either way, red if extreme AI
+  if (pct >= 40 && pct <= 70) fill.style.background = '#22c55e';
+  else if (pct > 70 && pct <= 85) fill.style.background = '#f59e0b';
+  else if (pct > 85) fill.style.background = '#ef4444';
+  else fill.style.background = 'var(--accent)';
+}
+
+function selectLevel(levelId) {
+  selectedLevel = levelId;
+  document.querySelectorAll('.level-row').forEach(r => {
+    r.classList.toggle('selected', r.dataset.level === levelId);
+  });
+  const task = scenario.tasks[currentTaskIdx];
+  renderRightPanel(levelId, task);
+  checkSubmitState();
+}
+
+function renderRightPanel(levelId, task) {
+  const panel = document.getElementById('right-panel');
+  panel.innerHTML = '';
+
+  if (!levelId) {
+    panel.innerHTML = `<div class="work-card flex-grow"><div class="empty-state"><div class="empty-icon">👆</div><div>Select an AI involvement level to get started</div></div></div>`;
+    return;
+  }
+
+  const isHighStakes = (task.stakes === 'high' || task.stakes === 'human-decision');
+  const showWarning = levelId === 'ai-handles' && task.correct_ai_level !== 'ai-handles' && isHighStakes;
+
+  if (levelId === 'human-leads' || levelId === 'ai-assists') {
+    panel.innerHTML = `
+      <div class="work-card flex-grow">
+        <div class="work-card-header">
+          Your Draft
+          <span class="word-count" id="word-count">0 words</span>
+        </div>
+        <textarea class="work-textarea" id="work-textarea" placeholder="${escHtml(task.writing_placeholder || 'Write your response here...')}"></textarea>
+      </div>
+    `;
+    document.getElementById('work-textarea').addEventListener('input', () => {
+      updateWordCount();
+      checkSubmitState();
+    });
+
+  } else if (levelId === 'ai-drafts') {
+    panel.innerHTML = `
+      ${showWarning ? `<div class="warning-banner">⚠️ High-stakes item — are you sure AI should handle this without your direct authorship?</div>` : ''}
+      <div class="work-card" style="flex:1;min-height:0;display:flex;flex-direction:column;">
+        <div class="work-card-header">AI Response</div>
+        <div class="chat-area" id="chat-area">
+          <div class="chat-bubble ai">
+            <div class="bubble-label">AI Assistant</div>
+            ${escHtml(task.ai_draft || 'AI response would appear here.')}
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chat-input" type="text" placeholder="Ask AI to refine or adjust…" />
+          <button class="chat-send" onclick="sendChatMessage()">Send</button>
+        </div>
+      </div>
+      <div class="work-card" style="flex:0 0 180px;display:flex;flex-direction:column;">
+        <div class="work-card-header">
+          Your Edited Version
+          <span class="word-count" id="word-count">0 words</span>
+        </div>
+        <textarea class="work-textarea" id="work-textarea" placeholder="Paste the AI draft above and edit it substantially before using…"></textarea>
+      </div>
+    `;
+    document.getElementById('work-textarea').addEventListener('input', () => {
+      updateWordCount();
+      checkSubmitState();
+    });
+    document.getElementById('chat-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendChatMessage();
+    });
+
+  } else if (levelId === 'ai-handles') {
+    panel.innerHTML = `
+      ${showWarning ? `<div class="warning-banner">⚠️ High-stakes item — are you sure AI should handle this without your direct authorship?</div>` : ''}
+      <div class="work-card flex-grow">
+        <div class="work-card-header">AI Output</div>
+        <div class="ai-output-box">${escHtml(task.ai_draft || 'AI output would appear here.')}</div>
+        <div class="responsibility-row">
+          <input type="checkbox" id="responsibility-check" onchange="checkSubmitState()" />
+          <label for="responsibility-check">I've reviewed this output and take responsibility for its use</label>
+        </div>
+      </div>
+    `;
+  }
+
+  checkSubmitState();
+}
+
+function updateWordCount() {
+  const ta = document.getElementById('work-textarea');
+  if (!ta) return;
+  const words = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+  const wc = document.getElementById('word-count');
+  if (wc) wc.textContent = words + ' word' + (words !== 1 ? 's' : '');
+}
+
+function getWorkContent() {
+  const ta = document.getElementById('work-textarea');
+  return ta ? ta.value.trim() : '';
+}
+
+function getWordCount() {
+  const content = getWorkContent();
+  return content ? content.split(/\s+/).length : 0;
+}
+
+function checkSubmitState() {
+  if (!selectedLevel) {
+    document.getElementById('submit-btn').disabled = true;
+    return;
+  }
+  let canSubmit = true;
+  if (selectedLevel === 'ai-handles') {
+    const cb = document.getElementById('responsibility-check');
+    canSubmit = cb && cb.checked;
+  } else if (selectedLevel === 'ai-drafts') {
+    // Need content in edited version
+    canSubmit = getWordCount() > 0;
+  }
+  // human-leads and ai-assists: allow submit even without content (but no bonus)
+  document.getElementById('submit-btn').disabled = !canSubmit;
+}
+
+function sendChatMessage() {
+  const input = document.getElementById('chat-input');
+  if (!input || !input.value.trim()) return;
+  const msg = input.value.trim();
+  input.value = '';
+
+  const chatArea = document.getElementById('chat-area');
+
+  // User bubble
+  const userBubble = document.createElement('div');
+  userBubble.className = 'chat-bubble user';
+  userBubble.innerHTML = `<div class="bubble-label">You</div>${escHtml(msg)}`;
+  chatArea.appendChild(userBubble);
+
+  // Simulated AI refinement
+  const task = scenario.tasks[currentTaskIdx];
+  const original = task.ai_draft || '';
+  const refined = refineAiDraft(original);
+
+  const aiBubble = document.createElement('div');
+  aiBubble.className = 'chat-bubble ai';
+  aiBubble.innerHTML = `<div class="bubble-label">AI Assistant</div>Good point. Here's a revised version: ${escHtml(refined)}`;
+  chatArea.appendChild(aiBubble);
+
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function refineAiDraft(original) {
+  // Produce a lightly varied version
+  return original
+    .replace(/\. /g, '. ')
+    .replace(/^(.{0,80})/, (m) => m.replace(/([A-Z])/, (c) => c))
+    .trim() + ' [Revised based on your feedback.]';
+}
+
+function submitTask() {
+  const task = scenario.tasks[currentTaskIdx];
+  const work = getWorkContent();
+  const reasoning = document.getElementById('reasoning-area').value.trim();
+  const confirmed = selectedLevel === 'ai-handles'
+    ? (document.getElementById('responsibility-check')?.checked || false)
+    : true;
+
+  taskResponses.push({
+    taskId: task.id,
+    level: selectedLevel,
+    reasoning,
+    work,
+    wordCount: getWordCount(),
+    confirmed
+  });
+
+  updateBalanceMeter();
+
+  if (currentTaskIdx < scenario.tasks.length - 1) {
+    currentTaskIdx++;
+    renderTask(currentTaskIdx);
+  } else {
+    showResults();
+  }
+}
+
+// ── SCORING ────────────────────────────────
+function scoreTask(task, response) {
+  const yourIdx = LEVEL_IDX[response.level];
+  const correctIdx = LEVEL_IDX[task.correct_ai_level];
+  const diff = Math.abs(yourIdx - correctIdx);
+
+  // Special: ai-handles on human-decision task = 0
+  if (response.level === 'ai-handles' && task.correct_ai_level === 'human-decision') {
+    return { calibration: 0, bonus: 0 };
+  }
+
+  let calibration = 0;
+  if (diff === 0) calibration = 15;
+  else if (diff === 1) calibration = 9;
+  else if (diff === 2) calibration = 4;
+  else calibration = 0;
+
+  // Bonus: up to 5 pts if writing present and level isn't ai-handles
+  let bonus = 0;
+  if (response.level !== 'ai-handles' && response.wordCount > 20) {
+    bonus = 5;
+  }
+
+  return { calibration, bonus };
+}
+
+// ── RESULTS ────────────────────────────────
+function showResults() {
+  let totalScore = 0;
+  const maxScore = scenario.tasks.length * 20; // 15 calibration + 5 bonus per task
+  const tallies = { 'human-leads': 0, 'ai-assists': 0, 'ai-drafts': 0, 'ai-handles': 0 };
+
+  // Build breakdown
+  const breakdownList = document.getElementById('breakdown-list');
+  breakdownList.innerHTML = '';
+
+  scenario.tasks.forEach((task, i) => {
+    const response = taskResponses[i];
+    const { calibration, bonus } = scoreTask(task, response);
+    const taskScore = calibration + bonus;
+    totalScore += taskScore;
+    tallies[response.level]++;
+
+    const yourLevel = LEVELS.find(l => l.id === response.level);
+    const correctLevel = LEVELS.find(l => l.id === task.correct_ai_level);
+    const isMatch = response.level === task.correct_ai_level;
+
+    const row = document.createElement('div');
+    row.className = 'breakdown-row';
+
+    let chipsHtml = '';
+    if (isMatch) {
+      chipsHtml = `<span class="choice-chip match">${yourLevel.icon} ${yourLevel.name} ✓</span>`;
+    } else {
+      chipsHtml = `
+        <span class="choice-chip yours">${yourLevel.icon} ${yourLevel.name}</span>
+        <span class="chip-arrow">→</span>
+        <span class="choice-chip correct">${correctLevel.icon} ${correctLevel.name}</span>
+      `;
+    }
+
+    row.innerHTML = `
+      <div class="breakdown-top">
+        <div class="breakdown-title">${escHtml(task.title)}</div>
+        <div class="breakdown-score">${taskScore}/${15 + 5}</div>
+      </div>
+      <div class="breakdown-chips">${chipsHtml}</div>
+      <div class="breakdown-teach">${escHtml(task.teaching_point)}</div>
+    `;
+    breakdownList.appendChild(row);
+  });
+
+  // Score display
+  const pct = Math.round((totalScore / maxScore) * 100);
+  document.getElementById('results-pct').textContent = pct + '%';
+  document.getElementById('results-pts').textContent = `${totalScore} / ${maxScore} pts`;
+
+  // Performance label
+  const label = scenario.performance_labels.slice().sort((a, b) => b.min - a.min)
+    .find(p => pct >= p.min);
+  document.getElementById('results-label').textContent = label ? label.text : '';
+
+  // Score circle arc
+  const circle = document.querySelector('.score-circle');
+  circle.style.setProperty('--pct', pct + '%');
+
+  // Coaching
+  renderCoaching(tallies);
+
+  showScreen('results');
+}
+
+function renderCoaching(tallies) {
+  const card = document.getElementById('coaching-card');
+
+  const tallyHtml = LEVELS.map(l => `
+    <div class="tally-item">
+      <span class="tally-icon">${l.icon}</span>
+      <span class="tally-count">${tallies[l.id]}</span>
+      <span class="tally-name">${l.name}</span>
+    </div>
+  `).join('');
+
+  // Find most and least used
+  const sorted = LEVELS.slice().sort((a, b) => tallies[b.id] - tallies[a.id]);
+  const mostUsed = sorted[0];
+  const leastUsed = sorted[sorted.length - 1];
+
+  // Coaching insight
+  let insight = '';
+  const aiHeavy = tallies['ai-handles'] + tallies['ai-drafts'];
+  const humanHeavy = tallies['human-leads'] + tallies['ai-assists'];
+
+  if (aiHeavy > 3) {
+    insight = `You leaned AI-heavy this session — using AI for ${aiHeavy} of 5 tasks. That can be efficient, but watch for high-stakes tasks where your judgment and accountability are non-negotiable. The key is matching AI involvement to the actual risk level of each task.`;
+  } else if (humanHeavy > 3) {
+    insight = `You leaned human-heavy this session — doing the work yourself for ${humanHeavy} of 5 tasks. That shows strong ownership, but consider where AI could have handled routine synthesis work efficiently, freeing your attention for the judgment calls that truly need you.`;
+  } else {
+    insight = `You used a good mix of AI involvement levels this session. Strong calibration means recognizing which tasks benefit from AI efficiency vs. which require your direct judgment and accountability — you're developing that instinct.`;
+  }
+
+  if (tallies['human-leads'] === 0) {
+    insight += ' One area to watch: you never chose "Human leads" — even on high-stakes or accountability-driven tasks. Some decisions genuinely require your name and judgment attached.';
+  }
+  if (tallies['ai-handles'] === 0) {
+    insight += ' Also worth noting: you never chose "AI handles" — there may be routine synthesis tasks where AI could fully take the load, giving you more bandwidth for higher-judgment work.';
+  }
+
+  card.innerHTML = `
+    <div class="coaching-heading">How you used AI this session</div>
+    <div class="coaching-tally">${tallyHtml}</div>
+    <div class="coaching-insight">${escHtml(insight)}</div>
+  `;
+}
+
+function restartTask() {
+  currentTaskIdx = 0;
+  taskResponses = [];
+  selectedLevel = null;
+  showScreen('intro');
+}
+
+// ── UTILS ─────────────────────────────────
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+
+<script src="feedback.js"></script>
+</body>
+</html>

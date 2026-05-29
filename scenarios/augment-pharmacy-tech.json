@@ -1,0 +1,74 @@
+{
+  "construct_id": "ai_augmentation",
+  "construct_name": "Human-AI Collaboration",
+  "construct_description": "Calibrate how much AI involvement is appropriate for each task given stakes, accountability, and context.",
+  "context": "You are a Senior Pharmacy Technician at Meridian Hospital Pharmacy. Work through your task queue for the day — each item requires you to decide how much AI involvement is appropriate.",
+  "tasks": [
+    {
+      "id": "t1",
+      "title": "Monthly Drug Shortage Report",
+      "briefing": "It's the first of the month and your pharmacy director needs the monthly shortage report summarizing current FDA drug shortage database entries relevant to your formulary. This involves pulling the entries, cross-referencing your formulary list, and creating a summary table.",
+      "stakes": "low",
+      "stakes_reason": "Informational synthesis report — the pharmacist reviews and acts on it, so the stakes are in the review, not the compilation.",
+      "correct_ai_level": "ai-handles",
+      "correct_ai_reason": "Cross-referencing a database and compiling a summary table is routine AI work. The pharmacist will review and make procurement decisions — your job is ensuring the data source is current.",
+      "ai_draft": "Monthly Drug Shortage Summary — [Month]: Active shortages affecting Meridian formulary: (1) Sodium Bicarbonate Injection 8.4% — shortage ongoing, alternative supplier identified. (2) Norepinephrine 4mg/250mL — critical shortage, substitution protocol in place. (3) Furosemide Injection 40mg/4mL — intermittent availability, 30-day supply on hand. (4) Lorazepam Injection — resolved as of [date]. (5) Metronidazole Injection 500mg — new shortage, no alternative listed. Recommend director review items 2 and 5 for immediate action.",
+      "teaching_point": "Database compilation and cross-referencing tasks — especially from structured, authoritative sources — are strong AI-handles candidates when a qualified reviewer will act on the output.",
+      "writing_placeholder": "Compile the monthly drug shortage report here, cross-referencing your formulary list with current FDA shortage database entries..."
+    },
+    {
+      "id": "t2",
+      "title": "Controlled Substance Count Discrepancy Report",
+      "briefing": "During the morning count, you discovered a discrepancy of 2 tablets of oxycodone 10mg — the physical count is short by 2 compared to the electronic record. You must complete and sign a formal discrepancy report that will go to pharmacy compliance and potentially to the DEA.",
+      "stakes": "human-decision",
+      "stakes_reason": "A federally regulated controlled substance discrepancy report requires your direct attestation — falsification is a federal crime.",
+      "correct_ai_level": "human-leads",
+      "correct_ai_reason": "Controlled substance discrepancy reports carry your professional license and legal signature. Every detail must come from your direct observation and knowledge — AI involvement is inappropriate here.",
+      "ai_draft": "Controlled Substance Discrepancy Report: Substance: Oxycodone 10mg tablets. Discrepancy: Physical count 2 tablets less than electronic record. Date/Time Discovered: [date/time]. Location: [dispenser unit/location]. Personnel Present During Count: [names]. Previous Count Verified By: [names/dates]. Possible Contributing Factors: [investigator to complete]. Immediate Actions Taken: [actions]. This report has been submitted to Pharmacy Compliance and documented in the controlled substance log.",
+      "teaching_point": "Documents you sign under federal regulation — especially controlled substance reports — must reflect your direct observation and personal attestation. AI authorship of legally attested documents is never appropriate.",
+      "writing_placeholder": "Complete the controlled substance discrepancy report here. Document exactly what you observed, when, who was present, and all steps taken..."
+    },
+    {
+      "id": "t3",
+      "title": "Patient Education Handout: New Anticoagulant",
+      "briefing": "A pharmacist has asked you to draft a patient education handout explaining how to take rivaroxaban (Xarelto) safely — including dosing schedule, food interactions, what to watch for, and when to call their doctor. The pharmacist will review it before it's printed.",
+      "stakes": "medium",
+      "stakes_reason": "Clinical accuracy matters, but a pharmacist reviews before use — draft quality affects how much review work the pharmacist needs to do.",
+      "correct_ai_level": "ai-drafts",
+      "correct_ai_reason": "Patient education handouts follow a familiar format and AI can produce clinically reasonable first drafts, but medication-specific accuracy requires pharmacist review regardless. Your job is to create a good starting point.",
+      "ai_draft": "Taking Rivaroxaban (Xarelto) Safely. Take with your evening meal — food helps your body absorb this medication properly. Do NOT skip doses; if you miss a dose, take it the same day if remembered, skip if not until next scheduled dose. What to watch for: unusual bruising, prolonged bleeding from cuts, blood in urine or stool, severe headache or dizziness — call your doctor immediately. Avoid: aspirin and NSAIDs (ibuprofen, naproxen) unless your doctor approves. Tell all healthcare providers you take a blood thinner before any procedure. Store at room temperature, away from moisture.",
+      "teaching_point": "AI can draft patient education materials efficiently, but clinical accuracy — especially for high-risk medications like anticoagulants — requires pharmacist verification before any patient sees it.",
+      "writing_placeholder": "Draft the patient education handout for rivaroxaban here. Include dosing, interactions, warning signs, and storage..."
+    },
+    {
+      "id": "t4",
+      "title": "P&T Committee Formulary Addition Recommendation",
+      "briefing": "The Pharmacy and Therapeutics Committee meets Thursday. You've been asked to prepare a recommendation on whether to add a new biologic (secukinumab, $18K/year per patient) to the hospital formulary. You'll need to weigh clinical evidence, cost-effectiveness, and alternatives already on formulary.",
+      "stakes": "human-decision",
+      "stakes_reason": "Formulary decisions affect patient care access and hospital budget at scale — requires clinical and pharmacoeconomic judgment.",
+      "correct_ai_level": "human-leads",
+      "correct_ai_reason": "Formulary recommendations to a P&T committee involve clinical evidence evaluation, pharmacoeconomic analysis, and institutional judgment. The recommendation carries your professional name and affects patient access to care.",
+      "ai_draft": "Formulary Review — Secukinumab (Cosentyx): Clinical evidence supports efficacy in moderate-to-severe psoriasis and psoriatic arthritis (PASI 90 response rates 59–77%). Current formulary alternatives include adalimumab and ustekinumab. At $18K/year, budget impact for projected 15 patients would be $270K annually. Key considerations: step therapy requirements, prior authorization burden, biosimilar availability timeline, and therapeutic niche differentiation from existing agents. Recommendation framework: add with restrictions (step therapy after adalimumab failure) vs. non-formulary with case-by-case approval.",
+      "teaching_point": "Formulary recommendations that affect patient care access and carry your professional endorsement require your clinical reasoning — AI can summarize literature but cannot make the institutional judgment call.",
+      "writing_placeholder": "Write your formulary addition recommendation for secukinumab here, with your clinical rationale and recommended formulary status..."
+    },
+    {
+      "id": "t5",
+      "title": "Automated Dispensing System Training Memo",
+      "briefing": "The pharmacy is switching to a new automated dispensing system (ADS) next month. You need to send a training update memo to the 12 pharmacy technicians on your team covering the key workflow changes, the training schedule, and what they need to do before go-live.",
+      "stakes": "medium",
+      "stakes_reason": "Internal staff communication about a process change — important but recipient-familiar and revisable before use.",
+      "correct_ai_level": "ai-assists",
+      "correct_ai_reason": "Memos follow familiar formats, but the specific workflow changes, training dates, and action items are things only you know. AI can help you structure a professional memo while you supply the substance.",
+      "ai_draft": "TO: Pharmacy Technician Team. FROM: [Your Name], Senior Pharmacy Technician. RE: Automated Dispensing System Transition — Training Update. As announced, we will transition to the new ADS on [go-live date]. Key workflow changes include: [list changes]. Training sessions are scheduled for: [dates/times/locations]. Before go-live, each technician must: complete the online ADS training module (link: [URL]), attend one hands-on lab session, and confirm competency sign-off with a senior tech or pharmacist. Questions? Contact [name] or see the shared drive folder [location]. Let's make this transition smooth.",
+      "teaching_point": "Internal memos are good AI-assists candidates — you provide the content (dates, specific changes, action items) and AI helps you structure it professionally. You write the substance.",
+      "writing_placeholder": "Write the training update memo here. Include the workflow changes, training schedule, and pre-go-live requirements your team needs to know..."
+    }
+  ],
+  "performance_labels": [
+    { "min": 90, "text": "Expert Calibration" },
+    { "min": 70, "text": "Strong Calibration" },
+    { "min": 50, "text": "Developing Calibration" },
+    { "min": 0, "text": "Needs Calibration Work" }
+  ]
+}
