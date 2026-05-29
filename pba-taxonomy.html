@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PBA Classification System v1.3 — ETS AI Products</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a212b;
+  --surface: #242e3d;
+  --surface-alt: #2c3849;
+  --surface-hover: #344256;
+  --text: #f2e9d8;
+  --text-secondary: #b8b0a0;
+  --text-tertiary: #7e7a72;
+  --border: rgba(242,233,216,0.08);
+  --border-strong: rgba(242,233,216,0.15);
+  --accent: #4dd3fe;
+  --cat1: #4dd3fe;
+  --cat2: #60a5fa;
+  --cat3: #f59e0b;
+  --cat4: #9e9eff;
+  --cat5: #f43f5e;
+  --cat6: #34d399;
+  --cat7: #468254;
+  --cat7-light: #5aad6e;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── STICKY NAV ─────────────────────────────────────────── */
+.top-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(26,33,43,0.95); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; height: 52px;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 600; color: var(--text);
+}
+.nav-badge {
+  font-size: 10px; padding: 2px 7px; border-radius: 3px;
+  background: rgba(77,211,254,0.12); color: var(--accent);
+  border: 1px solid rgba(77,211,254,0.2); font-weight: 600;
+}
+.nav-links {
+  display: flex; gap: 4px;
+}
+.nav-link {
+  font-size: 12px; color: var(--text-tertiary); padding: 4px 10px;
+  border-radius: 5px; text-decoration: none; transition: all 0.15s;
+  cursor: pointer; background: none; border: none;
+}
+.nav-link:hover { color: var(--text); background: var(--surface-alt); }
+.nav-close {
+  font-size: 12px; color: var(--text-tertiary); padding: 5px 12px;
+  border-radius: 5px; background: var(--surface); border: 1px solid var(--border);
+  cursor: pointer; transition: all 0.15s;
+}
+.nav-close:hover { color: var(--text); border-color: var(--border-strong); }
+
+/* ── HERO ───────────────────────────────────────────────── */
+.hero {
+  padding: 64px 32px 48px;
+  max-width: 960px; margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+.hero-eyebrow {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--accent); margin-bottom: 16px;
+}
+.hero-title {
+  font-size: 42px; font-weight: 700; line-height: 1.15;
+  margin-bottom: 16px; color: var(--text);
+}
+.hero-title span { color: var(--accent); }
+.hero-sub {
+  font-size: 16px; color: var(--text-secondary); max-width: 580px;
+  margin-bottom: 28px; line-height: 1.7;
+}
+.hero-meta {
+  display: flex; gap: 20px; flex-wrap: wrap;
+}
+.hero-meta-item {
+  font-size: 12px; color: var(--text-tertiary);
+}
+.hero-meta-item strong { color: var(--text-secondary); }
+
+/* ── AT A GLANCE ────────────────────────────────────────── */
+.glance {
+  max-width: 960px; margin: 0 auto;
+  padding: 40px 32px;
+  border-bottom: 1px solid var(--border);
+}
+.section-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 20px;
+}
+.cat-chips {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px;
+}
+.cat-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  font-size: 13px; font-weight: 500; text-decoration: none;
+  transition: all 0.15s; cursor: pointer;
+}
+.cat-chip:hover { background: var(--surface-alt); border-color: var(--border-strong); transform: translateY(-1px); }
+.cat-chip-num {
+  width: 22px; height: 22px; border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: var(--bg); flex-shrink: 0;
+}
+.dim-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.dim-chip {
+  font-size: 11px; padding: 3px 10px; border-radius: 4px;
+  background: var(--surface-alt); color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+/* ── CATEGORIES ─────────────────────────────────────────── */
+.categories {
+  max-width: 960px; margin: 0 auto;
+  padding: 48px 32px;
+}
+.cat-card {
+  background: var(--surface); border-radius: 12px;
+  border: 1px solid var(--border);
+  margin-bottom: 20px; overflow: hidden;
+  transition: border-color 0.2s;
+}
+.cat-card:hover { border-color: var(--border-strong); }
+.cat-card-header {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.cat-num {
+  width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 800; color: var(--bg);
+}
+.cat-label-group { flex: 1; min-width: 0; }
+.cat-code {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; margin-bottom: 4px;
+}
+.cat-name {
+  font-size: 19px; font-weight: 700; color: var(--text); margin-bottom: 6px;
+}
+.cat-desc {
+  font-size: 13px; color: var(--text-secondary); line-height: 1.6;
+}
+.cat-body {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+}
+.cat-col {
+  padding: 18px 20px;
+  border-right: 1px solid var(--border);
+}
+.cat-col:last-child { border-right: none; }
+.cat-col-title {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 10px;
+}
+.cat-col ul {
+  list-style: none; padding: 0;
+}
+.cat-col ul li {
+  font-size: 12px; color: var(--text-secondary); line-height: 1.5;
+  margin-bottom: 5px; padding-left: 10px; position: relative;
+}
+.cat-col ul li::before {
+  content: '›'; position: absolute; left: 0; color: var(--text-tertiary);
+}
+.example-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.example-tag {
+  font-size: 11px; padding: 2px 8px; border-radius: 4px;
+  background: var(--surface-alt); color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.ai-note {
+  font-size: 12px; color: var(--text-secondary); line-height: 1.6;
+}
+.cat-col.ai-col { background: rgba(26,33,43,0.4); }
+
+/* ── DIMENSIONS ─────────────────────────────────────────── */
+.dimensions {
+  max-width: 960px; margin: 0 auto;
+  padding: 0 32px 48px;
+  border-top: 1px solid var(--border);
+  padding-top: 48px;
+}
+.dim-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 14px; margin-top: 24px;
+}
+.dim-card {
+  background: var(--surface); border-radius: 10px;
+  border: 1px solid var(--border); padding: 18px 20px;
+}
+.dim-card-name {
+  font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px;
+}
+.dim-options { display: flex; flex-wrap: wrap; gap: 5px; }
+.dim-opt {
+  font-size: 11px; padding: 3px 9px; border-radius: 4px;
+  background: var(--surface-alt); color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+/* ── EXAMPLES ───────────────────────────────────────────── */
+.examples {
+  max-width: 960px; margin: 0 auto;
+  padding: 0 32px 48px;
+  border-top: 1px solid var(--border);
+  padding-top: 48px;
+}
+.example-cards {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 14px; margin-top: 24px;
+}
+.ex-card {
+  background: var(--surface); border-radius: 10px;
+  border: 1px solid var(--border); padding: 20px;
+}
+.ex-card-title {
+  font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px;
+}
+.ex-cats {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;
+}
+.ex-cat-badge {
+  font-size: 11px; padding: 2px 8px; border-radius: 4px;
+  font-weight: 600;
+}
+.ex-dims {
+  display: flex; flex-wrap: wrap; gap: 5px;
+}
+.ex-dim {
+  font-size: 11px; padding: 2px 7px; border-radius: 3px;
+  background: var(--surface-alt); color: var(--text-tertiary);
+  border: 1px solid var(--border);
+}
+
+/* ── FOUNDATION ─────────────────────────────────────────── */
+.foundation {
+  max-width: 960px; margin: 0 auto;
+  padding: 0 32px 48px;
+  border-top: 1px solid var(--border);
+  padding-top: 48px;
+}
+.foundation-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 14px; margin-top: 24px;
+}
+.found-card {
+  background: var(--surface); border-radius: 10px;
+  border: 1px solid var(--border); padding: 18px 20px;
+}
+.found-author {
+  font-size: 11px; color: var(--accent); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;
+}
+.found-point {
+  font-size: 13px; color: var(--text-secondary); line-height: 1.6;
+}
+
+/* ── REFERENCES ─────────────────────────────────────────── */
+.references {
+  max-width: 960px; margin: 0 auto;
+  padding: 0 32px 72px;
+  border-top: 1px solid var(--border);
+  padding-top: 48px;
+}
+.ref-list {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 8px; margin-top: 20px;
+}
+.ref-item {
+  font-size: 11px; color: var(--text-tertiary); line-height: 1.6;
+  padding: 8px 12px; background: var(--surface);
+  border-radius: 6px; border: 1px solid var(--border);
+}
+.ref-item strong { color: var(--text-secondary); }
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+.page-footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 960px; margin: 0 auto;
+  font-size: 11px; color: var(--text-tertiary);
+}
+
+/* ── SECTION HEADINGS ───────────────────────────────────── */
+.section-title {
+  font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 8px;
+}
+.section-sub {
+  font-size: 13px; color: var(--text-secondary); margin-bottom: 0; max-width: 560px;
+}
+
+/* Scroll target offset */
+[id] { scroll-margin-top: 68px; }
+</style>
+</head>
+<body>
+
+<!-- ── TOP NAV ─────────────────────────────────────────── -->
+<nav class="top-nav">
+  <div class="nav-brand">
+    PBA Classification System
+    <span class="nav-badge">v1.3</span>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link" href="#categories">Categories</a>
+    <a class="nav-link" href="#dimensions">Dimensions</a>
+    <a class="nav-link" href="#examples">Examples</a>
+    <a class="nav-link" href="#foundation">Foundation</a>
+    <a class="nav-link" href="#references">References</a>
+  </div>
+  <button class="nav-close" onclick="window.close()">✕ Close</button>
+</nav>
+
+<!-- ── HERO ───────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-eyebrow">ETS AI Products Team</div>
+  <h1 class="hero-title">Performance-Based Assessment<br><span>Classification System</span></h1>
+  <p class="hero-sub">A cross-sector taxonomy for K–12, higher education, and workforce credentialing. Seven primary task categories and six secondary dimensions for designing, classifying, and evaluating performance assessments.</p>
+  <div class="hero-meta">
+    <span class="hero-meta-item"><strong>Version</strong> 1.3</span>
+    <span class="hero-meta-item"><strong>Date</strong> May 2026</span>
+    <span class="hero-meta-item"><strong>Sectors</strong> K–12 · Higher Ed · Workforce</span>
+    <span class="hero-meta-item"><strong>Categories</strong> 7 primary + 6 secondary dimensions</span>
+  </div>
+</section>
+
+<!-- ── AT A GLANCE ────────────────────────────────────── -->
+<section class="glance" id="overview">
+  <div class="section-label">At a glance — 7 primary categories</div>
+  <div class="cat-chips">
+    <a class="cat-chip" href="#cat1"><span class="cat-chip-num" style="background:var(--cat1);">1</span><span style="color:var(--cat1);">Constructed Response</span></a>
+    <a class="cat-chip" href="#cat2"><span class="cat-chip-num" style="background:var(--cat2);">2</span><span style="color:var(--cat2);">Portfolio / Artifact</span></a>
+    <a class="cat-chip" href="#cat3"><span class="cat-chip-num" style="background:var(--cat3);">3</span><span style="color:var(--cat3);">Process / Demonstration</span></a>
+    <a class="cat-chip" href="#cat4"><span class="cat-chip-num" style="background:var(--cat4);">4</span><span style="color:var(--cat4);">Simulation-Based</span></a>
+    <a class="cat-chip" href="#cat5"><span class="cat-chip-num" style="background:var(--cat5);">5</span><span style="color:var(--cat5);">Observation-Based</span></a>
+    <a class="cat-chip" href="#cat6"><span class="cat-chip-num" style="background:var(--cat6);">6</span><span style="color:var(--cat6);">Exhibition / Presentation</span></a>
+    <a class="cat-chip" href="#cat7"><span class="cat-chip-num" style="background:var(--cat7-light);">7</span><span style="color:var(--cat7-light);">AI-Augmented</span></a>
+  </div>
+  <div class="section-label" style="margin-top:28px;">+ 6 secondary dimensions</div>
+  <div class="dim-chips">
+    <span class="dim-chip">Stakes Level</span>
+    <span class="dim-chip">Temporal Structure</span>
+    <span class="dim-chip">Collaboration Mode</span>
+    <span class="dim-chip">Problem Structure</span>
+    <span class="dim-chip">Authenticity Level</span>
+    <span class="dim-chip">Scoring Method</span>
+  </div>
+</section>
+
+<!-- ── CATEGORIES ─────────────────────────────────────── -->
+<section class="categories" id="categories">
+  <div class="section-label">Primary categories</div>
+  <h2 class="section-title">The 7 Task Categories</h2>
+  <p class="section-sub" style="margin-bottom:32px;">Organized by the dominant modality of evidence production. Tasks may span multiple categories — primary + secondary.</p>
+
+  <!-- CAT 1 -->
+  <div class="cat-card" id="cat1">
+    <div class="cat-card-header">
+      <div class="cat-num" style="background:var(--cat1);">1</div>
+      <div class="cat-label-group">
+        <div class="cat-code" style="color:var(--cat1);">CR — Constructed Response</div>
+        <div class="cat-name">Constructed Response Tasks</div>
+        <div class="cat-desc">Tasks requiring examinees to generate original written or verbal responses, scored against rubrics for content, reasoning, and communication.</div>
+      </div>
+    </div>
+    <div class="cat-body">
+      <div class="cat-col">
+        <div class="cat-col-title">Subtypes</div>
+        <ul>
+          <li>Extended Written Response (essays, reports, research papers)</li>
+          <li>Short Constructed Response (open-ended explanations)</li>
+          <li>Oral / Verbal Response (presentations, speaking proficiency)</li>
+        </ul>
+      </div>
+      <div class="cat-col">
+        <div class="cat-col-title">Examples</div>
+        <div class="example-tags">
+          <span class="example-tag">NAEP Writing</span>
+          <span class="example-tag">AP Free Response</span>
+          <span class="example-tag">GRE Analytical Writing</span>
+          <span class="example-tag">Duolingo Speaking</span>
+          <span class="example-tag">IELTS Speaking</span>
+          <span class="example-tag">Bar Exam Essays</span>
+        </div>
+      </div>
+      <div class="cat-col ai-col">
+        <div class="cat-col-title">AI Implications</div>
+        <p class="ai-note">AI-powered AES achieves QWK ~0.68 agreement with human raters [14]; a 2025 synthesis of 65 studies places LLM–human agreement at 0.30–0.80 [15]. LLMs apply rubrics via few-shot prompting; explainability remains a key challenge.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAT 2 -->
+  <div class="cat-card" id="cat2">
+    <div class="cat-card-header">
+      <div class="cat-num" style="background:var(--cat2);">2</div>
+      <div class="cat-label-group">
+        <div class="cat-code" style="color:var(--cat2);">PA — Portfolio / Artifact</div>
+        <div class="cat-name">Portfolio / Artifact-Based Tasks</div>
+        <div class="cat-desc">Tasks where competence evidence is a tangible deliverable created over time. Evaluation focuses on quality, creativity, and technical execution.</div>
+      </div>
+    </div>
+    <div class="cat-body">
+      <div class="cat-col">
+        <div class="cat-col-title">Subtypes</div>
+        <ul>
+          <li>Portfolio Assessment (curated work collections over time)</li>
+          <li>Project-Based Assessment (multi-phase deliverables)</li>
+          <li>Design Artifact Assessment (prototypes, models, creative works)</li>
+        </ul>
+      </div>
+      <div class="cat-col">
+        <div class="cat-col-title">Examples</div>
+        <div class="example-tags">
+          <span class="example-tag">NBPTS Teaching Portfolio</span>
+          <span class="example-tag">ePortfolios in Nursing</span>
+          <span class="example-tag">NGSS Science Projects</span>
+          <span class="example-tag">Capstone Engineering</span>
+          <span class="example-tag">UX/UI Design Portfolios</span>
+          <span class="example-tag">Sustainable City Models</span>
+        </div>
+      </div>
+      <div class="cat-col ai-col">
+        <div class="cat-col-title">AI Implications</div>
+        <p class="ai-note">AI supports formative feedback during creation. Emerging challenge: distinguishing human-generated from AI-assisted artifacts. Provenance and process evidence become critical validity considerations.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAT 3 -->
+  <div class="cat-card" id="cat3">
+    <div class="cat-card-header">
+      <div class="cat-num" style="background:var(--cat3); color:#1a212b;">3</div>
+      <div class="cat-label-group">
+        <div class="cat-code" style="color:var(--cat3);">PD — Process / Demonstration</div>
+        <div class="cat-name">Process / Demonstration Tasks</div>
+        <div class="cat-desc">Tasks where the method of execution is primary — evaluators observe steps, techniques, decision-making, and procedural accuracy.</div>
+      </div>
+    </div>
+    <div class="cat-body">
+      <div class="cat-col">
+        <div class="cat-col-title">Subtypes</div>
+        <ul>
+          <li>Hands-On Technical Demonstration (lab, technical ops)</li>
+          <li>Clinical / Procedural Performance (medical procedures)</li>
+          <li>Technical Coding / Problem-Solving (live coding, debugging)</li>
+        </ul>
+      </div>
+      <div class="cat-col">
+        <div class="cat-col-title">Examples</div>
+        <div class="example-tags">
+          <span class="example-tag">Science Lab Practicals</span>
+          <span class="example-tag">CompTIA Hands-On Labs</span>
+          <span class="example-tag">OSCE Clinical Stations</span>
+          <span class="example-tag">USMLE Step 2 CS</span>
+          <span class="example-tag">HackerRank Projects</span>
+          <span class="example-tag">Google Tech Interviews</span>
+        </div>
+      </div>
+      <div class="cat-col ai-col">
+        <div class="cat-col-title">AI Implications</div>
+        <p class="ai-note">AI automates scoring of procedural steps (code execution, surgical metrics). VR-based process assessment enables standardized observation at scale.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAT 4 -->
+  <div class="cat-card" id="cat4">
+    <div class="cat-card-header">
+      <div class="cat-num" style="background:var(--cat4); color:#1a212b;">4</div>
+      <div class="cat-label-group">
+        <div class="cat-code" style="color:var(--cat4);">SB — Simulation-Based</div>
+        <div class="cat-name">Simulation-Based Tasks</div>
+        <div class="cat-desc">Tasks immersing examinees in realistic scenarios requiring decisions and actions within controlled environments approximating real-world conditions.</div>
+      </div>
+    </div>
+    <div class="cat-body">
+      <div class="cat-col">
+        <div class="cat-col-title">Subtypes</div>
+        <ul>
+          <li>Standardized Patient / Role-Play Simulations</li>
+          <li>Computer-Based Interactive Simulations (branching scenarios)</li>
+          <li>Conversation-Based Assessment (adaptive dialogue with virtual agents) [4]</li>
+          <li>Virtual / Augmented Reality Simulations</li>
+        </ul>
+      </div>
+      <div class="cat-col">
+        <div class="cat-col-title">Examples</div>
+        <div class="example-tags">
+          <span class="example-tag">USMLE Standardized Patients</span>
+          <span class="example-tag">Assessment Center Role-Plays</span>
+          <span class="example-tag">NAEP TEL Tasks</span>
+          <span class="example-tag">ETS CBA Science Inquiry</span>
+          <span class="example-tag">CPA Task-Based Simulations</span>
+          <span class="example-tag">VR Surgical Training</span>
+        </div>
+      </div>
+      <div class="cat-col ai-col">
+        <div class="cat-col-title">AI Implications</div>
+        <p class="ai-note">AI-driven scenario generation creates adaptive simulations. Conversation-based assessment uses NLP to adapt dialogue paths in real time [4]. VTREM provides cross-domain VR credibility assessment [13].</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAT 5 -->
+  <div class="cat-card" id="cat5">
+    <div class="cat-card-header">
+      <div class="cat-num" style="background:var(--cat5);">5</div>
+      <div class="cat-label-group">
+        <div class="cat-code" style="color:var(--cat5);">OB — Observation-Based</div>
+        <div class="cat-name">Observation-Based Tasks</div>
+        <div class="cat-desc">Tasks assessed through structured expert observation of performance in authentic or semi-authentic settings using standardized protocols.</div>
+      </div>
+    </div>
+    <div class="cat-body">
+      <div class="cat-col">
+        <div class="cat-col-title">Subtypes</div>
+        <ul>
+          <li>Workplace / Clinical Observation (authentic practice)</li>
+          <li>Structured Behavioral Assessment (assessment centers)</li>
+          <li>Peer / Self-Assessment Protocols (structured peer review)</li>
+        </ul>
+      </div>
+      <div class="cat-col">
+        <div class="cat-col-title">Examples</div>
+        <div class="example-tags">
+          <span class="example-tag">ETS PPAT Teaching Obs.</span>
+          <span class="example-tag">Medical Residency Evals</span>
+          <span class="example-tag">Management Assess. Centers</span>
+          <span class="example-tag">Military Leadership Eval.</span>
+          <span class="example-tag">360-Degree Evaluations</span>
+          <span class="example-tag">Peer Code Reviews</span>
+        </div>
+      </div>
+      <div class="cat-col ai-col">
+        <div class="cat-col-title">AI Implications</div>
+        <p class="ai-note">AI video analysis and NLP augment human observers — flagging behaviors, tracking time-on-task, providing structured data from subjective observations.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAT 6 -->
+  <div class="cat-card" id="cat6">
+    <div class="cat-card-header">
+      <div class="cat-num" style="background:var(--cat6); color:#1a212b;">6</div>
+      <div class="cat-label-group">
+        <div class="cat-code" style="color:var(--cat6);">EX — Exhibition / Presentation</div>
+        <div class="cat-name">Exhibition / Presentation Tasks</div>
+        <div class="cat-desc">Tasks requiring public presentation, performance, or defense of work before an audience or panel. Assesses both work quality and real-time communication.</div>
+      </div>
+    </div>
+    <div class="cat-body">
+      <div class="cat-col">
+        <div class="cat-col-title">Subtypes</div>
+        <ul>
+          <li>Thesis / Capstone Defense (formal expert panel)</li>
+          <li>Performance Exhibition (artistic, musical, dramatic)</li>
+          <li>Professional Pitch / Presentation (business cases, demos)</li>
+        </ul>
+      </div>
+      <div class="cat-col">
+        <div class="cat-col-title">Examples</div>
+        <div class="example-tags">
+          <span class="example-tag">Doctoral Dissertation Defense</span>
+          <span class="example-tag">Music Recitals &amp; Juries</span>
+          <span class="example-tag">Art Exhibitions</span>
+          <span class="example-tag">Business Plan Pitches</span>
+          <span class="example-tag">Science Fair Presentations</span>
+          <span class="example-tag">Hackathon Demos</span>
+        </div>
+      </div>
+      <div class="cat-col ai-col">
+        <div class="cat-col-title">AI Implications</div>
+        <p class="ai-note">AI coaching tools analyze speaking pace, filler words, and visual design. AI-powered audience simulation could enable practice at scale before high-stakes panels.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAT 7 -->
+  <div class="cat-card" id="cat7">
+    <div class="cat-card-header">
+      <div class="cat-num" style="background:var(--cat7-light);">7</div>
+      <div class="cat-label-group">
+        <div class="cat-code" style="color:var(--cat7-light);">AI — AI-Augmented</div>
+        <div class="cat-name">AI-Augmented Performance Tasks</div>
+        <div class="cat-desc">Cross-cutting category where AI plays a structural role in task design, administration, scoring, or feedback — fundamentally altering the assessment.</div>
+      </div>
+    </div>
+    <div class="cat-body">
+      <div class="cat-col">
+        <div class="cat-col-title">Subtypes</div>
+        <ul>
+          <li>Adaptive Performance Tasks (AI adjusts difficulty)</li>
+          <li>AI-Scored Performance Tasks (NLP, vision &amp; multimodal scoring)</li>
+          <li>Human-AI Collaborative / Agentic Tasks (examinee directs &amp; supervises AI agents)</li>
+          <li>AI-Generated Feedback Loops (continuous formative cycles)</li>
+        </ul>
+      </div>
+      <div class="cat-col">
+        <div class="cat-col-title">Examples</div>
+        <div class="example-tags">
+          <span class="example-tag">Duolingo English Test</span>
+          <span class="example-tag">AI-Adaptive Coding Challenges</span>
+          <span class="example-tag">Automated Essay Scoring</span>
+          <span class="example-tag">HackerRank AI IDE</span>
+          <span class="example-tag">Multi-Agent Writing Feedback</span>
+          <span class="example-tag">AI-Assisted Diagnostic Tasks</span>
+        </div>
+      </div>
+      <div class="cat-col ai-col">
+        <div class="cat-col-title">Key Considerations</div>
+        <p class="ai-note">Design for an AI-present world — prioritize process and reasoning over easily generated products [17]. Balance efficiency with explainability; preserve human oversight for high stakes [18]. Address equity; evolve validity frameworks.</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ── SECONDARY DIMENSIONS ────────────────────────────── -->
+<section class="dimensions" id="dimensions">
+  <div class="section-label">Classification layer 2</div>
+  <h2 class="section-title">6 Secondary Dimensions</h2>
+  <p class="section-sub">Every task is further classified along six dimensions for precise specification and cross-sector comparability.</p>
+  <div class="dim-grid">
+    <div class="dim-card">
+      <div class="dim-card-name">Stakes Level</div>
+      <div class="dim-options">
+        <span class="dim-opt">Low</span>
+        <span class="dim-opt">Medium</span>
+        <span class="dim-opt">High</span>
+      </div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-card-name">Temporal Structure</div>
+      <div class="dim-options">
+        <span class="dim-opt">On-Demand</span>
+        <span class="dim-opt">Extended</span>
+        <span class="dim-opt">Continuous</span>
+      </div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-card-name">Collaboration Mode</div>
+      <div class="dim-options">
+        <span class="dim-opt">Individual</span>
+        <span class="dim-opt">Collaborative</span>
+        <span class="dim-opt">Hybrid</span>
+      </div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-card-name">Problem Structure</div>
+      <div class="dim-options">
+        <span class="dim-opt">Well-Structured</span>
+        <span class="dim-opt">Ill-Structured</span>
+        <span class="dim-opt">Open-Ended</span>
+      </div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-card-name">Authenticity Level</div>
+      <div class="dim-options">
+        <span class="dim-opt">Proximal</span>
+        <span class="dim-opt">Distal</span>
+        <span class="dim-opt">Embedded</span>
+      </div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-card-name">Scoring Method</div>
+      <div class="dim-options">
+        <span class="dim-opt">Human</span>
+        <span class="dim-opt">Machine</span>
+        <span class="dim-opt">Hybrid</span>
+        <span class="dim-opt">Self / Peer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EXAMPLE CLASSIFICATIONS ────────────────────────── -->
+<section class="examples" id="examples">
+  <div class="section-label">Applied taxonomy</div>
+  <h2 class="section-title">Example Classifications</h2>
+  <p class="section-sub">Real-world assessments mapped to primary categories and all six secondary dimensions.</p>
+  <div class="example-cards">
+
+    <div class="ex-card">
+      <div class="ex-card-title">OSCE Clinical Exam</div>
+      <div class="ex-cats">
+        <span class="ex-cat-badge" style="background:rgba(158,158,255,0.12);color:var(--cat4);">Cat 4 — Simulation</span>
+        <span class="ex-cat-badge" style="background:rgba(245,158,11,0.12);color:var(--cat3);">Cat 3 — Process</span>
+      </div>
+      <div class="ex-dims">
+        <span class="ex-dim">High-Stakes</span>
+        <span class="ex-dim">On-Demand</span>
+        <span class="ex-dim">Individual</span>
+        <span class="ex-dim">Ill-Structured</span>
+        <span class="ex-dim">Proximal</span>
+        <span class="ex-dim">Hybrid-Scored</span>
+      </div>
+    </div>
+
+    <div class="ex-card">
+      <div class="ex-card-title">Duolingo English Test</div>
+      <div class="ex-cats">
+        <span class="ex-cat-badge" style="background:rgba(90,173,110,0.12);color:var(--cat7-light);">Cat 7 — AI-Augmented</span>
+        <span class="ex-cat-badge" style="background:rgba(77,211,254,0.12);color:var(--cat1);">Cat 1 — Constructed</span>
+      </div>
+      <div class="ex-dims">
+        <span class="ex-dim">High-Stakes</span>
+        <span class="ex-dim">On-Demand</span>
+        <span class="ex-dim">Individual</span>
+        <span class="ex-dim">Well-Structured</span>
+        <span class="ex-dim">Distal</span>
+        <span class="ex-dim">Machine-Scored</span>
+      </div>
+    </div>
+
+    <div class="ex-card">
+      <div class="ex-card-title">NGSS Science Investigation</div>
+      <div class="ex-cats">
+        <span class="ex-cat-badge" style="background:rgba(96,165,250,0.12);color:var(--cat2);">Cat 2 — Portfolio</span>
+        <span class="ex-cat-badge" style="background:rgba(245,158,11,0.12);color:var(--cat3);">Cat 3 — Process</span>
+      </div>
+      <div class="ex-dims">
+        <span class="ex-dim">Medium-Stakes</span>
+        <span class="ex-dim">Extended</span>
+        <span class="ex-dim">Collaborative</span>
+        <span class="ex-dim">Ill-Structured</span>
+        <span class="ex-dim">Proximal</span>
+        <span class="ex-dim">Human-Scored</span>
+      </div>
+    </div>
+
+    <div class="ex-card">
+      <div class="ex-card-title">HackerRank Coding Assessment</div>
+      <div class="ex-cats">
+        <span class="ex-cat-badge" style="background:rgba(245,158,11,0.12);color:var(--cat3);">Cat 3 — Process</span>
+        <span class="ex-cat-badge" style="background:rgba(90,173,110,0.12);color:var(--cat7-light);">Cat 7 — AI-Augmented</span>
+      </div>
+      <div class="ex-dims">
+        <span class="ex-dim">Medium-Stakes</span>
+        <span class="ex-dim">On-Demand</span>
+        <span class="ex-dim">Individual</span>
+        <span class="ex-dim">Well-Structured</span>
+        <span class="ex-dim">Proximal</span>
+        <span class="ex-dim">Machine-Scored</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── THEORETICAL FOUNDATION ─────────────────────────── -->
+<section class="foundation" id="foundation">
+  <div class="section-label">Theoretical grounding</div>
+  <h2 class="section-title">Foundation</h2>
+  <p class="section-sub">The classification system is grounded in classical validity theory and extended for the AI era.</p>
+  <div class="foundation-grid">
+    <div class="found-card">
+      <div class="found-author">Messick (1994) [1]</div>
+      <p class="found-point">Distinguished performances vs. products, structured vs. unstructured problems, and contextualized vs. decontextualized skill — foundational categories that map directly to the primary taxonomy.</p>
+    </div>
+    <div class="found-card">
+      <div class="found-author">Linn, Baker &amp; Dunbar (1991) [2]</div>
+      <p class="found-point">Established validation criteria: consequences, fairness, transfer, generalizability, cognitive complexity, content quality — the secondary dimensions operationalize several of these.</p>
+    </div>
+    <div class="found-card">
+      <div class="found-author">Authentic Assessment [3]</div>
+      <p class="found-point">Tasks should mirror real-world challenges. Higher authenticity increases ecological validity. The Authenticity Level dimension directly encodes Baker, O'Neil &amp; Linn's framework.</p>
+    </div>
+    <div class="found-card">
+      <div class="found-author">Conversation-Based Assessment [4]</div>
+      <p class="found-point">Adaptive dialogue with virtual agents elicits evidence about what students know and how they justify understanding — the theoretical basis for Cat 4 Simulation subtypes.</p>
+    </div>
+    <div class="found-card" style="grid-column: 1 / -1;">
+      <div class="found-author">AI-Era Extension</div>
+      <p class="found-point">AI reshapes task design, scoring, and feedback. Emerging frameworks fuse classical validity with responsible-AI principles [16] and assume AI is present, favoring process and reasoning evidence [17]. Cat 7 (AI-Augmented) represents this structural shift — not merely a scoring aid but a participant in the assessment itself.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── REFERENCES ──────────────────────────────────────── -->
+<section class="references" id="references">
+  <div class="section-label">Bibliography</div>
+  <h2 class="section-title">References</h2>
+  <div class="ref-list">
+    <div class="ref-item"><strong>[1]</strong> Messick, S. (1994). The interplay of evidence and consequences in the validation of performance assessments. <em>Educational Researcher, 23</em>(2).</div>
+    <div class="ref-item"><strong>[2]</strong> Linn, R.L., Baker, E.L., &amp; Dunbar, S.B. (1991). Complex, performance-based assessment. <em>Educational Researcher, 20</em>(8).</div>
+    <div class="ref-item"><strong>[3]</strong> Baker, E.L., O'Neil, H.F., &amp; Linn, R.L. (1994). Policy and validity prospects for performance-based assessment. <em>American Psychologist.</em></div>
+    <div class="ref-item"><strong>[4]</strong> Jackson, G.T. &amp; Zapata-Rivera, D. (2015). Conversation-based assessment. <em>R&amp;D Connections, No. 25.</em> ETS.</div>
+    <div class="ref-item"><strong>[5]</strong> Zapata-Rivera, D., Jackson, T., et al. (2014). Assessing science inquiry skills using trialogues. <em>ITS Conference.</em></div>
+    <div class="ref-item"><strong>[6]</strong> ETS: Praxis PPAT &amp; NAEP. ets.org</div>
+    <div class="ref-item"><strong>[7]</strong> Duolingo English Test: AI-driven language assessment. blog.englishtest.duolingo.com</div>
+    <div class="ref-item"><strong>[8]</strong> HackerRank: Project-based coding assessments. hackerrank.com</div>
+    <div class="ref-item"><strong>[9]</strong> NGSS Performance Expectations. nextgenscience.org</div>
+    <div class="ref-item"><strong>[10]</strong> Stanford NGSS Assessment Project. scienceeducation.stanford.edu</div>
+    <div class="ref-item"><strong>[11]</strong> EDUCAUSE (2025): AI assessment adoption survey.</div>
+    <div class="ref-item"><strong>[12]</strong> Stanford CTL: Human-AI collaborative grading research.</div>
+    <div class="ref-item"><strong>[13]</strong> Kang et al. (2025). VR Training Readiness Evaluation Model (VTREM).</div>
+    <div class="ref-item"><strong>[14]</strong> EMNLP 2024: Automated Essay Scoring state-of-the-art review.</div>
+    <div class="ref-item"><strong>[15]</strong> LLM-Human Essay-Scoring Agreement: A Research Synthesis (2025). arXiv:2512.14561</div>
+    <div class="ref-item"><strong>[16]</strong> Where Assessment Validation &amp; Responsible AI Meet (2024). arXiv:2411.02577</div>
+    <div class="ref-item"><strong>[17]</strong> AI-Resilient Assessment Design (eCampus News, 2026; arXiv:2512.10758)</div>
+    <div class="ref-item"><strong>[18]</strong> EDUCAUSE Top 10 (2026): The Human Edge of AI. er.educause.edu</div>
+  </div>
+</section>
+
+<footer class="page-footer">
+  <span>PBA Classification System v1.3 · ETS AI Products Team · May 2026</span>
+  <span>Grounded in Messick (1994), Linn, Baker &amp; Dunbar (1991), Jackson &amp; Zapata-Rivera (2015)</span>
+</footer>
+
+</body>
+</html>
